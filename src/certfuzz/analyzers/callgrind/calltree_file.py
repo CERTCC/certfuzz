@@ -11,6 +11,7 @@ from . import CallgrindAnnotateNoOutputFileError
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 class CalltreeFile(object):
     '''
     Annotation File object. Reads in a callgrind annotation file and parses it into a dict (self.coverage)

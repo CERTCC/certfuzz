@@ -16,6 +16,7 @@ OUTFILE_EXT = "callgrind"
 
 get_file = lambda x: '%s.%s' % (x, OUTFILE_EXT)
 
+
 class Callgrind(Analyzer):
     def __init__(self, cfg, crash):
         outfile = get_file(crash.fuzzedfile.path)
