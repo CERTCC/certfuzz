@@ -17,6 +17,7 @@ OUTFILE_EXT = "calltrace"
 
 get_file = lambda x: '%s.%s' % (x, OUTFILE_EXT)
 
+
 class Pin_calltrace(Analyzer):
     def __init__(self, cfg, crash):
         outfile = get_file(crash.fuzzedfile.path)
@@ -29,6 +30,6 @@ class Pin_calltrace(Analyzer):
     def _get_cmdline(self):
         pin = os.path.expanduser('~/pin/pin')
         pintool = os.path.expanduser('~/pintool/calltrace.so')
-        args = [pin, '-injection', 'child', '-t',  pintool, '-o',  self.outfile, '--']
+        args = [pin, '-injection', 'child', '-t', pintool, '-o', self.outfile, '--']
         args.extend(self.cmdargs)
         return args

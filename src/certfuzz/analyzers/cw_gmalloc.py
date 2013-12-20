@@ -15,6 +15,7 @@ from . import Analyzer
 OUTFILE_EXT = "gmalloc"
 get_file = lambda x: '%s.%s' % (x, OUTFILE_EXT)
 
+
 class CrashWranglerGmalloc(Analyzer):
     '''
     classdocs
