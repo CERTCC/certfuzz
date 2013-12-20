@@ -8,6 +8,7 @@ from . import FuzzerExhaustedError
 
 _files_seen = set()
 
+
 class VerifyFuzzer(CopyFuzzer):
     '''
     Adds a uniquness function to the CopyFuzzer

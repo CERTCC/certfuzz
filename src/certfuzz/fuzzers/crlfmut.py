@@ -4,6 +4,7 @@ logger = logging.getLogger(__name__)
 
 from .bytemut import ByteMutFuzzer
 
+
 class CRLFMutFuzzer(ByteMutFuzzer):
     '''
     This fuzzer module randomly replaces single CR and LF characters 0x0D 0x0A with

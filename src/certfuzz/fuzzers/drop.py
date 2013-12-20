@@ -7,8 +7,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class DropFuzzerError(FuzzerError):
     pass
+
 
 class DropFuzzer(Fuzzer):
     '''

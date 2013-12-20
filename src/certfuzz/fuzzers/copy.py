@@ -1,5 +1,6 @@
 from . import Fuzzer
 
+
 class CopyFuzzer(Fuzzer):
     '''
     This "fuzzer" copies input_file_path to output_file_path. Useful for

@@ -6,8 +6,10 @@ from . import MinimizableFuzzer, FuzzerError, FuzzerExhaustedError
 
 logger = logging.getLogger(__name__)
 
+
 class SwapFuzzerError(FuzzerError):
     pass
+
 
 class SwapFuzzer(MinimizableFuzzer):
     '''
