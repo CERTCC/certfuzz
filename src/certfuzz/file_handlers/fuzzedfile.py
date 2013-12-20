@@ -5,6 +5,7 @@ Created on Apr 12, 2013
 '''
 from . import BasicFile
 
+
 class FuzzedFile(BasicFile):
     '''
     Adds a derived_from field to BasicFile object

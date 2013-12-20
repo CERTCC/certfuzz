@@ -14,6 +14,7 @@ from ..file_handlers.basicfile import BasicFile
 
 logger = logging.getLogger(__name__)
 
+
 class Crash(TestCaseBase):
     tmpdir_pfx = 'crash-'
 

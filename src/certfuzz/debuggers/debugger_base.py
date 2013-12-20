@@ -10,6 +10,7 @@ from .errors import DebuggerError
 
 logger = logging.getLogger(__name__)
 
+
 class Debugger(object):
     '''
     classdocs

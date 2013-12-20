@@ -10,6 +10,7 @@ import shutil
 
 logger = logging.getLogger(__name__)
 
+
 class TestCaseBase(object):
     _tmp_sfx = ''
     _tmp_pfx = 'BFF_testcase_'

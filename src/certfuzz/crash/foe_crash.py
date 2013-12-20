@@ -14,6 +14,8 @@ from ..fuzztools.filetools import best_effort_move
 from ..campaign.config.foe_config import get_command_args_list
 
 logger = logging.getLogger(__name__)
+
+
 def logerror(func, path, excinfo):
     logger.warning('%s failed to remove %s: %s', func, path, excinfo)
 
@@ -27,14 +29,16 @@ short_exp = {
 
 exp_rank = {
             'EXPLOITABLE': 1,
-            'PROBABLY_EXPLOITABLE': 2,      
+            'PROBABLY_EXPLOITABLE': 2,
             'UNKNOWN': 3,
             'PROBABLY_NOT_EXPLOITABLE': 4,
             'HEISENBUG': 5,
             }
 
+
 class FoeCrash(Crash):
     tmpdir_pfx = 'foe-crash-'
+
     # TODO: do we still need fuzzer as an arg?
     def __init__(self, cmd_template, seedfile, fuzzedfile, cmdlist, fuzzer,
                  dbg_class, dbg_opts, workingdir_base, keep_faddr, program,
@@ -104,8 +108,7 @@ class FoeCrash(Crash):
 
     def set_debugger_template(self, *args):
         pass
-      
-    
+
     def debug_once(self):
         outfile_base = os.path.join(self.tempdir, self.fuzzedfile.basename)
 
@@ -120,13 +123,13 @@ class FoeCrash(Crash):
         self.parsed_outputs.append(debugger.go())
 
         self.reached_secondchance = self.parsed_outputs[self.exception_depth].secondchance
-        
+
         if self.reached_secondchance and self.exception_depth > 0:
             # No need to process second-chance exception
             # Note that some exceptions, such as Illegal Instructions have no first-chance:
             # In those cases, proceed...
             return
-        
+
         # Store highest exploitability of every exception in the chain
         current_exception_exp = self.parsed_outputs[self.exception_depth].exp
         if current_exception_exp:
@@ -134,7 +137,7 @@ class FoeCrash(Crash):
                 self.exp = current_exception_exp
             elif exp_rank[current_exception_exp] < exp_rank[self.exp]:
                 self.exp = current_exception_exp
-        
+
         current_exception_hash = self.parsed_outputs[self.exception_depth].crash_hash
         current_exception_faddr = self.parsed_outputs[self.exception_depth].faddr
         if current_exception_hash:
@@ -148,7 +151,7 @@ class FoeCrash(Crash):
 
             if self.keep_uniq_faddr and current_exception_faddr:
                 self.crash_hash += '.' + current_exception_faddr
-        
+
         # The first exception is the one that is representative for the crasher
         if self.exception_depth == 0:
             self.dbg_file = debugger.outfile
@@ -179,7 +182,7 @@ class FoeCrash(Crash):
                 self.debug_once()
                 if self.reached_secondchance or not self.parsed_outputs[self.exception_depth].is_crash:
                     logger.debug("no more handled exceptions")
-                    break             
+                    break
             # get the signature now that we've got all of the exceptions
             self.get_signature()
         else:

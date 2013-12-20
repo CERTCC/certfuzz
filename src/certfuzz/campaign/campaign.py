@@ -381,6 +381,7 @@ class Campaign(CampaignBase):
                 logger.info('Seedfile set is empty. Nothing more to do.')
                 return
 
+
 class WindowsCampaign(Campaign):
     '''
     Extends Campaign to add windows-specific features like ButtonClicker

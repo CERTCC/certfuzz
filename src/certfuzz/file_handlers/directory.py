@@ -9,10 +9,12 @@ from .basicfile import BasicFile
 import logging
 logger = logging.getLogger(__name__)
 
+
 class DirectoryError(Exception):
     pass
 
 blacklist = ['.DS_Store', ]
+
 
 class Directory(object):
     def __init__(self, mydir, create=False):

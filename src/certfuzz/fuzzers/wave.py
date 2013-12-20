@@ -8,11 +8,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def fuzz(*args):
     return WaveFuzzer(*args).fuzz()
 
+
 class WaveFuzzerError(FuzzerError):
     pass
+
 
 class WaveFuzzer(MinimizableFuzzer):
     def _fuzz(self):

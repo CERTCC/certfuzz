@@ -14,8 +14,10 @@ from . import register
 
 logger = logging.getLogger(__name__)
 
+
 def factory(*args):
     return NullDebugger(*args)
+
 
 class NullDebugger(Debugger):
     '''

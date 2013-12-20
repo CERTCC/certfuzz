@@ -8,8 +8,10 @@ from random import getrandbits
 
 logger = logging.getLogger(__name__)
 
+
 class InsertFuzzerError(FuzzerError):
     pass
+
 
 class InsertFuzzer(Fuzzer):
     '''

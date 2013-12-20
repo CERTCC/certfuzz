@@ -83,7 +83,7 @@ class MsecDebugger(DebuggerBase):
         targetdir = os.path.dirname(self.program)
         exename = os.path.basename(self.program)
         process_info = {}
-        id = None
+        _id = None
         done = False
         started = False
         wmiInterface = None
@@ -99,14 +99,14 @@ class MsecDebugger(DebuggerBase):
             while retrycount < 5 and not foundpid:
                 for process in wmiInterface.Win32_Process(name=exename):
                     # TODO: What if there's more than one?
-                    id = process.ProcessID
-                    logger.debug('Found %s PID: %s', exename, id)
+                    _id = process.ProcessID
+                    logger.debug('Found %s PID: %s', exename, _id)
                     foundpid = True
                 if not foundpid:
                     logger.debug('%s not seen yet. Retrying...', exename)
                     retrycount += 1
                     time.sleep(0.1)
-            if not id:
+            if not _id:
                 logger.debug('Cannot find %s child process! Bailing.', exename)
                 self.kill(p.pid, 99)
                 return
@@ -117,16 +117,16 @@ class MsecDebugger(DebuggerBase):
         if self.watchcpu == True:
             # This is a race.  In some cases, a GUI app could be done before we can even measure it
             # TODO: Do something about it
-            while p.poll() is None and not done and id:
-                for proc in wmiInterface.Win32_PerfRawData_PerfProc_Process (IDProcess=id):
-                    n1, d1 = long (proc.PercentProcessorTime), long (proc.Timestamp_Sys100NS)
-                    n0, d0 = process_info.get (id, (0, 0))
+            while p.poll() is None and not done and _id:
+                for proc in wmiInterface.Win32_PerfRawData_PerfProc_Process(IDProcess=_id):
+                    n1, d1 = long(proc.PercentProcessorTime), long(proc.Timestamp_Sys100NS)
+                    n0, d0 = process_info.get(_id, (0, 0))
                     try:
-                        percent_processor_time = (float (n1 - n0) / float (d1 - d0)) * 100.0
+                        percent_processor_time = (float(n1 - n0) / float(d1 - d0)) * 100.0
                     except ZeroDivisionError:
                         percent_processor_time = 0.0
-                    process_info[id] = (n1, d1)
-                    logger.debug('Process %s CPU usage: %s', id, percent_processor_time)
+                    process_info[_id] = (n1, d1)
+                    logger.debug('Process %s CPU usage: %s', _id, percent_processor_time)
                     if percent_processor_time < 0.01:
                         if started:
                             logger.debug('killing %s due to CPU inactivity', p.pid)

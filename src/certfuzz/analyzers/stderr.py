@@ -15,6 +15,7 @@ OUTFILE_EXT = "stderr"
 
 get_file = lambda x: '%s.%s' % (x, OUTFILE_EXT)
 
+
 class StdErr(Analyzer):
     def __init__(self, cfg, crash):
         outfile = get_file(crash.fuzzedfile.path)

@@ -10,8 +10,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class TruncateFuzzerError(FuzzerError):
     pass
+
 
 class TruncateFuzzer(Fuzzer):
     '''

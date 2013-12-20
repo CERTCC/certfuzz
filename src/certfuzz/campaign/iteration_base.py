@@ -58,5 +58,3 @@ class IterationBase(object):
             # process all the crashes
             for c in self.crashes:
                 self._process_crash(c)
-
-

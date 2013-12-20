@@ -3,8 +3,11 @@ Created on Oct 23, 2012
 
 @organization: cert.org
 '''
+
+
 class DebuggerError(Exception):
     pass
+
 
 class UndefinedDebuggerError(DebuggerError):
     '''
@@ -15,6 +18,8 @@ class UndefinedDebuggerError(DebuggerError):
 
     def __str__(self):
         return "No debugger defined for '%s'" % self.system
+
+
 class DebuggerNotFoundError(DebuggerError):
     def __init__(self, debugger):
         self.debugger = debugger

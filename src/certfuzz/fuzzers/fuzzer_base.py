@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 def logerror(func, path, excinfo):
     logger.warning('%s failed to remove %s: %s', func, path, excinfo)
 
+
 def is_fuzzable(x, exclude_list):
     '''
     Returns true if x is not in any range in range_list
@@ -39,6 +40,7 @@ def is_fuzzable(x, exclude_list):
         if low <= x <= high:
             return False
     return True
+
 
 class Fuzzer(object):
     '''

@@ -12,6 +12,7 @@ from ..fuzztools.filetools import delete_contents_of
 
 logger = logging.getLogger(__name__)
 
+
 class TmpReaper(object):
     '''
     classdocs

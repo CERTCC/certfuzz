@@ -5,11 +5,14 @@ Created on Aug 1, 2013
 '''
 from certfuzz.errors import CERTFuzzError
 
+
 class CampaignError(CERTFuzzError):
     pass
 
+
 class AndroidCampaignError(CampaignError):
     pass
+
 
 class IterationError(CERTFuzzError):
     pass

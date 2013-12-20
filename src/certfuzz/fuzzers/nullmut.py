@@ -4,6 +4,7 @@ logger = logging.getLogger(__name__)
 
 from .bytemut import ByteMutFuzzer
 
+
 class NullMutFuzzer(ByteMutFuzzer):
     '''
     This fuzzer module randomly replaces single null characters 0x00 with

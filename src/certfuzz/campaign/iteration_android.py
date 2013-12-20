@@ -33,6 +33,7 @@ class EmuHandle(object):
 
 emu = EmuHandle()
 
+
 def _get_seedfile_by_id(tcdb, sf_dir, sfid):
     # find the doc record by id
     doc = FileDoc.load(tcdb.db, sfid)
@@ -200,4 +201,3 @@ class AndroidIteration(IterationBase):
                                  ) as testcase:
                 logger.info('...store object to db')
                 testcase.store(self.tcdb.db)
-

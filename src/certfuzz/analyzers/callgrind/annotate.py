@@ -3,18 +3,18 @@ Created on Jul 27, 2011
 
 @organization: cert.org
 '''
+
+
 import os
-#from subprocess import PIPE
 from subprocess import Popen
 import logging
 from optparse import OptionParser
-#import re
-#import sys
 
 from . import callgrind
-from . import CallgrindAnnotateMissingInputFileError
-from . import CallgrindAnnotateEmptyOutputFileError
-from . import CallgrindAnnotateNoOutputFileError
+from .errors import CallgrindAnnotateMissingInputFileError
+from .errors import CallgrindAnnotateEmptyOutputFileError
+from .errors import CallgrindAnnotateNoOutputFileError
+from .annotation_file import AnnotationFile
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -22,12 +22,30 @@ logger.setLevel(logging.INFO)
 OUTFILE_EXT = 'annotated'
 get_file = lambda x: '%s.%s' % (x, OUTFILE_EXT)
 
-def annotate_callgrind(crash, file_ext='annotated', options={}):
+
+def main():
+    parser = OptionParser()
+    parser.add_option('', '--debug', dest='debug', action='store_true', help='Enable debug messages (overrides --verbose)')
+    parser.add_option('', '--outfile', dest='outfile', help='file to write output to')
+    options, args = parser.parse_args()
+    if options.debug:
+        logger.setLevel(logging.DEBUG)
+    for arg in args:
+        opts = {'threshold': 100}
+        cga = CallgrindAnnotate(arg, opts)
+        a = AnnotationFile(cga.outfile)
+        print a.__dict__
+
+
+def annotate_callgrind(crash, file_ext='annotated', options=None):
     infile = callgrind.get_file(crash.fuzzedfile.path)
 
+    if options is None:
+        options = {}
     options['threshold'] = '100'
 
     CallgrindAnnotate(infile, file_ext, options)
+
 
 def annotate_callgrind_tree(crash):
     options = {'tree': 'calling'}
@@ -35,12 +53,13 @@ def annotate_callgrind_tree(crash):
 
     annotate_callgrind(crash, file_ext, options)
 
+
 class CallgrindAnnotate(object):
     '''
     Wrapper class for callgrind_annotate
     '''
 
-    def __init__(self, callgrind_file, file_ext, options={}):
+    def __init__(self, callgrind_file, file_ext, options=None):
         '''
 
         @param callgrind_file: A file containing output from valgrind --tool=callgrind
@@ -53,7 +72,10 @@ class CallgrindAnnotate(object):
 
         self.outfile = '%s.%s' % (self.callgrind_file, file_ext)
 
-        self.options = options
+        if options is None:
+            self.options = {}
+        else:
+            self.options = options
 
         self.annotate()
 
@@ -82,20 +104,4 @@ if __name__ == '__main__':
     hdlr = logging.StreamHandler()
     logger.addHandler(hdlr)
 
-    parser = OptionParser()
-    parser.add_option('', '--debug', dest='debug', action='store_true', help='Enable debug messages (overrides --verbose)')
-#    parser.add_option('', '--tree', dest='tree', action='store_true', help='Enable call tree output')
-#    parser.add_option('', '--no-libc', dest='suppress', action='store_true', help='Ignore functions containing "libc" if set')
-    parser.add_option('', '--outfile', dest='outfile', help='file to write output to')
-    (options, args) = parser.parse_args()
-
-    if options.debug:
-        logger.setLevel(logging.DEBUG)
-
-    for arg in args:
-
-        opts = {'threshold': 100}
-        cga = CallgrindAnnotate(arg, opts)
-        a = Annotation(cga.outfile)
-
-        print a.__dict__
+    main()

@@ -13,6 +13,7 @@ import os
 from . import __version__
 from ..fuzztools import filetools
 
+
 def import_module_by_name(name, logger=None):
     if logger:
         logger.debug('Importing module %s', name)
@@ -20,8 +21,10 @@ def import_module_by_name(name, logger=None):
     module = sys.modules[name]
     return module
 
+
 class CampaignError(Exception):
     pass
+
 
 class CampaignBase(object):
     __metaclass__ = abc.ABCMeta

@@ -4,6 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class BitMutFuzzer(MinimizableFuzzer):
     '''
     This fuzzer module randomly selects bits in an input file and flips them.
