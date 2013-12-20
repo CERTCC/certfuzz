@@ -19,6 +19,7 @@ from ..fuzztools import subprocess_helper as subp
 
 logger = logging.getLogger(__name__)
 
+
 class GDB(Debugger):
     _platform = 'Linux'
     _key = 'gdb'

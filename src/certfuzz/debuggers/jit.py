@@ -6,7 +6,7 @@ fuzzer that an exception occurred.
 import sys
 from ctypes import windll, byref
 from ctypes.wintypes import HANDLE, BOOL, LPCWSTR
-import time
+
 
 def main(pid=None):
     PROCESS_TERMINATE = 0x0001
