@@ -12,6 +12,7 @@ from .seedfile import SeedFile, SeedFileError
 from ..scoring.scorable_set import ScorableSet2, EmptySetError
 logger = logging.getLogger(__name__)
 
+
 class SeedfileSet(ScorableSet2):
     '''
     classdocs
@@ -120,7 +121,6 @@ class SeedfileSet(ScorableSet2):
                 # it doesn't exist, remove it from the set
                 logger.warning('Seedfile no longer exists, removing from set: %s', sf.path)
                 self.del_item(sf.md5)
-
 
     def __setstate__(self, state):
         newstate = state.copy()

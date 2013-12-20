@@ -12,6 +12,7 @@ from ..fuzztools.rangefinder import RangeFinder
 from ..fuzztools import filetools
 from ..scoring.scorable_thing import ScorableThing
 
+
 # TODO: replace with a common function in some helper module
 def print_dict(d, indent=0):
     for (k, v) in d.iteritems():
@@ -21,6 +22,7 @@ def print_dict(d, indent=0):
             print_dict(v, indent + 1)
         else:
             print indent_str + "%s (%s): %s" % (k, type(v).__name__, v)
+
 
 # ScorableThing mixin gives us the probability stuff needed for use as part of
 # a scorable set like SeedfileSet

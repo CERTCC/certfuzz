@@ -9,6 +9,7 @@ import shutil
 
 logger = logging.getLogger(__name__)
 
+
 class TempDir(object):
     '''
     Runtime context that creates a tempdir then cleans it up when exiting the
@@ -37,4 +38,3 @@ class TempDir(object):
             logger.debug('%s caught %s: %s', self.__class__.__name__, etype, value)
         logger.debug('Removing tempdir %s', self.tmpdir)
         shutil.rmtree(self.tmpdir, ignore_errors=True)
-
