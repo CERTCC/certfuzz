@@ -1,0 +1,43 @@
+BFD: Warning: /var/spool/abrt/ccpp-1311816699-22244/coredump is truncated: expected core file size >= 57290752, found: 10444800.
+warning: core file may not match specified executable file.
+[New Thread 22245]
+[New Thread 22244]
+Cannot access memory at address 0x7f2d09efc6f0
+
+Thread 2 (Thread 22244):
+#0  0x00000030db80803d in ?? ()
+No symbol table info available.
+Cannot access memory at address 0x7fffa5250fc0
+
+Thread 1 (Thread 22245):
+#0  0x00007f2cf8475d00 in ?? ()
+No symbol table info available.
+Cannot access memory at address 0x7f2d09ec7c58
+Cannot access memory at address 0x7f2d09efc6f0
+No symbol table is loaded.  Use the "file" command.
+No symbol table is loaded.  Use the "file" command.
+rax            0x7f2cf8475d00	139831120715008
+rbx            0xa0	160
+rcx            0x200	512
+rdx            0x7f2d0457dff0	139831323123696
+rsi            0x0	0
+rdi            0x7f2d040b7470	139831318115440
+rbp            0x30dba18340	0x30dba18340
+rsp            0x7f2d09ec7c58	0x7f2d09ec7c58
+r8             0x1	1
+r9             0x56e5	22245
+r10            0x1	1
+r11            0x3a98	15000
+r12            0x7f2d09ec8a10	139831416752656
+r13            0x0	0
+r14            0x0	0
+r15            0x30dba182a0	209843225248
+rip            0x7f2cf8475d00	0x7f2cf8475d00
+eflags         0x10206	[ PF IF RF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+gs             0x0	0
+No function contains program counter for selected frame.

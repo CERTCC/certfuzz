@@ -1,0 +1,3 @@
+!define APP_NAME "FOE2"
+!define COMP_NAME "CERT"
+!define WEB_SITE "http://www.cert.org"

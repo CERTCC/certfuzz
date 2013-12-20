@@ -1,0 +1,95 @@
+#0  0x00f04424 in __kernel_vsyscall ()
+No symbol table info available.
+#1  0x006d77e0 in raise (sig=11) at ../nptl/sysdeps/unix/sysv/linux/pt-raise.c:42
+        resultvar = <value optimized out>
+        resultvar = <value optimized out>
+        pid = <value optimized out>
+#2  0x0799e874 in KCrash::defaultCrashHandler (sig=11) at /usr/src/debug/kdelibs-4.3.4/kdeui/util/kcrash.cpp:258
+        argv = {0xbfc15178 "\230Q\301\277\374]@", 0x405bc6 ";E\020~\r\215e\364[^_]Ð\215t&", 0x737e730 "", 0x90feea8 "\210\231C", 0xbfc15148 "", 
+    0x7174995 "\201\303#\373 ", 0x10 <Address 0x10 out of bounds>, 0x4 <Address 0x4 out of bounds>, 0x7174b9b "\201\303\035\371 ", 
+    0x73844b8 "\254@8\a\312\330\025\a", 0x73844b8 "\254@8\a\312\330\025\a", 0x0, 0xbfc15178 "\230Q\301\277\374]@", 
+    0x7282073 "\017\266EÍd$L[^_]Ë\001\213p\b\205\366x\253\215I\f\307E\324\377\377\377\377\211Mĉȋ0\205\366\017\204\255", 
+    0x915cae8 "\210\030\026\t\340\023i", 0x91010b8 "", 0xbfc15178 "\230Q\301\277\374]@", 0x717134d "\205\300\017\204\243", 
+    0x71747c9 "\201\303\357\374 ", 0x73844b8 "\254@8\a\312\330\025\a", 0x13d9a4b "", 0x9320b2c "", 0x915cae8 "\210\030\026\t\340\023i", 
+    0x9320b20 "@\201 \t"}
+        i = <value optimized out>
+        componentData = {_vptr.KComponentData = 0x0, d = 0x7282fe8}
+        about = <value optimized out>
+        sidtxt = 
+    ";\b=\000^Y\367\002\020\000\000\000Dl.\t\253[@\000\270\233C\000\000\000\000\000\310R\301\277\230Q\301\277\374]@\000\bBM\tH\276H\t\000\000\000\000\310R\301\277\000\000\000\000\310R\301\277\350Q\301\277Tf@\000\bBM\t\310R\301\277\004\000\000\000\310R\301\277\270D8\a\240j\\\t\bR\301\277q\214\027\a\000\000\000\000\220\213\027\a\000AK\t\000\000\000\000H\276H\t\001\000\000\000\bR\301\277\270D8\a\004\000\000\000\310R\301\277\bR\301\277\225I\027\a\bBM\t\000\000\000\000k\363'\a\270D8\a\270D8\a`AK\t\250R\301\277\066.(\a\260<\025\txR\301\277\000\000\000\000\310R\301\277\304OP\000 S\301\277\030AM\t\364R\301\277\326\217W\000\344R\301\277\f\235\366\002\200\031\061\a\204\354F\txR\301\277\000\000\000\000\000\000\000\000\326\217W\000\214R\301\277"
+        sigtxt = "%\a\000\000\000\000\000\000\000"
+        pidtxt = "\376\377\377\377\066_\027\aY\236"
+        crashRecursionCounter = 2
+#3  <signal handler called>
+No symbol table info available.
+#4  0x01496063 in gst_element_get_state (element=0x6f727473, state=0xbfc158e8, pending=0x0, timeout=1000) at gstelement.c:2070
+        __inst = 0x6f727473
+        __t = 156104464
+        __r = <value optimized out>
+        _g_boolean_var_ = <value optimized out>
+        oclass = <value optimized out>
+        result = GST_STATE_CHANGE_FAILURE
+        __PRETTY_FUNCTION__ = "gst_element_get_state"
+#5  0x01adb7e5 in Phonon::Gstreamer::MediaObject::setState (this=0x95e1160, newstate=Phonon::StoppedState)
+    at ../../../3rdparty/phonon/gstreamer/mediaobject.cpp:601
+        currentState = <value optimized out>
+#6  0x01add2e0 in Phonon::Gstreamer::MediaObject::handleEndOfStream (this=0x95e1160) at ../../../3rdparty/phonon/gstreamer/mediaobject.cpp:1434
+No locals.
+#7  0x01adf94e in Phonon::Gstreamer::MediaObject::handleBusMessage (this=0x95e1160, message=...)
+    at ../../../3rdparty/phonon/gstreamer/mediaobject.cpp:1218
+        gstMessage = <value optimized out>
+#8  0x01ad088f in Phonon::Gstreamer::Backend::handleBusMessage (this=0x94d9148, message=...)
+    at ../../../3rdparty/phonon/gstreamer/backend.cpp:417
+        mediaObject = <value optimized out>
+#9  0x01ad0941 in Phonon::Gstreamer::Backend::qt_metacall (this=0x94d9148, _c=QMetaObject::InvokeMetaMethod, _id=1, _a=0x95a3ae0)
+    at .moc/release-shared/moc_backend.cpp:82
+No locals.
+#10 0x07273deb in QMetaObject::metacall (object=0x94d9148, cl=QMetaObject::InvokeMetaMethod, idx=5, argv=0x95a3ae0) at kernel/qmetaobject.cpp:237
+        mo = <value optimized out>
+#11 0x0727e357 in QMetaCallEvent::placeMetaCall (this=0x95ad640, object=0x94d9148) at kernel/qobject.cpp:561
+No locals.
+#12 0x0727f26e in QObject::event (this=0x94d9148, e=0x95ad640) at kernel/qobject.cpp:1248
+        mce = 0x95ad640
+        currentSender = {sender = 0x0, signal = -1, ref = 1}
+        previousSender = 0x0
+#13 0x0213bddc in QApplicationPrivate::notify_helper (this=0x910eb30, receiver=0x94d9148, e=0x95ad640) at kernel/qapplication.cpp:4300
+        consumed = <value optimized out>
+#14 0x02142836 in QApplication::notify (this=0xbfc1632c, receiver=0x94d9148, e=0x95ad640) at kernel/qapplication.cpp:3704
+        d = 0x910eb30
+        res = false
+#15 0x07935c9b in KApplication::notify (this=0xbfc1632c, receiver=0x94d9148, event=0x95ad640)
+    at /usr/src/debug/kdelibs-4.3.4/kdeui/kernel/kapplication.cpp:302
+        t = <value optimized out>
+#16 0x0726f413 in QCoreApplication::notifyInternal (this=0xbfc1632c, receiver=0x94d9148, event=0x95ad640) at kernel/qcoreapplication.cpp:704
+        threadData = 0x90e5dc0
+        returnValue = <value optimized out>
+        result = false
+        cbdata = {0x94d9148, 0x95ad640, 0xbfc15f3f}
+        d = <value optimized out>
+#17 0x072702d3 in sendEvent (receiver=0x0, event_type=0, data=0x90e5dc0) at kernel/qcoreapplication.h:215
+No locals.
+#18 QCoreApplicationPrivate::sendPostedEvents (receiver=0x0, event_type=0, data=0x90e5dc0) at kernel/qcoreapplication.cpp:1345
+        pe = <value optimized out>
+        e = 0x95ad640
+        r = 0x94d9148
+        locker = {{mtx = 0x90e5de8, val = 151936488}}
+        startOffset = 0
+        i = @0x90e5de0
+#19 0x0727042e in QCoreApplication::sendPostedEvents (receiver=0x0, event_type=0) at kernel/qcoreapplication.cpp:1238
+        data = <value optimized out>
+#20 0x072979e0 in sendPostedEvents (s=0x9106110) at kernel/qcoreapplication.h:220
+No locals.
+#21 postEventSourceDispatch (s=0x9106110) at kernel/qeventdispatcher_glib.cpp:276
+        source = 0x9106110
+#22 0x0075dc78 in g_main_dispatch (context=0x9106090) at gmain.c:1960
+        dispatch = 0x72979b0 <postEventSourceDispatch(GSource*, GSourceFunc, gpointer)>
+        was_in_call = 0
+        user_data = 0x0
+        callback = 0
+        cb_funcs = 0x0
+        cb_data = 0x0
+        current_source_link = {data = 0x9106110, next = 0x0}
+        need_destroy = <value optimized out>
+        source = 0x9106110
+        current = 0x9103f48
+        i = <value optimized out>

@@ -1,0 +1,108 @@
+Application that crashed: tellico
+Version of the application: 2.0
+KDE Version: 4.3.2 (KDE 4.3.2)
+Qt Version: 4.5.2
+Operating System: Linux 2.6.30.9-90.fc11.i586 i686
+Distribution: "Fedora release 11 (Leonidas)"
+
+What I was doing when the application crashed:
+<In detail, tell us what you were doing  when the application
+crashed.>
+
+ -- Backtrace:
+Application: Tellico (tellico), signal: Segmentation fault
+[KCrash Handler]
+#6  Tellico::Export::HTMLExporter::readOptions
+(this=0xb839a08, config_={d = 0xa2f8488}) at
+/usr/src/debug/tellico-2.0/src/translators/htmlexporter.cpp:521
+#7  0x080cdf68 in Tellico::ExportDialog::exporter
+(format_=Tellico::Export::HTML) at
+/usr/src/debug/tellico-2.0/src/exportdialog.cpp:225
+#8  0x080ce983 in
+Tellico::ExportDialog::ExportDialog(Tellico::Export::Format,
+Tellico::Data::CollPtr, struct QWidget *) (this=0xbfb12484,
+format_=Tellico::Export::HTML, coll_={d = 0xbfb124f4},
+    parent_=0xa402db8) at
+/usr/src/debug/tellico-2.0/src/exportdialog.cpp:61
+#9  0x0810bddb in Tellico::MainWindow::slotFileExport
+(this=0xa402db8, format_=4) at
+/usr/src/debug/tellico-2.0/src/mainwindow.cpp:1758
+#10 0x0810c472 in Tellico::MainWindow::qt_metacall
+(this=0xa402db8, _c=QMetaObject::InvokeMetaMethod,
+_id=30, _a=0xbfb12628) at /usr/src/debug/tellico-2.0/i586-
+redhat-linux-gnu/src/mainwindow.moc:197
+#11 0x050fa853 in QMetaObject::activate(QObject*, int, int,
+void**) () from /usr/lib/libQtCore.so.4
+#12 0x050fb4b2 in QMetaObject::activate(QObject*,
+QMetaObject const*, int, void**) () from
+/usr/lib/libQtCore.so.4
+#13 0x050fd443 in QSignalMapper::mapped(int) () from
+/usr/lib/libQtCore.so.4
+#14 0x050fdcdd in QSignalMapper::map(QObject*) () from
+/usr/lib/libQtCore.so.4
+#15 0x050fdebe in QSignalMapper::map() () from
+/usr/lib/libQtCore.so.4
+#16 0x050fe6fb in
+QSignalMapper::qt_metacall(QMetaObject::Call, int, void**)
+() from /usr/lib/libQtCore.so.4
+#17 0x050fa853 in QMetaObject::activate(QObject*, int, int,
+void**) () from /usr/lib/libQtCore.so.4
+#18 0x050facc8 in QMetaObject::activate(QObject*,
+QMetaObject const*, int, int, void**) () from
+/usr/lib/libQtCore.so.4
+#19 0x05618331 in QAction::triggered(bool) () from
+/usr/lib/libQtGui.so.4
+#20 0x056198c6 in QAction::activate(QAction::ActionEvent)
+() from /usr/lib/libQtGui.so.4
+#21 0x05a6583c in ?? () from /usr/lib/libQtGui.so.4
+#22 0x05a6be8b in ?? () from /usr/lib/libQtGui.so.4
+#23 0x05a6ca4f in
+QMenu::mouseReleaseEvent(QMouseEvent*) () from
+/usr/lib/libQtGui.so.4
+#24 0x06404f15 in
+KMenu::mouseReleaseEvent(QMouseEvent*) () from
+/usr/lib/libkdeui.so.5
+#25 0x05673b9a in QWidget::event(QEvent*) () from
+/usr/lib/libQtGui.so.4
+#26 0x05a6eca4 in QMenu::event(QEvent*) () from
+/usr/lib/libQtGui.so.4
+#27 0x0561e974 in
+QApplicationPrivate::notify_helper(QObject*, QEvent*) ()
+from /usr/lib/libQtGui.so.4
+#28 0x05626a9b in QApplication::notify(QObject*, QEvent*)
+() from /usr/lib/libQtGui.so.4
+#29 0x0631ac3a in KApplication::notify(QObject*, QEvent*)
+() from /usr/lib/libkdeui.so.5
+#30 0x050e4b0b in
+QCoreApplication::notifyInternal(QObject*, QEvent*) () from
+/usr/lib/libQtCore.so.4
+#31 0x056259de in
+QApplicationPrivate::sendMouseEvent(QWidget*,
+QMouseEvent*, QWidget*, QWidget*, QWidget**,
+QPointer<QWidget>&) () from /usr/lib/libQtGui.so.4
+#32 0x0569454f in ?? () from /usr/lib/libQtGui.so.4
+#33 0x05693523 in
+QApplication::x11ProcessEvent(_XEvent*) () from
+/usr/lib/libQtGui.so.4
+#34 0x056be5d2 in ?? () from /usr/lib/libQtGui.so.4
+#35 0x0458a308 in g_main_context_dispatch () from
+/lib/libglib-2.0.so.0
+#36 0x0458d9e0 in ?? () from /lib/libglib-2.0.so.0
+#37 0x0458db13 in g_main_context_iteration () from
+/lib/libglib-2.0.so.0
+#38 0x0510f5ec in
+QEventDispatcherGlib::processEvents(QFlags<QEventLoop::ProcessEventsFlag>)
+() from /usr/lib/libQtCore.so.4
+#39 0x056bdcb5 in ?? () from /usr/lib/libQtGui.so.4
+#40 0x050e30d9 in
+QEventLoop::processEvents(QFlags<QEventLoop::ProcessEventsFlag>)
+() from /usr/lib/libQtCore.so.4
+#41 0x050e352a in
+QEventLoop::exec(QFlags<QEventLoop::ProcessEventsFlag>)
+() from /usr/lib/libQtCore.so.4
+#42 0x050e59af in QCoreApplication::exec() () from
+/usr/lib/libQtCore.so.4
+#43 0x0561e7f7 in QApplication::exec() () from
+/usr/lib/libQtGui.so.4
+#44 0x080f6ce8 in main (argc=1, argv=0xbfb14b64) at
+/usr/src/debug/tellico-2.0/src/main.cpp:95 

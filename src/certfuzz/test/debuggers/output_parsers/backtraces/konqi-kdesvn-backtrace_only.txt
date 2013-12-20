@@ -1,0 +1,64 @@
+ -- Backtrace:
+Application: kdesvn (kdesvn), signal: Segmentation fault
+[KCrash Handler]
+#5  QListData::size (this=0x23d4190) at /usr/include/qt4/QtCore/qlist.h:87
+#6  QList<KDirWatchPrivate::Client*>::count (this=0x23d4190) at /usr/include/qt4/QtCore/qlist.h:250
+#7  KDirWatchPrivate::Entry::isValid (this=0x23d4190) at ../../kio/kio/kdirwatch_p.h:153
+#8  KDirWatchPrivate::slotRescan (this=0x23d4190) at ../../kio/kio/kdirwatch.cpp:1286
+#9  0x00007f8c82657464 in KDirWatchPrivate::qt_metacall (this=0x23d4190, _c=QMetaObject::InvokeMetaMethod, _id=<value optimized out>, _a=0x7fff2be63580) at ./kdirwatch_p.moc:73
+#10 0x00007f8c843e0e1c in QMetaObject::activate (sender=0x23d41f8, from_signal_index=<value optimized out>, to_signal_index=<value optimized out>, argv=0x0) at kernel/qobject.cpp:3113
+#11 0x00007f8c843dadc3 in QObject::event (this=0x23d41f8, e=0x7f8c8110e738) at kernel/qobject.cpp:1075
+#12 0x00007f8c8387462c in QApplicationPrivate::notify_helper (this=0x22d2820, receiver=0x23d41f8, e=0x7fff2be63b80) at kernel/qapplication.cpp:4056
+#13 0x00007f8c8387b8fe in QApplication::notify (this=0x7fff2be657e0, receiver=0x23d41f8, e=0x7fff2be63b80) at kernel/qapplication.cpp:4021
+#14 0x00007f8c82e523f6 in KApplication::notify (this=0x7fff2be657e0, receiver=0x23d41f8, event=0x7fff2be63b80) at ../../kdeui/kernel/kapplication.cpp:302
+#15 0x00007f8c843cbc6c in QCoreApplication::notifyInternal (this=0x7fff2be657e0, receiver=0x23d41f8, event=0x7fff2be63b80) at kernel/qcoreapplication.cpp:610
+#16 0x00007f8c843f6912 in QCoreApplication::sendEvent (this=0x22d6550) at ../../include/QtCore/../../src/corelib/kernel/qcoreapplication.h:213
+#17 QTimerInfoList::activateTimers (this=0x22d6550) at kernel/qeventdispatcher_unix.cpp:572
+#18 0x00007f8c843f42ad in timerSourceDispatch (source=<value optimized out>) at kernel/qeventdispatcher_glib.cpp:165
+#19 0x00007f8c807219fe in g_main_context_dispatch () from /usr/lib/libglib-2.0.so.0
+#20 0x00007f8c807253c8 in ?? () from /usr/lib/libglib-2.0.so.0
+#21 0x00007f8c807254f0 in g_main_context_iteration () from /usr/lib/libglib-2.0.so.0
+#22 0x00007f8c843f41f6 in QEventDispatcherGlib::processEvents (this=0x22b9ab0, flags=<value optimized out>) at kernel/qeventdispatcher_glib.cpp:327
+#23 0x00007f8c83908ace in QGuiEventDispatcherGlib::processEvents (this=0x7f8c8133fa00, flags=<value optimized out>) at kernel/qguieventdispatcher_glib.cpp:202
+#24 0x00007f8c843ca572 in QEventLoop::processEvents (this=<value optimized out>, flags=) at kernel/qeventloop.cpp:149
+#25 0x00007f8c843ca944 in QEventLoop::exec (this=0x7fff2be63e20, flags=) at kernel/qeventloop.cpp:201
+#26 0x00007f8c83ceedee in QDialog::exec (this=0x2be6080) at dialogs/qdialog.cpp:498
+#27 0x00007f8c82dd8435 in KMessageBox::createKMessageBox (dialog=<value optimized out>, icon=<value optimized out>, text=<value optimized out>, strlist=<value optimized out>, 
+    ask=<value optimized out>, checkboxReturn=<value optimized out>, options=) at ../../kdeui/dialogs/kmessagebox.cpp:331
+#28 0x00007f8c82dd96b0 in KMessageBox::createKMessageBox (dialog=<value optimized out>, icon=QMessageBox::Warning, text=<value optimized out>, strlist=<value optimized out>, ask=..., 
+    checkboxReturn=0x0, options=..., details=...) at ../../kdeui/dialogs/kmessagebox.cpp:151
+#29 0x00007f8c82dd9de0 in KMessageBox::sorryWId (parent_id=<value optimized out>, text=..., caption=..., options=) at ../../kdeui/dialogs/kmessagebox.cpp:927
+#30 0x00007f8c82dd9f16 in KMessageBox::sorry (parent=<value optimized out>, text=..., caption=..., options=<value optimized out>) at ../../kdeui/dialogs/kmessagebox.cpp:904
+#31 0x00007f8c7a2e3e12 in ?? () from /usr/lib/kde4/kdesvnpart.so
+#32 0x00007f8c7a2f5fc3 in ?? () from /usr/lib/kde4/kdesvnpart.so
+#33 0x00007f8c843e0e1c in QMetaObject::activate (sender=0x251fdb0, from_signal_index=<value optimized out>, to_signal_index=<value optimized out>, argv=0x0) at kernel/qobject.cpp:3113
+#34 0x00007f8c7a29a1c2 in ?? () from /usr/lib/kde4/kdesvnpart.so
+#35 0x00007f8c7a2a12de in ?? () from /usr/lib/kde4/kdesvnpart.so
+#36 0x00007f8c7a30d07b in ?? () from /usr/lib/kde4/kdesvnpart.so
+#37 0x00007f8c7a30d3e3 in ?? () from /usr/lib/kde4/kdesvnpart.so
+#38 0x00007f8c7a30d469 in ?? () from /usr/lib/kde4/kdesvnpart.so
+#39 0x00007f8c843e0e1c in QMetaObject::activate (sender=0x2b92ad0, from_signal_index=<value optimized out>, to_signal_index=<value optimized out>, argv=0x0) at kernel/qobject.cpp:3113
+#40 0x00007f8c8264f3b2 in KDirWatch::dirty (this=0x7f8c8133fa00, _t1=<value optimized out>) at ./kdirwatch.moc:83
+#41 0x00007f8c8264fc90 in KDirWatch::setDirty (this=0x2b92ad0, _file=...) at ../../kio/kio/kdirwatch.cpp:1748
+#42 0x00007f8c82650259 in KDirWatchPrivate::emitEvent (this=<value optimized out>, e=<value optimized out>, event=1, fileName=<value optimized out>) at ../../kio/kio/kdirwatch.cpp:1227
+#43 0x00007f8c826560a1 in KDirWatchPrivate::slotRescan (this=0x23d4190) at ../../kio/kio/kdirwatch.cpp:1319
+#44 0x00007f8c82657464 in KDirWatchPrivate::qt_metacall (this=0x23d4190, _c=QMetaObject::InvokeMetaMethod, _id=<value optimized out>, _a=0x7fff2be64e80) at ./kdirwatch_p.moc:73
+#45 0x00007f8c843e0e1c in QMetaObject::activate (sender=0x23d41f8, from_signal_index=<value optimized out>, to_signal_index=<value optimized out>, argv=0x0) at kernel/qobject.cpp:3113
+#46 0x00007f8c843dadc3 in QObject::event (this=0x23d41f8, e=0x7f8c8110e738) at kernel/qobject.cpp:1075
+#47 0x00007f8c8387462c in QApplicationPrivate::notify_helper (this=0x22d2820, receiver=0x23d41f8, e=0x7fff2be65480) at kernel/qapplication.cpp:4056
+#48 0x00007f8c8387b8fe in QApplication::notify (this=0x7fff2be657e0, receiver=0x23d41f8, e=0x7fff2be65480) at kernel/qapplication.cpp:4021
+#49 0x00007f8c82e523f6 in KApplication::notify (this=0x7fff2be657e0, receiver=0x23d41f8, event=0x7fff2be65480) at ../../kdeui/kernel/kapplication.cpp:302
+#50 0x00007f8c843cbc6c in QCoreApplication::notifyInternal (this=0x7fff2be657e0, receiver=0x23d41f8, event=0x7fff2be65480) at kernel/qcoreapplication.cpp:610
+#51 0x00007f8c843f6912 in QCoreApplication::sendEvent (this=0x22d6550) at ../../include/QtCore/../../src/corelib/kernel/qcoreapplication.h:213
+#52 QTimerInfoList::activateTimers (this=0x22d6550) at kernel/qeventdispatcher_unix.cpp:572
+#53 0x00007f8c843f42ad in timerSourceDispatch (source=<value optimized out>) at kernel/qeventdispatcher_glib.cpp:165
+#54 0x00007f8c807219fe in g_main_context_dispatch () from /usr/lib/libglib-2.0.so.0
+#55 0x00007f8c807253c8 in ?? () from /usr/lib/libglib-2.0.so.0
+#56 0x00007f8c807254f0 in g_main_context_iteration () from /usr/lib/libglib-2.0.so.0
+#57 0x00007f8c843f41f6 in QEventDispatcherGlib::processEvents (this=0x22b9ab0, flags=<value optimized out>) at kernel/qeventdispatcher_glib.cpp:327
+#58 0x00007f8c83908ace in QGuiEventDispatcherGlib::processEvents (this=0x7f8c8133fa00, flags=<value optimized out>) at kernel/qguieventdispatcher_glib.cpp:202
+#59 0x00007f8c843ca572 in QEventLoop::processEvents (this=<value optimized out>, flags=) at kernel/qeventloop.cpp:149
+#60 0x00007f8c843ca944 in QEventLoop::exec (this=0x7fff2be65720, flags=) at kernel/qeventloop.cpp:201
+#61 0x00007f8c843ccaf9 in QCoreApplication::exec () at kernel/qcoreapplication.cpp:888
+#62 0x000000000040a842 in _start ()
+

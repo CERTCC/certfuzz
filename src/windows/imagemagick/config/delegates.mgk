@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!--
+  Delegate command file.
+
+  Commands which specify
+
+    decode="in_format" encode="out_format"
+
+  specify the rules for converting from in_format to out_format These
+  rules may be used to translate directly between formats.
+
+  Commands which specify only
+
+    decode="in_format"
+
+  specify the rules for converting from in_format to some format that
+  ImageMagick will automatically recognize. These rules are used to
+  decode formats.
+
+  Commands which specify only
+
+   encode="out_format"
+
+  specify the rules for an "encoder" which may accept any input format.
+
+  For delegates other than gs-color, gs-mono, and mpeg-encode the
+  substitution rules are as follows:
+
+    %i  input image filename
+    %o  output image filename
+    %u  unique temporary filename
+    %z  secondary unique temporary filename
+
+    %#  input image signature
+    %b  image file size
+    %c  input image comment
+    %g  window group
+    %h  image rows (height)
+    %k  input image number colors
+    %m  input image format
+    %p  page number
+    %q  input image depth
+    %s  scene number
+    %w  image columns (width)
+    %x  input image x resolution
+    %y  input image y resolution
+
+-->
+<delegatemap>
+<delegate decode="autotrace" stealth="True" command='autotrace -output-format svg -output-file "%o" "%i"' />
+  <delegate decode="bmp" encode="launch" mode="encode" command='imdisplay.exe "%i."' />
+  <delegate decode="bmp" encode="win" mode="encode" command='imdisplay.exe "%i."' />
+  <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start http://www.imagemagick.org/'  />
+  <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u
+    convert -concatenate %o*.ps "%o"' />
+  <delegate decode="compress" restrain="True" command='|uncompress -c "%i"' />
+	<delegate decode="crw" command='dcraw -c -w -4 "%i" > "%o"' />
+  <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
+  <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
+  <delegate decode="edit" restrain="True" command='notepad "%o"' />
+  <delegate decode="eps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="eps" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="fig" command='/usr/X11R6/bin/fig2dev -L ps "%i" "%o"' />
+  <delegate decode="gplt" command='/bin/echo "set size 1.25,0.62
+    set terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;gnuplot %u' />
+  <delegate decode="gs-color" restrain="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pnmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-mono" restrain="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pbmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="hpgl" command='hp2xx -q -m eps -f "%o" "%i"' />
+  <delegate decode="htm" command='html2ps -U -o "%o" "%i"' />
+  <delegate decode="html" command='html2ps -U -o "%o" "%i"' />
+  <delegate decode="ilbm" command='ilbmtoppm "%i" > "%o"' />
+  <delegate decode="man" command='groff -man -Tps "%i" > "%o"' />
+  <delegate decode="mpeg-decode" stealth="True" command='mpeg2dec.exe -q -b "%i" -f -r -o3 "%u%%d"' />
+  <delegate encode="mpeg-encode" stealth="True" command='mpeg2enc.exe "%i" "%o"' />
+  <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="pgp" command='pgpv -fq "%i"' />
+  <delegate decode="pnm" encode="ilbm" mode="encode" command='ppmtoilbm -24if "%i" > "%o"' />
+  <delegate decode="pov" command='povray "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"
+    convert -concatenate %o*.png "%o"' />
+  <delegate decode="ps" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="ps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="pcl" encode="print" mode="encode" command='print "%i"' />
+  <delegate decode="rad" command='ra_ppm -g 1.0 "%i" "%o"' />
+  <delegate decode="rgba" encode="rle" mode="encode" command='mogrify -flip -size %wx%h "rgba:%i"
+    rawtorle -w %w -h %h -n 4 -o "%o" "%i"' />
+  <delegate decode="scan" command='scanimage -d "%i" > "%o"' />
+  <delegate decode="shtml" command='html2ps -U -o "%o" "%i"' />
+  <delegate decode="txt" encode="ps" mode="bi" command='enscript -o "%o" "%i"' />
+  <delegate decode="xcf" command='xcftopnm "%i" > "%o"' />
+  <delegate encode="compress" restrain="True" command='|compress -c > "%o"' />
+  <delegate encode="show" restrain="True" spawn="True" command='imdisplay -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
+</delegatemap>

@@ -1,0 +1,218 @@
+This file is part of the ImageMagick software distributed by the
+ImageMagick Studio LLC.  The author and current maintainer of ImageMagick
+is John Cristy (psyche at imagemagick.org).
+
+The licences which components of this software fall under are as follows.
+
+1)
+  Copyright (C) 2003 ImageMagick Studio, a non-profit organization
+  dedicated to making software imaging solutions freely available.
+
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation
+  files ("ImageMagick"), to deal in ImageMagick without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of ImageMagick,
+  and to permit persons to whom the ImageMagick is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of ImageMagick.
+
+  The software is provided "as is", without warranty of any kind,
+  express or implied, including but not limited to the warranties of
+  merchantability, fitness for a particular purpose and noninfringement.
+  In no event shall ImageMagick Studio be liable for any claim, damages or
+  other liability, whether in an action of contract, tort or otherwise,
+  arising from, out of or in connection with ImageMagick or the use or
+  other dealings in ImageMagick.
+
+  Except as contained in this notice, the name of the ImageMagick Studio
+  shall not be used in advertising or otherwise to promote the sale, use
+  or other dealings in ImageMagick without prior written authorization
+  from the ImageMagick Studio.
+
+3)
+  In November 2002, the GraphicsMagick Group created GraphicsMagick from
+  ImageMagick Studio's ImageMagick source.  ImageMagick adopted some of
+  their improvements to existing programs and scripts, including:
+
+    Unix configure
+		Installation instructions
+  	Test programs
+    PerlMagick test scripts
+    JP2 image coder
+    Some web page improvements
+    Windows configure
+    Windows IMDisplay
+    Windows ATL COM
+
+  In addition the Windows distrbution of ImageMagick includes this
+  new program:
+
+  	Windows ATL7 COM
+
+  The improvements and the ATL7 COM is copyright:
+
+  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated to
+  making software imaging solutions freely available.
+
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation files
+  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
+  and to permit persons to whom GraphicsMagick is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of GraphicsMagick.
+
+  The software is provided "as is", without warranty of any kind,
+  express or implied, including but not limited to the warranties of
+  merchantability, fitness for a particular purpose and noninfringement.
+  In no event shall GraphicsMagick Group be liable for any claim, damages
+  or other liability, whether in an action of contract, tort or otherwise,
+  arising from, out of or in connection with GraphicsMagick or the use
+  or other dealings in GraphicsMagick.
+
+  Except as contained in this notice, the name of the GraphicsMagick
+  Group shall not be used in advertising or otherwise to promote the
+  sale, use or other dealings in GraphicsMagick without prior written
+  authorization from the GraphicsMagick Group.
+
+4)
+  From 1991 to August 1999, ImageMagick was developed and distributed
+  by E. I. du Pont de Nemours and Company:
+
+  Copyright 1999 E. I. du Pont de Nemours and Company
+
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation
+  files ("ImageMagick"), to deal in ImageMagick without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of ImageMagick,
+  and to permit persons to whom the ImageMagick is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of ImageMagick.
+
+  The software is provided "as is", without warranty of any kind,
+  express or implied, including but not limited to the warranties of
+  merchantability, fitness for a particular purpose and noninfringement.
+  In no event shall E. I. du Pont de Nemours and Company be liable
+  for any claim, damages or other liability, whether in an action of
+  contract, tort or otherwise, arising from, out of or in connection
+  with ImageMagick or the use or other dealings in ImageMagick.
+
+  Except as contained in this notice, the name of the E. I. du Pont de
+  Nemours and Company shall not be used in advertising or otherwise to
+  promote the sale, use or other dealings in ImageMagick without prior
+  written authorization from the E. I. du Pont de Nemours and Company.
+
+5)
+  This copyright is limited to some code (for locating an installed
+  Ghostscript under Windows) in the file magick/nt_base.c which was
+  incorporated from the gsview package:
+
+  Copyright (C) 2000-2002, Ghostgum Software Pty Ltd.  All rights
+  reserved.
+
+  Permission is hereby granted, free of charge, to any person obtaining
+  a copy of this file ("Software"), to deal in the Software without
+  restriction, including without limitation the rights to use, copy,
+  modify, merge, publish, distribute, sublicense, and/or sell copies of
+  this Software, and to permit persons to whom this file is furnished
+  to do so, subject to the following conditions:
+
+  This Software is distributed with NO WARRANTY OF ANY KIND.  No author
+  or distributor accepts any responsibility for the consequences of using
+  it, or for whether it serves any particular purpose or works at all,
+  unless he or she says so in writing.
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of the Software.
+
+6)
+  The Base64Decode() and Base64Encode() mthods are based on source code
+	obtained from OpenSSH.	This source code is distributed under
+	the following license.
+
+  Copyright (c) 2000 Markus Friedl.  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are
+  met: 1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
+  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
+
+7)
+  The C++ API known as "Magick++", and which resides in the Magick++
+  directory, is distributed under the following license:
+
+  Copyright 1999 - 2003 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+
+  Permission is hereby granted, free of charge, to any person obtaining
+  a copy of the source files and associated documentation files
+  ("Magick++"), to deal in Magick++ without restriction, including
+  without limitation of the rights to use, copy, modify, merge, publish,
+  distribute, sublicense, and/or sell copies of Magick++, and to permit
+  persons to whom the Magick++ is furnished to do so, subject to the
+  following conditions:
+
+  This copyright notice shall be included in all copies or substantial
+  portions of Magick++. The copyright to Magick++ is retained by its
+  author and shall not be subsumed or replaced by any other copyright.
+
+  The software is provided "as is", without warranty of any
+  kind, express or implied, including but not limited to the
+  warranties of merchantability, fitness for a particular purpose and
+  noninfringement. In no event shall Bob Friesenhahn be liable for any
+  claim, damages or other liability, whether in an action of contract,
+  tort or otherwise, arising from, out of or in connection with Magick++
+  or the use or other dealings in Magick++.
+
+8)
+  Many of the pattern images in coders/pattern.c are derived from XFig,
+  which is distributed under the following license:
+
+  FIG : Facility for Interactive Generation of figures
+  Copyright (c) 1985-1988 by Supoj Sutanthavibul
+  Parts Copyright (c) 1989-2000 by Brian V. Smith
+  Parts Copyright (c) 1991 by Paul King
+  
+  Any party obtaining a copy of these files is granted, free of charge, a
+  full and unrestricted irrevocable, world-wide, paid up, royalty-free,
+  nonexclusive right and license to deal in this software and
+  documentation files (the "Software"), including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense,
+  and/or sell copies of the Software, and to permit persons who receive
+  copies from any such party to do so, with the only requirement being
+  that this copyright notice remain intact.
+
+8)
+  The ImageMagick logo is copyright Pineapple USA Inc. It is freely
+	distributable, however, modifications to the logo are not permitted.
+
+9)
+  ImageMagick makes use of third-party "delegate" libraries to support
+  certain optional features. These libraries bear their own copyrights
+  and licenses, which may be more or less restrictive than the ImageMagick
+  license. For convenience, when ImageMagick is bundled with (or compiled
+  with) "delegate" libraries, a copy of the licenses for these libraries
+  is provided in a "licenses" directory.

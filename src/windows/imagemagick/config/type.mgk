@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<typemap>
+  <include file="type-ghostscript.mgk" />
+</typemap>

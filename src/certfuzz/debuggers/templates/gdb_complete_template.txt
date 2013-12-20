@@ -1,0 +1,26 @@
+set disassembly-flavor intel
+file $PROGRAM
+run $CMD_ARGS
+echo \n
+echo Crash found with CERT BFF 2.7\n
+echo  Running: $PROGRAM $CMD_ARGS
+echo \n
+source ~/bff/CERT_triage_tools/exploitable/exploitable.py
+echo \n
+exploitable
+echo \n
+info proc map
+echo \n
+echo siginfo:
+print $_siginfo
+echo si_addr:
+print $_siginfo._sifields._sigfault.si_addr
+echo \n
+bt full 512
+echo \n
+info registers
+echo \n
+x/i $pc
+echo \n
+disass
+quit

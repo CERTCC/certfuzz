@@ -1,0 +1,49 @@
+CERT Failure Observation Engine (FOE)
+Significant changes
+
+FOE 2.1 (September 23, 2013)
+
+  * Environment changes:
+    - Upgraded to MSEC !exploitable 1.6
+
+  * Code changes:
+    - Crash uniqueness determined by exception chains
+    - Improved exploitability bucketing of exception chains
+    - Dynamic timeouts (CPU-usage-driven) for GUI applications
+    - Zip seed file awareness (fuzz contents, not container)
+    - New and improved scripts in the tools directory
+    - Simplified usage
+    - Optional feature to recycle crashing test cases as seed files
+    - Minimization to string defaults to Metasploit string
+    - Various bug fixes and improved error handling
+
+FOE 2.0.1 (October 19, 2012)
+  * Code changes:
+    - BFF 2.6 and FOE 2.0.1 use the same certfuzz package
+    - Fixed a bug in minimizer crash recycling
+    - Various bug fixes and improved error handling
+    
+FOE 2.0 (July 20, 2012)
+
+  * Environment changes:
+    - Upgraded to python 2.7
+
+  * Code changes:
+    - Improved support for multiple seed files
+    - Crashes found during minimization get analyzed as well
+    - Improved machine learning implementation applied to both
+      seed file selection and rangefinder
+    - Minimizer tuned for performance
+    - Optional minimization-to-string feature
+    - Continues handled exceptions
+    - Button clicker included
+    - New drillresults.py script for picking out interesting 
+      crashes
+    - Added new fuzzers: drop, insert, truncate, verify
+    - Refactored into object-oriented code
+    - Merged in many other features from CERT's Basic Fuzzing Framework (BFF)
+      for Linux v2.5
+
+FOE 1.0 (April 20, 2012)
+
+  * Initial Release

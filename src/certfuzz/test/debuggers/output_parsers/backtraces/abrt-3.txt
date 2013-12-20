@@ -1,0 +1,1893 @@
+warning: section .gnu.liblist not found in /var/cache/abrt-di/usr/lib/debug/.build-id/c7/3e29b098bbeac67a375ffe7f00328da03f7e99.debug
+warning: section .gnu.conflict not found in /var/cache/abrt-di/usr/lib/debug/.build-id/c7/3e29b098bbeac67a375ffe7f00328da03f7e99.debug
+[New Thread 30765]
+[New Thread 30769]
+[New Thread 30772]
+[New Thread 30773]
+[New Thread 30770]
+[New Thread 30768]
+warning: section .gnu.liblist not found in /var/cache/abrt-di/usr/lib/debug/.build-id/c7/3e29b098bbeac67a375ffe7f00328da03f7e99.debug
+warning: section .gnu.conflict not found in /var/cache/abrt-di/usr/lib/debug/.build-id/c7/3e29b098bbeac67a375ffe7f00328da03f7e99.debug
+warning: Unable to open "librpm.so.0" (librpm.so.0: cannot open shared object file: No such file or directory), missing debuginfos notifications will not be displayed
+Missing separate debuginfo for /usr/lib64/libgstbase-0.10.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/8e/d488705d06469167f47be5a4a6789f3b774dd4 /var/cache/abrt-di/usr/lib/debug/.build-id/8e/d488705d06469167f47be5a4a6789f3b774dd4
+Missing separate debuginfo for /usr/lib64/libgsttag-0.10.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/43/36c644a4dfa55dcfffff18b1039657eb43c19e /var/cache/abrt-di/usr/lib/debug/.build-id/43/36c644a4dfa55dcfffff18b1039657eb43c19e
+Missing separate debuginfo for /usr/lib64/libgstinterfaces-0.10.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/ab/37bccc1266e01486b4a6917221d107f301b9bc /var/cache/abrt-di/usr/lib/debug/.build-id/ab/37bccc1266e01486b4a6917221d107f301b9bc
+Missing separate debuginfo for /usr/lib64/libgstvideo-0.10.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/63/f2501376320f71506694da1bd8687a45f18d4c /var/cache/abrt-di/usr/lib/debug/.build-id/63/f2501376320f71506694da1bd8687a45f18d4c
+Missing separate debuginfo for /usr/lib64/libgstaudio-0.10.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/b3/92f54e7bfd00f6d18868001952ee4cb18f61fb /var/cache/abrt-di/usr/lib/debug/.build-id/b3/92f54e7bfd00f6d18868001952ee4cb18f61fb
+Missing separate debuginfo for /usr/lib64/libgstreamer-0.10.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/ec/b7c08b0319ed3cf8a533c0aeb66e9cf4a01794 /var/cache/abrt-di/usr/lib/debug/.build-id/ec/b7c08b0319ed3cf8a533c0aeb66e9cf4a01794
+Missing separate debuginfo for /lib64/libgthread-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/5b/dd36159fa8d18d06bd6a46967910ffe61a69b9 /var/cache/abrt-di/usr/lib/debug/.build-id/5b/dd36159fa8d18d06bd6a46967910ffe61a69b9
+Missing separate debuginfo for /usr/lib64/libxml2.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/f8/bef17efe9c5f30c7eab0b3c9ea14615265659c /var/cache/abrt-di/usr/lib/debug/.build-id/f8/bef17efe9c5f30c7eab0b3c9ea14615265659c
+Missing separate debuginfo for /usr/lib64/libgstpbutils-0.10.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/62/a5f2c44decae730c162394209b30e8a170def2 /var/cache/abrt-di/usr/lib/debug/.build-id/62/a5f2c44decae730c162394209b30e8a170def2
+Missing separate debuginfo for /usr/lib64/libunique-1.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/28/43d5ebbd74ed1ede17c6c12c6daee3314c51cc /var/cache/abrt-di/usr/lib/debug/.build-id/28/43d5ebbd74ed1ede17c6c12c6daee3314c51cc
+Missing separate debuginfo for /usr/lib64/libdbus-glib-1.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/c6/72b3144082406793ea56ba4602347fa776554e /var/cache/abrt-di/usr/lib/debug/.build-id/c6/72b3144082406793ea56ba4602347fa776554e
+Missing separate debuginfo for /lib64/libdbus-1.so.3
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/0b/ab5ac2006bca1cf4ab653edca84cb525754272 /var/cache/abrt-di/usr/lib/debug/.build-id/0b/ab5ac2006bca1cf4ab653edca84cb525754272
+Missing separate debuginfo for /lib64/librt.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/64/bb7536131e75b562a812049c926bafa485117e /var/cache/abrt-di/usr/lib/debug/.build-id/64/bb7536131e75b562a812049c926bafa485117e
+Missing separate debuginfo for /usr/lib64/libSM.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/73/65cb4cb7d7677646595310d19bf995cf9008b4 /var/cache/abrt-di/usr/lib/debug/.build-id/73/65cb4cb7d7677646595310d19bf995cf9008b4
+Missing separate debuginfo for /usr/lib64/libICE.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/ed/b81777ec18e1590b7cc7b32e038862c6b3db66 /var/cache/abrt-di/usr/lib/debug/.build-id/ed/b81777ec18e1590b7cc7b32e038862c6b3db66
+Missing separate debuginfo for /usr/lib64/libpython2.6.so.1.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/d1/d11a8a89620b278fa8a2eec0cb6fc23958fe92 /var/cache/abrt-di/usr/lib/debug/.build-id/d1/d11a8a89620b278fa8a2eec0cb6fc23958fe92
+Missing separate debuginfo for /lib64/libpthread.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/25/8fb5236830ffa1835416ec2833cb93c459c27f /var/cache/abrt-di/usr/lib/debug/.build-id/25/8fb5236830ffa1835416ec2833cb93c459c27f
+Missing separate debuginfo for /lib64/libdl.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/e4/cfed91d64a3814e0c0adade04316a70b25e009 /var/cache/abrt-di/usr/lib/debug/.build-id/e4/cfed91d64a3814e0c0adade04316a70b25e009
+Missing separate debuginfo for /lib64/libutil.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/9c/93468c0597fc18aa825eef71c43746b40b5ef0 /var/cache/abrt-di/usr/lib/debug/.build-id/9c/93468c0597fc18aa825eef71c43746b40b5ef0
+Missing separate debuginfo for /usr/lib64/libgconf-2.so.4
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/99/04c6af9778787adf7c95b35f1c6f8fe0865b40 /var/cache/abrt-di/usr/lib/debug/.build-id/99/04c6af9778787adf7c95b35f1c6f8fe0865b40
+Missing separate debuginfo for /usr/lib64/libtotem-plparser.so.12
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/66/61fbdc11d9154dab2ab7cc850f8f955176edc8 /var/cache/abrt-di/usr/lib/debug/.build-id/66/61fbdc11d9154dab2ab7cc850f8f955176edc8
+Missing separate debuginfo for /usr/lib64/libgtk-x11-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/18/bf46434614388f3c9f059b840371c44cbd3757 /var/cache/abrt-di/usr/lib/debug/.build-id/18/bf46434614388f3c9f059b840371c44cbd3757
+Missing separate debuginfo for /usr/lib64/libgdk-x11-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/b5/ad441ee116e2d665e38b5d443b9d70d2d21cb2 /var/cache/abrt-di/usr/lib/debug/.build-id/b5/ad441ee116e2d665e38b5d443b9d70d2d21cb2
+Missing separate debuginfo for /usr/lib64/libatk-1.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/72/01f43e85740042e1960b1c4a72bed0028493a4 /var/cache/abrt-di/usr/lib/debug/.build-id/72/01f43e85740042e1960b1c4a72bed0028493a4
+Missing separate debuginfo for /lib64/libgio-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/7a/f90705cd0dbe9aee9708dfa4132ad80e5e69ab /var/cache/abrt-di/usr/lib/debug/.build-id/7a/f90705cd0dbe9aee9708dfa4132ad80e5e69ab
+Missing separate debuginfo for /usr/lib64/libpangoft2-1.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/1b/e6866ee70865eda4b1b66ab5834f655fb5e491 /var/cache/abrt-di/usr/lib/debug/.build-id/1b/e6866ee70865eda4b1b66ab5834f655fb5e491
+Missing separate debuginfo for /usr/lib64/libgdk_pixbuf-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/61/5a0f61979e339a971c3c9d2ef4650fcfdd7da0 /var/cache/abrt-di/usr/lib/debug/.build-id/61/5a0f61979e339a971c3c9d2ef4650fcfdd7da0
+Missing separate debuginfo for /usr/lib64/libpangocairo-1.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/0a/d0a5fd8fc4c565b89e4e4806ef17d91fe8766a /var/cache/abrt-di/usr/lib/debug/.build-id/0a/d0a5fd8fc4c565b89e4e4806ef17d91fe8766a
+Missing separate debuginfo for /usr/lib64/libpango-1.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/74/2b6f716948867aeb271be9150c4d0d4aa1f7f1 /var/cache/abrt-di/usr/lib/debug/.build-id/74/2b6f716948867aeb271be9150c4d0d4aa1f7f1
+Missing separate debuginfo for /usr/lib64/libfreetype.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/a6/18b263046e36cf7eacabd95a802698846ea63d /var/cache/abrt-di/usr/lib/debug/.build-id/a6/18b263046e36cf7eacabd95a802698846ea63d
+Missing separate debuginfo for /usr/lib64/libfontconfig.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/cc/89f201e4c448ad835006ca46ee2f834eca4e40 /var/cache/abrt-di/usr/lib/debug/.build-id/cc/89f201e4c448ad835006ca46ee2f834eca4e40
+Missing separate debuginfo for /lib64/libgobject-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/69/4843be2335f18197bd4d3eb8354cff9d5d6606 /var/cache/abrt-di/usr/lib/debug/.build-id/69/4843be2335f18197bd4d3eb8354cff9d5d6606
+Missing separate debuginfo for /lib64/libgmodule-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/6d/bc8bc58ff6aa127643af14caac8a2c71c4e979 /var/cache/abrt-di/usr/lib/debug/.build-id/6d/bc8bc58ff6aa127643af14caac8a2c71c4e979
+Missing separate debuginfo for /lib64/libglib-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/e1/55a84c1e0b14c05d408eb9e2b8a7ff1a83cd79 /var/cache/abrt-di/usr/lib/debug/.build-id/e1/55a84c1e0b14c05d408eb9e2b8a7ff1a83cd79
+Missing separate debuginfo for /usr/lib64/libcairo.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/58/99ae69a1270e04b85f11bb267f00f7101d8785 /var/cache/abrt-di/usr/lib/debug/.build-id/58/99ae69a1270e04b85f11bb267f00f7101d8785
+Missing separate debuginfo for /usr/lib64/libXrandr.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/6d/385a4b80740901718b43368d1a1ce47ef672e8 /var/cache/abrt-di/usr/lib/debug/.build-id/6d/385a4b80740901718b43368d1a1ce47ef672e8
+Missing separate debuginfo for /usr/lib64/libXxf86vm.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/29/9e30d511e59479eb011f5c75dd6f0f7a144b6f /var/cache/abrt-di/usr/lib/debug/.build-id/29/9e30d511e59479eb011f5c75dd6f0f7a144b6f
+Missing separate debuginfo for /usr/lib64/libXtst.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/ba/6131011e063a834e512be3165d62cd7e9162ac /var/cache/abrt-di/usr/lib/debug/.build-id/ba/6131011e063a834e512be3165d62cd7e9162ac
+Missing separate debuginfo for /usr/lib64/libX11.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/02/cec8a26913888091efdcb30a4b444ebac1dd0d /var/cache/abrt-di/usr/lib/debug/.build-id/02/cec8a26913888091efdcb30a4b444ebac1dd0d
+Missing separate debuginfo for /lib64/libc.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/ba/50ce985a0e707ada5f93186ca138ba596e5a69 /var/cache/abrt-di/usr/lib/debug/.build-id/ba/50ce985a0e707ada5f93186ca138ba596e5a69
+Missing separate debuginfo for /lib64/libm.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/93/7d6b0d0eb7e4725591eee25fc985b69859f962 /var/cache/abrt-di/usr/lib/debug/.build-id/93/7d6b0d0eb7e4725591eee25fc985b69859f962
+Missing separate debuginfo for /lib64/libz.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/43/8e6de98878640b83e26c4034add606b3b4a921 /var/cache/abrt-di/usr/lib/debug/.build-id/43/8e6de98878640b83e26c4034add606b3b4a921
+Missing separate debuginfo for /lib64/ld-linux-x86-64.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/42/2cd88f970a63383a7c8fa318ba7596c8c2fa82 /var/cache/abrt-di/usr/lib/debug/.build-id/42/2cd88f970a63383a7c8fa318ba7596c8c2fa82
+Missing separate debuginfo for /lib64/libuuid.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/1a/b0925c87b97b56aa4f05ba3b11ea5a0a7ae06a /var/cache/abrt-di/usr/lib/debug/.build-id/1a/b0925c87b97b56aa4f05ba3b11ea5a0a7ae06a
+Missing separate debuginfo for /usr/lib64/libORBit-2.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/38/4f8199397d12195afe416eba62cd7e118cd1e0 /var/cache/abrt-di/usr/lib/debug/.build-id/38/4f8199397d12195afe416eba62cd7e118cd1e0
+Missing separate debuginfo for /usr/lib64/libXfixes.so.3
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/10/91613e71ba2afa6378d02d4bd8ec2a7f3ebb47 /var/cache/abrt-di/usr/lib/debug/.build-id/10/91613e71ba2afa6378d02d4bd8ec2a7f3ebb47
+Missing separate debuginfo for /usr/lib64/libXext.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/7a/cce123b992d401dd5ed4175f5e7e71d5153040 /var/cache/abrt-di/usr/lib/debug/.build-id/7a/cce123b992d401dd5ed4175f5e7e71d5153040
+Missing separate debuginfo for /usr/lib64/libXrender.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/bd/84511e579372eed296c422f4e1c67c578bd448 /var/cache/abrt-di/usr/lib/debug/.build-id/bd/84511e579372eed296c422f4e1c67c578bd448
+Missing separate debuginfo for /usr/lib64/libXinerama.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/37/7e15d7559da4f2ee697c61b6e83ad20482a566 /var/cache/abrt-di/usr/lib/debug/.build-id/37/7e15d7559da4f2ee697c61b6e83ad20482a566
+Missing separate debuginfo for /usr/lib64/libXi.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/05/d1dde0065ed9482ec8a74f73d7208d5d7b2524 /var/cache/abrt-di/usr/lib/debug/.build-id/05/d1dde0065ed9482ec8a74f73d7208d5d7b2524
+Missing separate debuginfo for /usr/lib64/libXcursor.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/35/315ba1a75c7b3f5e5b46f1ee4ece180e475045 /var/cache/abrt-di/usr/lib/debug/.build-id/35/315ba1a75c7b3f5e5b46f1ee4ece180e475045
+Missing separate debuginfo for /usr/lib64/libXcomposite.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/9c/481a2d4da3a93eba8c003ad7b5ee93561e6a97 /var/cache/abrt-di/usr/lib/debug/.build-id/9c/481a2d4da3a93eba8c003ad7b5ee93561e6a97
+Missing separate debuginfo for /usr/lib64/libXdamage.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/7c/35453921058b29cf27cb05c7c0f0feb5833e87 /var/cache/abrt-di/usr/lib/debug/.build-id/7c/35453921058b29cf27cb05c7c0f0feb5833e87
+Missing separate debuginfo for /lib64/libresolv.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/e6/235f3b915bc1bb1c74f34dedb7a4dbcfff851e /var/cache/abrt-di/usr/lib/debug/.build-id/e6/235f3b915bc1bb1c74f34dedb7a4dbcfff851e
+Missing separate debuginfo for /lib64/libselinux.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/ab/ec13fa75ab0249a0443a8140ab71e2dfb38420 /var/cache/abrt-di/usr/lib/debug/.build-id/ab/ec13fa75ab0249a0443a8140ab71e2dfb38420
+Missing separate debuginfo for /usr/lib64/libpng12.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/1b/fd23eecbc2e3061a77d76e2443e9b6deb6a363 /var/cache/abrt-di/usr/lib/debug/.build-id/1b/fd23eecbc2e3061a77d76e2443e9b6deb6a363
+Missing separate debuginfo for /lib64/libexpat.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/9f/84f512d95c59bda890ee8a2a7fc74e1ddf9a2e /var/cache/abrt-di/usr/lib/debug/.build-id/9f/84f512d95c59bda890ee8a2a7fc74e1ddf9a2e
+Missing separate debuginfo for /usr/lib64/libpixman-1.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/f5/5e6d9226d49d20feb9a8e34e5e1479f3faa71d /var/cache/abrt-di/usr/lib/debug/.build-id/f5/5e6d9226d49d20feb9a8e34e5e1479f3faa71d
+Missing separate debuginfo for /usr/lib64/libxcb.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/c8/d2b6ccd2627cd196e0c192c5026e91e856fa69 /var/cache/abrt-di/usr/lib/debug/.build-id/c8/d2b6ccd2627cd196e0c192c5026e91e856fa69
+Missing separate debuginfo for /usr/lib64/libXau.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/3d/c1f5c68ed7fb960fd84e20dfcdc85a95c3ebbf /var/cache/abrt-di/usr/lib/debug/.build-id/3d/c1f5c68ed7fb960fd84e20dfcdc85a95c3ebbf
+Missing separate debuginfo for /lib64/libnss_files.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/19/a2aec9109ccefa3ad0fa4e07b6c36171c05de0 /var/cache/abrt-di/usr/lib/debug/.build-id/19/a2aec9109ccefa3ad0fa4e07b6c36171c05de0
+Missing separate debuginfo for /usr/lib64/gtk-2.0/2.10.0/engines/libclearlooks.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/2f/f2e1f9d3cb9bdc74e2b997d70bfb0ef1990ea8 /var/cache/abrt-di/usr/lib/debug/.build-id/2f/f2e1f9d3cb9bdc74e2b997d70bfb0ef1990ea8
+Missing separate debuginfo for /usr/lib64/gtk-2.0/modules/libpk-gtk-module.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/38/331e2b80951ac224b8c861e26475f7cb62ccf6 /var/cache/abrt-di/usr/lib/debug/.build-id/38/331e2b80951ac224b8c861e26475f7cb62ccf6
+Missing separate debuginfo for /usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/66/6eb64674361e47044062c389dd068c6125fe96 /var/cache/abrt-di/usr/lib/debug/.build-id/66/6eb64674361e47044062c389dd068c6125fe96
+Missing separate debuginfo for /usr/lib64/libcanberra-gtk.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/00/741bc830167c952a6b96a13bdcc11c7d052bf7 /var/cache/abrt-di/usr/lib/debug/.build-id/00/741bc830167c952a6b96a13bdcc11c7d052bf7
+Missing separate debuginfo for /usr/lib64/libcanberra.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/b3/d2d172b9a201cae7af5250e6ae760c51251a51 /var/cache/abrt-di/usr/lib/debug/.build-id/b3/d2d172b9a201cae7af5250e6ae760c51251a51
+Missing separate debuginfo for /usr/lib64/libvorbisfile.so.3
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/13/2e7471285c82aec37533f5123041ee67ce2e9a /var/cache/abrt-di/usr/lib/debug/.build-id/13/2e7471285c82aec37533f5123041ee67ce2e9a
+Missing separate debuginfo for /usr/lib64/libvorbis.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/2c/ed44fc5b46ce6235b128b774e252f41f27373e /var/cache/abrt-di/usr/lib/debug/.build-id/2c/ed44fc5b46ce6235b128b774e252f41f27373e
+Missing separate debuginfo for /usr/lib64/libogg.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/d0/729f1c1d50e3d32275731a0350d8a3616ba6ae /var/cache/abrt-di/usr/lib/debug/.build-id/d0/729f1c1d50e3d32275731a0350d8a3616ba6ae
+Missing separate debuginfo for /usr/lib64/libtdb.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/9b/fa87a47a30b219fc1e2ab77bd49bf575915ce0 /var/cache/abrt-di/usr/lib/debug/.build-id/9b/fa87a47a30b219fc1e2ab77bd49bf575915ce0
+Missing separate debuginfo for /usr/lib64/libltdl.so.7
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/90/534e4e027d377115c55bf7a87ef3d6fee388e6 /var/cache/abrt-di/usr/lib/debug/.build-id/90/534e4e027d377115c55bf7a87ef3d6fee388e6
+Missing separate debuginfo for /usr/lib64/gio/modules/libgvfsdbus.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/4d/c0ea93f29fae6750f258830621056930adc757 /var/cache/abrt-di/usr/lib/debug/.build-id/4d/c0ea93f29fae6750f258830621056930adc757
+Missing separate debuginfo for /usr/lib64/libgvfscommon.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/87/4d16ed38a8093b2e4b2f5fd48704045d41c733 /var/cache/abrt-di/usr/lib/debug/.build-id/87/4d16ed38a8093b2e4b2f5fd48704045d41c733
+Missing separate debuginfo for /lib64/libudev.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/02/ea4dde8a55a2ba88d575fc7a53a5ba23bbe5aa /var/cache/abrt-di/usr/lib/debug/.build-id/02/ea4dde8a55a2ba88d575fc7a53a5ba23bbe5aa
+Missing separate debuginfo for /usr/lib64/gio/modules/libgioremote-volume-monitor.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/43/2a8b0f1efe790460dffb1291592fcf04a35789 /var/cache/abrt-di/usr/lib/debug/.build-id/43/2a8b0f1efe790460dffb1291592fcf04a35789
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstplaybin.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/2f/2bc1cdec5d23bfeb204f5811e1245284a65fff /var/cache/abrt-di/usr/lib/debug/.build-id/2f/2bc1cdec5d23bfeb204f5811e1245284a65fff
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstgconfelements.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/a4/b2630d5f644d56f14167d33edf0e28c196ed20 /var/cache/abrt-di/usr/lib/debug/.build-id/a4/b2630d5f644d56f14167d33edf0e28c196ed20
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstcoreelements.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/a2/89b6cd9520d527ed4ee2a9dca94f1642b93294 /var/cache/abrt-di/usr/lib/debug/.build-id/a2/89b6cd9520d527ed4ee2a9dca94f1642b93294
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstautodetect.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/b1/111f0c33f11f567f8fe52941ebd8bbdf08d08b /var/cache/abrt-di/usr/lib/debug/.build-id/b1/111f0c33f11f567f8fe52941ebd8bbdf08d08b
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstxvimagesink.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/1c/5aeb137e0ceb4397b419dd1a47e1d0f5872d88 /var/cache/abrt-di/usr/lib/debug/.build-id/1c/5aeb137e0ceb4397b419dd1a47e1d0f5872d88
+Missing separate debuginfo for /usr/lib64/libXv.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/72/7e83e38b2ad66cef1753678dd425f428100d5f /var/cache/abrt-di/usr/lib/debug/.build-id/72/7e83e38b2ad66cef1753678dd425f428100d5f
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstpulse.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/5c/1b4cdcf1d147bb2d72700f45ef9c42450b7435 /var/cache/abrt-di/usr/lib/debug/.build-id/5c/1b4cdcf1d147bb2d72700f45ef9c42450b7435
+Missing separate debuginfo for /usr/lib64/libpulse.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/32/1ba322c8fced31c16134cd7cef0a6dfad0944b /var/cache/abrt-di/usr/lib/debug/.build-id/32/1ba322c8fced31c16134cd7cef0a6dfad0944b
+Missing separate debuginfo for /usr/lib64/libpulsecommon-0.9.21.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/00/56d4043c66e5daf1475cb65d1004f6ef1f57fe /var/cache/abrt-di/usr/lib/debug/.build-id/00/56d4043c66e5daf1475cb65d1004f6ef1f57fe
+Missing separate debuginfo for /lib64/libwrap.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/a7/51040308e3f10c3c176ac30efb8c23b74f43a7 /var/cache/abrt-di/usr/lib/debug/.build-id/a7/51040308e3f10c3c176ac30efb8c23b74f43a7
+Missing separate debuginfo for /usr/lib64/libsndfile.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/cb/a11242cd2e3b4b1536af65e3b546cabff3415a /var/cache/abrt-di/usr/lib/debug/.build-id/cb/a11242cd2e3b4b1536af65e3b546cabff3415a
+Missing separate debuginfo for /usr/lib64/libasyncns.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/1a/65509afa5630b71d81fc7b294d04edfe6e215a /var/cache/abrt-di/usr/lib/debug/.build-id/1a/65509afa5630b71d81fc7b294d04edfe6e215a
+Missing separate debuginfo for /lib64/libnsl.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/f9/2788c74cecd7294550b07bee8296bc709ddf6a /var/cache/abrt-di/usr/lib/debug/.build-id/f9/2788c74cecd7294550b07bee8296bc709ddf6a
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstgoom.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/bc/91314e43783f1d8e95d8ba39ae4db91ab9ed79 /var/cache/abrt-di/usr/lib/debug/.build-id/bc/91314e43783f1d8e95d8ba39ae4db91ab9ed79
+Missing separate debuginfo for /usr/lib64/liboil-0.3.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/67/4fd055cb382ab1da3f29b44a5715f26c1641af /var/cache/abrt-di/usr/lib/debug/.build-id/67/4fd055cb382ab1da3f29b44a5715f26c1641af
+Missing separate debuginfo for /usr/lib64/totem/plugins/properties/libmovie-properties.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/fd/2a3814ad55934a8d27a489254f4de96614f835 /var/cache/abrt-di/usr/lib/debug/.build-id/fd/2a3814ad55934a8d27a489254f4de96614f835
+Missing separate debuginfo for /usr/lib64/totem/plugins/screensaver/libscreensaver.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/83/ae67989e2f16dbb281b7cc63dfcb0ecfc615fd /var/cache/abrt-di/usr/lib/debug/.build-id/83/ae67989e2f16dbb281b7cc63dfcb0ecfc615fd
+Missing separate debuginfo for /usr/lib64/totem/plugins/media-player-keys/libmedia_player_keys.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/cc/505c7304b531c0488b4294d8322cfabb12bef4 /var/cache/abrt-di/usr/lib/debug/.build-id/cc/505c7304b531c0488b4294d8322cfabb12bef4
+Missing separate debuginfo for /usr/lib64/totem/plugins/skipto/libskipto.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/96/8cc20697a11594880e5d55270a75f35814283d /var/cache/abrt-di/usr/lib/debug/.build-id/96/8cc20697a11594880e5d55270a75f35814283d
+Missing separate debuginfo for /usr/lib64/totem/plugins/screenshot/libscreenshot.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/5d/d3586f8b1579138c0f704e9463204c41c1acd0 /var/cache/abrt-di/usr/lib/debug/.build-id/5d/d3586f8b1579138c0f704e9463204c41c1acd0
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstdecodebin2.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/72/10f4a0c29d3452f9a47c99a44c867650e8021f /var/cache/abrt-di/usr/lib/debug/.build-id/72/10f4a0c29d3452f9a47c99a44c867650e8021f
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgsttypefindfunctions.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/f8/4080017f23a57bb195a62440643be92ce06aea /var/cache/abrt-di/usr/lib/debug/.build-id/f8/4080017f23a57bb195a62440643be92ce06aea
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstflac.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/d1/bd86b801f1d330f15e18d951d8150ccb52b152 /var/cache/abrt-di/usr/lib/debug/.build-id/d1/bd86b801f1d330f15e18d951d8150ccb52b152
+Missing separate debuginfo for /usr/lib64/libFLAC.so.8
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/a6/3d52bb1c050f6f04b6087bd0d08e7fe71de1bc /var/cache/abrt-di/usr/lib/debug/.build-id/a6/3d52bb1c050f6f04b6087bd0d08e7fe71de1bc
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstaudioconvert.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/ac/7125dd64b2c4d25b86729e3f1293e9b3597cb4 /var/cache/abrt-di/usr/lib/debug/.build-id/ac/7125dd64b2c4d25b86729e3f1293e9b3597cb4
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstaudioresample.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/5e/c1e4ced0c4f0378ddca9d30851da0d7d4d9f9f /var/cache/abrt-di/usr/lib/debug/.build-id/5e/c1e4ced0c4f0378ddca9d30851da0d7d4d9f9f
+Missing separate debuginfo for /usr/lib64/gtk-2.0/2.10.0/loaders/svg_loader.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/19/2f9f5c9f4fdede7c42d2f50ffed0e4f5630ee8 /var/cache/abrt-di/usr/lib/debug/.build-id/19/2f9f5c9f4fdede7c42d2f50ffed0e4f5630ee8
+Missing separate debuginfo for /usr/lib64/librsvg-2.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/b3/a38b73d23fd08046875006c3111a9880dd8311 /var/cache/abrt-di/usr/lib/debug/.build-id/b3/a38b73d23fd08046875006c3111a9880dd8311
+Missing separate debuginfo for /usr/lib64/libgsf-1.so.114
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/15/6b5ed4e086ae1bc6435f7ed08fb99728fb7f7b /var/cache/abrt-di/usr/lib/debug/.build-id/15/6b5ed4e086ae1bc6435f7ed08fb99728fb7f7b
+Missing separate debuginfo for /usr/lib64/libcroco-0.6.so.3
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/9c/cf5d974cbbb379b70426544cc4e6ec84416e22 /var/cache/abrt-di/usr/lib/debug/.build-id/9c/cf5d974cbbb379b70426544cc4e6ec84416e22
+Missing separate debuginfo for /lib64/libbz2.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/04/3dc7a57b7992c9e40efaba02e627c543988b10 /var/cache/abrt-di/usr/lib/debug/.build-id/04/3dc7a57b7992c9e40efaba02e627c543988b10
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstffmpegcolorspace.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/8e/fd9622cc9bb3813024a6deb417151bcc0fb910 /var/cache/abrt-di/usr/lib/debug/.build-id/8e/fd9622cc9bb3813024a6deb417151bcc0fb910
+Missing separate debuginfo for /usr/lib64/gstreamer-0.10/libgstvideoscale.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/8d/446f630352ef8f8776d2bba27c046f5b62079a /var/cache/abrt-di/usr/lib/debug/.build-id/8d/446f630352ef8f8776d2bba27c046f5b62079a
+Missing separate debuginfo for 
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/01/5e4edd835d8f364d76d0f0b67a270aa7eaf817 /var/cache/abrt-di/usr/lib/debug/.build-id/01/5e4edd835d8f364d76d0f0b67a270aa7eaf817
+warning: section .gnu.liblist not found in /var/cache/abrt-di/usr/lib/debug/.build-id/c7/3e29b098bbeac67a375ffe7f00328da03f7e99.debug
+warning: section .gnu.conflict not found in /var/cache/abrt-di/usr/lib/debug/.build-id/c7/3e29b098bbeac67a375ffe7f00328da03f7e99.debug
+Core was generated by `totem /home/kerns/Documents/StarsCDI/Stars on 45.flac'.
+Program terminated with signal 11, Segmentation fault.
+#0  0x0000000000000000 in ?? ()
+
+Thread 7 (Thread 30768):
+#0  pthread_cond_wait@@GLIBC_2.3.2 ()
+    at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S:140
+No locals.
+#1  0x00007f2de8520960 in pa_threaded_mainloop_wait (m=0x7f2ddc00ec50)
+    at pulse/thread-mainloop.c:212
+        __func__ = "pa_threaded_mainloop_wait"
+        __PRETTY_FUNCTION__ = "pa_threaded_mainloop_wait"
+#2  0x00007f2de874174c in gst_pulsesink_get_volume (
+    psink=<value optimized out>) at pulsesink.c:1854
+        o = 0x1ea3b90
+        idx = <value optimized out>
+        pbuf = 0x1b8dcf0 [GstPulseSinkRingBuffer]
+        v = 1
+#3  gst_pulsesink_get_property (psink=<value optimized out>)
+    at pulsesink.c:2074
+        pulsesink = 0x7f2ddc00f700 [GstPulseSink]
+#4  0x0000003f8140fdac in object_get_property (value=<value optimized out>, 
+    pspec=0x1d5fe60 [GParamDouble], object=0x7f2ddc00f700 [GstPulseSink])
+    at gobject.c:930
+        param_id = <value optimized out>
+        redirect = <value optimized out>
+#5  IA__g_object_get_valist (value=<value optimized out>, pspec=
+    0x1d5fe60 [GParamDouble], object=0x7f2ddc00f700 [GstPulseSink])
+    at gobject.c:1543
+        value = {g_type = 60, data = {{v_int = 0, v_uint = 0, v_long = 0, 
+              v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 
+    0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, 
+              v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}}}
+        pspec = <value optimized out>
+        error = <value optimized out>
+        name = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_object_get_valist"
+#6  0x0000003f814100b4 in IA__g_object_get (_object=0x7f2ddc00f700, 
+    first_property_name=0x7f2deb66a702 "volume") at gobject.c:1633
+        object = 0x7f2ddc00f700 [GstPulseSink]
+        var_args = {{gp_offset = 16, fp_offset = 48, overflow_arg_area = 
+    0x7f2de8089fc0, reg_save_area = 0x7f2de8089ef0}}
+        __PRETTY_FUNCTION__ = "IA__g_object_get"
+#7  0x00007f2deb64c96d in notify_volume_cb (object=<value optimized out>, 
+    pspec=<value optimized out>, playsink=0x1d68000 [GstPlaySink])
+    at gstplaysink.c:1282
+        vol = 6.9087607408254713e-310
+#8  0x0000003f8140ba8e in IA__g_closure_invoke (closure=0x7f2ddc00be10, 
+    return_value=0x0, n_param_values=2, param_values=0x7f2dd8003e10, 
+    invocation_hint=0x7f2de808a110) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#9  0x0000003f81420ec3 in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=<value optimized out>, instance=<value optimized out>, 
+    emission_return=<value optimized out>, 
+    instance_and_params=<value optimized out>) at gsignal.c:3247
+        tmp = <value optimized out>
+        handler = 0x7f2ddc002c40
+        accumulator = 0x0
+        emission = {next = 0x7fff53f6f0a0, instance = 0x7f2ddc00f700, ihint = 
+    {signal_id = 1, detail = 583, run_type = G_SIGNAL_RUN_FIRST}, state = 
+    EMISSION_RUN, chain_type = 4}
+        class_closure = 0x1a2b100
+        handler_list = 0x7f2ddc002c40
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, 
+              v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 
+    0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, 
+              v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}}}
+        signal_id = <value optimized out>
+        max_sequential_handler_number = <value optimized out>
+        return_value_altered = <value optimized out>
+#10 0x0000003f81422259 in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7f2de808a300) at gsignal.c:2980
+        instance_and_params = <value optimized out>
+        signal_return_type = 4
+        param_values = 0x7f2dd8003e28
+        node = 0x1a2b1b0
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#11 0x0000003f814227a3 in IA__g_signal_emit (instance=<value optimized out>, 
+    signal_id=<value optimized out>, detail=<value optimized out>)
+    at gsignal.c:3037
+        var_args = {{gp_offset = 32, fp_offset = 48, overflow_arg_area = 
+    0x7f2de808a3e0, reg_save_area = 0x7f2de808a320}}
+#12 0x0000003f8140fa69 in g_object_dispatch_properties_changed (object=
+    0x7f2ddc00f700 [GstPulseSink], n_pspecs=1, pspecs=<value optimized out>)
+    at gobject.c:796
+        i = <value optimized out>
+#13 0x0000003f91a2bd73 in gst_object_dispatch_properties_changed (object=
+    0x7f2ddc00f700 [GstPulseSink], n_pspecs=1, pspecs=<value optimized out>)
+    at gstobject.c:509
+        gst_object = <value optimized out>
+        parent = <value optimized out>
+        old_parent = <value optimized out>
+        i = <value optimized out>
+        name = <value optimized out>
+        debug_name = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_object_dispatch_properties_changed"
+#14 0x0000003f8141139f in g_object_notify_queue_thaw (
+    nqueue=<value optimized out>, object=<value optimized out>)
+    at gobjectnotifyqueue.c:120
+        context = 0x3f81644310
+        pspecs_mem = {0x1d5fe60 [GParamDouble], 0x7f2de851c2b6, 
+    0x7f2ddc00ec50, 0x3f86c37a4e, 0x3f86e4e820, 0x3f86c38440, 0x3f91ce0b44, 
+    0x3f86c25bf7, 0x7f2ddc02eff0, 0x370, 0x38a94c, 0x100000001, 
+    0x7f2de0eca000, 0x7f2ddc00ec50, 0x7f2ddc00ec50, 0x3f86c386e0}
+        pspecs = 0x7f2de808a490
+        free_me = 0x0
+        slist = <value optimized out>
+        n_pspecs = 1
+#15 IA__g_object_notify (nqueue=<value optimized out>, 
+    object=<value optimized out>) at gobject.c:883
+        nqueue = 0x1
+        pspec = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_object_notify"
+#16 0x00007f2de873e9ac in gst_pulseringbuffer_commit (buf=
+    0x1b8dcf0 [GstPulseSinkRingBuffer], sample=0x7f2de808a7b0, data=
+    0x7f2ddc02ba00 "\355\001\212\001", in_samples=1152, out_samples=1152, 
+    accum=<value optimized out>) at pulsesink.c:1177
+        psink = 0x7f2ddc00f700 [GstPulseSink]
+        pbuf = 0x1b8dcf0 [GstPulseSinkRingBuffer]
+        result = <value optimized out>
+        data_end = <value optimized out>
+        toprocess = <value optimized out>
+        inr = <value optimized out>
+        outr = <value optimized out>
+        bps = <value optimized out>
+        offset = <value optimized out>
+        bufsize = <value optimized out>
+        __FUNCTION__ = "gst_pulseringbuffer_commit"
+#17 0x0000003f85c10239 in gst_base_audio_sink_render (
+    bsink=<value optimized out>, buf=<value optimized out>)
+    at gstbaseaudiosink.c:1569
+        in_offset = <value optimized out>
+        time = <value optimized out>
+        stop = <value optimized out>
+        render_start = 928559
+        render_stop = 929711
+        sample_offset = 928559
+        sync_offset = <value optimized out>
+        ts_offset = <value optimized out>
+        sink = 0x7f2ddc00f700 [GstPulseSink]
+        ringbuf = <value optimized out>
+        diff = <value optimized out>
+        align = <value optimized out>
+        ctime = 29988571428
+        cstop = 30014693876
+        data = 0x7f2ddc02ba00 "\355\001\212\001"
+        size = 4294966783
+        samples = 1152
+        written = <value optimized out>
+        bps = <value optimized out>
+        accum = 0
+        out_samples = 1152
+        base_time = <value optimized out>
+        render_delay = 18446744073709551615
+        latency = <value optimized out>
+        clock = <value optimized out>
+        slaved = <value optimized out>
+        align_next = 1
+        ret = <value optimized out>
+        clip_seg = {rate = 6.9087740305447113e-310, abs_rate = 
+    6.9087740305658573e-310, format = GST_FORMAT_TIME, flags = 32557, start = 
+    25757981859, stop = 3799746666666, time = 31777840, accum = 31777840, 
+          last_stop = 273026477877, duration = -1, applied_rate = 
+    1.4816322910431173e-313, _gst_reserved = 
+    "RE\270\375\000\000\000\000 E\000\314-\177\000\000\000\000\000\000\000\000\000"}
+        time_offset = <value optimized out>
+        maxdrift = <value optimized out>
+        __FUNCTION__ = "gst_base_audio_sink_render"
+#18 0x0000003f8a81017e in gst_base_sink_render_object (basesink=
+    0x7f2ddc00f700 [GstPulseSink], pad=<value optimized out>, 
+    is_list=<value optimized out>, obj=0x1e4e430) at gstbasesink.c:2732
+        buf = 0x1e4e430 [GstBuffer]
+        do_qos = 0
+        ret = GST_FLOW_OK
+        bclass = 0x1d94000
+        late = 0
+        step_end = 0
+        sync_obj = <value optimized out>
+        priv = 0x7f2ddc00f9f0
+        __PRETTY_FUNCTION__ = "gst_base_sink_render_object"
+#19 0x0000003f8a811289 in gst_base_sink_queue_object_unlocked (basesink=
+    0x7f2ddc00f700 [GstPulseSink], pad=0x1defda0 [GstPad], is_list=0, obj=
+    0x1e4e430, prerollable=<value optimized out>) at gstbasesink.c:2981
+        ret = <value optimized out>
+        length = <value optimized out>
+        q = 0x7f2ddc00f560
+        __PRETTY_FUNCTION__ = "gst_base_sink_queue_object_unlocked"
+#20 0x0000003f8a812f04 in gst_base_sink_chain_unlocked (basesink=
+    0x7f2ddc00f700 [GstPulseSink], pad=<value optimized out>, is_list=0, obj=
+    0x1e4e430) at gstbasesink.c:3355
+        bclass = <value optimized out>
+        result = <value optimized out>
+        start = 29988571428
+        end = 30014693877
+        clip_segment = 0x7f2ddc003d50
+        time_buf = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_base_sink_chain_unlocked"
+#21 0x0000003f8a8133b5 in gst_base_sink_chain_main (basesink=
+    0x7f2ddc00f700 [GstPulseSink], pad=0x1defda0 [GstPad], 
+    is_list=<value optimized out>, obj=0x1e4e430) at gstbasesink.c:3393
+        result = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_base_sink_chain_main"
+#22 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1defda0 [GstPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f8a813910 <gst_base_sink_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#23 0x0000003f91a61dae in gst_pad_push_data (pad=0x1e508c0 [GstProxyPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1defda0 [GstPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#24 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1e2e8c0 [GstGhostPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#25 0x0000003f91a61dae in gst_pad_push_data (pad=0x1e50a70 [GstProxyPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1e2e8c0 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#26 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1e2ea80 [GstGhostPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#27 0x0000003f91a61dae in gst_pad_push_data (pad=0x1d6d070 [GstProxyPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1e2ea80 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#28 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1b7c1c0 [GstGhostPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#29 0x0000003f91a61dae in gst_pad_push_data (pad=0x1d761e0 [GstPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1b7c1c0 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#30 0x0000003f8a8250dd in gst_base_transform_chain (pad=
+    0x1d9e020 [GstCapsFilter], buffer=0x1e4e430 [GstBuffer])
+    at gstbasetransform.c:2081
+        klass = <value optimized out>
+        ret = <value optimized out>
+        last_stop = 30014693877
+        outbuf = 0x1e4e430 [GstBuffer]
+#31 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1d76360 [GstPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f8a825000 <gst_base_transform_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#32 0x0000003f91a61dae in gst_pad_push_data (pad=0x1d6da90 [GstProxyPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1d76360 [GstPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#33 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1b7cc40 [GstGhostPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#34 0x0000003f91a61dae in gst_pad_push_data (pad=0x7f2ddc024220 [GstPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1b7cc40 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#35 0x0000003f8a8250dd in gst_base_transform_chain (pad=
+    0x7f2ddc022060 [GstAudioResample], buffer=0x1e4e430 [GstBuffer])
+    at gstbasetransform.c:2081
+        klass = <value optimized out>
+        ret = <value optimized out>
+        last_stop = 30014693877
+        outbuf = 0x1e4e430 [GstBuffer]
+#36 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x7f2ddc0240a0 [GstPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f8a825000 <gst_base_transform_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#37 0x0000003f91a61dae in gst_pad_push_data (pad=0x1defc20 [GstPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x7f2ddc0240a0 [GstPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#38 0x0000003f8a8250dd in gst_base_transform_chain (pad=
+    0x7f2ddc01a0b0 [GstAudioConvert], buffer=0x1e4e430 [GstBuffer])
+    at gstbasetransform.c:2081
+        klass = <value optimized out>
+        ret = <value optimized out>
+        last_stop = 30014693877
+        outbuf = 0x1e4e430 [GstBuffer]
+#39 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1d76060 [GstPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f8a825000 <gst_base_transform_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#40 0x0000003f91a61dae in gst_pad_push_data (pad=0x1e50c20 [GstProxyPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1d76060 [GstPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#41 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1e2ec40 [GstGhostPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#42 0x0000003f91a61dae in gst_pad_push_data (pad=0x7f2ddc0243a0 [GstPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1e2ec40 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#43 0x00007f2de998e7a5 in gst_tee_do_push (is_list=<value optimized out>, 
+    data=<value optimized out>, pad=<value optimized out>, 
+    tee=<value optimized out>) at gsttee.c:636
+        res = <value optimized out>
+#44 gst_tee_handle_data (is_list=<value optimized out>, 
+    data=<value optimized out>, pad=<value optimized out>, 
+    tee=<value optimized out>) at gsttee.c:715
+        pad = 0x7f2ddc0243a0 [GstPad]
+        pdata = 0x7f2ddc019e10
+        pads = 0x7f2ddc01d2e0 = {0x7f2ddc0243a0}
+        ret = <value optimized out>
+        cret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_tee_handle_data"
+#45 0x00007f2de998ecbf in gst_tee_chain (pad=<value optimized out>, buffer=
+    0x1e4e430 [GstBuffer]) at gsttee.c:789
+        res = <value optimized out>
+        tee = 0x1b084d0 [GstTee]
+        __PRETTY_FUNCTION__ = "gst_tee_chain"
+#46 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1defaa0 [GstPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x7f2de998ec50 <gst_tee_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#47 0x0000003f91a61dae in gst_pad_push_data (pad=0x1e50710 [GstProxyPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1defaa0 [GstPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#48 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1e2e700 [GstGhostPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#49 0x0000003f91a61dae in gst_pad_push_data (pad=0x1def920 [GstPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1e2e700 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#50 0x00007f2deb65a150 in gst_selector_pad_chain (pad=
+    0x1d6a8c0 [GstPlaybin2SelectorPad], buf=0x1e4e430 [GstBuffer])
+    at gstinputselector.c:655
+        sel = 0x1dba640 [GstPlaybin2InputSelector]
+        res = <value optimized out>
+        active_sinkpad = <value optimized out>
+        prev_active_sinkpad = <value optimized out>
+        selpad = 0x1d6a8c0 [GstPlaybin2SelectorPad]
+        start_time = <value optimized out>
+        seg = 0x1d6aa40
+        close_event = 0x0
+        start_event = <value optimized out>
+        caps = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_selector_pad_chain"
+#51 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1d6a8c0 [GstPlaybin2SelectorPad], is_buffer=1, data=0x1e4e430)
+    at gstpad.c:4122
+        chainfunc = 0x7f2deb659ae0 <gst_selector_pad_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#52 0x0000003f91a61dae in gst_pad_push_data (pad=0x1e2e540 [GstGhostPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1d6a8c0 [GstPlaybin2SelectorPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#53 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1e50560 [GstProxyPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#54 0x0000003f91a61dae in gst_pad_push_data (pad=0x1e4f280 [GstDecodePad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1e50560 [GstProxyPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#55 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1e50050 [GstProxyPad], is_buffer=1, data=0x1e4e430) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#56 0x0000003f91a61dae in gst_pad_push_data (pad=0x1def320 [GstPad], 
+    is_buffer=1, data=0x1e4e430) at gstpad.c:4351
+        peer = 0x1e50050 [GstProxyPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#57 0x00007f2de5f703d6 in gst_flac_dec_write (buffer=<value optimized out>, 
+    frame=<value optimized out>, flacdec=<value optimized out>)
+    at gstflacdec.c:994
+        j = <value optimized out>
+        ret = <value optimized out>
+        channels = <value optimized out>
+        samples = 1152
+        outbuf = 0x1e4e430 [GstBuffer]
+        depth = <value optimized out>
+        i = <value optimized out>
+        next = <value optimized out>
+#58 gst_flac_dec_write_stream (buffer=<value optimized out>, 
+    frame=<value optimized out>, flacdec=<value optimized out>)
+    at gstflacdec.c:1029
+No locals.
+#59 0x00007f2de5d506bb in write_audio_frame_to_client_ (
+    buffer=<value optimized out>, frame=<value optimized out>, decoder=
+    0x1e62be0) at stream_decoder.c:2960
+No locals.
+#60 read_frame_ (buffer=<value optimized out>, frame=<value optimized out>, 
+    decoder=0x1e62be0) at stream_decoder.c:2132
+        channel = <value optimized out>
+        i = <value optimized out>
+        mid = <value optimized out>
+        side = <value optimized out>
+        frame_crc = <value optimized out>
+        x = 46861
+#61 0x00007f2de5d51c60 in FLAC__stream_decoder_process_single (decoder=
+    0x1e62be0) at stream_decoder.c:1060
+        got_a_frame = 1
+#62 0x00007f2de5f6db78 in gst_flac_dec_loop (sinkpad=0x1d767e0 [GstPad])
+    at gstflacdec.c:1061
+        s = <value optimized out>
+        is = <value optimized out>
+        __FUNCTION__ = "gst_flac_dec_loop"
+#63 0x0000003f91a862de in gst_task_func (task=0x1c5c280 [GstTask])
+    at gsttask.c:238
+        lock = 0x1e62760
+        tself = 0x1e665f0
+        priv = 0x1c5c320
+        __PRETTY_FUNCTION__ = "gst_task_func"
+#64 0x0000003f81063722 in g_thread_pool_thread_proxy (
+    data=<value optimized out>) at gthreadpool.c:265
+        task = 0x1e01cc0
+        pool = 0x1a2c000
+#65 0x0000003f81062134 in g_thread_create_proxy (data=0x1e665f0)
+    at gthread.c:635
+        thread = 0x1e665f0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#66 0x0000003f7fc06a3a in start_thread (arg=0x7f2de808c710)
+    at pthread_create.c:297
+        __res = <value optimized out>
+        pd = 0x7f2de808c710
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {139835143145232, 
+    2483240790864876989, 140734602078128, 139835143145232, 0, 3, 
+    -2581145023451834947, 2452423128333342141}, mask_was_saved = 0}}, priv = {
+            pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 0x0, 
+              canceltype = 0}}}
+        not_first_call = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#67 0x0000003f7f4de71d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:112
+No locals.
+#68 0x0000000000000000 in ?? ()
+No symbol table info available.
+
+Thread 6 (Thread 30770):
+#0  0x0000003f7f4d5283 in __poll (fds=<value optimized out>, 
+    nfds=<value optimized out>, timeout=<value optimized out>)
+    at ../sysdeps/unix/sysv/linux/poll.c:87
+        _a3 = 160
+        _a1 = 139834874136768
+        resultvar = <value optimized out>
+        _a2 = 2
+        resultvar = <value optimized out>
+        oldtype = 0
+        result = <value optimized out>
+#1  0x00007f2de852073f in poll_func (ufds=0x7f2dd80008c0, nfds=2, timeout=
+    160, userdata=0x7f2ddc00eb00) at pulse/thread-mainloop.c:75
+        mutex = 0x7f2ddc00eb00
+        r = -671086400
+        __func__ = "poll_func"
+        __PRETTY_FUNCTION__ = "poll_func"
+#2  0x00007f2de8510ae6 in pa_mainloop_poll (m=0x7f2ddc00ea00)
+    at pulse/mainloop.c:879
+        __func__ = "pa_mainloop_poll"
+        __PRETTY_FUNCTION__ = "pa_mainloop_poll"
+#3  0x00007f2de8511ea9 in pa_mainloop_iterate (m=0x7f2ddc00ea00, 
+    block=<value optimized out>, retval=0x0) at pulse/mainloop.c:961
+        r = 0
+        __func__ = "pa_mainloop_iterate"
+        __PRETTY_FUNCTION__ = "pa_mainloop_iterate"
+#4  0x00007f2de8511f60 in pa_mainloop_run (m=0x7f2ddc00ea00, retval=0x0)
+    at pulse/mainloop.c:979
+        r = <value optimized out>
+#5  0x00007f2de852064b in thread (userdata=0x7f2ddc00ec50)
+    at pulse/thread-mainloop.c:94
+        mask = {__val = {18446744067267100671, 
+    18446744073709551615 <repeats 15 times>}}
+#6  0x0000003f86c38788 in internal_thread_func (userdata=0x7f2ddc00ebb0)
+    at pulsecore/thread-posix.c:72
+        t = 0x7f2ddc00ebb0
+        __func__ = "internal_thread_func"
+        __PRETTY_FUNCTION__ = "internal_thread_func"
+#7  0x0000003f7fc06a3a in start_thread (arg=0x7f2de532b710)
+    at pthread_create.c:297
+        __res = <value optimized out>
+        pd = 0x7f2de532b710
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {139835095562000, 
+    2483240790864876989, 272726297696, 0, 0, 3, -2581138511744543299, 
+    2452423128333342141}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 
+    0x0}, data = {prev = 0x0, cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#8  0x0000003f7f4de71d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:112
+No locals.
+#9  0x0000000000000000 in ?? ()
+No symbol table info available.
+
+Thread 5 (Thread 30773):
+#0  pthread_cond_timedwait@@GLIBC_2.3.2 ()
+    at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_timedwait.S:211
+No locals.
+#1  0x0000003f82402382 in g_cond_timed_wait_posix_impl (
+    cond=<value optimized out>, entered_mutex=<value optimized out>, 
+    abs_time=<value optimized out>) at gthread-posix.c:242
+        result = <value optimized out>
+        end_time = {tv_sec = 1284383355, tv_nsec = 654649000}
+        timed_out = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_cond_timed_wait_posix_impl"
+#2  0x0000003f81014acf in g_async_queue_pop_intern_unlocked (queue=0x1a2e5b0, 
+    try=0, end_time=0x7f2dd2fc6d90) at gasyncqueue.c:365
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_async_queue_pop_intern_unlocked"
+#3  0x0000003f81014bdf in IA__g_async_queue_timed_pop (queue=0x1a2e5b0, 
+    end_time=<value optimized out>) at gasyncqueue.c:491
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_async_queue_timed_pop"
+#4  0x0000003f8106368e in g_thread_pool_wait_for_new_pool ()
+    at gthreadpool.c:121
+        end_time = {tv_sec = 1284383355, tv_usec = 654649}
+        pool = <value optimized out>
+        local_max_idle_time = 15000
+        local_wakeup_thread_serial = <value optimized out>
+        local_max_unused_threads = 2
+        last_wakeup_thread_serial = 0
+        have_relayed_thread_marker = <value optimized out>
+#5  g_thread_pool_thread_proxy () at gthreadpool.c:324
+        free_pool = <value optimized out>
+        task = 0x2
+        pool = <value optimized out>
+#6  0x0000003f81062134 in g_thread_create_proxy (data=0x7f2ddc0033a0)
+    at gthread.c:635
+        thread = 0x7f2ddc0033a0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#7  0x0000003f7fc06a3a in start_thread (arg=0x7f2dd2fc7710)
+    at pthread_create.c:297
+        __res = <value optimized out>
+        pd = 0x7f2dd2fc7710
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {139834790016784, 
+    2483240790864876989, 139835143133856, 139834790016784, 0, 3, 
+    -2581235833555987011, 2452423128333342141}, mask_was_saved = 0}}, priv = {
+            pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 0x0, 
+              canceltype = 0}}}
+        not_first_call = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#8  0x0000003f7f4de71d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:112
+No locals.
+#9  0x0000000000000000 in ?? ()
+No symbol table info available.
+
+Thread 4 (Thread 30772):
+#0  pthread_cond_wait@@GLIBC_2.3.2 ()
+    at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S:162
+No locals.
+#1  0x00007f2de99877d0 in gst_queue_chain (pad=<value optimized out>, 
+    buffer=<value optimized out>) at gstqueue.c:968
+        queue = 0x1e90070 [GstQueue]
+        duration = <value optimized out>
+        timestamp = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_queue_chain"
+#2  0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1def4a0 [GstPad], is_buffer=1, data=0x7f2ddc03c520) at gstpad.c:4122
+        chainfunc = 0x7f2de9986e60 <gst_queue_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#3  0x0000003f91a61dae in gst_pad_push_data (pad=0x1e50200 [GstProxyPad], 
+    is_buffer=1, data=0x7f2ddc03c520) at gstpad.c:4351
+        peer = 0x1def4a0 [GstPad]
+        ret = <value optimized out>
+        caps = 0x7f2dcc001940
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#4  0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1e2e000 [GstGhostPad], is_buffer=1, data=0x7f2ddc03c520)
+    at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#5  0x0000003f91a61dae in gst_pad_push_data (pad=0x1e2e380 [GstGhostPad], 
+    is_buffer=1, data=0x7f2ddc03c520) at gstpad.c:4351
+        peer = 0x1e2e000 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x7f2dcc001940
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#6  0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1d6ddf0 [GstProxyPad], is_buffer=1, data=0x7f2ddc03c520)
+    at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#7  0x0000003f91a61dae in gst_pad_push_data (pad=0x1b7ca80 [GstGhostPad], 
+    is_buffer=1, data=0x7f2ddc03c520) at gstpad.c:4351
+        peer = 0x1d6ddf0 [GstProxyPad]
+        ret = <value optimized out>
+        caps = 0x7f2dcc001940
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#8  0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1d6d8e0 [GstProxyPad], is_buffer=1, data=0x7f2ddc03c520)
+    at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#9  0x0000003f91a61dae in gst_pad_push_data (pad=0x1d76de0 [GstPad], 
+    is_buffer=1, data=0x7f2ddc03c520) at gstpad.c:4351
+        peer = 0x1d6d8e0 [GstProxyPad]
+        ret = <value optimized out>
+        caps = 0x7f2dcc001940
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#10 0x0000003f8a8250dd in gst_base_transform_chain (pad=
+    0x1d9e2c0 [GstCapsFilter], buffer=0x7f2ddc03c520 [GstBuffer])
+    at gstbasetransform.c:2081
+        klass = <value optimized out>
+        ret = <value optimized out>
+        last_stop = 30029115645
+        outbuf = 0x7f2ddc03c520 [GstBuffer]
+#11 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1d76c60 [GstPad], is_buffer=1, data=0x7f2ddc03c520) at gstpad.c:4122
+        chainfunc = 0x3f8a825000 <gst_base_transform_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#12 0x0000003f91a61dae in gst_pad_push_data (pad=0x1d76ae0 [GstPad], 
+    is_buffer=1, data=0x7f2ddc03c520) at gstpad.c:4351
+        peer = 0x1d76c60 [GstPad]
+        ret = <value optimized out>
+        caps = 0x7f2dcc001940
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#13 0x00007f2de7476f30 in gst_goom_chain (pad=<value optimized out>, 
+    buffer=<value optimized out>) at gstgoom.c:531
+        data = <value optimized out>
+        avail = <value optimized out>
+        to_flush = <value optimized out>
+        need_skip = <value optimized out>
+        out_frame = 
+    0xfffffffffffffe00 <Address 0xfffffffffffffe00 out of bounds>
+        goom = 0x1dc7350 [GstGoom]
+        ret = <value optimized out>
+        outbuf = 0x7f2ddc03c520 [GstBuffer]
+        __FUNCTION__ = "gst_goom_chain"
+#14 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1d76960 [GstPad], is_buffer=1, data=0x7f2dcc004520) at gstpad.c:4122
+        chainfunc = 0x7f2de7476950 <gst_goom_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#15 0x0000003f91a61dae in gst_pad_push_data (pad=0x1d6d730 [GstProxyPad], 
+    is_buffer=1, data=0x7f2dcc004520) at gstpad.c:4351
+        peer = 0x1d76960 [GstPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#16 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1b7c8c0 [GstGhostPad], is_buffer=1, data=0x7f2dcc004520)
+    at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#17 0x0000003f91a61dae in gst_pad_push_data (pad=0x1ecc3c0 [GstPad], 
+    is_buffer=1, data=0x7f2dcc004520) at gstpad.c:4351
+        peer = 0x1b7c8c0 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#18 0x0000003f8a8250dd in gst_base_transform_chain (pad=
+    0x7f2ddc023000 [GstAudioResample], buffer=0x7f2dcc004520 [GstBuffer])
+    at gstbasetransform.c:2081
+        klass = <value optimized out>
+        ret = <value optimized out>
+        last_stop = 29988571428
+        outbuf = 0x7f2dcc004520 [GstBuffer]
+#19 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1ecc240 [GstPad], is_buffer=1, data=0x7f2dcc004520) at gstpad.c:4122
+        chainfunc = 0x3f8a825000 <gst_base_transform_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#20 0x0000003f91a61dae in gst_pad_push_data (pad=0x1ecc0c0 [GstPad], 
+    is_buffer=1, data=0x7f2dcc004520) at gstpad.c:4351
+        peer = 0x1ecc240 [GstPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#21 0x0000003f8a8250dd in gst_base_transform_chain (pad=
+    0x7f2ddc01ae70 [GstAudioConvert], buffer=0x7f2dcc004520 [GstBuffer])
+    at gstbasetransform.c:2081
+        klass = <value optimized out>
+        ret = <value optimized out>
+        last_stop = 29988571428
+        outbuf = 0x7f2dcc004520 [GstBuffer]
+#22 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x7f2ddc024e20 [GstPad], is_buffer=1, data=0x7f2dcc004520)
+    at gstpad.c:4122
+        chainfunc = 0x3f8a825000 <gst_base_transform_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#23 0x0000003f91a61dae in gst_pad_push_data (pad=0x7f2ddc024ca0 [GstPad], 
+    is_buffer=1, data=0x7f2dcc004520) at gstpad.c:4351
+        peer = 0x7f2ddc024e20 [GstPad]
+        ret = <value optimized out>
+        caps = 0x1e4ad40
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#24 0x00007f2de9986b16 in gst_queue_push_one (queue=<value optimized out>)
+    at gstqueue.c:1083
+        buffer = 0x7f2dcc004520 [GstBuffer]
+        caps = 0x1e4ad40
+        result = <value optimized out>
+        data = <value optimized out>
+        is_buffer = 1
+#25 gst_queue_loop (queue=<value optimized out>) at gstqueue.c:1185
+        queue = 0x1e902d0 [GstQueue]
+        ret = -512
+        __PRETTY_FUNCTION__ = "gst_queue_loop"
+#26 0x0000003f91a862de in gst_task_func (task=0x1c5c780 [GstTask])
+    at gsttask.c:238
+        lock = 0x1e202c0
+        tself = 0x1eaf4d0
+        priv = 0x1c5c820
+        __PRETTY_FUNCTION__ = "gst_task_func"
+#27 0x0000003f81063722 in g_thread_pool_thread_proxy (
+    data=<value optimized out>) at gthreadpool.c:265
+        task = 0x1e10730
+        pool = 0x1a2c000
+#28 0x0000003f81062134 in g_thread_create_proxy (data=0x1eaf4d0)
+    at gthread.c:635
+        thread = 0x1eaf4d0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#29 0x0000003f7fc06a3a in start_thread (arg=0x7f2dd3bb2710)
+    at pthread_create.c:297
+        __res = <value optimized out>
+        pd = 0x7f2dd3bb2710
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {139834802513680, 
+    2483240790864876989, 140734602079392, 139834802513680, 0, 3, 
+    -2581238641927727683, 2452423128333342141}, mask_was_saved = 0}}, priv = {
+            pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 0x0, 
+              canceltype = 0}}}
+        not_first_call = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#30 0x0000003f7f4de71d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:112
+No locals.
+#31 0x0000000000000000 in ?? ()
+No symbol table info available.
+
+Thread 3 (Thread 30769):
+#0  0x0000003f7f4d54b7 in ppoll (fds=0x7f2dd4002d60, nfds=1, timeout=
+    0x7f2de5d2ac70, sigmask=0x0) at ../sysdeps/unix/sysv/linux/ppoll.c:58
+        resultvar = 18446744073709551102
+        oldtype = 0
+        tval = {tv_sec = 0, tv_nsec = 9999195}
+        result = <value optimized out>
+#1  0x0000003f91a6d3d8 in gst_poll_wait (set=0x1d01680, timeout=33253630)
+    at gstpoll.c:1191
+        ts = {tv_sec = 0, tv_nsec = 33253630}
+        tsptr = <value optimized out>
+        mode = GST_POLL_MODE_PPOLL
+        restarting = 0
+        res = -1
+        __PRETTY_FUNCTION__ = "gst_poll_wait"
+#2  0x0000003f91a7fb35 in gst_system_clock_id_wait_jitter_unlocked (clock=
+    0x1dbaaf0 [GstAudioClock], entry=0x7f2dd4003880, 
+    jitter=<value optimized out>, restart=1) at gstsystemclock.c:609
+        pollret = <value optimized out>
+        sysclock = 0x1dbaaf0 [GstAudioClock]
+        entryt = 20768413630
+        real = <value optimized out>
+        now = <value optimized out>
+        diff = 33253630
+        __PRETTY_FUNCTION__ = "gst_system_clock_id_wait_jitter_unlocked"
+#3  0x0000003f91a80491 in gst_system_clock_id_wait_jitter (clock=
+    0x1dbaaf0 [GstAudioClock], entry=<value optimized out>, 
+    jitter=<value optimized out>) at gstsystemclock.c:698
+        ret = <value optimized out>
+#4  0x0000003f91a3ebc4 in gst_clock_id_wait (id=0x7f2dd4003880, jitter=
+    0x7f2de5d2b2e0) at gstclock.c:416
+        entry = 0x7f2dd4003880
+        clock = 0x1dbaaf0 [GstAudioClock]
+        res = <value optimized out>
+        requested = 20768413630
+        cclass = 0x1d93b30
+        __PRETTY_FUNCTION__ = "gst_clock_id_wait"
+#5  0x0000003f8a80c3f8 in gst_base_sink_wait_clock (sink=
+    0x1d74b00 [GstXvImageSink], time=<value optimized out>, jitter=
+    0x7f2de5d2b2e0) at gstbasesink.c:2007
+        id = 0x7f2dd4003880
+        ret = 2167294720
+        clock = <value optimized out>
+        base_time = 16825171000
+        __PRETTY_FUNCTION__ = "gst_base_sink_wait_clock"
+#6  0x0000003f8a80f063 in gst_base_sink_do_sync (basesink=
+    0x1d74b00 [GstXvImageSink], pad=<value optimized out>, obj=
+    0x1e6de10 [GstXvImageBuffer], late=<value optimized out>, 
+    step_end=<value optimized out>) at gstbasesink.c:2323
+        jitter = <value optimized out>
+        syncable = <value optimized out>
+        status = <value optimized out>
+        rstart = 3943242630
+        rstop = 4009909296
+        sstart = 29701224489
+        sstop = 29767891155
+        stime = 3943242630
+        do_sync = 1
+        priv = 0x1d74e60
+        ret = GST_FLOW_OK
+        current = 0x1d74f48
+        pending = 0x1d74fa8
+        stepped = 0
+        __PRETTY_FUNCTION__ = "gst_base_sink_do_sync"
+#7  0x0000003f8a80ffbe in gst_base_sink_render_object (basesink=
+    0x1d74b00 [GstXvImageSink], pad=<value optimized out>, 
+    is_list=<value optimized out>, obj=0x1e6de10) at gstbasesink.c:2698
+        ret = <value optimized out>
+        bclass = <value optimized out>
+        late = 0
+        step_end = 0
+        sync_obj = <value optimized out>
+        priv = 0x1d74e60
+        __PRETTY_FUNCTION__ = "gst_base_sink_render_object"
+#8  0x0000003f8a811289 in gst_base_sink_queue_object_unlocked (basesink=
+    0x1d74b00 [GstXvImageSink], pad=0x1d764e0 [GstPad], is_list=0, obj=
+    0x1e6de10, prerollable=<value optimized out>) at gstbasesink.c:2981
+        ret = <value optimized out>
+        length = <value optimized out>
+        q = 0x1ccd700
+        __PRETTY_FUNCTION__ = "gst_base_sink_queue_object_unlocked"
+#9  0x0000003f8a812f04 in gst_base_sink_chain_unlocked (basesink=
+    0x1d74b00 [GstXvImageSink], pad=<value optimized out>, is_list=0, obj=
+    0x1e6de10) at gstbasesink.c:3355
+        bclass = <value optimized out>
+        result = <value optimized out>
+        start = 29701224489
+        end = 29767891155
+        clip_segment = 0x1d60190
+        time_buf = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_base_sink_chain_unlocked"
+#10 0x0000003f8a8133b5 in gst_base_sink_chain_main (basesink=
+    0x1d74b00 [GstXvImageSink], pad=0x1d764e0 [GstPad], 
+    is_list=<value optimized out>, obj=0x1e6de10) at gstbasesink.c:3393
+        result = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_base_sink_chain_main"
+#11 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1d764e0 [GstPad], is_buffer=1, data=0x1e6de10) at gstpad.c:4122
+        chainfunc = 0x3f8a813910 <gst_base_sink_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#12 0x0000003f91a61dae in gst_pad_push_data (pad=0x1d6d3d0 [GstProxyPad], 
+    is_buffer=1, data=0x1e6de10) at gstpad.c:4351
+        peer = 0x1d764e0 [GstPad]
+        ret = <value optimized out>
+        caps = 0x7f2dd40034c0
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#13 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1b7c540 [GstGhostPad], is_buffer=1, data=0x1e6de10) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#14 0x0000003f91a61dae in gst_pad_push_data (pad=0x1d6d580 [GstProxyPad], 
+    is_buffer=1, data=0x1e6de10) at gstpad.c:4351
+        peer = 0x1b7c540 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x7f2dd40034c0
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#15 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1b7c700 [GstGhostPad], is_buffer=1, data=0x1e6de10) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#16 0x0000003f91a61dae in gst_pad_push_data (pad=0x1d6d220 [GstProxyPad], 
+    is_buffer=1, data=0x1e6de10) at gstpad.c:4351
+        peer = 0x1b7c700 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x7f2dd40034c0
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#17 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1b7c380 [GstGhostPad], is_buffer=1, data=0x1e6de10) at gstpad.c:4122
+        chainfunc = 0x3f91a4bf10 <gst_proxy_pad_do_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#18 0x0000003f91a61dae in gst_pad_push_data (pad=0x7f2ddc0249a0 [GstPad], 
+    is_buffer=1, data=0x1e6de10) at gstpad.c:4351
+        peer = 0x1b7c380 [GstGhostPad]
+        ret = <value optimized out>
+        caps = 0x7f2dd40034c0
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#19 0x0000003f8a8250dd in gst_base_transform_chain (pad=
+    0x1e9a070 [GstVideoScale], buffer=0x1e6de10 [GstXvImageBuffer])
+    at gstbasetransform.c:2081
+        klass = <value optimized out>
+        ret = <value optimized out>
+        last_stop = 29767891155
+        outbuf = 0x1e6de10 [GstXvImageBuffer]
+#20 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x7f2ddc024820 [GstPad], is_buffer=1, data=0x1e6de10) at gstpad.c:4122
+        chainfunc = 0x3f8a825000 <gst_base_transform_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#21 0x0000003f91a61dae in gst_pad_push_data (pad=0x7f2ddc0246a0 [GstPad], 
+    is_buffer=1, data=0x1e6de10) at gstpad.c:4351
+        peer = 0x7f2ddc024820 [GstPad]
+        ret = <value optimized out>
+        caps = 0x7f2dd40034c0
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#22 0x0000003f8a8250dd in gst_base_transform_chain (pad=
+    0x7f2ddc022ce0 [GstFFMpegCsp], buffer=0x7f2ddc03c6a0)
+    at gstbasetransform.c:2081
+        klass = <value optimized out>
+        ret = <value optimized out>
+        last_stop = 29767891155
+        outbuf = 0x1e6de10 [GstXvImageBuffer]
+#23 0x0000003f91a612d5 in gst_pad_chain_data_unchecked (pad=
+    0x1def7a0 [GstPad], is_buffer=1, data=0x7f2ddc03c6a0) at gstpad.c:4122
+        chainfunc = 0x3f8a825000 <gst_base_transform_chain>
+        caps = <value optimized out>
+        caps_changed = 0
+        ret = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_chain_data_unchecked"
+#24 0x0000003f91a61dae in gst_pad_push_data (pad=0x1def620 [GstPad], 
+    is_buffer=1, data=0x7f2ddc03c6a0) at gstpad.c:4351
+        peer = 0x1def7a0 [GstPad]
+        ret = <value optimized out>
+        caps = 0x7f2dcc001940
+        caps_changed = <value optimized out>
+        __PRETTY_FUNCTION__ = "gst_pad_push_data"
+#25 0x00007f2de9986b16 in gst_queue_push_one (queue=<value optimized out>)
+    at gstqueue.c:1083
+        buffer = 0x7f2ddc03c6a0
+        caps = 0x7f2dcc001940
+        result = <value optimized out>
+        data = <value optimized out>
+        is_buffer = 1
+#26 gst_queue_loop (queue=<value optimized out>) at gstqueue.c:1185
+        queue = 0x1e90070 [GstQueue]
+        ret = -514
+        __PRETTY_FUNCTION__ = "gst_queue_loop"
+#27 0x0000003f91a862de in gst_task_func (task=0x1c5c680 [GstTask])
+    at gsttask.c:238
+        lock = 0x1e05100
+        tself = 0x1e24ba0
+        priv = 0x1c5c720
+        __PRETTY_FUNCTION__ = "gst_task_func"
+#28 0x0000003f81063722 in g_thread_pool_thread_proxy (
+    data=<value optimized out>) at gthreadpool.c:265
+        task = 0x1e01db0
+        pool = 0x1a2c000
+#29 0x0000003f81062134 in g_thread_create_proxy (data=0x1e24ba0)
+    at gthread.c:635
+        thread = 0x1e24ba0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#30 0x0000003f7fc06a3a in start_thread (arg=0x7f2de5d2c710)
+    at pthread_create.c:297
+        __res = <value optimized out>
+        pd = 0x7f2de5d2c710
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {139835106051856, 
+    2483240790864876989, 140734602083520, 139835106051856, 0, 3, 
+    -2581136588136065603, 2452423128333342141}, mask_was_saved = 0}}, priv = {
+            pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 0x0, 
+              canceltype = 0}}}
+        not_first_call = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#31 0x0000003f7f4de71d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:112
+No locals.
+#32 0x0000000000000000 in ?? ()
+No symbol table info available.
+
+Thread 2 (Thread 30765):
+#0  0x0000003f7fc0e91d in nanosleep ()
+    at ../sysdeps/unix/syscall-template.S:82
+No locals.
+#1  0x0000003f81064478 in IA__g_usleep (microseconds=<value optimized out>)
+    at gtimer.c:170
+        request = {tv_sec = 0, tv_nsec = 50000000}
+        remaining = {tv_sec = 0, tv_nsec = 26888665}
+#2  0x00007f2de955ffaa in gst_xvimagesink_event_thread (xvimagesink=
+    0x1d74b00 [GstXvImageSink]) at xvimagesink.c:1638
+        __PRETTY_FUNCTION__ = "gst_xvimagesink_event_thread"
+#3  0x0000003f81062134 in g_thread_create_proxy (data=0x1d8d5d0)
+    at gthread.c:635
+        thread = 0x1d8d5d0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#4  0x0000003f7fc06a3a in start_thread (arg=0x7f2de934d710)
+    at pthread_create.c:297
+        __res = <value optimized out>
+        pd = 0x7f2de934d710
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {139835162810128, 
+    2483240790864876989, 140734602081984, 0, 0, 3, -2581147259519183427, 
+    2452423128333342141}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 
+    0x0}, data = {prev = 0x0, cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#5  0x0000003f7f4de71d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:112
+No locals.
+#6  0x0000000000000000 in ?? ()
+No symbol table info available.
+
+Thread 1 (Thread 30762):
+#0  0x0000000000000000 in ?? ()
+No symbol table info available.
+#1  0x0000003f81410862 in g_object_notify_queue_thaw (
+    nqueue=<value optimized out>, object=<value optimized out>)
+    at gobjectnotifyqueue.c:120
+        context = 0x1ed3f80
+        pspecs_mem = {0x1d5fe60 [GParamDouble], 0x401c000000000000, 
+    0x4050800000000000, 0x401f94ebbbab2d78, 0x1e83410, 0x3f8c80b73f, 
+    0x-4000000000000000, 0x3f8c812b38, 0x-4010000000000000, 0x3f8c824050, 
+    0x3cb1a60000000000, 0x3f8c80bd87, 0x1e96480, 0x1da9e00, 0x1b0f010, 0x20}
+        pspecs = 0x7fff53f6e080
+        free_me = 0x0
+        slist = <value optimized out>
+        n_pspecs = 1
+#2  IA__g_object_set_valist (nqueue=<value optimized out>, 
+    object=<value optimized out>) at gobject.c:1482
+        nqueue = 0x1e9e300
+        name = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_object_set_valist"
+#3  0x0000003f814109e4 in IA__g_object_set (_object=0x7f2ddc00f700, 
+    first_property_name=0x7f2deb66a702 "volume") at gobject.c:1582
+        object = 0x7f2ddc00f700 [GstPulseSink]
+        var_args = {{gp_offset = 24, fp_offset = 64, overflow_arg_area = 
+    0x7fff53f6e2b0, reg_save_area = 0x7fff53f6e1e0}}
+        __PRETTY_FUNCTION__ = "IA__g_object_set"
+#4  0x00007f2deb64a5de in gst_play_sink_set_volume (playsink=
+    0x1d68000 [GstPlaySink], volume=<value optimized out>)
+    at gstplaysink.c:631
+        chain = 0x7f2ddc00c4c0
+        __PRETTY_FUNCTION__ = "gst_play_sink_set_volume"
+#5  0x00007f2deb6480e4 in gst_play_bin_set_property (object=
+    0x1d5d250 [GstPlayBin2], prop_id=16, value=0x7fff53f6e4a0, pspec=
+    0x1a2a000 [GParamDouble]) at gstplaybin2.c:1805
+        playbin = 0x1d5d250 [GstPlayBin2]
+#6  0x0000003f81410442 in object_set_property (nqueue=<value optimized out>, 
+    value=<value optimized out>, pspec=0x1a2a000 [GParamDouble], 
+    object=<value optimized out>) at gobject.c:968
+        tmp_value = {g_type = 60, data = {{v_int = -778415004, v_uint = 
+    3516552292, v_long = 4574782357266650212, v_ulong = 4574782357266650212, 
+              v_int64 = 4574782357266650212, v_uint64 = 4574782357266650212, 
+              v_float = -8.28551004e+10, v_double = 0.0070536763174874097, 
+              v_pointer = 0x3f7ce450d19a5464}, {v_int = 0, v_uint = 0, 
+              v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 
+    0, v_double = 0, v_pointer = 0x0}}}
+        param_id = 16
+        redirect = <value optimized out>
+#7  IA__g_object_set_valist (nqueue=<value optimized out>, 
+    value=<value optimized out>, pspec=0x1a2a000 [GParamDouble], 
+    object=<value optimized out>) at gobject.c:1476
+        value = {g_type = 60, data = {{v_int = -778415004, v_uint = 
+    3516552292, v_long = 4574782357266650212, v_ulong = 4574782357266650212, 
+              v_int64 = 4574782357266650212, v_uint64 = 4574782357266650212, 
+              v_float = -8.28551004e+10, v_double = 0.0070536763174874097, 
+              v_pointer = 0x3f7ce450d19a5464}, {v_int = 0, v_uint = 0, 
+              v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 
+    0, v_double = 0, v_pointer = 0x0}}}
+        pspec = <value optimized out>
+        error = <value optimized out>
+        nqueue = 0x1ec43a0
+        name = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_object_set_valist"
+#8  0x0000003f814109e4 in IA__g_object_set (_object=0x1d5d250, 
+    first_property_name=0x3f8cc0bb0e "volume") at gobject.c:1582
+        object = 0x1d5d250 [GstPlayBin2]
+        var_args = {{gp_offset = 16, fp_offset = 64, overflow_arg_area = 
+    0x7fff53f6e610, reg_save_area = 0x7fff53f6e540}}
+        __PRETTY_FUNCTION__ = "IA__g_object_set"
+#9  0x0000000000444a74 in bacon_video_widget_set_volume (bvw=
+    0x1d5a010 [BaconVideoWidget], volume=<value optimized out>)
+    at bacon-video-widget-gst-0.10.c:4120
+        __PRETTY_FUNCTION__ = "bacon_video_widget_set_volume"
+#10 0x0000003f8140ba8e in IA__g_closure_invoke (closure=0x1bf94a0, 
+    return_value=0x0, n_param_values=2, param_values=0x1ebe010, 
+    invocation_hint=0x7fff53f6e7b0) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#11 0x0000003f81420ec3 in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=<value optimized out>, instance=<value optimized out>, 
+    emission_return=<value optimized out>, 
+    instance_and_params=<value optimized out>) at gsignal.c:3247
+        tmp = <value optimized out>
+        handler = 0x1c244c0
+        accumulator = 0x0
+        emission = {next = 0x7fff53f6ebd0, instance = 0x1bb31d0, ihint = {
+            signal_id = 262, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 4}
+        class_closure = 0x1c604b0
+        handler_list = 0x1c5ed60
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, 
+              v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 
+    0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, 
+              v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}}}
+        signal_id = <value optimized out>
+        max_sequential_handler_number = <value optimized out>
+        return_value_altered = <value optimized out>
+#12 0x0000003f81422259 in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fff53f6e9a0) at gsignal.c:2980
+        instance_and_params = <value optimized out>
+        signal_return_type = 4
+        param_values = 0x1ebe028
+        node = 0x1b9ba70
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#13 0x0000003f814227a3 in IA__g_signal_emit (instance=<value optimized out>, 
+    signal_id=<value optimized out>, detail=<value optimized out>)
+    at gsignal.c:3037
+        var_args = {{gp_offset = 24, fp_offset = 64, overflow_arg_area = 
+    0x7fff53f6ea80, reg_save_area = 0x7fff53f6e9c0}}
+#14 0x0000003f8b1b92df in gtk_scale_button_scale_value_changed (range=
+    0x1c5a320 [GtkScaleButtonScale]) at gtkscalebutton.c:1574
+        button = 0x1bb31d0 [GtkVolumeButton]
+        value = <value optimized out>
+#15 0x0000003f8140ba8e in IA__g_closure_invoke (closure=0x1bcc690, 
+    return_value=0x0, n_param_values=1, param_values=0x7f2ddc02a6e0, 
+    invocation_hint=0x7fff53f6ebe0) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#16 0x0000003f81420b8d in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=<value optimized out>, instance=<value optimized out>, 
+    emission_return=<value optimized out>, 
+    instance_and_params=<value optimized out>) at gsignal.c:3285
+        accumulator = 0x0
+        emission = {next = 0x7fff53f6f530, instance = 0x1c5a320, ihint = {
+            signal_id = 228, detail = 0, run_type = G_SIGNAL_RUN_LAST}, 
+          state = EMISSION_RUN, chain_type = 28947104}
+        class_closure = 0x1bcc690
+        handler_list = 0x0
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, 
+              v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 
+    0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, 
+              v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}}}
+        signal_id = <value optimized out>
+        max_sequential_handler_number = <value optimized out>
+        return_value_altered = <value optimized out>
+#17 0x0000003f81422259 in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fff53f6edd0) at gsignal.c:2980
+        instance_and_params = <value optimized out>
+        signal_return_type = 4
+        param_values = 0x7f2ddc02a6f8
+        node = 0x1bf9340
+        i = <value optimized out>
+        n_params = 0
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#18 0x0000003f814227a3 in IA__g_signal_emit (instance=<value optimized out>, 
+    signal_id=<value optimized out>, detail=<value optimized out>)
+    at gsignal.c:3037
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 
+    0x7fff53f6eeb0, reg_save_area = 0x7fff53f6edf0}}
+#19 0x0000003f8b19751b in gtk_range_adjustment_value_changed (
+    adjustment=<value optimized out>, data=0x1c5a320) at gtkrange.c:2487
+        range = 0x1c5a320 [GtkScaleButtonScale]
+        layout = {stepper_a = {x = 4, y = 2, width = 0, height = 0}, 
+          stepper_b = {x = 4, y = 2, width = 0, height = 0}, stepper_c = {x = 
+    4, y = 98, width = 0, height = 0}, stepper_d = {x = 4, y = 98, width = 0, 
+            height = 0}, trough = {x = 2, y = 2, width = 19, height = 96}, 
+          slider = {x = 4, y = 63, width = 15, height = 23}, mouse_location = 
+    MOUSE_SLIDER, mouse_x = 11, mouse_y = 78, grab_location = MOUSE_SLIDER, 
+          grab_button = 1, lower_sensitive = 1, upper_sensitive = 1, 
+          show_fill_level = 0, restrict_to_fill_level = 1, 
+          lower_sensitivity = GTK_SENSITIVITY_AUTO, upper_sensitivity = 
+    GTK_SENSITIVITY_AUTO, repaint_id = 0, fill_level = 
+    1.7976931348623157e+308, slider_detail_quark = 946, 
+          stepper_detail_quark = 0, marks = 0x0, mark_pos = 0x0, n_marks = 0, 
+          recalc_marks = 0}
+#20 0x0000003f8140ba8e in IA__g_closure_invoke (closure=0x1b9c6e0, 
+    return_value=0x0, n_param_values=1, param_values=0x1ed4140, 
+    invocation_hint=0x7fff53f6f0b0) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#21 0x0000003f81420ec3 in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=<value optimized out>, instance=<value optimized out>, 
+    emission_return=<value optimized out>, 
+    instance_and_params=<value optimized out>) at gsignal.c:3247
+        tmp = <value optimized out>
+        handler = 0x1c60d00
+        accumulator = 0x0
+        emission = {next = 0x0, instance = 0x1c69940, ihint = {signal_id = 
+    201, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, state = EMISSION_RUN, 
+          chain_type = 4}
+        class_closure = 0x1bafd20
+        handler_list = 0x1c60d00
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, 
+              v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 
+    0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, 
+              v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}}}
+        signal_id = <value optimized out>
+        max_sequential_handler_number = <value optimized out>
+        return_value_altered = <value optimized out>
+#22 0x0000003f81422259 in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fff53f6f2a0) at gsignal.c:2980
+        instance_and_params = <value optimized out>
+        signal_return_type = 4
+        param_values = 0x1ed4158
+        node = 0x1bb0180
+        i = <value optimized out>
+        n_params = 0
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#23 0x0000003f814227a3 in IA__g_signal_emit (instance=<value optimized out>, 
+    signal_id=<value optimized out>, detail=<value optimized out>)
+    at gsignal.c:3037
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 
+    0x7fff53f6f380, reg_save_area = 0x7fff53f6f2c0}}
+#24 0x0000003f8b07633a in IA__gtk_adjustment_value_changed (adjustment=
+    0x1c69940 [GtkAdjustment]) at gtkadjustment.c:668
+        __PRETTY_FUNCTION__ = "IA__gtk_adjustment_value_changed"
+#25 0x0000003f8b198671 in gtk_range_real_change_value (range=
+    0x1c5a320 [GtkScaleButtonScale], scroll=<value optimized out>, 
+    value=<value optimized out>) at gtkrange.c:3514
+No locals.
+#26 0x0000003f8b153565 in _gtk_marshal_BOOLEAN__ENUM_DOUBLE (closure=
+    0x1bf9720, return_value=0x7fff53f6f580, 
+    n_param_values=<value optimized out>, param_values=0x1e75050, 
+    invocation_hint=<value optimized out>, marshal_data=<value optimized out>)
+    at gtkmarshalers.c:245
+        callback = 0x3f8b198520 <gtk_range_real_change_value>
+        cc = 0x1bf9720
+        data1 = 0x1c5a320
+        data2 = 0x1bd4420
+        v_return = <value optimized out>
+        __PRETTY_FUNCTION__ = "_gtk_marshal_BOOLEAN__ENUM_DOUBLE"
+#27 0x0000003f8140ba8e in IA__g_closure_invoke (closure=0x1bf9720, 
+    return_value=0x7fff53f6f580, n_param_values=3, param_values=0x1e75050, 
+    invocation_hint=0x7fff53f6f540) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#28 0x0000003f81420b8d in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=<value optimized out>, instance=<value optimized out>, 
+    emission_return=<value optimized out>, 
+    instance_and_params=<value optimized out>) at gsignal.c:3285
+        accumulator = 0x1bd4ad0
+        emission = {next = 0x7fff53f6f9d0, instance = 0x1c5a320, ihint = {
+            signal_id = 231, detail = 0, run_type = G_SIGNAL_RUN_LAST}, 
+          state = EMISSION_RUN, chain_type = 28947104}
+        class_closure = 0x1bf9720
+        handler_list = 0x0
+        return_accu = 0x7fff53f6f580
+        accu = {g_type = 20, data = {{v_int = 0, v_uint = 0, v_long = 0, 
+              v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 
+    0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, 
+              v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}}}
+        signal_id = <value optimized out>
+        max_sequential_handler_number = <value optimized out>
+        return_value_altered = <value optimized out>
+#29 0x0000003f814220ec in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fff53f6f730) at gsignal.c:2990
+        return_value = {g_type = 20, data = {{v_int = 0, v_uint = 0, v_long = 
+    0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 
+    0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, v_pointer = 
+    0x0}}}
+        error = 0x0
+        rtype = <value optimized out>
+        static_scope = <value optimized out>
+        instance_and_params = <value optimized out>
+        signal_return_type = 20
+        param_values = 0x1e75068
+        node = 0x1bd4a30
+        i = <value optimized out>
+        n_params = 2
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#30 0x0000003f814227a3 in IA__g_signal_emit (instance=<value optimized out>, 
+    signal_id=<value optimized out>, detail=<value optimized out>)
+    at gsignal.c:3037
+        var_args = {{gp_offset = 32, fp_offset = 64, overflow_arg_area = 
+    0x7fff53f6f810, reg_save_area = 0x7fff53f6f750}}
+#31 0x0000003f8b196898 in update_slider_position (range=
+    0x1c5a320 [GtkScaleButtonScale], mouse_x=<value optimized out>, 
+    mouse_y=<value optimized out>) at gtkrange.c:2204
+        delta = <value optimized out>
+        c = 61
+        new_value = <value optimized out>
+        handled = 0
+        next_value = <value optimized out>
+        mark_value = <value optimized out>
+        mark_delta = <value optimized out>
+        i = <value optimized out>
+#32 0x0000003f8b198eff in gtk_range_motion_notify (widget=
+    0x1c5a320 [GtkScaleButtonScale], event=0x7f2ddc003dc0) at gtkrange.c:2347
+        range = 0x1c5a320 [GtkScaleButtonScale]
+#33 0x0000003f8b1539d3 in _gtk_marshal_BOOLEAN__BOXED (closure=0x1a75d80, 
+    return_value=0x7fff53f6fa20, n_param_values=<value optimized out>, 
+    param_values=0x1e9daa0, invocation_hint=<value optimized out>, 
+    marshal_data=<value optimized out>) at gtkmarshalers.c:84
+        callback = 0x3f8b198e40 <gtk_range_motion_notify>
+        cc = 0x1a75d80
+        data1 = 0x1c5a320
+        data2 = 0x1b4a9c0
+        v_return = <value optimized out>
+        __PRETTY_FUNCTION__ = "_gtk_marshal_BOOLEAN__BOXED"
+#34 0x0000003f8140ba8e in IA__g_closure_invoke (closure=0x1a75d80, 
+    return_value=0x7fff53f6fa20, n_param_values=2, param_values=0x1e9daa0, 
+    invocation_hint=0x7fff53f6f9e0) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#35 0x0000003f81420b8d in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=<value optimized out>, instance=<value optimized out>, 
+    emission_return=<value optimized out>, 
+    instance_and_params=<value optimized out>) at gsignal.c:3285
+        accumulator = 0x1a75e50
+        emission = {next = 0x0, instance = 0x1c5a320, ihint = {signal_id = 
+    57, detail = 0, run_type = G_SIGNAL_RUN_LAST}, state = EMISSION_RUN, 
+          chain_type = 28947104}
+        class_closure = 0x1a75d80
+        handler_list = 0x0
+        return_accu = 0x7fff53f6fa20
+        accu = {g_type = 20, data = {{v_int = 0, v_uint = 0, v_long = 0, 
+              v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 
+    0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, 
+              v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}}}
+        signal_id = <value optimized out>
+        max_sequential_handler_number = <value optimized out>
+        return_value_altered = <value optimized out>
+#36 0x0000003f814220ec in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fff53f6fbd0) at gsignal.c:2990
+        return_value = {g_type = 20, data = {{v_int = 0, v_uint = 0, v_long = 
+    0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, 
+              v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 
+    0, v_int64 = 0, v_uint64 = 0, v_float = 0, v_double = 0, v_pointer = 
+    0x0}}}
+        error = 0x0
+        rtype = <value optimized out>
+        static_scope = <value optimized out>
+        instance_and_params = <value optimized out>
+        signal_return_type = 20
+        param_values = 0x1e9dab8
+        node = 0x1a76020
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#37 0x0000003f814227a3 in IA__g_signal_emit (instance=<value optimized out>, 
+    signal_id=<value optimized out>, detail=<value optimized out>)
+    at gsignal.c:3037
+        var_args = {{gp_offset = 32, fp_offset = 48, overflow_arg_area = 
+    0x7fff53f6fcb0, reg_save_area = 0x7fff53f6fbf0}}
+#38 0x0000003f8b275ecf in gtk_widget_event_internal (widget=
+    0x1c5a320 [GtkScaleButtonScale], event=0x7f2ddc003dc0) at gtkwidget.c:4775
+        signal_num = <value optimized out>
+        return_val = 0
+#39 0x0000003f8b14a734 in IA__gtk_propagate_event (widget=
+    0x1c5a320 [GtkScaleButtonScale], event=0x7f2ddc003dc0) at gtkmain.c:2417
+        tmp = <value optimized out>
+        handled_event = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__gtk_propagate_event"
+#40 0x0000003f8b14b873 in IA__gtk_main_do_event (event=0x7f2ddc003dc0)
+    at gtkmain.c:1622
+        event_widget = <value optimized out>
+        grab_widget = 0x1c5a320 [GtkScaleButtonScale]
+        window_group = 0x1cbe660 [GtkWindowGroup]
+        rewritten_event = <value optimized out>
+        tmp_list = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__gtk_main_do_event"
+#41 0x0000003f8b85fb9c in gdk_event_dispatch (source=<value optimized out>, 
+    callback=<value optimized out>, user_data=<value optimized out>)
+    at gdkevents-x11.c:2372
+        display = <value optimized out>
+        event = 0x7f2ddc003dc0
+#42 0x0000003f8103922e in g_main_dispatch (context=<value optimized out>)
+    at gmain.c:1960
+        dispatch = 0x3f8b85fb50 <gdk_event_dispatch>
+        was_in_call = 0
+        user_data = 0x0
+        callback = 0
+        cb_funcs = 0x0
+        cb_data = <value optimized out>
+        current_source_link = {data = 0x1b24bb0, next = 0x0}
+        source = 0x1b24bb0
+        current = 0x1b68e30
+        i = <value optimized out>
+#43 IA__g_main_context_dispatch (context=<value optimized out>)
+    at gmain.c:2513
+No locals.
+#44 0x0000003f8103cc18 in g_main_context_iterate (context=0x1b24c30, 
+    block=<value optimized out>, dispatch=<value optimized out>, 
+    self=<value optimized out>) at gmain.c:2591
+        max_priority = 0
+        timeout = 0
+        some_ready = 1
+        nfds = 11
+        allocated_nfds = <value optimized out>
+        fds = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_main_context_iterate"
+#45 0x0000003f8103d065 in IA__g_main_loop_run (loop=0x1ed1ec0) at gmain.c:2799
+        self = 0x1a09100
+        __PRETTY_FUNCTION__ = "IA__g_main_loop_run"
+#46 0x0000003f8b14bda7 in IA__gtk_main () at gtkmain.c:1218
+        tmp_list = <value optimized out>
+        functions = 0x0
+        init = <value optimized out>
+        loop = 0x1ed1ec0
+#47 0x000000000041fed7 in main (argc=1, argv=0x7fff53f70078) at totem.c:278
+        totem = 0x1b7c000 [TotemObject]
+        gc = <value optimized out>
+        error = 0x0
+        context = 0x1b7c000
+        baconoptiongroup = 0x1c9d220
+        sidebar_pageid = 0x1c9d220 ""
+From                To                  Syms Read   Shared Object Library
+0x0000003f8a809e00  0x0000003f8a82fec8  Yes (*)     /usr/lib64/libgstbase-0.10.so.0
+0x0000003f86406970  0x0000003f8640d488  Yes (*)     /usr/lib64/libgsttag-0.10.so.0
+0x0000003f8cc05350  0x0000003f8cc0b368  Yes (*)     /usr/lib64/libgstinterfaces-0.10.so.0
+0x0000003f8d002330  0x0000003f8d004f88  Yes (*)     /usr/lib64/libgstvideo-0.10.so.0
+0x0000003f85c06e50  0x0000003f85c19a18  Yes (*)     /usr/lib64/libgstaudio-0.10.so.0
+0x0000003f91a282f0  0x0000003f91aa2da8  Yes (*)     /usr/lib64/libgstreamer-0.10.so.0
+0x0000003f82401590  0x0000003f824029e8  Yes (*)     /lib64/libgthread-2.0.so.0
+0x0000003f8882c600  0x0000003f88907f88  Yes (*)     /usr/lib64/libxml2.so.2
+0x0000003f8d8047b0  0x0000003f8d808a58  Yes (*)     /usr/lib64/libgstpbutils-0.10.so.0
+0x0000003f86004d00  0x0000003f86009608  Yes (*)     /usr/lib64/libunique-1.0.so.0
+0x0000003f8e008e30  0x0000003f8e019118  Yes (*)     /usr/lib64/libdbus-glib-1.so.2
+0x0000003f84407090  0x0000003f8442e308  Yes (*)     /lib64/libdbus-1.so.3
+0x0000003f80802140  0x0000003f80805578  Yes (*)     /lib64/librt.so.1
+0x0000003f894019f0  0x0000003f894062a8  Yes (*)     /usr/lib64/libSM.so.6
+0x0000003f89004d70  0x0000003f890137a8  Yes (*)     /usr/lib64/libICE.so.6
+0x0000003f96a3c050  0x0000003f96b1cfe8  Yes (*)     /usr/lib64/libpython2.6.so.1.0
+0x0000003f7fc05390  0x0000003f7fc10918  Yes (*)     /lib64/libpthread.so.0
+0x0000003f7f800de0  0x0000003f7f801998  Yes (*)     /lib64/libdl.so.2
+0x0000003f8f000e10  0x0000003f8f001688  Yes (*)     /lib64/libutil.so.1
+0x0000003f8f411ae0  0x0000003f8f42d9e8  Yes (*)     /usr/lib64/libgconf-2.so.4
+0x0000003f85806690  0x0000003f85815568  Yes (*)     /usr/lib64/libtotem-plparser.so.12
+0x0000003f8b0661a0  0x0000003f8b302518  Yes (*)     /usr/lib64/libgtk-x11-2.0.so.0
+0x0000003f8b81ceb0  0x0000003f8b87e778  Yes (*)     /usr/lib64/libgdk-x11-2.0.so.0
+0x0000003f8ac092f0  0x0000003f8ac14908  Yes (*)     /usr/lib64/libatk-1.0.so.0
+0x0000003f88c18860  0x0000003f88c7a888  Yes (*)     /lib64/libgio-2.0.so.0
+0x0000003f8c407500  0x0000003f8c420678  Yes (*)     /usr/lib64/libpangoft2-1.0.so.0
+0x0000003f8a405690  0x0000003f8a417608  Yes (*)     /usr/lib64/libgdk_pixbuf-2.0.so.0
+0x0000003f8c0045b0  0x0000003f8c008e18  Yes (*)     /usr/lib64/libpangocairo-1.0.so.0
+0x0000003f8bc0ec50  0x0000003f8bc2d488  Yes (*)     /usr/lib64/libpango-1.0.so.0
+0x0000003f8280c850  0x0000003f828744e8  Yes (*)     /usr/lib64/libfreetype.so.6
+0x0000003f83405c80  0x0000003f8341ff28  Yes (*)     /usr/lib64/libfontconfig.so.1
+0x0000003f81408890  0x0000003f81431e18  Yes (*)     /lib64/libgobject-2.0.so.0
+0x0000003f88401080  0x0000003f88401fd8  Yes (*)     /lib64/libgmodule-2.0.so.0
+0x0000003f810132f0  0x0000003f8108a268  Yes (*)     /lib64/libglib-2.0.so.0
+0x0000003f8c809c50  0x0000003f8c85b008  Yes (*)     /usr/lib64/libcairo.so.2
+0x0000003f85401720  0x0000003f85406838  Yes (*)     /usr/lib64/libXrandr.so.2
+0x0000003f90a00e30  0x0000003f90a03d08  Yes (*)     /usr/lib64/libXxf86vm.so.1
+0x0000003f8dc013b0  0x0000003f8dc043b8  Yes (*)     /usr/lib64/libXtst.so.6
+0x0000003f81c1dd80  0x0000003f81cab8d8  Yes (*)     /usr/lib64/libX11.so.6
+0x0000003f7f41e860  0x0000003f7f52625c  Yes (*)     /lib64/libc.so.6
+0x0000003f80003ea0  0x0000003f80044318  Yes (*)     /lib64/libm.so.6
+0x0000003f80401ef0  0x0000003f8040d228  Yes (*)     /lib64/libz.so.1
+0x0000003f7ec00af0  0x0000003f7ec18434  Yes (*)     /lib64/ld-linux-x86-64.so.2
+0x0000003f874014b0  0x0000003f87402be8  Yes (*)     /lib64/libuuid.so.1
+0x0000003f8ec278c0  0x0000003f8ec4b438  Yes (*)     /usr/lib64/libORBit-2.so.0
+0x0000003f84c01370  0x0000003f84c04178  Yes (*)     /usr/lib64/libXfixes.so.3
+0x0000003f82c03580  0x0000003f82c0e768  Yes (*)     /usr/lib64/libXext.so.6
+0x0000003f83c018c0  0x0000003f83c07f58  Yes (*)     /usr/lib64/libXrender.so.1
+0x0000003f85000a20  0x0000003f85001508  Yes (*)     /usr/lib64/libXinerama.so.1
+0x0000003f84001eb0  0x0000003f8400c608  Yes (*)     /usr/lib64/libXi.so.6
+0x0000003f84802880  0x0000003f84807658  Yes (*)     /usr/lib64/libXcursor.so.1
+0x0000003f89c00b40  0x0000003f89c01918  Yes (*)     /usr/lib64/libXcomposite.so.1
+0x0000003f89800a90  0x0000003f89801638  Yes (*)     /usr/lib64/libXdamage.so.1
+0x0000003f80c038c0  0x0000003f80c11ee8  Yes (*)     /lib64/libresolv.so.2
+0x0000003f7f005520  0x0000003f7f014ff8  Yes (*)     /lib64/libselinux.so.1
+0x0000003f83804820  0x0000003f8381e568  Yes (*)     /usr/lib64/libpng12.so.0
+0x0000003f83003b70  0x0000003f8301c9d8  Yes (*)     /lib64/libexpat.so.1
+0x0000003f8a006aa0  0x0000003f8a04c738  Yes (*)     /usr/lib64/libpixman-1.so.0
+0x0000003f81808650  0x0000003f81813898  Yes (*)     /usr/lib64/libxcb.so.1
+0x0000003f82000dd0  0x0000003f82001b68  Yes (*)     /usr/lib64/libXau.so.6
+0x00007f2dec6d9110  0x00007f2dec6e09e8  Yes (*)     /lib64/libnss_files.so.2
+0x00007f2dec4afb40  0x00007f2dec4d1658  Yes (*)     /usr/lib64/gtk-2.0/2.10.0/engines/libclearlooks.so
+0x00007f2dec2aa600  0x00007f2dec2aade8  Yes (*)     /usr/lib64/gtk-2.0/modules/libpk-gtk-module.so
+0x00007f2dec0a4f00  0x00007f2dec0a7168  Yes (*)     /usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.so
+0x0000003f88001bf0  0x0000003f88002fe8  Yes (*)     /usr/lib64/libcanberra-gtk.so.0
+0x00007f2debe96280  0x00007f2debe9f248  Yes (*)     /usr/lib64/libcanberra.so.0
+0x0000003f92e01fa0  0x0000003f92e05fc8  Yes (*)     /usr/lib64/libvorbisfile.so.3
+0x0000003f8f803ae0  0x0000003f8f81b638  Yes (*)     /usr/lib64/libvorbis.so.0
+0x00007f2debc8e8d0  0x00007f2debc90c28  Yes (*)     /usr/lib64/libogg.so.0
+0x0000003f92a01dc0  0x0000003f92a09188  Yes (*)     /usr/lib64/libtdb.so.1
+0x00007f2deba86370  0x00007f2deba8a728  Yes (*)     /usr/lib64/libltdl.so.7
+0x00007f2deb161900  0x00007f2deb17a258  Yes (*)     /usr/lib64/gio/modules/libgvfsdbus.so
+0x00007f2deaf4ad90  0x00007f2deaf54a18  Yes (*)     /usr/lib64/libgvfscommon.so.0
+0x0000003f87802880  0x0000003f8780a788  Yes (*)     /lib64/libudev.so.0
+0x00007f2dead31b70  0x00007f2dead3d5a8  Yes (*)     /usr/lib64/gio/modules/libgioremote-volume-monitor.so
+0x00007f2deb63d970  0x00007f2deb665c38  Yes (*)     /usr/lib64/gstreamer-0.10/libgstplaybin.so
+0x00007f2deb42ecf0  0x00007f2deb432968  Yes (*)     /usr/lib64/gstreamer-0.10/libgstgconfelements.so
+0x00007f2de9975a60  0x00007f2de9995eb8  Yes (*)     /usr/lib64/gstreamer-0.10/libgstcoreelements.so
+0x00007f2de9767150  0x00007f2de976b8e8  Yes (*)     /usr/lib64/gstreamer-0.10/libgstautodetect.so
+0x00007f2de9557300  0x00007f2de95609c8  Yes (*)     /usr/lib64/gstreamer-0.10/libgstxvimagesink.so
+0x00007f2de934f0a0  0x00007f2de9351aa8  Yes (*)     /usr/lib64/libXv.so.1
+0x00007f2de873ab50  0x00007f2de87470a8  Yes (*)     /usr/lib64/gstreamer-0.10/libgstpulse.so
+0x00007f2de84fee50  0x00007f2de8526378  Yes (*)     /usr/lib64/libpulse.so.0
+0x0000003f86c0f430  0x0000003f86c3a668  Yes (*)     /usr/lib64/libpulsecommon-0.9.21.so
+0x00007f2de82ecee0  0x00007f2de82f0a88  Yes (*)     /lib64/libwrap.so.0
+0x00007f2de8090a90  0x00007f2de80ce3a8  Yes (*)     /usr/lib64/libsndfile.so.1
+0x0000003f868011c0  0x0000003f868037e8  Yes (*)     /usr/lib64/libasyncns.so.0
+0x0000003f91604070  0x0000003f916118c8  Yes (*)     /lib64/libnsl.so.1
+0x00007f2de7475eb0  0x00007f2de7480bf8  Yes (*)     /usr/lib64/gstreamer-0.10/libgstgoom.so
+0x00007f2de720fe00  0x00007f2de723c758  Yes (*)     /usr/lib64/liboil-0.3.so.0
+0x00007f2de6dc07c0  0x00007f2de6dc1c18  Yes (*)     /usr/lib64/totem/plugins/properties/libmovie-properties.so
+0x00007f2de6bbc670  0x00007f2de6bbd5c8  Yes (*)     /usr/lib64/totem/plugins/screensaver/libscreensaver.so
+0x00007f2de69b9f00  0x00007f2de69ba648  Yes (*)     /usr/lib64/totem/plugins/media-player-keys/libmedia_player_keys.so
+0x00007f2de67b6260  0x00007f2de67b7498  Yes (*)     /usr/lib64/totem/plugins/skipto/libskipto.so
+0x00007f2de65ae9f0  0x00007f2de65b14e8  Yes (*)     /usr/lib64/totem/plugins/screenshot/libscreenshot.so
+0x00007f2de6393900  0x00007f2de63a3258  Yes (*)     /usr/lib64/gstreamer-0.10/libgstdecodebin2.so
+0x00007f2de617e6e0  0x00007f2de61879b8  Yes (*)     /usr/lib64/gstreamer-0.10/libgsttypefindfunctions.so
+0x00007f2de5f6cfe0  0x00007f2de5f769f8  Yes (*)     /usr/lib64/gstreamer-0.10/libgstflac.so
+0x00007f2de5d38e70  0x00007f2de5d5de08  Yes (*)     /usr/lib64/libFLAC.so.8
+0x00007f2de071bd90  0x00007f2de0725898  Yes (*)     /usr/lib64/gstreamer-0.10/libgstaudioconvert.so
+0x00007f2de050b5f0  0x00007f2de0514398  Yes (*)     /usr/lib64/gstreamer-0.10/libgstaudioresample.so
+0x00007f2de0307b70  0x00007f2de0307ff8  Yes (*)     /usr/lib64/gtk-2.0/2.10.0/loaders/svg_loader.so
+0x0000003f97e08180  0x0000003f97e2d778  Yes (*)     /usr/lib64/librsvg-2.so.2
+0x0000003f9560f650  0x0000003f9562ca48  Yes (*)     /usr/lib64/libgsf-1.so.114
+0x0000003f99e0b610  0x0000003f99e29f18  Yes (*)     /usr/lib64/libcroco-0.6.so.3
+0x00007f2de00f7630  0x00007f2de0103cc8  Yes (*)     /lib64/libbz2.so.1
+0x00007f2dd3dc87c0  0x00007f2dd3df73a8  Yes (*)     /usr/lib64/gstreamer-0.10/libgstffmpegcolorspace.so
+0x00007f2dd3bb5220  0x00007f2dd3bbfed8  Yes (*)     /usr/lib64/gstreamer-0.10/libgstvideoscale.so
+(*): Shared library is missing debugging information.
+$1 = 0x0
+No symbol "__glib_assert_msg" in current context.

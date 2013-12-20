@@ -1,0 +1,38 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DisplayHook", "DisplayHook\DisplayHook.vcproj", "{9207ED49-488F-4B42-99CF-1B4EB27CBF9D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ButtonClicker", "ButtonClicker\ButtonClicker.vcproj", "{73AC84DA-2146-4D32-BF82-AF97F64205D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3662334-08CE-4005-8062-57032DF5113A} = {A3662334-08CE-4005-8062-57032DF5113A}
+		{9207ED49-488F-4B42-99CF-1B4EB27CBF9D} = {9207ED49-488F-4B42-99CF-1B4EB27CBF9D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowMonitor", "WindowMonitor\WindowMonitor.vcproj", "{A3662334-08CE-4005-8062-57032DF5113A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9207ED49-488F-4B42-99CF-1B4EB27CBF9D} = {9207ED49-488F-4B42-99CF-1B4EB27CBF9D}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9207ED49-488F-4B42-99CF-1B4EB27CBF9D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9207ED49-488F-4B42-99CF-1B4EB27CBF9D}.Debug|Win32.Build.0 = Debug|Win32
+		{9207ED49-488F-4B42-99CF-1B4EB27CBF9D}.Release|Win32.ActiveCfg = Release|Win32
+		{9207ED49-488F-4B42-99CF-1B4EB27CBF9D}.Release|Win32.Build.0 = Release|Win32
+		{73AC84DA-2146-4D32-BF82-AF97F64205D7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{73AC84DA-2146-4D32-BF82-AF97F64205D7}.Debug|Win32.Build.0 = Debug|Win32
+		{73AC84DA-2146-4D32-BF82-AF97F64205D7}.Release|Win32.ActiveCfg = Release|Win32
+		{73AC84DA-2146-4D32-BF82-AF97F64205D7}.Release|Win32.Build.0 = Release|Win32
+		{A3662334-08CE-4005-8062-57032DF5113A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A3662334-08CE-4005-8062-57032DF5113A}.Debug|Win32.Build.0 = Debug|Win32
+		{A3662334-08CE-4005-8062-57032DF5113A}.Release|Win32.ActiveCfg = Release|Win32
+		{A3662334-08CE-4005-8062-57032DF5113A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

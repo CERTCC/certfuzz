@@ -1,0 +1,682 @@
+<?xml version="1.0"?>
+<colormap>
+  <color name="AliceBlue" red="240" green="248" blue="255" compliance="SVG, X11, XPM" />
+  <color name="AntiqueWhite" red="250" green="235" blue="215" compliance="SVG, X11, XPM" />
+  <color name="AntiqueWhite1" red="255" green="239" blue="219" compliance="X11" />
+  <color name="AntiqueWhite2" red="238" green="223" blue="204" compliance="X11" />
+  <color name="AntiqueWhite3" red="205" green="192" blue="176" compliance="X11" />
+  <color name="AntiqueWhite4" red="139" green="131" blue="120" compliance="X11" />
+  <color name="aqua" red="0" green="255" blue="255" compliance="SVG" />
+  <color name="aquamarine" red="127" green="255" blue="212" compliance="SVG, X11, XPM" />
+  <color name="aquamarine1" red="127" green="255" blue="212" compliance="X11" />
+  <color name="aquamarine2" red="118" green="238" blue="198" compliance="X11" />
+  <color name="aquamarine3" red="102" green="205" blue="170" compliance="X11" />
+  <color name="aquamarine4" red="69" green="139" blue="116" compliance="X11" />
+  <color name="azure" red="240" green="255" blue="255" compliance="SVG, X11, XPM" />
+  <color name="azure1" red="240" green="255" blue="255" compliance="X11" />
+  <color name="azure2" red="224" green="238" blue="238" compliance="X11" />
+  <color name="azure3" red="193" green="205" blue="205" compliance="X11" />
+  <color name="azure4" red="131" green="139" blue="139" compliance="X11" />
+  <color name="beige" red="245" green="245" blue="220" compliance="SVG, X11, XPM" />
+  <color name="bisque" red="255" green="228" blue="196" compliance="SVG, X11, XPM" />
+  <color name="bisque1" red="255" green="228" blue="196" compliance="X11" />
+  <color name="bisque2" red="238" green="213" blue="183" compliance="X11" />
+  <color name="bisque3" red="205" green="183" blue="158" compliance="X11" />
+  <color name="bisque4" red="139" green="125" blue="107" compliance="X11" />
+  <color name="black" red="0" green="0" blue="0" compliance="SVG, X11, XPM" />
+  <color name="BlanchedAlmond" red="255" green="235" blue="205" compliance="SVG, X11, XPM" />
+  <color name="blue" red="0" green="0" blue="255" compliance="SVG, X11, XPM" />
+  <color name="blue1" red="0" green="0" blue="255" compliance="X11" />
+  <color name="blue2" red="0" green="0" blue="238" compliance="X11" />
+  <color name="blue3" red="0" green="0" blue="205" compliance="X11" />
+  <color name="blue4" red="0" green="0" blue="139" compliance="X11" />
+  <color name="BlueViolet" red="138" green="43" blue="226" compliance="SVG, X11, XPM" />
+  <color name="brown" red="165" green="42" blue="42" compliance="SVG, X11, XPM" />
+  <color name="brown1" red="255" green="64" blue="64" compliance="X11" />
+  <color name="brown2" red="238" green="59" blue="59" compliance="X11" />
+  <color name="brown3" red="205" green="51" blue="51" compliance="X11" />
+  <color name="brown4" red="139" green="35" blue="35" compliance="X11" />
+  <color name="burlywood" red="222" green="184" blue="135" compliance="SVG, X11, XPM" />
+  <color name="burlywood1" red="255" green="211" blue="155" compliance="X11" />
+  <color name="burlywood2" red="238" green="197" blue="145" compliance="X11" />
+  <color name="burlywood3" red="205" green="170" blue="125" compliance="X11" />
+  <color name="burlywood4" red="139" green="115" blue="85" compliance="X11" />
+  <color name="cadet blue" red="95" green="158" blue="160" compliance="X11" />
+  <color name="CadetBlue" red="95" green="158" blue="160" compliance="SVG, X11, XPM" />
+  <color name="CadetBlue1" red="152" green="245" blue="255" compliance="X11" />
+  <color name="CadetBlue2" red="142" green="229" blue="238" compliance="X11" />
+  <color name="CadetBlue3" red="122" green="197" blue="205" compliance="X11" />
+  <color name="CadetBlue4" red="83" green="134" blue="139" compliance="X11" />
+  <color name="chartreuse" red="127" green="255" blue="0" compliance="SVG, X11, XPM" />
+  <color name="chartreuse1" red="127" green="255" blue="0" compliance="X11" />
+  <color name="chartreuse2" red="118" green="238" blue="0" compliance="X11" />
+  <color name="chartreuse3" red="102" green="205" blue="0" compliance="X11" />
+  <color name="chartreuse4" red="69" green="139" blue="0" compliance="X11" />
+  <color name="chocolate" red="210" green="105" blue="30" compliance="SVG, X11, XPM" />
+  <color name="chocolate1" red="255" green="127" blue="36" compliance="X11" />
+  <color name="chocolate2" red="238" green="118" blue="33" compliance="X11" />
+  <color name="chocolate3" red="205" green="102" blue="29" compliance="X11" />
+  <color name="chocolate4" red="139" green="69" blue="19" compliance="X11" />
+  <color name="coral" red="255" green="127" blue="80" compliance="SVG, X11, XPM" />
+  <color name="coral1" red="255" green="114" blue="86" compliance="X11" />
+  <color name="coral2" red="238" green="106" blue="80" compliance="X11" />
+  <color name="coral3" red="205" green="91" blue="69" compliance="X11" />
+  <color name="coral4" red="139" green="62" blue="47" compliance="X11" />
+  <color name="CornflowerBlue" red="100" green="149" blue="237" compliance="SVG, X11, XPM" />
+  <color name="cornsilk" red="255" green="248" blue="220" compliance="SVG, X11, XPM" />
+  <color name="cornsilk1" red="255" green="248" blue="220" compliance="X11" />
+  <color name="cornsilk2" red="238" green="232" blue="205" compliance="X11" />
+  <color name="cornsilk3" red="205" green="200" blue="177" compliance="X11" />
+  <color name="cornsilk4" red="139" green="136" blue="120" compliance="X11" />
+  <color name="crimson" red="220" green="20" blue="60" compliance="SVG" />
+  <color name="cyan" red="0" green="255" blue="255" compliance="SVG, X11, XPM" />
+  <color name="cyan1" red="0" green="255" blue="255" compliance="X11" />
+  <color name="cyan2" red="0" green="238" blue="238" compliance="X11" />
+  <color name="cyan3" red="0" green="205" blue="205" compliance="X11" />
+  <color name="cyan4" red="0" green="139" blue="139" compliance="X11" />
+  <color name="dark violet" red="148" green="0" blue="211" compliance="X11" />
+  <color name="DarkBlue" red="0" green="0" blue="139" compliance="SVG, X11" />
+  <color name="DarkCyan" red="0" green="139" blue="139" compliance="SVG, X11" />
+  <color name="DarkGoldenrod" red="184" green="134" blue="11" compliance="SVG, X11, XPM" />
+  <color name="DarkGoldenrod1" red="255" green="185" blue="15" compliance="X11" />
+  <color name="DarkGoldenrod2" red="238" green="173" blue="14" compliance="X11" />
+  <color name="DarkGoldenrod3" red="205" green="149" blue="12" compliance="X11" />
+  <color name="DarkGoldenrod4" red="139" green="101" blue="8" compliance="X11" />
+  <color name="DarkGray" red="169" green="169" blue="169" compliance="SVG, X11" />
+  <color name="DarkGreen" red="0" green="100" blue="0" compliance="SVG, X11, XPM" />
+  <color name="DarkGrey" red="169" green="169" blue="169" compliance="SVG, X11" />
+  <color name="DarkKhaki" red="189" green="183" blue="107" compliance="SVG, X11, XPM" />
+  <color name="DarkMagenta" red="139" green="0" blue="139" compliance="SVG, X11" />
+  <color name="DarkOliveGreen" red="85" green="107" blue="47" compliance="SVG, X11, XPM" />
+  <color name="DarkOliveGreen1" red="202" green="255" blue="112" compliance="X11" />
+  <color name="DarkOliveGreen2" red="188" green="238" blue="104" compliance="X11" />
+  <color name="DarkOliveGreen3" red="162" green="205" blue="90" compliance="X11" />
+  <color name="DarkOliveGreen4" red="110" green="139" blue="61" compliance="X11" />
+  <color name="DarkOrange" red="255" green="140" blue="0" compliance="SVG, X11, XPM" />
+  <color name="DarkOrange1" red="255" green="127" blue="0" compliance="X11" />
+  <color name="DarkOrange2" red="238" green="118" blue="0" compliance="X11" />
+  <color name="DarkOrange3" red="205" green="102" blue="0" compliance="X11" />
+  <color name="DarkOrange4" red="139" green="69" blue="0" compliance="X11" />
+  <color name="DarkOrchid" red="153" green="50" blue="204" compliance="SVG, X11, XPM" />
+  <color name="DarkOrchid1" red="191" green="62" blue="255" compliance="X11" />
+  <color name="DarkOrchid2" red="178" green="58" blue="238" compliance="X11" />
+  <color name="DarkOrchid3" red="154" green="50" blue="205" compliance="X11" />
+  <color name="DarkOrchid4" red="104" green="34" blue="139" compliance="X11" />
+  <color name="DarkRed" red="139" green="0" blue="0" compliance="SVG, X11" />
+  <color name="DarkSalmon" red="233" green="150" blue="122" compliance="SVG, X11, XPM" />
+  <color name="DarkSeaGreen" red="143" green="188" blue="143" compliance="SVG, X11, XPM" />
+  <color name="DarkSeaGreen1" red="193" green="255" blue="193" compliance="X11" />
+  <color name="DarkSeaGreen2" red="180" green="238" blue="180" compliance="X11" />
+  <color name="DarkSeaGreen3" red="155" green="205" blue="155" compliance="X11" />
+  <color name="DarkSeaGreen4" red="105" green="139" blue="105" compliance="X11" />
+  <color name="DarkSlateBlue" red="72" green="61" blue="139" compliance="SVG, X11, XPM" />
+  <color name="DarkSlateGray" red="47" green="79" blue="79" compliance="SVG, X11, XPM" />
+  <color name="DarkSlateGray1" red="151" green="255" blue="255" compliance="X11" />
+  <color name="DarkSlateGray2" red="141" green="238" blue="238" compliance="X11" />
+  <color name="DarkSlateGray3" red="121" green="205" blue="205" compliance="X11" />
+  <color name="DarkSlateGray4" red="82" green="139" blue="139" compliance="X11" />
+  <color name="DarkSlateGrey" red="47" green="79" blue="79" compliance="SVG, X11" />
+  <color name="DarkTurquoise" red="0" green="206" blue="209" compliance="SVG, X11, XPM" />
+  <color name="DarkViolet" red="148" green="0" blue="211" compliance="SVG, X11, XPM" />
+  <color name="DeepPink" red="255" green="20" blue="147" compliance="SVG, X11, XPM" />
+  <color name="DeepPink1" red="255" green="20" blue="147" compliance="X11" />
+  <color name="DeepPink2" red="238" green="18" blue="137" compliance="X11" />
+  <color name="DeepPink3" red="205" green="16" blue="118" compliance="X11" />
+  <color name="DeepPink4" red="139" green="10" blue="80" compliance="X11" />
+  <color name="DeepSkyBlue" red="0" green="191" blue="255" compliance="SVG, X11, XPM" />
+  <color name="DeepSkyBlue1" red="0" green="191" blue="255" compliance="X11" />
+  <color name="DeepSkyBlue2" red="0" green="178" blue="238" compliance="X11" />
+  <color name="DeepSkyBlue3" red="0" green="154" blue="205" compliance="X11" />
+  <color name="DeepSkyBlue4" red="0" green="104" blue="139" compliance="X11" />
+  <color name="DimGray" red="105" green="105" blue="105" compliance="SVG, X11, XPM" />
+  <color name="DimGrey" red="105" green="105" blue="105" compliance="SVG, X11" />
+  <color name="DodgerBlue" red="30" green="144" blue="255" compliance="SVG, X11, XPM" />
+  <color name="DodgerBlue1" red="30" green="144" blue="255" compliance="X11" />
+  <color name="DodgerBlue2" red="28" green="134" blue="238" compliance="X11" />
+  <color name="DodgerBlue3" red="24" green="116" blue="205" compliance="X11" />
+  <color name="DodgerBlue4" red="16" green="78" blue="139" compliance="X11" />
+  <color name="firebrick" red="178" green="34" blue="34" compliance="SVG, X11, XPM" />
+  <color name="firebrick1" red="255" green="48" blue="48" compliance="X11" />
+  <color name="firebrick2" red="238" green="44" blue="44" compliance="X11" />
+  <color name="firebrick3" red="205" green="38" blue="38" compliance="X11" />
+  <color name="firebrick4" red="139" green="26" blue="26" compliance="X11" />
+  <color name="FloralWhite" red="255" green="250" blue="240" compliance="SVG, X11, XPM" />
+  <color name="ForestGreen" red="34" green="139" blue="34" compliance="SVG, X11, XPM" />
+  <color name="fractal" red="128" green="128" blue="128" compliance="SVG" />
+  <color name="fuchsia" red="255" green="0" blue="255" compliance="SVG" />
+  <color name="gainsboro" red="220" green="220" blue="220" compliance="SVG, X11, XPM" />
+  <color name="GhostWhite" red="248" green="248" blue="255" compliance="SVG, X11, XPM" />
+  <color name="gold" red="255" green="215" blue="0 " compliance="X11, XPM" />
+  <color name="gold1" red="255" green="215" blue="0" compliance="SVG, X11" />
+  <color name="gold2" red="238" green="201" blue="0" compliance="X11" />
+  <color name="gold3" red="205" green="173" blue="0" compliance="X11" />
+  <color name="gold4" red="139" green="117" blue="0" compliance="X11" />
+  <color name="goldenrod" red="218" green="165" blue="32" compliance="SVG, X11, XPM" />
+  <color name="goldenrod1" red="255" green="193" blue="37" compliance="X11" />
+  <color name="goldenrod2" red="238" green="180" blue="34" compliance="X11" />
+  <color name="goldenrod3" red="205" green="155" blue="29" compliance="X11" />
+  <color name="goldenrod4" red="139" green="105" blue="20" compliance="X11" />
+  <color name="gray" red="126" green="126" blue="126" compliance="SVG" />
+  <color name="gray" red="190" green="190" blue="190" compliance="X11, XPM" />
+  <color name="gray0" red="0" green="0" blue="0" compliance="X11, XPM" />
+  <color name="gray1" red="3" green="3" blue="3" compliance="X11, XPM" />
+  <color name="gray10" red="26" green="26" blue="26 " compliance="X11, XPM" />
+  <color name="gray100" red="255" green="255" blue="255 " compliance="X11, XPM" />
+  <color name="gray100" red="255" green="255" blue="255 " compliance="X11, XPM" />
+  <color name="gray11" red="28" green="28" blue="28 " compliance="X11, XPM" />
+  <color name="gray12" red="31" green="31" blue="31 " compliance="X11, XPM" />
+  <color name="gray13" red="33" green="33" blue="33 " compliance="X11, XPM" />
+  <color name="gray14" red="36" green="36" blue="36 " compliance="X11, XPM" />
+  <color name="gray15" red="38" green="38" blue="38 " compliance="X11, XPM" />
+  <color name="gray16" red="41" green="41" blue="41 " compliance="X11, XPM" />
+  <color name="gray17" red="43" green="43" blue="43 " compliance="X11, XPM" />
+  <color name="gray18" red="46" green="46" blue="46 " compliance="X11, XPM" />
+  <color name="gray19" red="48" green="48" blue="48 " compliance="X11, XPM" />
+  <color name="gray2" red="5" green="5" blue="5" compliance="X11, XPM" />
+  <color name="gray20" red="51" green="51" blue="51 " compliance="X11, XPM" />
+  <color name="gray21" red="54" green="54" blue="54 " compliance="X11, XPM" />
+  <color name="gray22" red="56" green="56" blue="56 " compliance="X11, XPM" />
+  <color name="gray23" red="59" green="59" blue="59 " compliance="X11, XPM" />
+  <color name="gray24" red="61" green="61" blue="61 " compliance="X11, XPM" />
+  <color name="gray25" red="64" green="64" blue="64 " compliance="X11, XPM" />
+  <color name="gray26" red="66" green="66" blue="66 " compliance="X11, XPM" />
+  <color name="gray27" red="69" green="69" blue="69 " compliance="X11, XPM" />
+  <color name="gray28" red="71" green="71" blue="71 " compliance="X11, XPM" />
+  <color name="gray29" red="74" green="74" blue="74 " compliance="X11, XPM" />
+  <color name="gray3" red="8" green="8" blue="8" compliance="X11, XPM" />
+  <color name="gray30" red="77" green="77" blue="77 " compliance="X11, XPM" />
+  <color name="gray31" red="79" green="79" blue="79 " compliance="X11, XPM" />
+  <color name="gray32" red="82" green="82" blue="82 " compliance="X11, XPM" />
+  <color name="gray33" red="84" green="84" blue="84 " compliance="X11, XPM" />
+  <color name="gray34" red="87" green="87" blue="87 " compliance="X11, XPM" />
+  <color name="gray35" red="89" green="89" blue="89 " compliance="X11, XPM" />
+  <color name="gray36" red="92" green="92" blue="92 " compliance="X11, XPM" />
+  <color name="gray37" red="94" green="94" blue="94 " compliance="X11, XPM" />
+  <color name="gray38" red="97" green="97" blue="97 " compliance="X11, XPM" />
+  <color name="gray39" red="99" green="99" blue="99 " compliance="X11, XPM" />
+  <color name="gray4" red="10" green="10" blue="10 " compliance="X11, XPM" />
+  <color name="gray40" red="102" green="102" blue="102 " compliance="X11, XPM" />
+  <color name="gray41" red="105" green="105" blue="105 " compliance="X11, XPM" />
+  <color name="gray42" red="107" green="107" blue="107 " compliance="X11, XPM" />
+  <color name="gray43" red="110" green="110" blue="110 " compliance="X11, XPM" />
+  <color name="gray44" red="112" green="112" blue="112 " compliance="X11, XPM" />
+  <color name="gray45" red="115" green="115" blue="115 " compliance="X11, XPM" />
+  <color name="gray46" red="117" green="117" blue="117 " compliance="X11, XPM" />
+  <color name="gray47" red="120" green="120" blue="120 " compliance="X11, XPM" />
+  <color name="gray48" red="122" green="122" blue="122 " compliance="X11, XPM" />
+  <color name="gray49" red="125" green="125" blue="125 " compliance="X11, XPM" />
+  <color name="gray5" red="13" green="13" blue="13 " compliance="X11, XPM" />
+  <color name="gray50" red="127" green="127" blue="127 " compliance="X11, XPM" />
+  <color name="gray51" red="130" green="130" blue="130 " compliance="X11, XPM" />
+  <color name="gray52" red="133" green="133" blue="133 " compliance="X11, XPM" />
+  <color name="gray53" red="135" green="135" blue="135 " compliance="X11, XPM" />
+  <color name="gray54" red="138" green="138" blue="138 " compliance="X11, XPM" />
+  <color name="gray55" red="140" green="140" blue="140 " compliance="X11, XPM" />
+  <color name="gray56" red="143" green="143" blue="143 " compliance="X11, XPM" />
+  <color name="gray57" red="145" green="145" blue="145 " compliance="X11, XPM" />
+  <color name="gray58" red="148" green="148" blue="148 " compliance="X11, XPM" />
+  <color name="gray59" red="150" green="150" blue="150 " compliance="X11, XPM" />
+  <color name="gray6" red="15" green="15" blue="15 " compliance="X11, XPM" />
+  <color name="gray60" red="153" green="153" blue="153 " compliance="X11, XPM" />
+  <color name="gray61" red="156" green="156" blue="156 " compliance="X11, XPM" />
+  <color name="gray62" red="158" green="158" blue="158 " compliance="X11, XPM" />
+  <color name="gray63" red="161" green="161" blue="161 " compliance="X11, XPM" />
+  <color name="gray64" red="163" green="163" blue="163 " compliance="X11, XPM" />
+  <color name="gray65" red="166" green="166" blue="166 " compliance="X11, XPM" />
+  <color name="gray66" red="168" green="168" blue="168 " compliance="X11, XPM" />
+  <color name="gray67" red="171" green="171" blue="171 " compliance="X11, XPM" />
+  <color name="gray68" red="173" green="173" blue="173 " compliance="X11, XPM" />
+  <color name="gray69" red="176" green="176" blue="176 " compliance="X11, XPM" />
+  <color name="gray7" red="18" green="18" blue="18 " compliance="X11, XPM" />
+  <color name="gray70" red="179" green="179" blue="179 " compliance="X11, XPM" />
+  <color name="gray71" red="181" green="181" blue="181 " compliance="X11, XPM" />
+  <color name="gray72" red="184" green="184" blue="184 " compliance="X11, XPM" />
+  <color name="gray73" red="186" green="186" blue="186 " compliance="X11, XPM" />
+  <color name="gray74" red="189" green="189" blue="189 " compliance="X11, XPM" />
+  <color name="gray75" red="191" green="191" blue="191 " compliance="X11, XPM" />
+  <color name="gray76" red="194" green="194" blue="194 " compliance="X11, XPM" />
+  <color name="gray77" red="196" green="196" blue="196 " compliance="X11, XPM" />
+  <color name="gray78" red="199" green="199" blue="199 " compliance="X11, XPM" />
+  <color name="gray79" red="201" green="201" blue="201 " compliance="X11, XPM" />
+  <color name="gray8" red="20" green="20" blue="20 " compliance="X11, XPM" />
+  <color name="gray80" red="204" green="204" blue="204 " compliance="X11, XPM" />
+  <color name="gray81" red="207" green="207" blue="207 " compliance="X11, XPM" />
+  <color name="gray82" red="209" green="209" blue="209 " compliance="X11, XPM" />
+  <color name="gray83" red="212" green="212" blue="212 " compliance="X11, XPM" />
+  <color name="gray84" red="214" green="214" blue="214 " compliance="X11, XPM" />
+  <color name="gray85" red="217" green="217" blue="217 " compliance="X11, XPM" />
+  <color name="gray86" red="219" green="219" blue="219 " compliance="X11, XPM" />
+  <color name="gray87" red="222" green="222" blue="222 " compliance="X11, XPM" />
+  <color name="gray88" red="224" green="224" blue="224 " compliance="X11, XPM" />
+  <color name="gray89" red="227" green="227" blue="227 " compliance="X11, XPM" />
+  <color name="gray9" red="23" green="23" blue="23 " compliance="X11, XPM" />
+  <color name="gray90" red="229" green="229" blue="229 " compliance="X11, XPM" />
+  <color name="gray91" red="232" green="232" blue="232 " compliance="X11, XPM" />
+  <color name="gray92" red="235" green="235" blue="235 " compliance="X11, XPM" />
+  <color name="gray93" red="237" green="237" blue="237 " compliance="X11, XPM" />
+  <color name="gray94" red="240" green="240" blue="240 " compliance="X11, XPM" />
+  <color name="gray95" red="242" green="242" blue="242 " compliance="X11, XPM" />
+  <color name="gray96" red="245" green="245" blue="245 " compliance="X11, XPM" />
+  <color name="gray97" red="247" green="247" blue="247 " compliance="X11, XPM" />
+  <color name="gray98" red="250" green="250" blue="250 " compliance="X11, XPM" />
+  <color name="gray99" red="252" green="252" blue="252 " compliance="X11, XPM" />
+  <color name="green" red="0" green="128" blue="0" compliance="SVG" />
+  <color name="green" red="0" green="255" blue="0" compliance="X11, XPM" />
+  <color name="green1" red="0" green="255" blue="0" compliance="X11" />
+  <color name="green2" red="0" green="238" blue="0" compliance="X11" />
+  <color name="green3" red="0" green="205" blue="0" compliance="X11" />
+  <color name="green4" red="0" green="139" blue="0" compliance="X11" />
+  <color name="GreenYellow" red="173" green="255" blue="47" compliance="X11, XPM" />
+  <color name="grey" red="190" green="190" blue="190" compliance="SVG, X11" />
+  <color name="grey0" red="0" green="0" blue="0" compliance="SVG, X11" />
+  <color name="grey1" red="3" green="3" blue="3" compliance="SVG, X11" />
+  <color name="grey10" red="26" green="26" blue="26 " compliance="SVG, X11" />
+  <color name="grey100" red="255" green="255" blue="255 " compliance="SVG, X11" />
+  <color name="grey11" red="28" green="28" blue="28 " compliance="SVG, X11" />
+  <color name="grey12" red="31" green="31" blue="31 " compliance="SVG, X11" />
+  <color name="grey13" red="33" green="33" blue="33 " compliance="SVG, X11" />
+  <color name="grey14" red="36" green="36" blue="36 " compliance="SVG, X11" />
+  <color name="grey15" red="38" green="38" blue="38 " compliance="SVG, X11" />
+  <color name="grey16" red="41" green="41" blue="41 " compliance="SVG, X11" />
+  <color name="grey17" red="43" green="43" blue="43 " compliance="SVG, X11" />
+  <color name="grey18" red="46" green="46" blue="46 " compliance="SVG, X11" />
+  <color name="grey19" red="48" green="48" blue="48 " compliance="SVG, X11" />
+  <color name="grey2" red="5" green="5" blue="5" compliance="SVG, X11" />
+  <color name="grey20" red="51" green="51" blue="51 " compliance="SVG, X11" />
+  <color name="grey21" red="54" green="54" blue="54 " compliance="SVG, X11" />
+  <color name="grey22" red="56" green="56" blue="56 " compliance="SVG, X11" />
+  <color name="grey23" red="59" green="59" blue="59 " compliance="SVG, X11" />
+  <color name="grey24" red="61" green="61" blue="61 " compliance="SVG, X11" />
+  <color name="grey25" red="64" green="64" blue="64 " compliance="SVG, X11" />
+  <color name="grey26" red="66" green="66" blue="66 " compliance="SVG, X11" />
+  <color name="grey27" red="69" green="69" blue="69 " compliance="SVG, X11" />
+  <color name="grey28" red="71" green="71" blue="71 " compliance="SVG, X11" />
+  <color name="grey29" red="74" green="74" blue="74 " compliance="SVG, X11" />
+  <color name="grey3" red="8" green="8" blue="8" compliance="SVG, X11" />
+  <color name="grey30" red="77" green="77" blue="77 " compliance="SVG, X11" />
+  <color name="grey31" red="79" green="79" blue="79 " compliance="SVG, X11" />
+  <color name="grey32" red="82" green="82" blue="82 " compliance="SVG, X11" />
+  <color name="grey33" red="84" green="84" blue="84 " compliance="SVG, X11" />
+  <color name="grey34" red="87" green="87" blue="87 " compliance="SVG, X11" />
+  <color name="grey35" red="89" green="89" blue="89 " compliance="SVG, X11" />
+  <color name="grey36" red="92" green="92" blue="92 " compliance="SVG, X11" />
+  <color name="grey37" red="94" green="94" blue="94 " compliance="SVG, X11" />
+  <color name="grey38" red="97" green="97" blue="97 " compliance="SVG, X11" />
+  <color name="grey39" red="99" green="99" blue="99 " compliance="SVG, X11" />
+  <color name="grey4" red="10" green="10" blue="10 " compliance="SVG, X11" />
+  <color name="grey40" red="102" green="102" blue="102 " compliance="SVG, X11" />
+  <color name="grey41" red="105" green="105" blue="105 " compliance="SVG, X11" />
+  <color name="grey42" red="107" green="107" blue="107 " compliance="SVG, X11" />
+  <color name="grey43" red="110" green="110" blue="110 " compliance="SVG, X11" />
+  <color name="grey44" red="112" green="112" blue="112 " compliance="SVG, X11" />
+  <color name="grey45" red="115" green="115" blue="115 " compliance="SVG, X11" />
+  <color name="grey46" red="117" green="117" blue="117 " compliance="SVG, X11" />
+  <color name="grey47" red="120" green="120" blue="120 " compliance="SVG, X11" />
+  <color name="grey48" red="122" green="122" blue="122 " compliance="SVG, X11" />
+  <color name="grey49" red="125" green="125" blue="125 " compliance="SVG, X11" />
+  <color name="grey5" red="13" green="13" blue="13 " compliance="SVG, X11" />
+  <color name="grey50" red="127" green="127" blue="127 " compliance="SVG, X11" />
+  <color name="grey51" red="130" green="130" blue="130 " compliance="SVG, X11" />
+  <color name="grey52" red="133" green="133" blue="133 " compliance="SVG, X11" />
+  <color name="grey53" red="135" green="135" blue="135 " compliance="SVG, X11" />
+  <color name="grey54" red="138" green="138" blue="138 " compliance="SVG, X11" />
+  <color name="grey55" red="140" green="140" blue="140 " compliance="SVG, X11" />
+  <color name="grey56" red="143" green="143" blue="143 " compliance="SVG, X11" />
+  <color name="grey57" red="145" green="145" blue="145 " compliance="SVG, X11" />
+  <color name="grey58" red="148" green="148" blue="148 " compliance="SVG, X11" />
+  <color name="grey59" red="150" green="150" blue="150 " compliance="SVG, X11" />
+  <color name="grey6" red="15" green="15" blue="15 " compliance="SVG, X11" />
+  <color name="grey60" red="153" green="153" blue="153 " compliance="SVG, X11" />
+  <color name="grey61" red="156" green="156" blue="156 " compliance="SVG, X11" />
+  <color name="grey62" red="158" green="158" blue="158 " compliance="SVG, X11" />
+  <color name="grey63" red="161" green="161" blue="161 " compliance="SVG, X11" />
+  <color name="grey64" red="163" green="163" blue="163 " compliance="SVG, X11" />
+  <color name="grey65" red="166" green="166" blue="166 " compliance="SVG, X11" />
+  <color name="grey66" red="168" green="168" blue="168 " compliance="SVG, X11" />
+  <color name="grey67" red="171" green="171" blue="171 " compliance="SVG, X11" />
+  <color name="grey68" red="173" green="173" blue="173 " compliance="SVG, X11" />
+  <color name="grey69" red="176" green="176" blue="176 " compliance="SVG, X11" />
+  <color name="grey7" red="18" green="18" blue="18 " compliance="SVG, X11" />
+  <color name="grey70" red="179" green="179" blue="179 " compliance="SVG, X11" />
+  <color name="grey71" red="181" green="181" blue="181 " compliance="SVG, X11" />
+  <color name="grey72" red="184" green="184" blue="184 " compliance="SVG, X11" />
+  <color name="grey73" red="186" green="186" blue="186 " compliance="SVG, X11" />
+  <color name="grey74" red="189" green="189" blue="189 " compliance="SVG, X11" />
+  <color name="grey75" red="191" green="191" blue="191 " compliance="SVG, X11" />
+  <color name="grey76" red="194" green="194" blue="194 " compliance="SVG, X11" />
+  <color name="grey77" red="196" green="196" blue="196 " compliance="SVG, X11" />
+  <color name="grey78" red="199" green="199" blue="199 " compliance="SVG, X11" />
+  <color name="grey79" red="201" green="201" blue="201 " compliance="SVG, X11" />
+  <color name="grey8" red="20" green="20" blue="20 " compliance="SVG, X11" />
+  <color name="grey80" red="204" green="204" blue="204 " compliance="SVG, X11" />
+  <color name="grey81" red="207" green="207" blue="207 " compliance="SVG, X11" />
+  <color name="grey82" red="209" green="209" blue="209 " compliance="SVG, X11" />
+  <color name="grey83" red="212" green="212" blue="212 " compliance="SVG, X11" />
+  <color name="grey84" red="214" green="214" blue="214 " compliance="SVG, X11" />
+  <color name="grey85" red="217" green="217" blue="217 " compliance="SVG, X11" />
+  <color name="grey86" red="219" green="219" blue="219 " compliance="SVG, X11" />
+  <color name="grey87" red="222" green="222" blue="222 " compliance="SVG, X11" />
+  <color name="grey88" red="224" green="224" blue="224 " compliance="SVG, X11" />
+  <color name="grey89" red="227" green="227" blue="227 " compliance="SVG, X11" />
+  <color name="grey9" red="23" green="23" blue="23 " compliance="SVG, X11" />
+  <color name="grey90" red="229" green="229" blue="229 " compliance="SVG, X11" />
+  <color name="grey91" red="232" green="232" blue="232 " compliance="SVG, X11" />
+  <color name="grey92" red="235" green="235" blue="235 " compliance="SVG, X11" />
+  <color name="grey93" red="237" green="237" blue="237 " compliance="SVG, X11" />
+  <color name="grey94" red="240" green="240" blue="240 " compliance="SVG, X11" />
+  <color name="grey95" red="242" green="242" blue="242 " compliance="SVG, X11" />
+  <color name="grey96" red="245" green="245" blue="245 " compliance="SVG, X11" />
+  <color name="grey97" red="247" green="247" blue="247 " compliance="SVG, X11" />
+  <color name="grey98" red="250" green="250" blue="250 " compliance="SVG, X11" />
+  <color name="grey99" red="252" green="252" blue="252 " compliance="SVG, X11" />
+  <color name="honeydew" red="240" green="255" blue="240" compliance="SVG, X11, XPM" />
+  <color name="honeydew1" red="240" green="255" blue="240" compliance="X11" />
+  <color name="honeydew2" red="224" green="238" blue="224" compliance="X11" />
+  <color name="honeydew3" red="193" green="205" blue="193" compliance="X11" />
+  <color name="honeydew4" red="131" green="139" blue="131" compliance="X11" />
+  <color name="HotPink" red="255" green="105" blue="180" compliance="SVG, X11, XPM" />
+  <color name="HotPink1" red="255" green="110" blue="180" compliance="X11" />
+  <color name="HotPink2" red="238" green="106" blue="167" compliance="X11" />
+  <color name="HotPink3" red="205" green="96" blue="144" compliance="X11" />
+  <color name="HotPink4" red="139" green="58" blue="98" compliance="X11" />
+  <color name="IndianRed" red="205" green="92" blue="92" compliance="SVG, X11, XPM" />
+  <color name="IndianRed1" red="255" green="106" blue="106" compliance="X11" />
+  <color name="IndianRed2" red="238" green="99" blue="99" compliance="X11" />
+  <color name="IndianRed3" red="205" green="85" blue="85" compliance="X11" />
+  <color name="IndianRed4" red="139" green="58" blue="58" compliance="X11" />
+  <color name="indigo" red="75" green="0" blue="130" compliance="SVG" />
+  <color name="ivory" red="255" green="255" blue="240" compliance="SVG, X11, XPM" />
+  <color name="ivory1" red="255" green="255" blue="240" compliance="X11" />
+  <color name="ivory2" red="238" green="238" blue="224" compliance="X11" />
+  <color name="ivory3" red="205" green="205" blue="193" compliance="X11" />
+  <color name="ivory4" red="139" green="139" blue="131" compliance="X11" />
+  <color name="khaki" red="240" green="230" blue="140" compliance="SVG, X11, XPM" />
+  <color name="khaki1" red="255" green="246" blue="143" compliance="X11" />
+  <color name="khaki2" red="238" green="230" blue="133" compliance="X11" />
+  <color name="khaki3" red="205" green="198" blue="115" compliance="X11" />
+  <color name="khaki4" red="139" green="134" blue="78" compliance="X11" />
+  <color name="lavender" red="230" green="230" blue="250" compliance="SVG, X11, XPM" />
+  <color name="LavenderBlush" red="255" green="240" blue="245" compliance="SVG, X11, XPM" />
+  <color name="LavenderBlush1" red="255" green="240" blue="245" compliance="X11" />
+  <color name="LavenderBlush2" red="238" green="224" blue="229" compliance="X11" />
+  <color name="LavenderBlush3" red="205" green="193" blue="197" compliance="X11" />
+  <color name="LavenderBlush4" red="139" green="131" blue="134" compliance="X11" />
+  <color name="LawnGreen" red="124" green="252" blue="0" compliance="SVG, X11, XPM" />
+  <color name="LemonChiffon" red="255" green="250" blue="205" compliance="SVG, X11, XPM" />
+  <color name="LemonChiffon1" red="255" green="250" blue="205" compliance="X11" />
+  <color name="LemonChiffon2" red="238" green="233" blue="191" compliance="X11" />
+  <color name="LemonChiffon3" red="205" green="201" blue="165" compliance="X11" />
+  <color name="LemonChiffon4" red="139" green="137" blue="112" compliance="X11" />
+  <color name="LightBlue" red="173" green="216" blue="230" compliance="SVG, X11, XPM" />
+  <color name="LightBlue1" red="191" green="239" blue="255" compliance="X11" />
+  <color name="LightBlue2" red="178" green="223" blue="238" compliance="X11" />
+  <color name="LightBlue3" red="154" green="192" blue="205" compliance="X11" />
+  <color name="LightBlue4" red="104" green="131" blue="139" compliance="X11" />
+  <color name="LightCoral" red="240" green="128" blue="128" compliance="SVG, X11, XPM" />
+  <color name="LightCyan" red="224" green="255" blue="255" compliance="SVG, X11, XPM" />
+  <color name="LightCyan1" red="224" green="255" blue="255" compliance="X11" />
+  <color name="LightCyan2" red="209" green="238" blue="238" compliance="X11" />
+  <color name="LightCyan3" red="180" green="205" blue="205" compliance="X11" />
+  <color name="LightCyan4" red="122" green="139" blue="139" compliance="X11" />
+  <color name="LightGoldenrod" red="238" green="221" blue="130" compliance="X11, XPM" />
+  <color name="LightGoldenrod1" red="255" green="236" blue="139" compliance="X11" />
+  <color name="LightGoldenrod2" red="238" green="220" blue="130" compliance="X11" />
+  <color name="LightGoldenrod3" red="205" green="190" blue="112" compliance="X11" />
+  <color name="LightGoldenrod4" red="139" green="129" blue="76" compliance="X11" />
+  <color name="LightGoldenrodYellow" red="250" green="250" blue="210" compliance="SVG, X11, XPM" />
+  <color name="LightGray" red="211" green="211" blue="211" compliance="SVG, X11, XPM" />
+  <color name="LightGreen" red="144" green="238" blue="144" compliance="SVG, X11" />
+  <color name="LightGrey" red="211" green="211" blue="211" compliance="SVG, X11" />
+  <color name="LightPink" red="255" green="182" blue="193" compliance="SVG, X11, XPM" />
+  <color name="LightPink1" red="255" green="174" blue="185" compliance="X11" />
+  <color name="LightPink2" red="238" green="162" blue="173" compliance="X11" />
+  <color name="LightPink3" red="205" green="140" blue="149" compliance="X11" />
+  <color name="LightPink4" red="139" green="95" blue="101" compliance="X11" />
+  <color name="LightSalmon" red="255" green="160" blue="122" compliance="SVG, X11, XPM" />
+  <color name="LightSalmon1" red="255" green="160" blue="122" compliance="X11" />
+  <color name="LightSalmon2" red="238" green="149" blue="114" compliance="X11" />
+  <color name="LightSalmon3" red="205" green="129" blue="98" compliance="X11" />
+  <color name="LightSalmon4" red="139" green="87" blue="66" compliance="X11" />
+  <color name="LightSeaGreen" red="32" green="178" blue="170" compliance="SVG, X11, XPM" />
+  <color name="LightSkyBlue" red="135" green="206" blue="250" compliance="SVG, X11, XPM" />
+  <color name="LightSkyBlue1" red="176" green="226" blue="255" compliance="X11" />
+  <color name="LightSkyBlue2" red="164" green="211" blue="238" compliance="X11" />
+  <color name="LightSkyBlue3" red="141" green="182" blue="205" compliance="X11" />
+  <color name="LightSkyBlue4" red="96" green="123" blue="139" compliance="X11" />
+  <color name="LightSlateBlue" red="132" green="112" blue="255" compliance="X11, XPM" />
+  <color name="LightSlateGray" red="119" green="136" blue="153" compliance="SVG, X11, XPM" />
+  <color name="LightSlateGrey" red="119" green="136" blue="153" compliance="SVG, X11" />
+  <color name="LightSteelBlue" red="176" green="196" blue="222" compliance="SVG, X11, XPM" />
+  <color name="LightSteelBlue1" red="202" green="225" blue="255" compliance="X11" />
+  <color name="LightSteelBlue2" red="188" green="210" blue="238" compliance="X11" />
+  <color name="LightSteelBlue3" red="162" green="181" blue="205" compliance="X11" />
+  <color name="LightSteelBlue4" red="110" green="123" blue="139" compliance="X11" />
+  <color name="LightYellow" red="255" green="255" blue="224" compliance="SVG, X11, XPM" />
+  <color name="LightYellow1" red="255" green="255" blue="224" compliance="X11" />
+  <color name="LightYellow2" red="238" green="238" blue="209" compliance="X11" />
+  <color name="LightYellow3" red="205" green="205" blue="180" compliance="X11" />
+  <color name="LightYellow4" red="139" green="139" blue="122" compliance="X11" />
+  <color name="lime" red="0" green="255" blue="0" compliance="SVG" />
+  <color name="LimeGreen" red="50" green="205" blue="50" compliance="SVG, X11, XPM" />
+  <color name="linen" red="250" green="240" blue="230" compliance="SVG, X11, XPM" />
+  <color name="magenta" red="255" green="0" blue="255" compliance="SVG" />
+  <color name="magenta" red="255" green="0" blue="255" compliance="X11, XPM" />
+  <color name="magenta1" red="255" green="0" blue="255" compliance="X11" />
+  <color name="magenta2" red="238" green="0" blue="238" compliance="X11" />
+  <color name="magenta3" red="205" green="0" blue="205" compliance="X11" />
+  <color name="magenta4" red="139" green="0" blue="139" compliance="X11" />
+  <color name="maroon" red="128" green="0" blue="0" compliance="SVG" />
+  <color name="maroon" red="176" green="48" blue="96" compliance="X11, XPM" />
+  <color name="maroon1" red="255" green="52" blue="179" compliance="X11" />
+  <color name="maroon2" red="238" green="48" blue="167" compliance="X11" />
+  <color name="maroon3" red="205" green="41" blue="144" compliance="X11" />
+  <color name="maroon4" red="139" green="28" blue="98" compliance="X11" />
+  <color name="MediumAquamarine" red="102" green="205" blue="170" compliance="SVG, X11, XPM" />
+  <color name="MediumBlue" red="0" green="0" blue="205" compliance="SVG, X11, XPM" />
+  <color name="MediumForestGreen" red="50" green="129" blue="75" compliance="X11, XPM" />
+  <color name="MediumGoldenRod" red="209" green="193" blue="102" compliance="X11, XPM" />
+  <color name="MediumOrchid" red="186" green="85" blue="211" compliance="SVG, X11, XPM" />
+  <color name="MediumOrchid1" red="224" green="102" blue="255" compliance="X11" />
+  <color name="MediumOrchid2" red="209" green="95" blue="238" compliance="X11" />
+  <color name="MediumOrchid3" red="180" green="82" blue="205" compliance="X11" />
+  <color name="MediumOrchid4" red="122" green="55" blue="139" compliance="X11" />
+  <color name="MediumPurple" red="147" green="112" blue="219" compliance="SVG, X11, XPM" />
+  <color name="MediumPurple1" red="171" green="130" blue="255" compliance="X11" />
+  <color name="MediumPurple2" red="159" green="121" blue="238" compliance="X11" />
+  <color name="MediumPurple3" red="137" green="104" blue="205" compliance="X11" />
+  <color name="MediumPurple4" red="93" green="71" blue="139" compliance="X11" />
+  <color name="MediumSeaGreen" red="60" green="179" blue="113" compliance="SVG, X11, XPM" />
+  <color name="MediumSlateBlue" red="123" green="104" blue="238" compliance="SVG, X11, XPM" />
+  <color name="MediumSpringGreen" red="0" green="250" blue="154" compliance="SVG, X11, XPM" />
+  <color name="MediumTurquoise" red="72" green="209" blue="204" compliance="SVG, X11, XPM" />
+  <color name="MediumVioletRed" red="199" green="21" blue="133" compliance="SVG, X11, XPM" />
+  <color name="MidnightBlue" red="25" green="25" blue="112" compliance="SVG, X11, XPM" />
+  <color name="MintCream" red="245" green="255" blue="250" compliance="SVG, X11, XPM" />
+  <color name="MistyRose" red="255" green="228" blue="225" compliance="SVG, X11, XPM" />
+  <color name="MistyRose1" red="255" green="228" blue="225" compliance="X11" />
+  <color name="MistyRose2" red="238" green="213" blue="210" compliance="X11" />
+  <color name="MistyRose3" red="205" green="183" blue="181" compliance="X11" />
+  <color name="MistyRose4" red="139" green="125" blue="123" compliance="X11" />
+  <color name="moccasin" red="255" green="228" blue="181" compliance="SVG, X11, XPM" />
+  <color name="NavajoWhite" red="255" green="222" blue="173" compliance="SVG, X11, XPM" />
+  <color name="NavajoWhite1" red="255" green="222" blue="173" compliance="X11" />
+  <color name="NavajoWhite2" red="238" green="207" blue="161" compliance="X11" />
+  <color name="NavajoWhite3" red="205" green="179" blue="139" compliance="X11" />
+  <color name="NavajoWhite4" red="139" green="121" blue="94" compliance="X11" />
+  <color name="navy" red="0" green="0" blue="128" compliance="SVG, X11, XPM" />
+  <color name="NavyBlue" red="0" green="0" blue="128" compliance="X11, XPM" />
+  <color name="none" red="0" green="0" blue="0" opacity="255" compliance="SVG" />
+  <color name="OldLace" red="253" green="245" blue="230" compliance="SVG, X11, XPM" />
+  <color name="olive" red="128" green="128" blue="0" compliance="SVG" />
+  <color name="OliveDrab" red="107" green="142" blue="35" compliance="SVG, X11, XPM" />
+  <color name="OliveDrab1" red="192" green="255" blue="62" compliance="X11" />
+  <color name="OliveDrab2" red="179" green="238" blue="58" compliance="X11" />
+  <color name="OliveDrab3" red="154" green="205" blue="50" compliance="X11" />
+  <color name="OliveDrab4" red="105" green="139" blue="34" compliance="X11" />
+  <color name="opaque" opacity="0" compliance="SVG" />
+  <color name="orange" red="255" green="165" blue="0" compliance="SVG, X11, XPM" />
+  <color name="orange1" red="255" green="165" blue="0" compliance="X11" />
+  <color name="orange2" red="238" green="154" blue="0" compliance="X11" />
+  <color name="orange3" red="205" green="133" blue="0" compliance="X11" />
+  <color name="orange4" red="139" green="90" blue="0" compliance="X11" />
+  <color name="OrangeRed" red="255" green="69" blue="0" compliance="SVG, X11, XPM" />
+  <color name="OrangeRed1" red="255" green="69" blue="0" compliance="X11" />
+  <color name="OrangeRed2" red="238" green="64" blue="0" compliance="X11" />
+  <color name="OrangeRed3" red="205" green="55" blue="0" compliance="X11" />
+  <color name="OrangeRed4" red="139" green="37" blue="0" compliance="X11" />
+  <color name="orchid" red="218" green="112" blue="214" compliance="SVG, X11, XPM" />
+  <color name="orchid1" red="255" green="131" blue="250" compliance="X11" />
+  <color name="orchid2" red="238" green="122" blue="233" compliance="X11" />
+  <color name="orchid3" red="205" green="105" blue="201" compliance="X11" />
+  <color name="orchid4" red="139" green="71" blue="137" compliance="X11" />
+  <color name="PaleGoldenrod" red="238" green="232" blue="170" compliance="SVG, X11, XPM" />
+  <color name="PaleGreen" red="152" green="251" blue="152" compliance="SVG, X11, XPM" />
+  <color name="PaleGreen1" red="154" green="255" blue="154" compliance="X11" />
+  <color name="PaleGreen2" red="144" green="238" blue="144" compliance="X11" />
+  <color name="PaleGreen3" red="124" green="205" blue="124" compliance="X11" />
+  <color name="PaleGreen4" red="84" green="139" blue="84" compliance="X11" />
+  <color name="PaleTurquoise" red="175" green="238" blue="238" compliance="SVG, X11, XPM" />
+  <color name="PaleTurquoise1" red="187" green="255" blue="255" compliance="X11" />
+  <color name="PaleTurquoise2" red="174" green="238" blue="238" compliance="X11" />
+  <color name="PaleTurquoise3" red="150" green="205" blue="205" compliance="X11" />
+  <color name="PaleTurquoise4" red="102" green="139" blue="139" compliance="X11" />
+  <color name="PaleVioletRed" red="219" green="112" blue="147" compliance="SVG, X11, XPM" />
+  <color name="PaleVioletRed1" red="255" green="130" blue="171" compliance="X11" />
+  <color name="PaleVioletRed2" red="238" green="121" blue="159" compliance="X11" />
+  <color name="PaleVioletRed3" red="205" green="104" blue="137" compliance="X11" />
+  <color name="PaleVioletRed4" red="139" green="71" blue="93" compliance="X11" />
+  <color name="PapayaWhip" red="255" green="239" blue="213" compliance="SVG, X11, XPM" />
+  <color name="PeachPuff" red="255" green="218" blue="185" compliance="SVG, X11, XPM" />
+  <color name="PeachPuff1" red="255" green="218" blue="185" compliance="X11" />
+  <color name="PeachPuff2" red="238" green="203" blue="173" compliance="X11" />
+  <color name="PeachPuff3" red="205" green="175" blue="149" compliance="X11" />
+  <color name="PeachPuff4" red="139" green="119" blue="101" compliance="X11" />
+  <color name="peru" red="205" green="133" blue="63" compliance="SVG, X11, XPM" />
+  <color name="pink" red="255" green="192" blue="203" compliance="SVG, X11, XPM" />
+  <color name="pink1" red="255" green="181" blue="197" compliance="X11" />
+  <color name="pink2" red="238" green="169" blue="184" compliance="X11" />
+  <color name="pink3" red="205" green="145" blue="158" compliance="X11" />
+  <color name="pink4" red="139" green="99" blue="108" compliance="X11" />
+  <color name="plum" red="221" green="160" blue="221" compliance="SVG, X11, XPM" />
+  <color name="plum1" red="255" green="187" blue="255" compliance="X11" />
+  <color name="plum2" red="238" green="174" blue="238" compliance="X11" />
+  <color name="plum3" red="205" green="150" blue="205" compliance="X11" />
+  <color name="plum4" red="139" green="102" blue="139" compliance="X11" />
+  <color name="PowderBlue" red="176" green="224" blue="230" compliance="SVG, X11, XPM" />
+  <color name="purple" red="128" green="0" blue="128" compliance="SVG" />
+  <color name="purple" red="160" green="32" blue="240" compliance="X11, XPM" />
+  <color name="purple1" red="155" green="48" blue="255" compliance="X11" />
+  <color name="purple2" red="145" green="44" blue="238" compliance="X11" />
+  <color name="purple3" red="125" green="38" blue="205" compliance="X11" />
+  <color name="purple4" red="85" green="26" blue="139" compliance="X11" />
+  <color name="red" red="255" green="0" blue="0" compliance="SVG, X11, XPM" />
+  <color name="red1" red="255" green="0" blue="0" compliance="X11" />
+  <color name="red2" red="238" green="0" blue="0" compliance="X11" />
+  <color name="red3" red="205" green="0" blue="0" compliance="X11" />
+  <color name="red4" red="139" green="0" blue="0" compliance="X11" />
+  <color name="RosyBrown" red="188" green="143" blue="143" compliance="SVG, X11, XPM" />
+  <color name="RosyBrown1" red="255" green="193" blue="193" compliance="X11" />
+  <color name="RosyBrown2" red="238" green="180" blue="180" compliance="X11" />
+  <color name="RosyBrown3" red="205" green="155" blue="155" compliance="X11" />
+  <color name="RosyBrown4" red="139" green="105" blue="105" compliance="X11" />
+  <color name="RoyalBlue" red="65" green="105" blue="225" compliance="SVG, X11, XPM" />
+  <color name="RoyalBlue1" red="72" green="118" blue="255" compliance="X11" />
+  <color name="RoyalBlue2" red="67" green="110" blue="238" compliance="X11" />
+  <color name="RoyalBlue3" red="58" green="95" blue="205" compliance="X11" />
+  <color name="RoyalBlue4" red="39" green="64" blue="139" compliance="X11" />
+  <color name="SaddleBrown" red="139" green="69" blue="19" compliance="SVG, X11, XPM" />
+  <color name="salmon" red="250" green="128" blue="114" compliance="SVG, X11, XPM" />
+  <color name="salmon1" red="255" green="140" blue="105" compliance="X11" />
+  <color name="salmon2" red="238" green="130" blue="98" compliance="X11" />
+  <color name="salmon3" red="205" green="112" blue="84" compliance="X11" />
+  <color name="salmon4" red="139" green="76" blue="57" compliance="X11" />
+  <color name="SandyBrown" red="244" green="164" blue="96" compliance="SVG, X11, XPM" />
+  <color name="SeaGreen" red="46" green="139" blue="87" compliance="SVG, X11, XPM" />
+  <color name="SeaGreen1" red="84" green="255" blue="159" compliance="X11" />
+  <color name="SeaGreen2" red="78" green="238" blue="148" compliance="X11" />
+  <color name="SeaGreen3" red="67" green="205" blue="128" compliance="X11" />
+  <color name="SeaGreen4" red="46" green="139" blue="87" compliance="X11" />
+  <color name="seashell" red="255" green="245" blue="238" compliance="SVG, X11, XPM" />
+  <color name="seashell1" red="255" green="245" blue="238" compliance="X11" />
+  <color name="seashell2" red="238" green="229" blue="222" compliance="X11" />
+  <color name="seashell3" red="205" green="197" blue="191" compliance="X11" />
+  <color name="seashell4" red="139" green="134" blue="130" compliance="X11" />
+  <color name="sienna" red="160" green="82" blue="45" compliance="SVG, X11, XPM" />
+  <color name="sienna1" red="255" green="130" blue="71" compliance="X11" />
+  <color name="sienna2" red="238" green="121" blue="66" compliance="X11" />
+  <color name="sienna3" red="205" green="104" blue="57" compliance="X11" />
+  <color name="sienna4" red="139" green="71" blue="38" compliance="X11" />
+  <color name="silver" red="192" green="192" blue="192" compliance="SVG" />
+  <color name="SkyBlue" red="135" green="206" blue="235" compliance="SVG, X11, XPM" />
+  <color name="SkyBlue1" red="135" green="206" blue="255" compliance="X11" />
+  <color name="SkyBlue2" red="126" green="192" blue="238" compliance="X11" />
+  <color name="SkyBlue3" red="108" green="166" blue="205" compliance="X11" />
+  <color name="SkyBlue4" red="74" green="112" blue="139" compliance="X11" />
+  <color name="SlateBlue" red="106" green="90" blue="205" compliance="SVG, X11, XPM" />
+  <color name="SlateBlue1" red="131" green="111" blue="255" compliance="X11" />
+  <color name="SlateBlue2" red="122" green="103" blue="238" compliance="X11" />
+  <color name="SlateBlue3" red="105" green="89" blue="205" compliance="X11" />
+  <color name="SlateBlue4" red="71" green="60" blue="139" compliance="X11" />
+  <color name="SlateGray" red="112" green="128" blue="144" compliance="SVG, X11, XPM" />
+  <color name="SlateGray1" red="198" green="226" blue="255" compliance="X11" />
+  <color name="SlateGray2" red="185" green="211" blue="238" compliance="X11" />
+  <color name="SlateGray3" red="159" green="182" blue="205" compliance="X11" />
+  <color name="SlateGray4" red="108" green="123" blue="139" compliance="X11" />
+  <color name="SlateGrey" red="112" green="128" blue="144" compliance="SVG, X11" />
+  <color name="snow" red="255" green="250" blue="250" compliance="SVG, X11, XPM" />
+  <color name="snow1" red="255" green="250" blue="250" compliance="X11" />
+  <color name="snow2" red="238" green="233" blue="233" compliance="X11" />
+  <color name="snow3" red="205" green="201" blue="201" compliance="X11" />
+  <color name="snow4" red="139" green="137" blue="137" compliance="X11" />
+  <color name="SpringGreen" red="0" green="255" blue="127" compliance="SVG, X11, XPM" />
+  <color name="SpringGreen1" red="0" green="255" blue="127" compliance="X11" />
+  <color name="SpringGreen2" red="0" green="238" blue="118" compliance="X11" />
+  <color name="SpringGreen3" red="0" green="205" blue="102" compliance="X11" />
+  <color name="SpringGreen4" red="0" green="139" blue="69" compliance="X11" />
+  <color name="SteelBlue" red="70" green="130" blue="180" compliance="SVG, X11, XPM" />
+  <color name="SteelBlue1" red="99" green="184" blue="255" compliance="X11" />
+  <color name="SteelBlue2" red="92" green="172" blue="238" compliance="X11" />
+  <color name="SteelBlue3" red="79" green="148" blue="205" compliance="X11" />
+  <color name="SteelBlue4" red="54" green="100" blue="139" compliance="X11" />
+  <color name="tan" red="210" green="180" blue="140" compliance="SVG, X11, XPM" />
+  <color name="tan1" red="255" green="165" blue="79" compliance="X11" />
+  <color name="tan2" red="238" green="154" blue="73" compliance="X11" />
+  <color name="tan3" red="205" green="133" blue="63" compliance="X11" />
+  <color name="tan4" red="139" green="90" blue="43" compliance="X11" />
+  <color name="teal" red="0" green="128" blue="128" compliance="SVG" />
+  <color name="thistle" red="216" green="191" blue="216" compliance="SVG, X11, XPM" />
+  <color name="thistle1" red="255" green="225" blue="255" compliance="X11" />
+  <color name="thistle2" red="238" green="210" blue="238" compliance="X11" />
+  <color name="thistle3" red="205" green="181" blue="205" compliance="X11" />
+  <color name="thistle4" red="139" green="123" blue="139" compliance="X11" />
+  <color name="tomato" red="255" green="99" blue="71" compliance="SVG, X11, XPM" />
+  <color name="tomato1" red="255" green="99" blue="71" compliance="X11" />
+  <color name="tomato2" red="238" green="92" blue="66" compliance="X11" />
+  <color name="tomato3" red="205" green="79" blue="57" compliance="X11" />
+  <color name="tomato4" red="139" green="54" blue="38" compliance="X11" />
+  <color name="transparent" opacity="255" compliance="SVG" />
+  <color name="turquoise" red="64" green="224" blue="208" compliance="SVG, X11, XPM" />
+  <color name="turquoise1" red="0" green="245" blue="255" compliance="X11" />
+  <color name="turquoise2" red="0" green="229" blue="238" compliance="X11" />
+  <color name="turquoise3" red="0" green="197" blue="205" compliance="X11" />
+  <color name="turquoise4" red="0" green="134" blue="139" compliance="X11" />
+  <color name="violet" red="238" green="130" blue="238" compliance="SVG, X11, XPM" />
+  <color name="VioletRed" red="208" green="32" blue="144" compliance="X11, XPM" />
+  <color name="VioletRed1" red="255" green="62" blue="150" compliance="X11" />
+  <color name="VioletRed2" red="238" green="58" blue="140" compliance="X11" />
+  <color name="VioletRed3" red="205" green="50" blue="120" compliance="X11" />
+  <color name="VioletRed4" red="139" green="34" blue="82" compliance="X11" />
+  <color name="wheat" red="245" green="222" blue="179" compliance="SVG, X11, XPM" />
+  <color name="wheat1" red="255" green="231" blue="186" compliance="X11" />
+  <color name="wheat2" red="238" green="216" blue="174" compliance="X11" />
+  <color name="wheat3" red="205" green="186" blue="150" compliance="X11" />
+  <color name="wheat4" red="139" green="126" blue="102" compliance="X11" />
+  <color name="white" red="255" green="255" blue="255" compliance="SVG, X11" />
+  <color name="WhiteSmoke" red="245" green="245" blue="245" compliance="SVG, X11, XPM" />
+  <color name="yellow" red="255" green="255" blue="0" compliance="SVG, X11, XPM" />
+  <color name="yellow1" red="255" green="255" blue="0" compliance="X11" />
+  <color name="yellow2" red="238" green="238" blue="0" compliance="X11" />
+  <color name="yellow3" red="205" green="205" blue="0" compliance="X11" />
+  <color name="yellow4" red="139" green="139" blue="0" compliance="X11" />
+  <color name="YellowGreen" red="154" green="205" blue="50" compliance="SVG, X11, XPM" />
+</colormap>

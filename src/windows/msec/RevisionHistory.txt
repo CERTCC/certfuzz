@@ -1,0 +1,70 @@
+Microsoft Public License (Ms-PL)
+This license governs use of the accompanying software. If you use the software, you accept this license. If you do not accept the license, do not use the software.
+
+Definitions
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under U.S. copyright law. A "contribution" is the original software, or any additions or changes to the software. A "contributor" is any person that distributes its contribution under this license. "Licensed patents" are a contributor's patent claims that read directly on its contribution.
+Grant of Rights
+(A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
+(B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+Conditions and Limitations
+(A) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks. 
+(B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically. 
+(C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software. 
+(D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license. 
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees, or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+
+1.0.1 Updates:
+
+A bug that resulted in overtainting H or L registers has been fixed.
+Initial External Release: March, 2009
+
+1.0.2 Updates:
+
+When loading user mode mini-dumps, the Gather rule now correctly sets the stack context.
+
+1.0.3 Updates:
+
+New state and gather functionality and analyze rules to identify exceptions where the faulting address is on the stack.
+Hashes are fixed at 32 bit display (8 hex characters) and code locations are fixed at 64 bit display (16 hex characters).
+Added support for the REP SCAS instruction in the disassembler
+Fixed a serious bug in the wildcard match function, which would result in anything that matched up to the first wildcard matching the entire string
+Fixed a bug in which the destination pointer registers were not being set to the tainted value set for Write AVs that required taint analysis
+Fixed bugs in the distinction between source and data registers for taint tracking in some rep instructions
+
+1.0.4 Updates:
+
+Fixed a reporting and analysis bug, in which we change the faulting instruction as well as the invoking function when we skip excluded stack frames
+
+1.0.5 Updates:
+
+Updates to the excluded symbols list
+Handle POP instructions that pop to memory
+Handle PUSH instructions that push to memory
+Treat POP instructions to memory the same as MOV instructions to memory
+
+1.0.6 Updates:
+
+External Release: June, 2009
+
+1.6.0 Updates:
+
+ARM Dump Support Added
+Changed default hashing algorithm to SHA256
+Added Support to chose the hashing algorithm used (for backwards compatability) 
+Added support for custom exclude hash list
+Updated -v output to show which frames are used to determine the major and minor hash
+Added version number logging
+Added line number and source file reporting
+Added checking for exception handler chain corruption as an Exploitable case
+Added Stack Exhaustion as a Probably Not Exploitable case
+Added more AppVerifier symbols to the excluded symbols list
+Added checking for kernel mode code running in Userland as an Exploitable case
+Moved "Read AV Near Null" to terminal rule status
+Added "App Verifier Stop Detected"
+Moved "Read AV Near Null" to Probably Not Exploitable
+Moved "Write AV Near Null" to Unknown
+Added the XLAT command for x86 and x64  
+Correctly pull the TEB32 for WOW process on 64 bit Windows
+Translate stack exhaustion cases that manifest as Write AVs into stack exhaustion
+Changed the naming of Stack Overflow to Stack Exhaustion
+Fixed a bug in the logic determining if code is in user or kernel space

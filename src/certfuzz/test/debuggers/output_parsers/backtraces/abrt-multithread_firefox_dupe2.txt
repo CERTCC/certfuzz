@@ -1,0 +1,389 @@
+Debuginfo absent: 06d8d77becfb4505090aa9cd5b84d09510f8512a
+Debuginfo absent: 07c80fa4870166204eb6363c484b76c02f74bf60
+Debuginfo absent: 0afdfc236fadadc174323855991e9afa63360400
+Debuginfo absent: 0e2bd5899cb65bdb1e2aab651f8bde31bd7ede66
+Debuginfo absent: 107d7cc9578839fac5cb9c5585a5b39f1d3dd54d
+Debuginfo absent: 145c712e218ab327cdd16ff523056c8ab2c68294
+Debuginfo absent: 18232c568b1771dc45a8c58c2307f09ce1a4b1e6
+Debuginfo absent: 1a76bc4ab5e567c75e5a72615e826fd2f2100e7f
+Debuginfo absent: 1f31f561b10e68203283a35e0f1f8bf0ad46c84e
+Debuginfo absent: 1f8e668947954f803feffc94474f9db284ac0dbd
+Debuginfo absent: 27e274ee3497e10433f42cf71b38cff8c17ea61b
+Debuginfo absent: 2b03aa03331551a7e2d7fd2470b99af863e7c9e1
+Debuginfo absent: 2e68954d07473d030484df60148109e3b80b8599
+Debuginfo absent: 305121b43032ef716f9dc43aeb5ea677fb526ac1
+Debuginfo absent: 34fafaa8007ee23182c82ffdb451a09372dafb38
+Debuginfo absent: 38f63b34a9903961783c898f1ec03776f67e8353
+Debuginfo absent: 3b51ac5dab1c56027936dd97728584ffdb4dfdd0
+Debuginfo absent: 3d9bb0c1d4b2a6125136c2e723ccccf4ff5e8760
+Debuginfo absent: 3e54d572ee7b17e75b1e906319d01b6751b37c1c
+Debuginfo absent: 3effdc022c31fc950354529e91716176062beb7d
+Debuginfo absent: 495bb799cd7eb851396c1036cb62ca16b3ed35e8
+Debuginfo absent: 4acf37c62fea6363daca7583f04c58f98d1a3817
+Debuginfo absent: 4c4b1ca2393197e6658f351112ec2ea2f32f9ced
+Debuginfo absent: 5162d25dc72794f99199a638c614855c43e7c463
+Debuginfo absent: 532e373b4d6507d07d8a21d30500032cc164c069
+Debuginfo absent: 545010cbf785579857327036a398bf9765de4b52
+Debuginfo absent: 55df7a794c3bc8790539a7f7ef6c514a46df0a4b
+Debuginfo absent: 5817ee215bd6a8bf94907e47887d2498d594a7bd
+Debuginfo absent: 58eb8a7b1c74f7facf01ffd3e9b3a10fafdf05ce
+Debuginfo absent: 59d2beba6f56160b8534ac6d5775c03f16060e57
+Debuginfo absent: 620d35288a3137687ca0a2ef1917ef543d6b5869
+Debuginfo absent: 70442bbe5a18de9fadde6813888b932fd25d10bc
+Debuginfo absent: 705bd8af4261e7f187b0f8a96035aed2dc886703
+Debuginfo absent: 721dc6fcf0fe50082620b51af31910d1e4881914
+Debuginfo absent: 7b70990d5833421f5be4c434da7f86d689ea3a09
+Debuginfo absent: 7e77fbb92ca33efee0d2ff6d661b4f840b6d31e9
+Debuginfo absent: 801f64a7cad24d117872a4f8a48fa914e039612d
+Debuginfo absent: 807f229b55b62fa651b04b52dfcbb6ad7d81cd39
+Debuginfo absent: 8118e6a504839566437c96cc607cc01b19bc06cb
+Debuginfo absent: 8138d7086fb9c194f9a56e20ea1fd248bae0069d
+Debuginfo absent: 853e5003c22ee1f13a324b06d97701fb391f3ee5
+Debuginfo absent: 8ae7bb8df77cf7fa71cbcd68cf6abca1b1bd37d4
+Debuginfo absent: 8cc3581d4b5f2e89b61e9fc4847ddb448b8cf148
+Debuginfo absent: 8f4ef52c048c3d388efe759c65cbda44e68ad023
+Debuginfo absent: 907663f8d4e6fc9bab5b4e063d39e02dd3cb9fba
+Debuginfo absent: 9574eb17d99846ad456596412d9d4ce3f7b7bb12
+Debuginfo absent: 9811ecab8fc33e6ae5646ef795cd4fb175207b86
+Debuginfo absent: 98c7a6807f7d1a47d39345251721e171da4414b3
+Debuginfo absent: 9b1838e94352154046ccb8e95f396253514a11fb
+Debuginfo absent: 9e1e0d217f3357cf446a81ad7037fa12af274591
+Debuginfo absent: a476f766090db5315218339ba7b0931b5903ec8d
+Debuginfo absent: a4ea777d59b2b53fa4ec1c640fd673402eb11edc
+Debuginfo absent: aa6d304c0ae6390b184ef192fce82d0fb44f7237
+Debuginfo absent: ac156f1387cdcb57ed417cbcf2d57506ec379d93
+Debuginfo absent: acc7eba1bd117a8c8ccf811817caa0bba9271e61
+Debuginfo absent: adf0f56d7d44f97dacab8f2a7e220ec0ec237207
+Debuginfo absent: b00b467fcc818a876a08e651fce4b9e0080cda20
+Debuginfo absent: b034036224f1d8744d5ced6518f8967650820b82
+Debuginfo absent: b39971f19bf623c1e15d8b4f41011cce3bb74487
+Debuginfo absent: b4bc23210070d1f0a40d709467750b95b9886cec
+Debuginfo absent: b76103f4198b5c1180100aa6392db35ab1b2f65a
+Debuginfo absent: b7a1050afe60879f2e7f642ebda421aec5474eb5
+Debuginfo absent: baa242a8bdcf86affaad04905ba0453cc0c5e198
+Debuginfo absent: bc7c3aa6105cf751be23c371dfd8f18d1081af4f
+Debuginfo absent: c218ad98f1471ba685999fca36dec77069af6f7f
+Debuginfo absent: c24986e8ecf400b82127f745363b273e5d6a7506
+Debuginfo absent: c477a329df1b964f8b4ab58af62079dedb223039
+Debuginfo absent: c5648269bc13e6791c72dc2a45a85a6dfe53a7a0
+Debuginfo absent: c58f016c5c8e1db95f0dbad8a8a0767d3a0d6fac
+Debuginfo absent: c5e5cfdaf7536b535576fce66380235c736fe314
+Debuginfo absent: c70ff93c83be3c9a7bb13f1b91fcd24dcee1b838
+Debuginfo absent: c9c5f75645c134167dc18a72d88f0c98141d6c6b
+Debuginfo absent: ced98f19673e83ee5e2eae7b2c7d517f010ce796
+Debuginfo absent: d162caa9ad468a574c36fa3b1be8cdd92d5ef893
+Debuginfo absent: d49914dcecd08774947bb70d0604cbedfae6e5a1
+Debuginfo absent: d63906f328166994740b4b27d67833ea568d6363
+Debuginfo absent: d7ec296d8aea46f171046e9a4cbe5c679c9c1d0f
+Debuginfo absent: dca48a85d7c9966a2171657aea40d690de99271a
+Debuginfo absent: ddf11b57c7d90546b1493cc211c789c9e45c215e
+Debuginfo absent: e15e600f23a806cb24b3480cda6ae61a04ff5ec3
+Debuginfo absent: e4fb87cca758190ded58a404bc93dd1cd673ac6b
+Debuginfo absent: e730a39d2da43532d75847cb319accb49fcf298c
+Debuginfo absent: e88c8fe16da96e95971e7401960d6c33ef04e9eb
+Debuginfo absent: e98ceae64dd0b5d65bbf289027c7c2925d716e69
+Debuginfo absent: ea7dc8af227410ac1ed0a5d40bd2cdf8c0da81ba
+Debuginfo absent: eb9e4367795ae0beba39dd5702f522abb738f2ef
+Debuginfo absent: eca524269bc1ac3a0212c42d721369ac5e67abe6
+Debuginfo absent: efb64e46743a445b4aea6e4f82ba1f91ed6f4cea
+Debuginfo absent: f385d60dfc76f8b48d8c5ee2ddfba75e477d9a4f
+Debuginfo absent: f50d186ad7c8fd53c38d7da419dc209a64a63c4f
+Debuginfo absent: f7933750da80f555321576e72b375caf7a3cc075
+Debuginfo absent: f878d552cfc03e0897e55d3f61c1063ced66432c
+[New Thread 1906]
+[New Thread 2613]
+Core was generated by `/usr/lib64/firefox-3.5.5/firefox'.
+Program terminated with signal 11, Segmentation fault.
+#0  0x00000038b940ee6b in raise (sig=<value optimized out>)
+    at ../nptl/sysdeps/unix/sysv/linux/pt-raise.c:42
+42				 sig);
+Current language:  auto
+The current source language is "auto; currently c".
+
+Thread 3 (Thread 2613):
+#0  0x00000038b8cd4aa3 in __poll (fds=<value optimized out>, 
+    nfds=<value optimized out>, timeout=<value optimized out>)
+    at ../sysdeps/unix/sysv/linux/poll.c:87
+        _a3 = -1
+        _a1 = 140095733517120
+        resultvar = <value optimized out>
+        _a2 = 2
+        resultvar = <value optimized out>
+        oldtype = 0
+        result = <value optimized out>
+#1  0x00007f6a995e251f in ?? () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#2  0x00007f6a995d2b66 in pa_mainloop_poll () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#3  0x00007f6a995d3f29 in pa_mainloop_iterate () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#4  0x00007f6a995d3fe0 in pa_mainloop_run () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#5  0x00007f6a995e243b in ?? () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#6  0x00007f6a9939f660 in ?? () from /usr/lib64/libpulsecommon-0.9.21.so
+No symbol table info available.
+#7  0x00000038b9406a3a in start_thread (arg=<value optimized out>)
+    at pthread_create.c:297
+        __res = <value optimized out>
+        pd = 0x7f6a93bfe710
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140095722088208, 
+                -4973529590665248611, 243626216224, 0, 0, 3, 
+                4913249414314786973, -5004893706180820835}, 
+              mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, 
+            data = {prev = 0x0, cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#8  0x00000038b8cddf3d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:112
+No locals.
+#9  0x0000000000000000 in ?? ()
+No symbol table info available.
+
+Thread 2 (Thread 1906):
+#0  0x00000038b8cd4aa3 in __poll (fds=<value optimized out>, 
+    nfds=<value optimized out>, timeout=<value optimized out>)
+    at ../sysdeps/unix/sysv/linux/poll.c:87
+        _a3 = -1
+        _a1 = 140095971227680
+        resultvar = <value optimized out>
+        _a2 = 2
+        resultvar = <value optimized out>
+        oldtype = 0
+        result = <value optimized out>
+#1  0x00007f6a995e251f in ?? () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#2  0x00007f6a995d2b66 in pa_mainloop_poll () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#3  0x00007f6a995d3f29 in pa_mainloop_iterate () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#4  0x00007f6a995d3fe0 in pa_mainloop_run () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#5  0x00007f6a995e243b in ?? () from /usr/lib64/libpulse.so.0
+No symbol table info available.
+#6  0x00007f6a9939f660 in ?? () from /usr/lib64/libpulsecommon-0.9.21.so
+No symbol table info available.
+#7  0x00000038b9406a3a in start_thread (arg=<value optimized out>)
+    at pthread_create.c:297
+        __res = <value optimized out>
+        pd = 0x7f6a9c4ff710
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140095865747216, 
+                -4973529590665248611, 243626216224, 0, 0, 3, 
+                4913217942405054621, -5004893706180820835}, 
+              mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, 
+            data = {prev = 0x0, cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#8  0x00000038b8cddf3d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:112
+No locals.
+#9  0x0000000000000000 in ?? ()
+No symbol table info available.
+
+Thread 1 (Thread 1847):
+#0  0x00000038b940ee6b in raise (sig=<value optimized out>)
+    at ../nptl/sysdeps/unix/sysv/linux/pt-raise.c:42
+        resultvar = 0
+        pid = <value optimized out>
+#1  0x00000038cac7752a in nsProfileLock::FatalSignalHandler (signo=11)
+    at nsProfileLock.cpp:212
+        unblock_sigs = {__val = {1024, 0 <repeats 15 times>}}
+        oldact = <value optimized out>
+#2  <signal handler called>
+No symbol table info available.
+#3  0x00000038bac23b88 in IA__g_type_check_instance (
+    type_instance=<value optimized out>) at gtype.c:3804
+        node = 0x510006014b010054
+#4  0x00000038bac22eab in IA__g_signal_handlers_disconnect_matched (
+    instance=0x7f6a901b3780, mask=24, signal_id=0, detail=0, closure=0x0, 
+    func=<value optimized out>, data=<value optimized out>) at gsignal.c:2667
+        n_handlers = 0
+        __PRETTY_FUNCTION__ = "IA__g_signal_handlers_disconnect_matched"
+#5  0x00007f6a9fdfcec3 in update_client_widget (
+    context_xim=<value optimized out>) at gtkimcontextxim.c:1641
+        new_client_widget = 0x0
+#6  set_ic_client_window (context_xim=<value optimized out>)
+    at gtkimcontextxim.c:654
+No locals.
+#7  0x00007f6a9fdfcf5b in xim_info_display_closed (display=0x7f6aaf1a0190, 
+    is_error=<value optimized out>, info=0x7f6aa294b430)
+    at gtkimcontextxim.c:402
+        ics = 0x7f6a9ae69a40
+        tmp_list = 0x7f6a9ae69a40
+#8  0x00000038bac0ba8e in IA__g_closure_invoke (closure=0x7f6aa29b99a0, 
+    return_value=0x0, n_param_values=2, param_values=0x7f6a81f2e7c0, 
+    invocation_hint=0x7fff8f45f610) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#9  0x00000038bac20ec3 in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=<value optimized out>, instance=<value optimized out>, 
+    emission_return=<value optimized out>, 
+    instance_and_params=<value optimized out>) at gsignal.c:3247
+        tmp = <value optimized out>
+        handler = 0x7f6aa29b9970
+        accumulator = 0x0
+        emission = {next = 0x0, instance = 0x7f6aaf1a0190, ihint = {
+            signal_id = 3, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 4}
+        class_closure = 0x7f6aaf17fca0
+        handler_list = 0x7f6a9e450c70
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, 
+              v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, 
+              v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, 
+              v_float = 0, v_double = 0, v_pointer = 0x0}}}
+        signal_id = <value optimized out>
+        max_sequential_handler_number = <value optimized out>
+        return_value_altered = <value optimized out>
+#10 0x00000038bac22259 in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fff8f45f800) at gsignal.c:2980
+        instance_and_params = <value optimized out>
+        signal_return_type = 4
+        param_values = 0x7f6a81f2e7d8
+        node = 0x7f6aaf1906f0
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#11 0x00000038bac227a3 in IA__g_signal_emit (instance=<value optimized out>, 
+    signal_id=<value optimized out>, detail=<value optimized out>)
+    at gsignal.c:3037
+        var_args = {{gp_offset = 32, fp_offset = 48, 
+            overflow_arg_area = 0x7fff8f45f8e0, 
+            reg_save_area = 0x7fff8f45f820}}
+#12 0x00000038bfc200d2 in IA__gdk_display_close (display=0x7f6aaf1a0190)
+    at gdkdisplay.c:195
+        __PRETTY_FUNCTION__ = "IA__gdk_display_close"
+#13 0x00000038cac6d002 in MOZ_gdk_display_close (display=0x7f6aaf1a0190)
+    at nsAppRunner.cpp:2454
+        theme_is_qt = 0
+        settings = <value optimized out>
+        theme_name = 0x7f6a86867040 "\360\347\362\201j\177"
+#14 0x00000038cac71967 in XRE_main (argc=<value optimized out>, 
+    argv=<value optimized out>, aAppData=<value optimized out>)
+    at nsAppRunner.cpp:3433
+        desktopStartupIDEnv = 0x0
+        updRoot = {<nsCOMPtr_base> = {
+            mRawPtr = 0x7f6aaf11d9c0}, <No data fields>}
+        persistent = 1
+        profLD = {<nsCOMPtr_base> = {
+            mRawPtr = 0x7f6aaf1de5c0}, <No data fields>}
+        dirProvider = 
+    {<nsIDirectoryServiceProvider2> = {<nsIDirectoryServiceProvider> = {<nsISupports> = {
+                _vptr.nsISupports = 0x38cbcda7b0}, <No data fields>}, <No data fields>}, <nsIProfileStartup> = {<nsISupports> = {
+              _vptr.nsISupports = 0x38cbcda7f8}, <No data fields>}, 
+          mAppProvider = {<nsCOMPtr_base> = {
+              mRawPtr = 0x0}, <No data fields>}, 
+          mGREDir = {<nsCOMPtr_base> = {
+              mRawPtr = 0x7f6aaf11da80}, <No data fields>}, 
+          mXULAppDir = {<nsCOMPtr_base> = {
+              mRawPtr = 0x7f6aaf11d9c0}, <No data fields>}, 
+          mProfileDir = {<nsCOMPtr_base> = {
+              mRawPtr = 0x7f6aaf1de500}, <No data fields>}, 
+          mProfileLocalDir = {<nsCOMPtr_base> = {
+              mRawPtr = 0x7f6aaf1de5c0}, <No data fields>}, 
+          mProfileNotified = 0 '\000', mExtensionsLoaded = 1 '\001', 
+          mAppBundleDirectories = {<nsCOMArray_base> = {mArray = {
+                mImpl = 0x0}}, <No data fields>}, 
+          mExtensionDirectories = {<nsCOMArray_base> = {mArray = {
+                mImpl = 0x7f6aaf004c00}}, <No data fields>}, 
+          mThemeDirectories = {<nsCOMArray_base> = {mArray = {
+                mImpl = 0x7f6aaf034b00}}, <No data fields>}}
+        desktopStartupIDPtr = <value optimized out>
+        nativeApp = {<nsCOMPtr_base> = {
+            mRawPtr = 0x7f6aaf00b1c0}, <No data fields>}
+        startOffline = <value optimized out>
+        profileName = {<nsFixedCString> = {<nsCString> = {<nsACString_internal> = {mData = 0x7f6aaf035178 "default", mLength = 7, 
+                mFlags = 65541}, <No data fields>}, mFixedCapacity = 63, 
+            mFixedBuf = 0x7fff8f45fee0 ""}, 
+          mStorage = "\000\000\000\000\000\000\000\000\300\331\021\257j\177\000\000@\377E\217\377\177\000\000P\377E\217\377\177\000\000\016\000\a\200\000\000\000\000s0T\313\070\000\000\000@\377E\217\377\177\000\000qWT\313\070\000\000"}
+        upgraded = <value optimized out>
+        versionOK = 0
+        appInitiatedRestart = 0
+        desktopStartupID = {<nsFixedCString> = {<nsCString> = {<nsACString_internal> = {mData = 0x7fff8f45ff40 "gnome-panel-1456-Jusko-firefox-0_TIME54742", 
+                mLength = 42, mFlags = 65553}, <No data fields>}, 
+            mFixedCapacity = 63, 
+            mFixedBuf = 0x7fff8f45ff40 "gnome-panel-1456-Jusko-firefox-0_TIME54742"}, 
+          mStorage = "gnome-panel-1456-Jusko-firefox-0_TIME54742\000\357\211\243T\334\270\000\000\000\000\000\000\000\200\332\021\257j\177\000"}
+        display_name = <value optimized out>
+        xremotearg = <value optimized out>
+        _g_set_application_name = <value optimized out>
+        canRun = 1
+        profileLock = {<nsCOMPtr_base> = {
+            mRawPtr = 0x7f6aaf034c40}, <No data fields>}
+        profD = {<nsCOMPtr_base> = {
+            mRawPtr = 0x7f6aaf1de500}, <No data fields>}
+        version = {<nsFixedCString> = {<nsCString> = {<nsACString_internal> = {mData = 0x7fff8f45fe80 "3.5.5_20091105042105/20091105042105", mLength = 35, 
+                mFlags = 65553}, <No data fields>}, mFixedCapacity = 63, 
+            mFixedBuf = 0x7fff8f45fe80 "3.5.5_20091105042105/20091105042105"}, mStorage = "3.5.5_20091105042105/20091105042105\000\000\000\000\000@@7\257j\177\000\000P\377E\217\377\177\000\000\220\377E\217\377\177\000"}
+        needsRestart = 0
+        display = <value optimized out>
+        _gtk_window_set_auto_startup_notification = <value optimized out>
+        osABI = {<nsCString> = {<nsACString_internal> = {
+              mData = 0x38cb5b91e3 "Linux_x86_64-gcc3", mLength = 17, 
+              mFlags = 1}, <No data fields>}, <No data fields>}
+        rv = 0
+        gtkModules = <value optimized out>
+        appData = {<nsXREAppData> = {size = 112, ry = 0x7f6aaf11d9c0, 
+            vendor = 0x7f6aaf1520c8 "Mozilla", 
+            name = 0x7f6aaf1520d0 "Firefox", 
+            version = 0x7f6aaf1520d8 "3.5.5", 
+            buildID = 0x7f6aaf11a110 "20091105042105", 
+            ID = 0x7f6aaf119640 "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}", 
+            copyright = 0x7f6aaf119670 "Copyright (c) 1998 - 2009 mozilla.org", flags = 6, xreDirectory = 0x7f6aaf11da80, 
+            minVersion = 0x7f6aaf1520e0 "1.9.1.5", 
+            maxVersion = 0x7f6aaf1520e8 "1.9.1.5", 
+            crashReporterURL = 0x7f6aaf1196a0 "https://crash-reports.mozilla.com/submit", profile = 0x0}, <No data fields>}
+        localIniFile = {<nsCOMPtr_base> = {
+            mRawPtr = 0x7f6aaf11db40}, <No data fields>}
+        parser = {
+          mSections = {<nsBaseHashtable<nsDepCharHashKey, nsAutoPtr<nsINIParser_internal::INIValue>, nsINIParser_internal::INIValue*>> = {<nsTHashtable<nsBaseHashtableET<nsDepCharHashKey, nsAutoPtr<nsINIParser_internal::INIValue> > >> = {mTable = {ops = 0x38cbe76380, data = 0x0, hashShift = 28, 
+                  maxAlphaFrac = 192 '\300', minAlphaFrac = 64 '@', 
+                  entrySize = 24, entryCount = 1, removedCount = 0, 
+                  generation = 0, 
+                  entryStore = 0x7f6aaf10a300 ""}}, <No data fields>}, <No data fields>}, mFileContents = {mRawPtr = 0x7f6aaf11b780 "[Build"}}
+        ar = <value optimized out>
+        override = 0x0
+        iniFile = {<nsCOMPtr_base> = {
+            mRawPtr = 0x7f6aaf11db40}, <No data fields>}
+        i = <value optimized out>
+#15 0x0000000000402616 in main (argc=1, argv=0x7fff8f464318)
+    at nsXULStub.cpp:482
+        iniFile = {<nsCOMPtr_base> = {
+            mRawPtr = 0x7f6aaf11d900}, <No data fields>}
+        appData = {mAppData = 0x7f6aaf13f0f0}
+        rv = <value optimized out>
+        lastSlash = <value optimized out>
+        iniPath = "/usr/lib64/firefox-3.5.5/application.ini", '\000' <repeats 4055 times>
+        greDir = "/usr/lib64/xulrunner-1.9.1\000libxpcom.so", '\000' <repeats 4057 times>
+        parser = {
+          mSections = {<nsBaseHashtable<nsDepCharHashKey, nsAutoPtr<nsINIParser::INIValue>, nsINIParser::INIValue*>> = {<nsTHashtable<nsBaseHashtableET<nsDepCharHashKey, nsAutoPtr<nsINIParser::INIValue> > >> = {mTable = {
+                  ops = 0x616610, data = 0x0, hashShift = 28, 
+                  maxAlphaFrac = 192 '\300', minAlphaFrac = 64 '@', 
+                  entrySize = 24, entryCount = 4, removedCount = 0, 
+                  generation = 0, 
+                  entryStore = 0x7f6aaf10a180 ""}}, <No data fields>}, <No data fields>}, mFileContents = {
+            mRawPtr = 0x7f6aaf110800 "; ***** BEGIN LICENSE BLOCK *****"}}
+        kXULFuncs = {{functionName = 0x41109c "XRE_CreateAppData", 
+            function = 0x6166f0}, {functionName = 0x4110ae "XRE_FreeAppData", 
+            function = 0x6166f8}, {functionName = 0x4110be "XRE_main", 
+            function = 0x616700}, {functionName = 0x0, function = 0x0}}
+        retval = -1891220712
+        greFound = <value optimized out>
+        appDataFile = <value optimized out>
+        tmpPath = '\000' <repeats 3784 times>"\214, \351\200\270\070", '\000' <repeats 11 times>"\261, \024\300\271\070\000\000\000\000pG\257j\177\000\000\322z\200\270\070", '\000' <repeats 35 times>, "h\002\\\217\377\177\000\000\001", '\000' <repeats 191 times>"\214, \351\200\270\070", '\000' <repeats 11 times>"\314, [\301\270\070\000\000\000\220\211G\257j\177\000\000\322z\200\270\070\000\000"
+        fileStat = {st_dev = 2055, st_ino = 76895, st_nlink = 1, 
+          st_mode = 33261, st_uid = 0, st_gid = 0, __pad0 = 0, st_rdev = 0, 
+          st_size = 100696, st_blksize = 4096, st_blocks = 200, st_atim = {
+            tv_sec = 1259670603, tv_nsec = 517989313}, st_mtim = {
+            tv_sec = 1257445524, tv_nsec = 0}, st_ctim = {
+            tv_sec = 1259670379, tv_nsec = 457984738}, __unused = {0, 0, 0}}

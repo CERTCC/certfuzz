@@ -1,0 +1,182 @@
+#####################################################################
+# Campaign options:
+#
+# id: used for identifying campaign, placement of results
+# keep_heisenbugs: Keep crashing testcases detected by hook, but
+# not when run via the debugger.
+# use_buttonclicker: Spawn program to click buttons
+#####################################################################
+campaign:
+    id: convert v5.5.7
+    keep_heisenbugs: False
+    use_buttonclicker: False
+
+#####################################################################
+# Fuzz target options:
+#
+# program: Path to fuzzing target executable
+# cmdline_template: Used to specify the command-line invocation of
+# the target
+#####################################################################
+target:
+    program: C:\FOE2\imagemagick\convert.exe
+    cmdline_template: $PROGRAM $SEEDFILE NUL
+    # With the default ImageMagick fuzz run, the above target options
+    # will result in the following invocation of ImageMagick:
+    # C:\FOE2\imagemagick\convert.exe <SEEDFILE> NUL
+    # This exercises ImageMagick's image decoding, while also outputting 
+    # to the Windows NUL device, minimizing I/O.
+    # When choosing a fuzzing target, modify the cmdline_template line to 
+    # reflect how that target needs to be invoked.
+    #
+    # NOTE:
+    # If your target application doesn't use any parameters after the
+    # file name, you will probably just use:
+    # cmdline_template: $PROGRAM $SEEDFILE
+    #
+    # NOTE: FOE uses python's shlex.split() method to parse the command
+    # line template after substituting in the program and seedfile values.
+    # For this reason, it is required that if any other items in the 
+    # cmdline_template involve windows paths, you need either use
+    # forward slashes or double quotes. For example:
+    # cmdline_template: $PROGRAM -in $SEEDFILE -out c:/some/path/to/file
+    # cmdline_template: $PROGRAM -in $SEEDFILE -out "c:\some path\to file"
+
+#####################################################################
+# Directories used by FOE
+#
+# seedfile_dir: Location of seed files (relative to foe2.py)
+# working_dir: Temporary directory used by FOE. Use a ramdisk to
+# reduce disk activity
+# results_dir: Location of fuzzing results (relative to foe2.py)
+#####################################################################
+directories:
+    seedfile_dir: seedfiles
+    working_dir:  C:\FOE2\fuzzdir
+    results_dir:  results
+
+#####################################################################
+# Fuzz run options
+#
+# first_iteration: The iteration number to begin with. Defaults to zero
+#                  if not present.
+# last_iteration: The iteration when a fuzzing campaign ends. If set
+#                 to zero or not present, the campaign will continue 
+#                 until the fuzzer runs out of things to do.
+# seed_interval: The number of iterations to perform before selecting
+#                a new seed file and mutation range. Default is zero
+#                if not present.
+# minimize: Create a file that is minimally-different than the seed 
+#           file, yet crashes with the same hash
+# minimizer_timeout: The maximum amount of time that FOE will spend on
+#                    a minimization run before giving up
+# keep_unique_faddr: Consider the Exception Faulting Address value as
+#                    part of the crash hash
+# keep_all_duplicates: Keep all duplicate crashing cases
+# recycle_crashers: Recycle uniquely-crashing testcases into the pool
+#                   of available seed files to fuzz
+#####################################################################
+runoptions:
+    first_iteration: 0
+    last_iteration: 0
+    seed_interval: 1
+    minimize: True
+    minimizer_timeout: 3600
+    keep_unique_faddr: False
+    keep_all_duplicates: False
+    recycle_crashers: False
+
+#####################################################################
+# Fuzzer options
+#
+# ** Note that only one fuzzer can be selected per campaign **
+#
+# fuzzer:
+# bytemut: replace bytes with random values
+# swap: swap adjacent bytes
+# wave: cycle through every possible single-byte value, sequentially
+# drop: removes one byte from the file for each position in the file
+# insert: inserts a random byte for each position in the file
+# truncate: truncates bytes from the end of the file
+# crmut: replace carriage return bytes with random values
+# crlfmut: replace carriage return and linefeed bytes with random values
+# nullmut: replace null bytes with random values
+# verify: do not mutate file. Used for verifying crashing testcases
+# range_list: byte ranges to be fuzzed. One range per line, hex or decimal
+# fuzz_zip_container: rather than fuzzing zip file contents, fuzz the
+# zip container itself
+# 
+#####################################################################
+fuzzer:
+    fuzzer: bytemut
+    # fuzzer: swap
+    # fuzzer: wave
+    # fuzzer: drop
+    # fuzzer: insert
+    # fuzzer: truncate
+    # fuzzer: crmut
+    # fuzzer: crlfmut
+    # fuzzer: nullmut
+    # fuzzer: verify
+    # range_list:
+    #     - [0x0000, 0x0400]
+    #     - [0x1000, 0x100F]
+    fuzz_zip_container: False
+
+#####################################################################
+# Runner options
+#
+# runner:
+# winrun: Use hook.dll to detect exceptions. Investigate exceptions 
+# with a debugger. Only compatible with 32-bit Windows XP and 2003.
+# null: Investigate each iteration with the debugger.
+# hideoutput: Hide stdout of target application
+# runtimeout: Number of seconds to allow target application to execute
+# when run with the hook (winrun)
+# watchcpu: Kill target process when its CPU usage drops towards zero 
+# when run with the hook (winrun). (Auto, True, False)
+# exceptions: List of exceptions to save
+#
+#####################################################################
+runner:
+    # runner: null
+    runner: winrun
+    hideoutput: False
+    runtimeout: 5
+    watchcpu: Auto
+    exceptions:
+        - 0x80000002    # EXCEPTION_DATATYPE_MISALIGNMENT
+        - 0xC0000005    # STATUS_ACCESS_VIOLATION 
+        - 0xC000001D    # STATUS_ILLEGAL_INSTRUCTION
+        - 0xC0000025    # EXCEPTION_NONCONTINUABLE_EXCEPTION
+        - 0xC0000026    # EXCEPTION_INVALID_DISPOSITION
+        - 0xC000008C    # EXCEPTION_ARRAY_BOUNDS_EXCEEDED
+        - 0xC000008E    # EXCEPTION_FLT_DIVIDE_BY_ZERO
+        - 0xC0000090    # EXCEPTION_FLT_INVALID_OPERATION
+        - 0xC0000091    # EXCEPTION_FLT_OVERFLOW
+        - 0xC0000092    # EXCEPTION_FLT_STACK_CHECK
+        - 0xC0000093    # EXCEPTION_FLT_UNDERFLOW
+        - 0xC0000094    # STATUS_INTEGER_DIVIDE_BY_ZERO
+        - 0xC0000095    # EXCEPTION_INT_OVERFLOW
+        - 0xC0000096    # STATUS_PRIVILEGED_INSTRUCTION
+        - 0xC00000FD    # STATUS_STACK_OVERFLOW
+
+#####################################################################
+# Debugger options
+#
+# debugger:
+# msec: Use the msec !exploitable extension for cdb
+# runtimeout: Number of seconds to allow target application to execute
+# when run via the debugger
+# watchcpu: Kill target process when its CPU usage drops towards zero 
+# when run with the debugger (null runner). (Auto, True, False)
+# debugheap: Use the debug heap for the target application
+# max_handled_exceptions: Maximum number of times to continue exceptions
+#####################################################################
+debugger:
+    debugger: msec
+    runtimeout: 10
+    watchcpu: Auto
+    debugheap: False
+    max_handled_exceptions: 6
+

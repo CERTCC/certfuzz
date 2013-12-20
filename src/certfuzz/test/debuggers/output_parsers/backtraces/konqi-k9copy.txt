@@ -1,0 +1,108 @@
+Application: k9copy (2.3.7)
+KDE Platform Version: 4.6.00 (4.6.0) "release 6"
+Qt Version: 4.7.1
+Operating System: Linux 2.6.37.6-0.5-desktop i686
+Distribution: "openSUSE 11.4 (i586)"
+
+-- Information about the crash:
+<In detail, tell us what you were doing  when the application crashed.>
+
+The crash can be reproduced every time.
+
+-- Backtrace:
+Application: k9copy (k9copy), signal: Segmentation fault
+[Current thread is 1 (Thread 0xb4cc5710 (LWP 9828))]
+
+Thread 4 (Thread 0xb2856b70 (LWP 9829)):
+#0  0xffffe424 in __kernel_vsyscall ()
+#1  0xb5d6603e in poll () from /lib/libc.so.6
+#2  0xb55b10bb in g_poll () from /lib/libglib-2.0.so.0
+#3  0xb55a0c46 in ?? () from /lib/libglib-2.0.so.0
+#4  0xb55a0fce in g_main_context_iteration () from /lib/libglib-2.0.so.0
+#5  0xb6c4d7b7 in QEventDispatcherGlib::processEvents (this=0x895e8e0,
+flags=...) at kernel/qeventdispatcher_glib.cpp:424
+#6  0xb6c1e2bd in QEventLoop::processEvents (this=0xb28562b0, flags=...) at
+kernel/qeventloop.cpp:149
+#7  0xb6c1e4e9 in QEventLoop::exec (this=0xb28562b0, flags=...) at
+kernel/qeventloop.cpp:201
+#8  0xb6b1f7b9 in QThread::exec (this=0x88f9ee8) at thread/qthread.cpp:490
+#9  0xb6bfe23d in QInotifyFileSystemWatcherEngine::run (this=0x88f9ee8) at
+io/qfilesystemwatcher_inotify.cpp:248
+#10 0xb6b223aa in QThreadPrivate::start (arg=0x88f9ee8) at
+thread/qthread_unix.cpp:285
+#11 0xb6aa7b05 in start_thread () from /lib/libpthread.so.0
+#12 0xb5d70d5e in clone () from /lib/libc.so.6
+
+Thread 3 (Thread 0xae4f9b70 (LWP 9845)):
+#0  0xffffe424 in __kernel_vsyscall ()
+#1  0xb6aac105 in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
+#2  0xb6b22ab0 in wait (this=0xafeff17c, mutex=0xae4f915c, time=4294967295) at
+thread/qwaitcondition_unix.cpp:88
+#3  QWaitCondition::wait (this=0xafeff17c, mutex=0xae4f915c, time=4294967295)
+at thread/qwaitcondition_unix.cpp:160
+#4  0x0813e480 in ?? ()
+#5  0x0813f142 in ?? ()
+#6  0x081403ac in ?? ()
+#7  0x081406e0 in ?? ()
+#8  0x081409f5 in ?? ()
+#9  0xb6b223aa in QThreadPrivate::start (arg=0xafaff008) at
+thread/qthread_unix.cpp:285
+#10 0xb6aa7b05 in start_thread () from /lib/libpthread.so.0
+#11 0xb5d70d5e in clone () from /lib/libc.so.6
+
+Thread 2 (Thread 0xad8f7b70 (LWP 9848)):
+[KCrash Handler]
+#7  0xb5f66458 in sse2_idct (block=0x8ccf1c0, dest=0x8d534c0 "", stride=720) at
+idct_mmx.c:950
+#8  mpeg2_idct_copy_sse2 (block=0x8ccf1c0, dest=0x8d534c0 "", stride=720) at
+idct_mmx.c:1228
+#9  0xb5f5fcdb in slice_intra_DCT (decoder=0x8ccf0c0, code=1, buffer=0xacfcc040
+"\v\370})H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\210")
+at slice.c:954
+#10 mpeg2_slice (decoder=0x8ccf0c0, code=1, buffer=0xacfcc040
+"\v\370})H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\213\224\245\".R\224\210\271JR\"\345)H\210")
+at slice.c:1844
+#11 0xb5f53eb5 in mpeg2_parse (mpeg2dec=0x8ccf0c0) at decode.c:188
+#12 0x08106103 in ?? ()
+#13 0x0810693b in ?? ()
+#14 0x08106ac6 in ?? ()
+#15 0x0810530b in ?? ()
+#16 0xb6b223aa in QThreadPrivate::start (arg=0x8b8b49c) at
+thread/qthread_unix.cpp:285
+#17 0xb6aa7b05 in start_thread () from /lib/libpthread.so.0
+#18 0xb5d70d5e in clone () from /lib/libc.so.6
+
+Thread 1 (Thread 0xb4cc5710 (LWP 9828)):
+#0  0xffffe424 in __kernel_vsyscall ()
+#1  0xb5d6603e in poll () from /lib/libc.so.6
+#2  0xb5388480 in ?? () from /usr/lib/libxcb.so.1
+#3  0xb5388aa4 in ?? () from /usr/lib/libxcb.so.1
+#4  0xb5388b51 in xcb_writev () from /usr/lib/libxcb.so.1
+#5  0xb5b798c8 in _XSend () from /usr/lib/libX11.so.6
+#6  0xb5b79cc0 in _XEventsQueued () from /usr/lib/libX11.so.6
+#7  0xb5b6a3e8 in XEventsQueued () from /usr/lib/libX11.so.6
+#8  0xb6166413 in ?? () from /usr/lib/libQtGui.so.4
+#9  0xb559fa70 in g_main_context_prepare () from /lib/libglib-2.0.so.0
+#10 0xb55a08e2 in ?? () from /lib/libglib-2.0.so.0
+#11 0xb55a0fce in g_main_context_iteration () from /lib/libglib-2.0.so.0
+#12 0xb6c4d76b in QEventDispatcherGlib::processEvents (this=0x88365f8,
+flags=...) at kernel/qeventdispatcher_glib.cpp:422
+#13 0xb616655a in ?? () from /usr/lib/libQtGui.so.4
+#14 0xb6c230ac in QCoreApplication::processEvents (flags=..., maxtime=1) at
+kernel/qcoreapplication.cpp:952
+#15 0x080eb0fa in ?? ()
+#16 0x08118ad9 in ?? ()
+#17 0x08118eb2 in ?? ()
+#18 0x0811a263 in ?? ()
+#19 0x0811a67f in ?? ()
+#20 0x08130715 in ?? ()
+#21 0x080d3c88 in ?? ()
+#22 0xb65f2c7c in QDialog::qt_metacall(QMetaObject::Call, int, void**) () from
+/usr/lib/libQtGui.so.4
+#23 0xb76c09a2 in KDialog::qt_metacall(QMetaObject::Call, int, void**) () from
+/usr/lib/libkdeui.so.5
+#24 0xb76c0e12 in KPageDialog::qt_metacall(QMetaObject::Call, int, void**) ()
+from /usr/lib/libkdeui.so.5
+#25 0xb76c104e in KAssistantDialog::qt_metacall(QMetaObject::Call, int, void**)
+() from /usr/lib/libkdeui.so.5
+#26 0x0806854f in _start ()

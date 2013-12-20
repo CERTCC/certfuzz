@@ -1,0 +1,374 @@
+(gdb) bt full
+#0  __strlen_sse2 () at ../sysdeps/x86_64/strlen.S:31
+No locals.
+#1  0x000000313e62a981 in giop_send_buffer_append_string (buf=0x1733c00, str=0x0) at giop-send-buffer.c:542
+        len = <value optimized out>
+#2  0x000000313e638e3c in ORBit_marshal_value (buf=0x1733c00, val=0x7fb1021fb880, tc=0x313e86a060) at corba-any.c:229
+        i = <value optimized out>
+        ulval = <value optimized out>
+        subval = <value optimized out>
+#3  0x000000313e62f46c in orbit_small_marshal (obj=<value optimized out>, cnx=0x7fb104006d80 [GIOPConnection], 
+    mqe=<value optimized out>, request_id=<value optimized out>, m_data=0x3137c26700, args=<value optimized out>, 
+    ctx=<value optimized out>) at orbit-small.c:355
+        a = <value optimized out>
+        p = 0x7fb1021fb9c0
+        send_buffer = 0x1733c00
+        op_vec = {iov_base = 0x7fb1021fb810, iov_len = 28}
+        tc = <value optimized out>
+        i = <value optimized out>
+#4  0x000000313e6309df in ORBit_small_invoke_stub (obj=0x7fb0f40972d0, m_data=0x3137c26700, ret=<value optimized out>, args=
+    0x7fb1021fb9d0, ctx=<value optimized out>, ev=0x7fb1021fba00) at orbit-small.c:648
+        completion_status = CORBA_COMPLETED_NO
+        cnx = 0x7fb104006d80 [GIOPConnection]
+        mqe = {buffer = 0x0, cnx = 0x7fb104006d80 [GIOPConnection], msg_type = 1, request_id = 35633432, src_thread = 0x7fb118004a50, 
+          async_cb = 0}
+        adaptor_obj = <value optimized out>
+        recv_buffer = 0x0
+        xt_proxy = 0x0
+        invoke_policy = 0x0
+        timeout = 0
+#5  0x0000003137a0f755 in GNOME_Evolution_Addressbook_BookListener_notifyContactRequested (_obj=<value optimized out>, opid=0, status=
+    GNOME_Evolution_Addressbook_RepositoryOffline, vcard=0x0, ev=<value optimized out>) at Evolution-DataServer-Addressbook-stubs.c:258
+        _args = {0x7fb1021fb9cc, 0x7fb1021fb9c8, 0x7fb1021fb9c0}
+#6  0x0000003137a1b919 in e_data_book_respond_get_contact (book=0x7fb104004180 [EDataBook], opid=0, status=
+    GNOME_Evolution_Addressbook_RepositoryOffline, vcard=0x0) at e-data-book.c:687
+        ev = {_id = 0x0, _major = 0, _any = {_type = 0x0, _value = 0x0, _release = 0 '\000'}}
+#7  0x000000313e62ff6a in ORBit_small_invoke_adaptor (adaptor_obj=<value optimized out>, recv_buffer=<value optimized out>, 
+    m_data=<value optimized out>, data=<value optimized out>, ev=<value optimized out>) at orbit-small.c:846
+        ctx = {parent = {interface = 0x31358e4b20, refs = 24261488}, mappings = 0x7fb118003a38Traceback (most recent call last):
+  File "/usr/share/glib-2.0/gdb/glib.py", line 98, in next
+    if long (node["key_hash"]) >= 2:
+---Type <return> to continue, or q <return> to quit---
+RuntimeError: Cannot access memory at address 0x10
+, children = 0x2 = {<error reading variable>
+        args = <value optimized out>
+        scratch = <value optimized out>
+        pretval = 0x0
+        retval = <value optimized out>
+        send_buffer = 0x172c980
+        orb = 0x172c980
+        tc = 0x313e86a060
+        i = <value optimized out>
+#8  0x000000313e63fe7d in ORBit_POAObject_handle_request (pobj=0x7fb0f4097a10, opname=0x7fb11800498c "getContact", 
+    ret=<value optimized out>, args=<value optimized out>, ctx=0x0, recv_buffer=0x7fb118003d90, ev=<value optimized out>) at poa.c:1357
+        invoke_data = {small_skel = 0x3137a0d310 <_ORBIT_skel_small_GNOME_Evolution_Addressbook_Book_getContact>, imp = 0x3137a1c730}
+        poa = 0x7fb1040092c0
+        cookie = 0x0
+        oid = <value optimized out>
+        m_data = 0x3137c25e80
+        small_skel = <value optimized out>
+        imp = 0x3137a1c730
+        __PRETTY_FUNCTION__ = "ORBit_POAObject_handle_request"
+#9  0x000000313e6404a1 in ORBit_POAObject_invoke_incoming_request (pobj=0x7fb0f4097a10, recv_buffer=0x7fb118003d90, opt_ev=0x0)
+    at poa.c:1427
+        opname = <value optimized out>
+        real_ev = {_id = 0x0, _major = 0, _any = {_type = 0x0, _value = 0x0, _release = 0 '\000'}}
+        ev = 0x7fb1021fbca0
+#10 0x000000313e6292cc in giop_thread_queue_process (tdata=0x7fb118004a50) at giop.c:792
+        ent = <value optimized out>
+        qe = 0x7fb1180038d0
+        request = 0x0
+        no_policy = 1
+#11 0x000000313e629638 in giop_request_handler_thread (data=0x7fb118004a50, user_data=<value optimized out>) at giop.c:502
+        done = <value optimized out>
+        l = <value optimized out>
+        tdata = 0x7fb118004a50
+#12 0x000000313566360b in g_thread_pool_thread_proxy (data=<value optimized out>) at gthreadpool.c:265
+        task = 0x7fb118004a50
+        pool = 0x172bce0
+#13 0x0000003135662074 in g_thread_create_proxy (data=0x7fb1180039a0) at gthread.c:635
+        thread = 0x7fb1180039a0
+---Type <return> to continue, or q <return> to quit---
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#14 0x0000003134a077e1 in start_thread (arg=0x7fb1021fc700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7fb1021fc700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140398221575936, -4921342675726895333, 140398671907136, 140398221576640, 0, 3, 
+    4958996273950881563, -4912994356253427941}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 
+    0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#15 0x00000031346e68ed in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+No locals.
+
+
+(gdb) thr a a bt full
+
+Thread 5 (Thread 0x7fb11cf75700 (LWP 7731)):
+#0  0x00000031346dd1e3 in __poll (fds=<value optimized out>, nfds=<value optimized out>, timeout=<value optimized out>)
+    at ../sysdeps/unix/sysv/linux/poll.c:87
+        __arg2 = 11
+        _a3 = -1
+        _a1 = 140398588601712
+        resultvar = <value optimized out>
+        __arg3 = -1
+        __arg1 = 140398588601712
+        _a2 = 11
+        resultvar = <value optimized out>
+        oldtype = 0
+        result = <value optimized out>
+#1  0x000000313563c655 in g_main_context_poll (context=0x1731900, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2904
+        poll_func = 0x3135649620 <IA__g_poll>
+#2  g_main_context_iterate (context=0x1731900, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2586
+        max_priority = 2147483647
+        timeout = -1
+        some_ready = <value optimized out>
+        nfds = 11
+        allocated_nfds = <value optimized out>
+        fds = 0x7fb118002570
+        __PRETTY_FUNCTION__ = "g_main_context_iterate"
+#3  0x000000313563cd55 in IA__g_main_loop_run (loop=0x17305e0) at gmain.c:2799
+        self = 0x175b430
+        __PRETTY_FUNCTION__ = "IA__g_main_loop_run"
+#4  0x000000313e647580 in link_io_thread_fn (data=<value optimized out>) at linc.c:396
+No locals.
+#5  0x0000003135662074 in g_thread_create_proxy (data=0x175b430) at gthread.c:635
+        thread = 0x175b430
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#6  0x0000003134a077e1 in start_thread (arg=0x7fb11cf75700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7fb11cf75700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140398671910656, -4921342675726895333, 140737099448608, 140398671911360, 0, 3, 
+    4958983291875358491, -4912994356253427941}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 
+    0x0, canceltype = 0}}}
+---Type <return> to continue, or q <return> to quit---
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#7  0x00000031346e68ed in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+No locals.
+
+Thread 4 (Thread 0x7fb1216497c0 (LWP 7730)):
+#0  0x00000031346dd1e3 in __poll (fds=<value optimized out>, nfds=<value optimized out>, timeout=<value optimized out>)
+    at ../sysdeps/unix/sysv/linux/poll.c:87
+        __arg2 = 3
+        _a3 = -1
+        _a1 = 24509920
+        resultvar = <value optimized out>
+        __arg3 = -1
+        __arg1 = 24509920
+        _a2 = 3
+        resultvar = <value optimized out>
+        oldtype = 0
+        result = <value optimized out>
+#1  0x000000313563c655 in g_main_context_poll (context=0x172ba80, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2904
+        poll_func = 0x3135649620 <IA__g_poll>
+#2  g_main_context_iterate (context=0x172ba80, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2586
+        max_priority = 2147483647
+        timeout = -1
+        some_ready = <value optimized out>
+        nfds = 3
+        allocated_nfds = <value optimized out>
+        fds = 0x175fde0
+        __PRETTY_FUNCTION__ = "g_main_context_iterate"
+#3  0x000000313563cd55 in IA__g_main_loop_run (loop=0x1760120) at gmain.c:2799
+        self = 0x1721780
+        __PRETTY_FUNCTION__ = "IA__g_main_loop_run"
+#4  0x000000314762d106 in bonobo_main () at bonobo-main.c:311
+        loop = 0x1760120
+#5  0x00000000004038f5 in main (argc=3, argv=<value optimized out>) at server.c:353
+        did_books = <value optimized out>
+        did_cals = <value optimized out>
+        offline_listener = 0x1732c20 [OfflineListener]
+---Type <return> to continue, or q <return> to quit---
+
+Thread 3 (Thread 0x7fb1163a6700 (LWP 7752)):
+#0  0x00000031346dd1e3 in __poll (fds=<value optimized out>, nfds=<value optimized out>, timeout=<value optimized out>)
+    at ../sysdeps/unix/sysv/linux/poll.c:87
+        __arg2 = 1
+        _a3 = -1
+        _a1 = 140398320158944
+        resultvar = <value optimized out>
+        __arg3 = -1
+        __arg1 = 140398320158944
+        _a2 = 1
+        resultvar = <value optimized out>
+        oldtype = 0
+        result = <value optimized out>
+#1  0x000000313563c655 in g_main_context_poll (context=0x7fb1040008c0, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2904
+        poll_func = 0x3135649620 <IA__g_poll>
+#2  g_main_context_iterate (context=0x7fb1040008c0, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2586
+        max_priority = 2147483647
+        timeout = -1
+        some_ready = <value optimized out>
+        nfds = 1
+        allocated_nfds = <value optimized out>
+        fds = 0x7fb1080008e0
+        __PRETTY_FUNCTION__ = "g_main_context_iterate"
+#3  0x000000313563cd55 in IA__g_main_loop_run (loop=0x7fb1080008c0) at gmain.c:2799
+        self = 0x7fb1040011a0
+        __PRETTY_FUNCTION__ = "IA__g_main_loop_run"
+#4  0x000000314de1916d in startup_mainloop (arg=<value optimized out>) at e-book.c:3783
+        loop = <value optimized out>
+#5  0x0000003135662074 in g_thread_create_proxy (data=0x7fb1040011a0) at gthread.c:635
+        thread = 0x7fb1040011a0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#6  0x0000003134a077e1 in start_thread (arg=0x7fb1163a6700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7fb1163a6700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140398558865152, -4921342675726895333, 140398569352128, 140398558865856, 0, 3, 
+    4958969641932420891, -4912994356253427941}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 
+    0x0, canceltype = 0}}}
+---Type <return> to continue, or q <return> to quit---
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#7  0x00000031346e68ed in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+No locals.
+
+Thread 2 (Thread 0x7fb114b7e700 (LWP 9399)):
+#0  pthread_cond_timedwait@@GLIBC_2.3.2 () at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_timedwait.S:216
+No locals.
+#1  0x0000003137602382 in g_cond_timed_wait_posix_impl (cond=<value optimized out>, entered_mutex=<value optimized out>, 
+    abs_time=<value optimized out>) at gthread-posix.c:242
+        result = <value optimized out>
+        end_time = {tv_sec = 1306944164, tv_nsec = 623877000}
+        timed_out = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_cond_timed_wait_posix_impl"
+#2  0x00007fb11d18db6b in ?? () from /usr/lib64/evolution-data-server-1.2/extensions/libecalbackendmapi.so
+No symbol table info available.
+#3  0x0000003135662074 in g_thread_create_proxy (data=0x7fb10c35eba0) at gthread.c:635
+        thread = 0x7fb10c35eba0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#4  0x0000003134a077e1 in start_thread (arg=0x7fb114b7e700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7fb114b7e700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140398533535488, -4921342675726895333, 140398579841888, 140398533536192, 0, 3, 
+    4958966244613289755, -4912994356253427941}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 
+    0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#5  0x00000031346e68ed in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+No locals.
+
+Thread 1 (Thread 0x7fb1021fc700 (LWP 9688)):
+#0  __strlen_sse2 () at ../sysdeps/x86_64/strlen.S:31
+No locals.
+#1  0x000000313e62a981 in giop_send_buffer_append_string (buf=0x1733c00, str=0x0) at giop-send-buffer.c:542
+---Type <return> to continue, or q <return> to quit---
+        len = <value optimized out>
+#2  0x000000313e638e3c in ORBit_marshal_value (buf=0x1733c00, val=0x7fb1021fb880, tc=0x313e86a060) at corba-any.c:229
+        i = <value optimized out>
+        ulval = <value optimized out>
+        subval = <value optimized out>
+#3  0x000000313e62f46c in orbit_small_marshal (obj=<value optimized out>, cnx=0x7fb104006d80 [GIOPConnection], 
+    mqe=<value optimized out>, request_id=<value optimized out>, m_data=0x3137c26700, args=<value optimized out>, 
+    ctx=<value optimized out>) at orbit-small.c:355
+        a = <value optimized out>
+        p = 0x7fb1021fb9c0
+        send_buffer = 0x1733c00
+        op_vec = {iov_base = 0x7fb1021fb810, iov_len = 28}
+        tc = <value optimized out>
+        i = <value optimized out>
+#4  0x000000313e6309df in ORBit_small_invoke_stub (obj=0x7fb0f40972d0, m_data=0x3137c26700, ret=<value optimized out>, args=
+    0x7fb1021fb9d0, ctx=<value optimized out>, ev=0x7fb1021fba00) at orbit-small.c:648
+        completion_status = CORBA_COMPLETED_NO
+        cnx = 0x7fb104006d80 [GIOPConnection]
+        mqe = {buffer = 0x0, cnx = 0x7fb104006d80 [GIOPConnection], msg_type = 1, request_id = 35633432, src_thread = 0x7fb118004a50, 
+          async_cb = 0}
+        adaptor_obj = <value optimized out>
+        recv_buffer = 0x0
+        xt_proxy = 0x0
+        invoke_policy = 0x0
+        timeout = 0
+#5  0x0000003137a0f755 in GNOME_Evolution_Addressbook_BookListener_notifyContactRequested (_obj=<value optimized out>, opid=0, status=
+    GNOME_Evolution_Addressbook_RepositoryOffline, vcard=0x0, ev=<value optimized out>) at Evolution-DataServer-Addressbook-stubs.c:258
+        _args = {0x7fb1021fb9cc, 0x7fb1021fb9c8, 0x7fb1021fb9c0}
+#6  0x0000003137a1b919 in e_data_book_respond_get_contact (book=0x7fb104004180 [EDataBook], opid=0, status=
+    GNOME_Evolution_Addressbook_RepositoryOffline, vcard=0x0) at e-data-book.c:687
+        ev = {_id = 0x0, _major = 0, _any = {_type = 0x0, _value = 0x0, _release = 0 '\000'}}
+#7  0x000000313e62ff6a in ORBit_small_invoke_adaptor (adaptor_obj=<value optimized out>, recv_buffer=<value optimized out>, 
+    m_data=<value optimized out>, data=<value optimized out>, ev=<value optimized out>) at orbit-small.c:846
+        ctx = {parent = {interface = 0x31358e4b20, refs = 24261488}, mappings = 0x7fb118003a38Traceback (most recent call last):
+  File "/usr/share/glib-2.0/gdb/glib.py", line 98, in next
+    if long (node["key_hash"]) >= 2:
+RuntimeError: Cannot access memory at address 0x10
+, children = 0x2 = {<error reading variable>
+        args = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        scratch = <value optimized out>
+        pretval = 0x0
+        retval = <value optimized out>
+        send_buffer = 0x172c980
+        orb = 0x172c980
+        tc = 0x313e86a060
+        i = <value optimized out>
+#8  0x000000313e63fe7d in ORBit_POAObject_handle_request (pobj=0x7fb0f4097a10, opname=0x7fb11800498c "getContact", 
+    ret=<value optimized out>, args=<value optimized out>, ctx=0x0, recv_buffer=0x7fb118003d90, ev=<value optimized out>) at poa.c:1357
+        invoke_data = {small_skel = 0x3137a0d310 <_ORBIT_skel_small_GNOME_Evolution_Addressbook_Book_getContact>, imp = 0x3137a1c730}
+        poa = 0x7fb1040092c0
+        cookie = 0x0
+        oid = <value optimized out>
+        m_data = 0x3137c25e80
+        small_skel = <value optimized out>
+        imp = 0x3137a1c730
+        __PRETTY_FUNCTION__ = "ORBit_POAObject_handle_request"
+#9  0x000000313e6404a1 in ORBit_POAObject_invoke_incoming_request (pobj=0x7fb0f4097a10, recv_buffer=0x7fb118003d90, opt_ev=0x0)
+    at poa.c:1427
+        opname = <value optimized out>
+        real_ev = {_id = 0x0, _major = 0, _any = {_type = 0x0, _value = 0x0, _release = 0 '\000'}}
+        ev = 0x7fb1021fbca0
+#10 0x000000313e6292cc in giop_thread_queue_process (tdata=0x7fb118004a50) at giop.c:792
+        ent = <value optimized out>
+        qe = 0x7fb1180038d0
+        request = 0x0
+        no_policy = 1
+#11 0x000000313e629638 in giop_request_handler_thread (data=0x7fb118004a50, user_data=<value optimized out>) at giop.c:502
+        done = <value optimized out>
+        l = <value optimized out>
+        tdata = 0x7fb118004a50
+#12 0x000000313566360b in g_thread_pool_thread_proxy (data=<value optimized out>) at gthreadpool.c:265
+        task = 0x7fb118004a50
+        pool = 0x172bce0
+#13 0x0000003135662074 in g_thread_create_proxy (data=0x7fb1180039a0) at gthread.c:635
+        thread = 0x7fb1180039a0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#14 0x0000003134a077e1 in start_thread (arg=0x7fb1021fc700) at pthread_create.c:301
+        __res = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        pd = 0x7fb1021fc700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140398221575936, -4921342675726895333, 140398671907136, 140398221576640, 0, 3, 
+    4958996273950881563, -4912994356253427941}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 
+    0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#15 0x00000031346e68ed in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+No locals.
+
+(gdb) disass
+Dump of assembler code for function __strlen_sse2:
+   0x00000031346800b0 <+0>:	pxor   %xmm2,%xmm2
+   0x00000031346800b4 <+4>:	mov    %rdi,%rcx
+   0x00000031346800b7 <+7>:	mov    %rdi,%r8
+   0x00000031346800ba <+10>:	and    $0xfffffffffffffff0,%rdi
+   0x00000031346800be <+14>:	movdqa %xmm2,%xmm1
+=> 0x00000031346800c2 <+18>:	pcmpeqb (%rdi),%xmm2
+   0x00000031346800c6 <+22>:	or     $0xffffffffffffffff,%esi
+   0x00000031346800c9 <+25>:	sub    %rdi,%rcx
+   0x00000031346800cc <+28>:	shl    %cl,%esi
+   0x00000031346800ce <+30>:	pmovmskb %xmm2,%edx
+   0x00000031346800d2 <+34>:	and    %esi,%edx
+   0x00000031346800d4 <+36>:	jne    0x31346800eb <__strlen_sse2+59>
+   0x00000031346800d6 <+38>:	movdqa 0x10(%rdi),%xmm0
+   0x00000031346800db <+43>:	lea    0x10(%rdi),%rdi
+   0x00000031346800df <+47>:	pcmpeqb %xmm1,%xmm0
+   0x00000031346800e3 <+51>:	pmovmskb %xmm0,%edx
+   0x00000031346800e7 <+55>:	test   %edx,%edx
+   0x00000031346800e9 <+57>:	je     0x31346800d6 <__strlen_sse2+38>
+   0x00000031346800eb <+59>:	sub    %r8,%rdi
+   0x00000031346800ee <+62>:	bsf    %edx,%eax
+   0x00000031346800f1 <+65>:	add    %rdi,%rax
+   0x00000031346800f4 <+68>:	retq   

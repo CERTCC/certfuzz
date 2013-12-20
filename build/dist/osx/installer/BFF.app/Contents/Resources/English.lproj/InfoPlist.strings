@@ -1,0 +1,4 @@
+CFBundleName = "runterminal.applescript";
+CFBundleShortVersionString = "1.0";
+CFBundleGetInfoString = "runterminal.applescript version 1.0 Copyright 2011 WD";
+NSHumanReadableCopyright = "Copyright 2011 WD.";

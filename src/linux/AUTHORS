@@ -1,0 +1,23 @@
+The CERT Basic Fuzzing Framework (BFF) contains code by:
+* Allen D. Householder (adh)
+* Will Dormann (wd)
+
+CERT Triage Tools was written by Jonathan Foote (jmfoote)
+
+Contact the authors at their (userid) at cert.org.
+
+Crash minimization was inspired by Dan Rosenberg's FuzzDiff
+http://code.google.com/p/fuzzdiff/ 
+
+Crash uniqueness is based on a technique described in "Dynamic test 
+generation to find integer bugs in x86 binary linux programs" by 
+David Molnar, Xue Cong Li, and David A. Wagner
+http://portal.acm.org/citation.cfm?id=1855773
+
+CERT Triage Tools 1.02 test cases were orignally written by Josh Bressers 
+of Red Hat, Inc. (bressers at redhat dot com)
+
+BFF uses Sam Hocevar's zzuf for fuzzing and crash detection. 
+http://caca.zoy.org/wiki/zzuf
+
+BFF was originally created by Will Dormann. 

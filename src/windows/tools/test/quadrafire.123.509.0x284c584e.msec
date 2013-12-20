@@ -1,0 +1,81 @@
+
+Microsoft (R) Windows Debugger Version 6.9.0003.113 X86
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+CommandLine: C:\1-ix\redist\exsimple.exe e:\fuzzdir\quadrafire.123 e:\out
+Symbol search path is: symsrv*symsrv.dll*c:\symbols*http://msdl.microsoft.com/download
+Executable search path is: 
+ModLoad: 00400000 00428000   exsimple.exe
+ModLoad: 7c900000 7c9b0000   ntdll.dll
+ModLoad: 7c800000 7c8f4000   C:\WINDOWS\system32\kernel32.dll
+ModLoad: 10000000 1001a000   C:\1-ix\redist\sccda.dll
+ModLoad: 00340000 0035d000   C:\1-ix\redist\sccfi.dll
+ModLoad: 00370000 003be000   C:\1-ix\redist\wvcore.dll
+ModLoad: 77d40000 77dd0000   C:\WINDOWS\system32\USER32.dll
+ModLoad: 77f10000 77f57000   C:\WINDOWS\system32\GDI32.dll
+ModLoad: 78130000 781cb000   C:\WINDOWS\WinSxS\x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.4053_x-ww_e6967989\MSVCR80.dll
+ModLoad: 77c10000 77c68000   C:\WINDOWS\system32\msvcrt.dll
+ModLoad: 00430000 0048f000   C:\1-ix\redist\sccfut.dll
+ModLoad: 00490000 00523000   C:\1-ix\redist\sccut.dll
+ModLoad: 77dd0000 77e6b000   C:\WINDOWS\system32\ADVAPI32.dll
+ModLoad: 77e70000 77f01000   C:\WINDOWS\system32\RPCRT4.dll
+ModLoad: 00530000 00545000   C:\1-ix\redist\sccfa.dll
+ModLoad: 00550000 00562000   C:\1-ix\redist\sccch.dll
+ModLoad: 00580000 0058b000   C:\1-ix\redist\sccex.dll
+(7a8.488): Break instruction exception - code 80000003 (first chance)
+ModLoad: 00ae0000 00b04000   C:\1-ix\redist\scclo.dll
+ModLoad: 00b20000 00b45000   C:\1-ix\redist\vswk6.dll
+ModLoad: 00c60000 00c66000   C:\1-ix\redist\eximg.dll
+ModLoad: 00c80000 00cd5000   C:\1-ix\redist\sccimg.dll
+ModLoad: 00cf0000 00d45000   C:\1-ix\redist\sccdu.dll
+ModLoad: 73000000 73026000   C:\WINDOWS\system32\WINSPOOL.DRV
+ModLoad: 763b0000 763f9000   C:\WINDOWS\system32\comdlg32.dll
+ModLoad: 77f60000 77fd6000   C:\WINDOWS\system32\SHLWAPI.dll
+ModLoad: 5d090000 5d127000   C:\WINDOWS\system32\COMCTL32.dll
+ModLoad: 7c9c0000 7d1d5000   C:\WINDOWS\system32\SHELL32.dll
+ModLoad: 00d60000 00d6f000   C:\1-ix\redist\sccfmt.dll
+ModLoad: 773d0000 774d2000   C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll
+(7a8.488): Break instruction exception - code 80000003 (first chance)
+ModLoad: 00fa0000 00fa8000   C:\1-ix\redist\ocemul.dll
+ModLoad: 00fd0000 00fdc000   C:\1-ix\redist\oswin32.dll
+ModLoad: 00ff0000 01016000   C:\1-ix\redist\DESS.DLL
+ModLoad: 01030000 0103c000   C:\1-ix\redist\sccanno.dll
+ModLoad: 01050000 0105a000   C:\1-ix\redist\sccca.dll
+ModLoad: 01070000 0107e000   C:\1-ix\redist\sccind.dll
+(7a8.488): Access violation - code c0000005 (first chance)
+First chance exceptions are reported before any exception handling.
+This exception may be expected and handled.
+eax=284c584e ebx=00000000 ecx=00001378 edx=00164088 esi=00164088 edi=00237fb0
+eip=284c584e esp=00113600 ebp=00005002 iopl=0         nv up ei pl zr na pe nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00010246
+284c584e ??              ???
+0:000> cdb: Reading initial command '!exploitable -v;q'
+HostMachine\HostUser
+Executing Processor Architecture is x86
+Debuggee is in User Mode
+Debuggee is a live user mode debugging session on the local machine
+Event Type: Exception
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\1-ix\redist\vswk6.dll - 
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\1-ix\redist\sccch.dll - 
+Exception Faulting Address: 0x284c584e
+First Chance Exception Type: STATUS_ACCESS_VIOLATION (0xC0000005)
+Exception Sub-Type: Read Access Violation
+
+Exception Hash (Major/Minor): 0x50564602.0x097b501f
+
+Stack Trace:
+Unknown
+vswk6+0x10c3
+vswk6!WK6xgetc+0x1d
+vswk6!DefinePrintArea+0xcbc
+vswk6!VwStreamRead+0x436
+sccch!CHIsWithinCookie+0xa167
+Instruction Address: 0x00000000284c584e
+
+Description: Read Access Violation at the Instruction Pointer
+Short Description: ReadAVonIP
+Exploitability Classification: EXPLOITABLE
+Recommended Bug Title: Exploitable - Read Access Violation at the Instruction Pointer starting at Unknown Symbol @ 0x00000000284c584e called from vswk6+0x00000000000010c3 (Hash=0x50564602.0x097b501f)
+
+Access violations at the instruction pointer are exploitable if not near NULL.
+quit:

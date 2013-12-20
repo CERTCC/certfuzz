@@ -1,0 +1,248 @@
+warning: section .gnu.liblist not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+warning: section .gnu.conflict not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+warning: section .dynbss not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+warning: section .gnu.liblist not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+warning: section .gnu.conflict not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+warning: section .dynbss not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+warning: Unable to open "librpm.so.0" (librpm.so.0: cannot open shared object file: No such file or directory), missing debuginfos notifications will not be displayed
+Missing separate debuginfo for /usr/lib/libXcomposite.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/83/9fb27294492d2d02d11184de38e1cb01106091 /var/cache/abrt-di/usr/lib/debug/.build-id/83/9fb27294492d2d02d11184de38e1cb01106091
+Missing separate debuginfo for /usr/lib/libXdamage.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/04/d0cf44a800593649609a79ccbc647682bf5057 /var/cache/abrt-di/usr/lib/debug/.build-id/04/d0cf44a800593649609a79ccbc647682bf5057
+Missing separate debuginfo for /usr/lib/libXfixes.so.3
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/4f/02dc078cc0a523ef8ee022373aa888b1cea9c5 /var/cache/abrt-di/usr/lib/debug/.build-id/4f/02dc078cc0a523ef8ee022373aa888b1cea9c5
+Missing separate debuginfo for /usr/lib/libXrandr.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/96/6a150e37a64033a33397da8df31444ad258ee4 /var/cache/abrt-di/usr/lib/debug/.build-id/96/6a150e37a64033a33397da8df31444ad258ee4
+Missing separate debuginfo for /usr/lib/libXinerama.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/7e/5cee5341ee917a5f595efbf34697ed95c52ea2 /var/cache/abrt-di/usr/lib/debug/.build-id/7e/5cee5341ee917a5f595efbf34697ed95c52ea2
+Missing separate debuginfo for /usr/lib/libSM.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/fc/cdd4a291888665ff6917dc734192c0d5f08783 /var/cache/abrt-di/usr/lib/debug/.build-id/fc/cdd4a291888665ff6917dc734192c0d5f08783
+Missing separate debuginfo for /usr/lib/libICE.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/34/b50e3cded2fa68cec2b2f7b61103b2f4b96d5f /var/cache/abrt-di/usr/lib/debug/.build-id/34/b50e3cded2fa68cec2b2f7b61103b2f4b96d5f
+Missing separate debuginfo for /usr/lib/libxslt.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/0b/523f44ace613ddaacfcb23f19944ed2db6289d /var/cache/abrt-di/usr/lib/debug/.build-id/0b/523f44ace613ddaacfcb23f19944ed2db6289d
+Missing separate debuginfo for /lib/libz.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/eb/6ea0d76cf19a48a2541526e440992220b6b6e7 /var/cache/abrt-di/usr/lib/debug/.build-id/eb/6ea0d76cf19a48a2541526e440992220b6b6e7
+Missing separate debuginfo for /usr/lib/libxml2.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/cc/e6b89dba5a0ff24e56d3e411cc034cd953684f /var/cache/abrt-di/usr/lib/debug/.build-id/cc/e6b89dba5a0ff24e56d3e411cc034cd953684f
+Missing separate debuginfo for /usr/lib/libstartup-notification-1.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/0b/b82e2f83cc9788ece1598c40b3a77de38f5cfa /var/cache/abrt-di/usr/lib/debug/.build-id/0b/b82e2f83cc9788ece1598c40b3a77de38f5cfa
+Missing separate debuginfo for /lib/libm.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/5b/06e35aa63d174e5d235dd76a1680ed9722c800 /var/cache/abrt-di/usr/lib/debug/.build-id/5b/06e35aa63d174e5d235dd76a1680ed9722c800
+Missing separate debuginfo for /lib/libc.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/17/d89a6eaad5d4b98f7ac899e1afb896c0b53ad7 /var/cache/abrt-di/usr/lib/debug/.build-id/17/d89a6eaad5d4b98f7ac899e1afb896c0b53ad7
+Missing separate debuginfo for /usr/lib/libX11.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/e5/ba155cbe0527b73cc2275f4ec2770d4a206d1c /var/cache/abrt-di/usr/lib/debug/.build-id/e5/ba155cbe0527b73cc2275f4ec2770d4a206d1c
+Missing separate debuginfo for /usr/lib/libXext.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/7f/4a18c52764d2d99a2a3387923499a53becc5f3 /var/cache/abrt-di/usr/lib/debug/.build-id/7f/4a18c52764d2d99a2a3387923499a53becc5f3
+Missing separate debuginfo for /lib/libdl.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/23/86b2b605e35464f3c329e8fe9b47a22cddfa6e /var/cache/abrt-di/usr/lib/debug/.build-id/23/86b2b605e35464f3c329e8fe9b47a22cddfa6e
+Missing separate debuginfo for /usr/lib/libXrender.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/42/89ad83b538f693208e8f094e79a7c28a4205bd /var/cache/abrt-di/usr/lib/debug/.build-id/42/89ad83b538f693208e8f094e79a7c28a4205bd
+Missing separate debuginfo for /lib/libuuid.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/cf/a26c01c362fea599d6e15ee09276f6b857746d /var/cache/abrt-di/usr/lib/debug/.build-id/cf/a26c01c362fea599d6e15ee09276f6b857746d
+Missing separate debuginfo for /usr/lib/libxcb-aux.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/62/ec56536baf5d7bd494f0daba765b45383a491d /var/cache/abrt-di/usr/lib/debug/.build-id/62/ec56536baf5d7bd494f0daba765b45383a491d
+Missing separate debuginfo for /usr/lib/libxcb-event.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/4e/1b8e2c58fd149c7fb3c8d5087ad840b1a37646 /var/cache/abrt-di/usr/lib/debug/.build-id/4e/1b8e2c58fd149c7fb3c8d5087ad840b1a37646
+Missing separate debuginfo for /usr/lib/libxcb-atom.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/b0/46664181a2dff11ac32fe010e57cfc4efbb644 /var/cache/abrt-di/usr/lib/debug/.build-id/b0/46664181a2dff11ac32fe010e57cfc4efbb644
+Missing separate debuginfo for /usr/lib/libxcb.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/d2/848f2fdaf5c3104761131b78cd700f750dbe65 /var/cache/abrt-di/usr/lib/debug/.build-id/d2/848f2fdaf5c3104761131b78cd700f750dbe65
+Missing separate debuginfo for /lib/ld-linux.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/83/0f3a1f788f031f6d180759de5c040d315e70a2 /var/cache/abrt-di/usr/lib/debug/.build-id/83/0f3a1f788f031f6d180759de5c040d315e70a2
+Missing separate debuginfo for /usr/lib/libXau.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/e5/8588409f259a67dfbd5e9f432ed78a3c787980 /var/cache/abrt-di/usr/lib/debug/.build-id/e5/8588409f259a67dfbd5e9f432ed78a3c787980
+Missing separate debuginfo for /usr/lib/libXcursor.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/1f/dee255d77a6daa0d1ef31e548a4b5fb9214fc4 /var/cache/abrt-di/usr/lib/debug/.build-id/1f/dee255d77a6daa0d1ef31e548a4b5fb9214fc4
+Missing separate debuginfo for /usr/lib/compiz/libglib.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/4c/4d22e7ab115972c8d529566cbd99971c6263cb /var/cache/abrt-di/usr/lib/debug/.build-id/4c/4d22e7ab115972c8d529566cbd99971c6263cb
+Missing separate debuginfo for /lib/libglib-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/4c/e45a838ec237500d88a816de89f459066e148c /var/cache/abrt-di/usr/lib/debug/.build-id/4c/e45a838ec237500d88a816de89f459066e148c
+Missing separate debuginfo for /usr/lib/compiz/libgconf.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/6f/853c6282385c046c3ec39cbc22d285d0830d30 /var/cache/abrt-di/usr/lib/debug/.build-id/6f/853c6282385c046c3ec39cbc22d285d0830d30
+Missing separate debuginfo for /usr/lib/libgconf-2.so.4
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/b9/c4066ed6ab8405d4a9a6d6951d5f053586db00 /var/cache/abrt-di/usr/lib/debug/.build-id/b9/c4066ed6ab8405d4a9a6d6951d5f053586db00
+Missing separate debuginfo for /lib/libgmodule-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/e0/b1f61f90e8ec0ca289be6b4f0561516cfbf1c9 /var/cache/abrt-di/usr/lib/debug/.build-id/e0/b1f61f90e8ec0ca289be6b4f0561516cfbf1c9
+Missing separate debuginfo for /usr/lib/libORBit-2.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/70/725056f475bda0e70525e6743dff93d6d8eee5 /var/cache/abrt-di/usr/lib/debug/.build-id/70/725056f475bda0e70525e6743dff93d6d8eee5
+Missing separate debuginfo for /lib/libdbus-1.so.3
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/bc/8e15e71e6e19aa6a16a3ff7496dbc8f5f7cad5 /var/cache/abrt-di/usr/lib/debug/.build-id/bc/8e15e71e6e19aa6a16a3ff7496dbc8f5f7cad5
+Missing separate debuginfo for /lib/libpthread.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/26/15545c78b2308026ccf3344eec348ae95bf932 /var/cache/abrt-di/usr/lib/debug/.build-id/26/15545c78b2308026ccf3344eec348ae95bf932
+Missing separate debuginfo for /lib/libgobject-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/f8/42b90882cb5a30ea2a2daf37596927207cf2ae /var/cache/abrt-di/usr/lib/debug/.build-id/f8/42b90882cb5a30ea2a2daf37596927207cf2ae
+Missing separate debuginfo for /lib/libgthread-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/90/e6c773c7abacf850a44a94ef54b6e5eb5d415a /var/cache/abrt-di/usr/lib/debug/.build-id/90/e6c773c7abacf850a44a94ef54b6e5eb5d415a
+Missing separate debuginfo for /lib/librt.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/2f/fc970b60d179a33c7a68d40e4f59d1cda8739e /var/cache/abrt-di/usr/lib/debug/.build-id/2f/fc970b60d179a33c7a68d40e4f59d1cda8739e
+Missing separate debuginfo for /lib/libnss_files.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/33/6d9e6988b2d65f576fbfa159c8c8b9fe8b3ebc /var/cache/abrt-di/usr/lib/debug/.build-id/33/6d9e6988b2d65f576fbfa159c8c8b9fe8b3ebc
+Missing separate debuginfo for /usr/lib/compiz/libgnomecompat.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/0f/a7ada94bace462059e265257554d97989a0b80 /var/cache/abrt-di/usr/lib/debug/.build-id/0f/a7ada94bace462059e265257554d97989a0b80
+Missing separate debuginfo for /usr/lib/compiz/libdbus.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/ab/57420e5e71f9be5881f7f4227cd3384cd82345 /var/cache/abrt-di/usr/lib/debug/.build-id/ab/57420e5e71f9be5881f7f4227cd3384cd82345
+Missing separate debuginfo for /usr/lib/compiz/libpng.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/13/5fd29edb974c7e7e0fd9d5d2f3719cb706e6ae /var/cache/abrt-di/usr/lib/debug/.build-id/13/5fd29edb974c7e7e0fd9d5d2f3719cb706e6ae
+Missing separate debuginfo for /usr/lib/libpng12.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/e4/c4935316e68eb8ccc91ce56db025fc365ce8d5 /var/cache/abrt-di/usr/lib/debug/.build-id/e4/c4935316e68eb8ccc91ce56db025fc365ce8d5
+Missing separate debuginfo for /usr/lib/compiz/libsvg.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/77/5054f1744e37584545d478666889fba1c367ce /var/cache/abrt-di/usr/lib/debug/.build-id/77/5054f1744e37584545d478666889fba1c367ce
+Missing separate debuginfo for /usr/lib/libdecoration.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/50/24226a12bbd93263608da9fdb2f0dc5477cd4c /var/cache/abrt-di/usr/lib/debug/.build-id/50/24226a12bbd93263608da9fdb2f0dc5477cd4c
+Missing separate debuginfo for /usr/lib/librsvg-2.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/83/08f07eb5d8e6de2f48556850b4b15578c7b9b6 /var/cache/abrt-di/usr/lib/debug/.build-id/83/08f07eb5d8e6de2f48556850b4b15578c7b9b6
+Missing separate debuginfo for /usr/lib/libgdk_pixbuf-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/2a/e892af51acc15a4bd42ef2eaf188b5f3b66b07 /var/cache/abrt-di/usr/lib/debug/.build-id/2a/e892af51acc15a4bd42ef2eaf188b5f3b66b07
+Missing separate debuginfo for /usr/lib/libcairo.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/b9/87bb13f1a33e2a20ad3401de77d8a3561dc69c /var/cache/abrt-di/usr/lib/debug/.build-id/b9/87bb13f1a33e2a20ad3401de77d8a3561dc69c
+Missing separate debuginfo for /usr/lib/libgsf-1.so.114
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/cb/c7fc1546a8a617aaeabcdd9a156122186d60ba /var/cache/abrt-di/usr/lib/debug/.build-id/cb/c7fc1546a8a617aaeabcdd9a156122186d60ba
+Missing separate debuginfo for /usr/lib/libcroco-0.6.so.3
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/8e/b8c05514afc648971aa8a32581e1de02fe3e6d /var/cache/abrt-di/usr/lib/debug/.build-id/8e/b8c05514afc648971aa8a32581e1de02fe3e6d
+Missing separate debuginfo for /usr/lib/libpangoft2-1.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/fa/01a78b9426a885ff0f50474d8c38ef48bfb1e0 /var/cache/abrt-di/usr/lib/debug/.build-id/fa/01a78b9426a885ff0f50474d8c38ef48bfb1e0
+Missing separate debuginfo for /usr/lib/libpangocairo-1.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/88/188febb77ab2316450f1ebb7ffd3e3fa50f5aa /var/cache/abrt-di/usr/lib/debug/.build-id/88/188febb77ab2316450f1ebb7ffd3e3fa50f5aa
+Missing separate debuginfo for /usr/lib/libpango-1.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/c5/b93e479c83c32faf2e2132b4d2806c44ff7368 /var/cache/abrt-di/usr/lib/debug/.build-id/c5/b93e479c83c32faf2e2132b4d2806c44ff7368
+Missing separate debuginfo for /usr/lib/libfontconfig.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/cc/da2c5b593bae78500d9ffa03210930566fe3f0 /var/cache/abrt-di/usr/lib/debug/.build-id/cc/da2c5b593bae78500d9ffa03210930566fe3f0
+Missing separate debuginfo for /usr/lib/libfreetype.so.6
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/75/ad6dd0855512f57e18d6bd46d5a463b32d6f3b /var/cache/abrt-di/usr/lib/debug/.build-id/75/ad6dd0855512f57e18d6bd46d5a463b32d6f3b
+Missing separate debuginfo for /lib/libgio-2.0.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/52/d6ade64049b545b28fe8959b10593efe1d9f35 /var/cache/abrt-di/usr/lib/debug/.build-id/52/d6ade64049b545b28fe8959b10593efe1d9f35
+Missing separate debuginfo for /usr/lib/libpixman-1.so.0
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/82/618266626b84b0b1563434ff33c099ca6051e0 /var/cache/abrt-di/usr/lib/debug/.build-id/82/618266626b84b0b1563434ff33c099ca6051e0
+Missing separate debuginfo for /lib/libbz2.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/59/13cc26690a51e20b8986793eac326fd4b6ecd0 /var/cache/abrt-di/usr/lib/debug/.build-id/59/13cc26690a51e20b8986793eac326fd4b6ecd0
+Missing separate debuginfo for /lib/libexpat.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/c3/8c6ed39a38ac3c7fd2f5e0df543ee68f682018 /var/cache/abrt-di/usr/lib/debug/.build-id/c3/8c6ed39a38ac3c7fd2f5e0df543ee68f682018
+Missing separate debuginfo for /lib/libresolv.so.2
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/80/77e5328a098cdbc021f33abf89e65c8f1d05c7 /var/cache/abrt-di/usr/lib/debug/.build-id/80/77e5328a098cdbc021f33abf89e65c8f1d05c7
+Missing separate debuginfo for /lib/libselinux.so.1
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/06/da522edc15ae3b1ba715b5b750cbe196509ccf /var/cache/abrt-di/usr/lib/debug/.build-id/06/da522edc15ae3b1ba715b5b750cbe196509ccf
+Missing separate debuginfo for /usr/lib/compiz/libvideo.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/e7/b3a3e607a9abe279271d5b234fa04f853ba896 /var/cache/abrt-di/usr/lib/debug/.build-id/e7/b3a3e607a9abe279271d5b234fa04f853ba896
+Missing separate debuginfo for /usr/lib/compiz/libscreenshot.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/3d/716c4b69f166b13542db99091f72463290fb2e /var/cache/abrt-di/usr/lib/debug/.build-id/3d/716c4b69f166b13542db99091f72463290fb2e
+Missing separate debuginfo for /usr/lib/compiz/libdecoration.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/0d/448a971c894eea9135be049001f6d989f2018d /var/cache/abrt-di/usr/lib/debug/.build-id/0d/448a971c894eea9135be049001f6d989f2018d
+Missing separate debuginfo for /usr/lib/compiz/libclone.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/23/647909941a0da6889ee5e83d7fe84f522043bc /var/cache/abrt-di/usr/lib/debug/.build-id/23/647909941a0da6889ee5e83d7fe84f522043bc
+Missing separate debuginfo for /usr/lib/compiz/libplace.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/02/6a376ae67eff7c2a56c5e5da0ee7c1aefb5ec6 /var/cache/abrt-di/usr/lib/debug/.build-id/02/6a376ae67eff7c2a56c5e5da0ee7c1aefb5ec6
+Missing separate debuginfo for /usr/lib/compiz/libfade.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/65/8c628f90105d66b441cd2a9df96cbe943e590c /var/cache/abrt-di/usr/lib/debug/.build-id/65/8c628f90105d66b441cd2a9df96cbe943e590c
+Missing separate debuginfo for /usr/lib/compiz/libminimize.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/5f/de86d742fbc212e23dc283016a133593797d0c /var/cache/abrt-di/usr/lib/debug/.build-id/5f/de86d742fbc212e23dc283016a133593797d0c
+Missing separate debuginfo for /usr/lib/compiz/libmove.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/f9/7d3a8888a98b632e2369f2e9998a3a9ea3b202 /var/cache/abrt-di/usr/lib/debug/.build-id/f9/7d3a8888a98b632e2369f2e9998a3a9ea3b202
+Missing separate debuginfo for /usr/lib/compiz/libresize.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/0c/cfc29084a33e3b0bf920e90ef30db4e905720b /var/cache/abrt-di/usr/lib/debug/.build-id/0c/cfc29084a33e3b0bf920e90ef30db4e905720b
+Missing separate debuginfo for /usr/lib/compiz/libswitcher.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/4f/7f48a22ec3b3dffdc9d42df714c302e0b60769 /var/cache/abrt-di/usr/lib/debug/.build-id/4f/7f48a22ec3b3dffdc9d42df714c302e0b60769
+Missing separate debuginfo for /usr/lib/compiz/libscale.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/c9/34000180dc9be34583f49360755e4c3485ed45 /var/cache/abrt-di/usr/lib/debug/.build-id/c9/34000180dc9be34583f49360755e4c3485ed45
+Missing separate debuginfo for /usr/lib/compiz/libwall.so
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/80/08397ad20aea066ccc7a41969b297a117162de /var/cache/abrt-di/usr/lib/debug/.build-id/80/08397ad20aea066ccc7a41969b297a117162de
+warning: .dynamic section for "/usr/lib/libX11.so.6" is not at the expected address
+warning: difference appears to be caused by prelink, adjusting expectations
+warning: .dynamic section for "/usr/lib/libXau.so.6" is not at the expected address
+warning: difference appears to be caused by prelink, adjusting expectations
+warning: .dynamic section for "/usr/lib/libdecoration.so.0" is not at the expected address
+warning: difference appears to be caused by prelink, adjusting expectations
+warning: .dynamic section for "/usr/lib/librsvg-2.so.2" is not at the expected address
+warning: difference appears to be caused by prelink, adjusting expectations
+warning: .dynamic section for "/usr/lib/libpangocairo-1.0.so.0" is not at the expected address
+warning: difference appears to be caused by prelink, adjusting expectations
+Missing separate debuginfo for 
+Try: yum --enablerepo='*-debuginfo' install /usr/lib/debug/.build-id/3f/619488bb1978a1f66c01be43a56197f19ad8e4 /var/cache/abrt-di/usr/lib/debug/.build-id/3f/619488bb1978a1f66c01be43a56197f19ad8e4
+warning: section .gnu.liblist not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+warning: section .gnu.conflict not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+warning: section .dynbss not found in /var/cache/abrt-di/usr/lib/debug/.build-id/e6/1dca67f43825c830fd41d4b88c5fa723d8d35e.debug
+Core was generated by `compiz --ignore-desktop-hints glib gconf gnomecompat --replace'.
+Program terminated with signal 11, Segmentation fault.
+#0  0xbfd656d4 in ?? ()
+
+Thread 1 (Thread 4503):
+Cannot access memory at address 0x874d28
+From        To          Syms Read   Shared Object Library
+0x003f2890  0x003f3488  Yes (*)     /usr/lib/libXcomposite.so.1
+0x0033c7c0  0x0033d248  Yes (*)     /usr/lib/libXdamage.so.1
+0x00458e70  0x0045b3a8  Yes (*)     /usr/lib/libXfixes.so.3
+0x003f8150  0x003fcc58  Yes (*)     /usr/lib/libXrandr.so.2
+0x00537780  0x00538258  Yes (*)     /usr/lib/libXinerama.so.1
+0x00836380  0x0083ad28  Yes (*)     /usr/lib/libSM.so.6
+0x0081c530  0x0082c208  Yes (*)     /usr/lib/libICE.so.6
+0x07c75cb0  0x07c9c5c8  Yes (*)     /usr/lib/libxslt.so.1
+0x00b7b620  0x00b868d8  Yes (*)     /lib/libz.so.1
+0x0057ab00  0x006601b8  Yes (*)     /usr/lib/libxml2.so.2
+0x079ad5a0  0x079b1418  Yes (*)     /usr/lib/libstartup-notification-1.so.0
+0x00c7c000  0x00cd89e0  Yes (*)     /usr/lib/libGL.so.1
+0x00a3b420  0x00a55718  Yes (*)     /lib/libm.so.6
+0x008a7990  0x009bd134  Yes (*)     /lib/libc.so.6
+0x00124370  0x001b5748  Yes (*)     /usr/lib/libX11.so.6
+0x0024a720  0x00254ff8  Yes (*)     /usr/lib/libXext.so.6
+0x00a15a60  0x00a16a88  Yes (*)     /lib/libdl.so.2
+0x003322c0  0x00338178  Yes (*)     /usr/lib/libXrender.so.1
+0x00727f00  0x00729b38  Yes (*)     /lib/libuuid.so.1
+0x079a6d60  0x079a7ae8  Yes (*)     /usr/lib/libxcb-aux.so.0
+0x07a78c00  0x07a79078  Yes (*)     /usr/lib/libxcb-event.so.1
+0x079ed1f0  0x079ed908  Yes (*)     /usr/lib/libxcb-atom.so.1
+0x0025fe80  0x0026e608  Yes (*)     /usr/lib/libxcb.so.1
+0x003ae630  0x003aec43  Yes (*)     /usr/lib/tls/libnvidia-tls.so.256.53
+0x0102d480  0x01e22de0  Yes (*)     /usr/lib/libnvidia-glcore.so.256.53
+0x0086b830  0x00882d0f  Yes (*)     /lib/ld-linux.so.2
+0x00277a00  0x002787f8  Yes (*)     /usr/lib/libXau.so.6
+0x00402e40  0x00408448  Yes (*)     /usr/lib/libXcursor.so.1
+0x0027a8a0  0x0027b0a8  Yes (*)     /usr/lib/compiz/libglib.so
+0x00a7ea20  0x00afc458  Yes (*)     /lib/libglib-2.0.so.0
+0x00855520  0x00856a58  Yes (*)     /usr/lib/compiz/libgconf.so
+0x00739f00  0x007575b8  Yes (*)     /usr/lib/libgconf-2.so.4
+0x00bf0c30  0x00bf1d98  Yes (*)     /lib/libgmodule-2.0.so.0
+0x006c2d90  0x006ea7c8  Yes (*)     /usr/lib/libORBit-2.so.0
+0x00282220  0x002ae3b8  Yes (*)     /lib/libdbus-1.so.3
+0x00a20300  0x00a2bc28  Yes (*)     /lib/libpthread.so.0
+0x00b95460  0x00bc0898  Yes (*)     /lib/libgobject-2.0.so.0
+0x00bf6f40  0x00bf86b8  Yes (*)     /lib/libgthread-2.0.so.0
+0x00a65880  0x00a69688  Yes (*)     /lib/librt.so.1
+0x002c5a00  0x002cd0c8  Yes (*)     /lib/libnss_files.so.2
+0x002d1910  0x002d2178  Yes (*)     /usr/lib/compiz/libgnomecompat.so
+0x002d5b70  0x002d9f18  Yes (*)     /usr/lib/compiz/libdbus.so
+0x002dcfc0  0x002ddf68  Yes (*)     /usr/lib/compiz/libpng.so
+0x002e36e0  0x002ff258  Yes (*)     /usr/lib/libpng12.so.0
+0x003091f0  0x0030b008  Yes (*)     /usr/lib/compiz/libsvg.so
+0x0030e240  0x00313158  Yes (*)     /usr/lib/libdecoration.so.0
+0x00344780  0x0036d298  Yes (*)     /usr/lib/librsvg-2.so.2
+0x003d50f0  0x003e7908  Yes (*)     /usr/lib/libgdk_pixbuf-2.0.so.0
+0x00464210  0x004be328  Yes (*)     /usr/lib/libcairo.so.2
+0x07bbe1d0  0x07be09b8  Yes (*)     /usr/lib/libgsf-1.so.114
+0x07b7d1a0  0x07b9f118  Yes (*)     /usr/lib/libcroco-0.6.so.3
+0x0037c420  0x00397078  Yes (*)     /usr/lib/libpangoft2-1.0.so.0
+0x003183d0  0x0031d4b8  Yes (*)     /usr/lib/libpangocairo-1.0.so.0
+0x004170e0  0x00439088  Yes (*)     /usr/lib/libpango-1.0.so.0
+0x004e0f60  0x004fccc8  Yes (*)     /usr/lib/libfontconfig.so.1
+0x0076f3c0  0x007d8528  Yes (*)     /usr/lib/libfreetype.so.6
+0x06548ad0  0x065b4048  Yes (*)     /lib/libgio-2.0.so.0
+0x08a4c7a0  0x08a9eeb8  Yes (*)     /usr/lib/libpixman-1.so.0
+0x07993fd0  0x079a18a8  Yes (*)     /lib/libbz2.so.1
+0x00c04040  0x00c1cf28  Yes (*)     /lib/libexpat.so.1
+0x00bd7650  0x00be5b48  Yes (*)     /lib/libresolv.so.2
+0x00b5e160  0x00b6f3a8  Yes (*)     /lib/libselinux.so.1
+0x00321e40  0x00323f08  Yes (*)     /usr/lib/compiz/libvideo.so
+0x00326f20  0x00328138  Yes (*)     /usr/lib/compiz/libscreenshot.so
+0x003a1140  0x003a3cd8  Yes (*)     /usr/lib/compiz/libdecoration.so
+0x0032ccf0  0x0032e658  Yes (*)     /usr/lib/compiz/libclone.so
+0x003a6c60  0x003a9658  Yes (*)     /usr/lib/compiz/libplace.so
+0x003b0c00  0x003b27d8  Yes (*)     /usr/lib/compiz/libfade.so
+0x003b4d40  0x003b6bf8  Yes (*)     /usr/lib/compiz/libminimize.so
+0x003b9ed0  0x003bbb48  Yes (*)     /usr/lib/compiz/libmove.so
+0x003bf330  0x003c2178  Yes (*)     /usr/lib/compiz/libresize.so
+0x003c58d0  0x003c9558  Yes (*)     /usr/lib/compiz/libswitcher.so
+0x00513580  0x00517d58  Yes (*)     /usr/lib/compiz/libscale.so
+0x0051d830  0x005214e8  Yes (*)     /usr/lib/compiz/libwall.so
+(*): Shared library is missing debugging information.
+$1 = 0x0
+No symbol "__glib_assert_msg" in current context.

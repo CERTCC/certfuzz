@@ -1,0 +1,378 @@
+Application: soffice (3.0.0)
+KDE Platform Version: 4.4.4 (KDE 4.4.4) "release 2"
+Qt Version: 4.6.3
+Operating System: Linux 2.6.34-12-desktop x86_64
+Distribution: "openSUSE 11.3 (x86_64)"
+
+-- Information about the crash:
+<Opowiedz nam szczególowo o czynnosciach wykonywanych, gdy program ulegl 
+awarii.>
+
+The crash can be reproduced every time.
+
+ -- Backtrace:
+Application: OpenOffice.org (soffice.bin), signal: Aborted
+[Current thread is 1 (Thread 0x7fb815831720 (LWP 8556))]
+
+Thread 14 (Thread 0x7fb80d147710 (LWP 8557)):
+#0  0x00007fb814039709 in pthread_cond_timedwait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb81541e2e6 in rtl_cache_wsupdate_wait (arg=<value optimized out>) 
+at alloc_cache.c:1398
+#2  rtl_cache_wsupdate_all (arg=<value optimized out>) at alloc_cache.c:1542
+#3  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#4  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#5  0x0000000000000000 in ?? ()
+
+Thread 13 (Thread 0x7fb800c75710 (LWP 8558)):
+#0  0x00007fb814039709 in pthread_cond_timedwait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb8153f4166 in osl_waitCondition (Condition=0x7b7d90, 
+pTimeout=0x7fb800c74d60) at conditn.c:250
+#2  0x00007fb810f4f82d in vos::OTimerManager::run() () from 
+/usr/lib64/ooo3/program/../basis-link/program/libvos3gcc3.so
+#3  0x00007fb810f4de1a in vos::threadWorkerFunction_impl(void*) () from 
+/usr/lib64/ooo3/program/../basis-link/program/libvos3gcc3.so
+#4  0x00007fb8153f743c in osl_thread_start_Impl (pData=0x7acc20) at 
+thread.c:266
+#5  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#6  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#7  0x0000000000000000 in ?? ()
+
+Thread 12 (Thread 0x7fb7bfb9b710 (LWP 8568)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7ed990c7b in Monitor::IWait(Thread*, long) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7ed9912de in Monitor::wait(bool, long, bool) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed7a4f6a in GCTaskManager::get_task(unsigned int) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7ed7a6140 in GCTaskThread::run() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#6  0x00007fb7ed9b29e2 in java_start(Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#7  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#8  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#9  0x0000000000000000 in ?? ()
+
+Thread 11 (Thread 0x7fb7bfa9a710 (LWP 8569)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7ed990c7b in Monitor::IWait(Thread*, long) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7ed9912de in Monitor::wait(bool, long, bool) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed7a4f6a in GCTaskManager::get_task(unsigned int) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7ed7a6140 in GCTaskThread::run() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#6  0x00007fb7ed9b29e2 in java_start(Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#7  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#8  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#9  0x0000000000000000 in ?? ()
+
+Thread 10 (Thread 0x7fb7bf7fc710 (LWP 8570)):
+#0  0x00007fb814039709 in pthread_cond_timedwait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b6685 in os::PlatformEvent::park(long) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7ed990ddf in Monitor::IWait(Thread*, long) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7ed9912de in Monitor::wait(bool, long, bool) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7edae0bc3 in VMThread::loop() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7edae0de2 in VMThread::run() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#6  0x00007fb7ed9b29e2 in java_start(Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#7  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#8  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#9  0x0000000000000000 in ?? ()
+
+Thread 9 (Thread 0x7fb7bf6fb710 (LWP 8571)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7eda6ea9c in ObjectMonitor::wait(long, bool, Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7eda6ec0b in ObjectSynchronizer::wait(Handle, long, Thread*) () 
+from /usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed85eaa9 in JVM_MonitorWait () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7e9c17f50 in ?? ()
+#6  0x0000000000000000 in ?? ()
+
+Thread 8 (Thread 0x7fb7bf5fa710 (LWP 8572)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7eda6ea9c in ObjectMonitor::wait(long, bool, Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7eda6ec0b in ObjectSynchronizer::wait(Handle, long, Thread*) () 
+from /usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed85eaa9 in JVM_MonitorWait () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7e9c17f50 in ?? ()
+#6  0x00007fb7bf5f98c8 in ?? ()
+#7  0x00007fb7bfd86b68 in ?? ()
+#8  0x00007fb7bfd86020 in ?? ()
+#9  0x00007fb7bfd86b60 in ?? ()
+#10 0x00007fb7bf5f9840 in ?? ()
+#11 0x0000000000000000 in ?? ()
+
+Thread 7 (Thread 0x7fb7bf4f9710 (LWP 8573)):
+#0  0x00007fb81403b600 in sem_wait () from /lib64/libpthread.so.0
+#1  0x00007fb7ed9af94a in check_pending_signals(bool) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7ed9ad7a3 in signal_thread_entry(JavaThread*, Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7edaa0f97 in JavaThread::thread_main_inner() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed9b29e2 in java_start(Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#6  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#7  0x0000000000000000 in ?? ()
+
+Thread 6 (Thread 0x7fb7bf3f8710 (LWP 8574)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7ed990c7b in Monitor::IWait(Thread*, long) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7ed991375 in Monitor::wait(bool, long, bool) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed6f5a17 in CompileQueue::get() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7ed6f8850 in CompileBroker::compiler_thread_loop() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#6  0x00007fb7edaa0f97 in JavaThread::thread_main_inner() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#7  0x00007fb7ed9b29e2 in java_start(Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#8  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#9  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#10 0x0000000000000000 in ?? ()
+
+Thread 5 (Thread 0x7fb7bf2f7710 (LWP 8575)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7ed990c7b in Monitor::IWait(Thread*, long) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7ed991375 in Monitor::wait(bool, long, bool) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed6f5a17 in CompileQueue::get() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7ed6f8850 in CompileBroker::compiler_thread_loop() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#6  0x00007fb7edaa0f97 in JavaThread::thread_main_inner() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#7  0x00007fb7ed9b29e2 in java_start(Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#8  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#9  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#10 0x0000000000000000 in ?? ()
+
+Thread 4 (Thread 0x7fb7bf1f6710 (LWP 8576)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7ed990c7b in Monitor::IWait(Thread*, long) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7ed9912de in Monitor::wait(bool, long, bool) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed9505b2 in 
+LowMemoryDetector::low_memory_detector_thread_entry(JavaThread*, Thread*) () 
+from /usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7edaa0f97 in JavaThread::thread_main_inner() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#6  0x00007fb7ed9b29e2 in java_start(Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#7  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#8  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#9  0x0000000000000000 in ?? ()
+
+Thread 3 (Thread 0x7fb7bf0f5710 (LWP 8577)):
+#0  0x00007fb814039709 in pthread_cond_timedwait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b6685 in os::PlatformEvent::park(long) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7ed9b682b in os::sleep(Thread*, long, bool) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7eda9bed0 in WatcherThread::run() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed9b29e2 in java_start(Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb814034a4f in start_thread () from /lib64/libpthread.so.0
+#6  0x00007fb81475a82d in clone () from /lib64/libc.so.6
+#7  0x0000000000000000 in ?? ()
+
+Thread 2 (Thread 0x7fb7ee0b1710 (LWP 8578)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7eda6ea9c in ObjectMonitor::wait(long, bool, Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7eda6ec0b in ObjectSynchronizer::wait(Handle, long, Thread*) () 
+from /usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed85eaa9 in JVM_MonitorWait () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7e9c17f50 in ?? ()
+#6  0x0000000000000000 in ?? ()
+
+Thread 1 (Thread 0x7fb815831720 (LWP 8556)):
+[KCrash Handler]
+#5  0x00007fb8146bc9e5 in raise () from /lib64/libc.so.6
+#6  0x00007fb8146bdee6 in abort () from /lib64/libc.so.6
+#7  0x00007fb8146f7c53 in __libc_message () from /lib64/libc.so.6
+#8  0x00007fb8146fd226 in malloc_printerr () from /lib64/libc.so.6
+#9  0x00007fb814701fcc in free () from /lib64/libc.so.6
+#10 0x00007fb8137bef8c in ~OUString (pMapping=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/solver/unxlngx6.pro/inc/rtl/ustring.hxx:232
+#11 ~MappingEntry (pMapping=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/lbmap.cxx:115
+#12 uno_revokeMapping (pMapping=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/lbmap.cxx:667
+#13 0x00007fb7bc9693e2 in ~Mapping (this=<value optimized out>, 
+__in_chrg=<value optimized out>) at ../../../inc/uno/mapping.hxx:249
+#14 Proxy::~Proxy (this=<value optimized out>, __in_chrg=<value optimized 
+out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/helper/purpenv/helper_purpenv_Proxy.cxx:264
+#15 0x00007fb7bc969491 in Proxy_free (pProxy=0x7fb7f00ded50) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/helper/purpenv/helper_purpenv_Proxy.cxx:190
+#16 0x00007fb8137c51ba in (anonymous 
+namespace)::s_stub_defenv_revokeInterface (pParam=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/lbenv.cxx:397
+#17 0x00007fb8137c925b in s_environment_invoke_v (pCurrEnv=0x7fb7f00de5f0, 
+pTargetEnv=<value optimized out>, pCallee=0x7fb8137c4f0a <(anonymous 
+namespace)::s_stub_defenv_revokeInterface(va_list*)>, 
+    pParam=0x7fff7301f0a0) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:292
+#18 0x00007fb8137c92f4 in uno_Environment_invoke_v 
+(pTargetEnv=0x7fb7f00de5f0, pCallee=0x7fb8137c4f0a <(anonymous 
+namespace)::s_stub_defenv_revokeInterface(va_list*)>, pParam=0x7fff7301f0a0)
+    at /usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:311
+#19 0x00007fb8137c938f in uno_Environment_invoke (pEnv=<value optimized out>, 
+pCallee=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:320
+#20 0x00007fb8137c295d in (anonymous namespace)::defenv_revokeInterface 
+(pEnv=<value optimized out>, pInterface=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/lbenv.cxx:453
+#21 0x00007fb8137c925b in s_environment_invoke_v (pCurrEnv=0x7fb7f00de5f0, 
+pTargetEnv=<value optimized out>, pCallee=0x7fb7bc967980 
+<s_revokeInterface_v(va_list*)>, pParam=0x7fff7301f1f0)
+    at /usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:292
+#22 0x00007fb8137c92f4 in uno_Environment_invoke_v 
+(pTargetEnv=0x7fb7f00de5f0, pCallee=0x7fb7bc967980 
+<s_revokeInterface_v(va_list*)>, pParam=0x7fff7301f1f0)
+    at /usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:311
+#23 0x00007fb8137c938f in uno_Environment_invoke (pEnv=<value optimized out>, 
+pCallee=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:320
+#24 0x00007fb7bc9696b1 in Proxy::release (this=0x7fb7f00ded50) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/helper/purpenv/helper_purpenv_Proxy.cxx:360
+#25 0x00007fb80327ba62 in bridges::cpp_uno::shared::freeCppInterfaceProxy 
+(pEnv=0x7fb7f00de4e0, pInterface=0x7fb7f00e2328)
+    at 
+/usr/src/debug/ooo320-m19-ure/bridges/source/cpp_uno/shared/cppinterfaceproxy.cxx:107
+#26 0x00007fb8137c51ba in (anonymous 
+namespace)::s_stub_defenv_revokeInterface (pParam=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/lbenv.cxx:397
+#27 0x00007fb8137c925b in s_environment_invoke_v (pCurrEnv=0x7fb7f00de5f0, 
+pTargetEnv=<value optimized out>, pCallee=0x7fb8137c4f0a <(anonymous 
+namespace)::s_stub_defenv_revokeInterface(va_list*)>, 
+    pParam=0x7fff7301f670) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:292
+#28 0x00007fb8137c9430 in s_environment_invoke_vv (pParam=<value optimized 
+out>) at /usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:275
+#29 0x00007fb8137c860c in s_pull (pParam=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:225
+#30 0x00007fb7bcb6d494 in dge::v_callInto_v (this=<value optimized out>, 
+pCallee=0x7fb8137c85c0 <s_pull(va_list*)>, pParam=0x7fff7301f450)
+    at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/UnsafeBridge/UnsafeBridge.cxx:89
+#31 0x00007fb8137c967c in callInto_v (this=<value optimized out>, 
+pCallee=<value optimized out>) at ../../inc/cppu/Enterable.hxx:61
+#32 cppu::Enterable::callInto (this=<value optimized out>, pCallee=<value 
+optimized out>) at ../../inc/cppu/Enterable.hxx:98
+#33 0x00007fb8137c8c58 in s_callInto_v (pEnv=<value optimized out>, 
+pCallee=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:232
+#34 s_callInto (pEnv=<value optimized out>, pCallee=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:243
+#35 0x00007fb8137c9291 in s_environment_invoke_v (pCurrEnv=0x0, 
+pTargetEnv=0x7fb7f00de4e0, pCallee=0x7fb8137c4f0a <(anonymous 
+namespace)::s_stub_defenv_revokeInterface(va_list*)>, 
+    pParam=0x7fff7301f670) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:299
+#36 0x00007fb8137c92f4 in uno_Environment_invoke_v 
+(pTargetEnv=0x7fb7f00de4e0, pCallee=0x7fb8137c4f0a <(anonymous 
+namespace)::s_stub_defenv_revokeInterface(va_list*)>, pParam=0x7fff7301f670)
+    at /usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:311
+#37 0x00007fb8137c938f in uno_Environment_invoke (pEnv=<value optimized out>, 
+pCallee=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/EnvStack.cxx:320
+#38 0x00007fb8137c295d in (anonymous namespace)::defenv_revokeInterface 
+(pEnv=<value optimized out>, pInterface=<value optimized out>) at 
+/usr/src/debug/ooo320-m19-ure/cppu/source/uno/lbenv.cxx:453
+#39 0x00007fb80327bd1a in 
+bridges::cpp_uno::shared::CppInterfaceProxy::releaseProxy 
+(this=0x7fb7f00e2300) at 
+/usr/src/debug/ooo320-m19-ure/bridges/source/cpp_uno/shared/cppinterfaceproxy.cxx:162
+#40 0x00007fb803279478 in cpp_vtable_call (nFunctionIndex=2, 
+nVtableOffset=<value optimized out>, gpreg=0x7fff7301f890, 
+fpreg=0x7fff7301f8c0, ovrflw=0x7fff7301f910, pRegisterReturn=0x7fff7301f870)
+    at 
+/usr/src/debug/ooo320-m19-ure/bridges/source/cpp_uno/gcc3_linux_x86-64/cpp2uno.cxx:344
+#41 0x00007fb80327ab82 in privateSnippetExecutor () from 
+/usr/lib64/ooo3/ure/lib/libgcc3_uno.so
+#42 0x00007fb7bd1f0486 in voikko::GrammarChecker::~GrammarChecker() () from 
+/usr/lib64/ooo3/program/../share/uno_packages/cache/uno_packages/vvpSpu_/voikko-3.1.oxt/voikko.so
+#43 0x00007fb813a1e1e8 in ~Reference (this=0x20bc250) at 
+/usr/src/debug/ooo320-m19-ure/solver/unxlngx6.pro/inc/com/sun/star/uno/Reference.hxx:118
+#44 ~EventObject (this=0x20bc250) at 
+../unxlngx6.pro/inc/cppuhelper/com/sun/star/lang/EventObject.hdl:18
+#45 cppu::WeakComponentImplHelperBase::dispose (this=0x20bc250) at 
+/usr/src/debug/ooo320-m19-ure/cppuhelper/source/implbase.cxx:276
+#46 0x00007fb7bd1eff79 in 
+cppu::WeakComponentImplHelper4<com::sun::star::lang::XServiceInfo, 
+com::sun::star::linguistic2::XProofreader, 
+com::sun::star::lang::XInitialization, 
+com::sun::star::lang::XServiceDisplayName>::dispose() () from 
+/usr/lib64/ooo3/program/../share/uno_packages/cache/uno_packages/vvpSpu_/voikko-3.1.oxt/voikko.so
+#47 0x00007fb813a18ff7 in cppu::WeakComponentImplHelperBase::release 
+(this=0x20bc250) at 
+/usr/src/debug/ooo320-m19-ure/cppuhelper/source/implbase.cxx:251
+#48 0x00007fb8146bf4e1 in __run_exit_handlers () from /lib64/libc.so.6
+#49 0x00007fb8146bf535 in exit () from /lib64/libc.so.6
+#50 0x00007fb8146a8b84 in __libc_start_main () from /lib64/libc.so.6
+#51 0x0000000000400e19 in _start ()
+
+
+Thread 0 (Thread 0x7fb7ee0b1710 (LWP 8578)):
+#0  0x00007fb81403939c in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib64/libpthread.so.0
+#1  0x00007fb7ed9b64bb in os::PlatformEvent::park() () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#2  0x00007fb7eda6ea9c in ObjectMonitor::wait(long, bool, Thread*) () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#3  0x00007fb7eda6ec0b in ObjectSynchronizer::wait(Handle, long, Thread*) () 
+from /usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#4  0x00007fb7ed85eaa9 in JVM_MonitorWait () from 
+/usr/lib64/jvm/java-1.6.0-openjdk-1.6.0/jre/lib/amd64/server/libjvm.so
+#5  0x00007fb7e9c17f50 in ?? ()
+#6  0x0000000000000000 in ?? ()

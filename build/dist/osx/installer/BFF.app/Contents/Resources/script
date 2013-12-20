@@ -1,0 +1,36 @@
+tell application "Finder"
+	set sel to selection
+	try
+		if (count sel) > 0 then
+			set myTarget to item 1 of sel
+		else if (count window) > 0 then
+			set myTarget to target of window 1
+		else
+			set myTarget to path to desktop folder
+		end if
+	on error
+		set myTarget to path to desktop folder
+	end try
+	my openTerminal(myTarget)
+end tell
+
+on openTerminal(location)
+	set location to location as alias
+	set the_path to POSIX path of location
+	repeat until the_path ends with "/"
+		set the_path to text 1 thru -2 of the_path
+	end repeat
+	
+	set cmd to "cd ~/bff && ./welcome.sh"
+	
+	tell application "System Events" to set terminalIsRunning to exists application process "Terminal"
+	
+	tell application "Terminal"
+		activate
+		if terminalIsRunning is true then
+			do script with command cmd
+		else
+			do script with command cmd in window 1
+		end if
+	end tell
+end openTerminal

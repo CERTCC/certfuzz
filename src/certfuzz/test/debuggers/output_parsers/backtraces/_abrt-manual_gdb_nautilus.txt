@@ -1,0 +1,99 @@
+
+(gdb) bt
+#0  nautilus_file_peek_display_name (file=0x0) at nautilus-file.c:3692
+#1  0x00000000004cb949 in nautilus_file_get_display_name (
+    file=<value optimized out>) at nautilus-file.c:3715
+#2  0x000000000043d3e9 in selection_changed_callback (window=0x244c350, panel=
+    0x27715a0 [NautilusInformationPanel]) at nautilus-information-panel.c:1124
+#3  0x000000356e60bb3e in IA__g_closure_invoke (closure=0x267e6e0, 
+    return_value=0x0, n_param_values=1, param_values=0x2677300, 
+    invocation_hint=0x7fff71d98c00) at gclosure.c:767
+#4  0x000000356e620e23 in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=0, instance=0x244c350, emission_return=0x0, instance_and_params=
+    0x2677300) at gsignal.c:3247
+#5  0x000000356e6220af in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fff71d98e00) at gsignal.c:2980
+#6  0x000000356e622414 in IA__g_signal_emit_by_name (instance=0x244c350, 
+    detailed_signal=0x56b765 "selection_changed") at gsignal.c:3074
+#7  0x000000000046d043 in fm_directory_view_send_selection_change (view=
+    0x27fa590 [FMListView]) at fm-directory-view.c:2295
+#8  0x0000000000471ba4 in process_old_files (data=<value optimized out>)
+    at fm-directory-view.c:2840
+---Type <return> to continue, or q <return> to quit---
+#9  display_pending_files (data=<value optimized out>)
+    at fm-directory-view.c:2854
+#10 display_pending_callback (data=<value optimized out>)
+    at fm-directory-view.c:2954
+#11 0x000000356de3961b in g_timeout_dispatch (source=0x28c45a0, 
+    callback=<value optimized out>, user_data=<value optimized out>)
+    at gmain.c:3396
+#12 0x000000356de38f0e in g_main_dispatch (context=0x1c68610) at gmain.c:1960
+#13 IA__g_main_context_dispatch (context=0x1c68610) at gmain.c:2513
+#14 0x000000356de3c938 in g_main_context_iterate (context=0x1c68610, block=1, 
+    dispatch=1, self=<value optimized out>) at gmain.c:2591
+#15 0x000000356de3cd55 in IA__g_main_loop_run (loop=0x1dd1dc0) at gmain.c:2799
+#16 0x0000003d07d4c2c7 in IA__gtk_main () at gtkmain.c:1218
+#17 0x0000000000440eba in main (argc=1, argv=0x7fff71d99528)
+    at nautilus-main.c:544
+
+
+
+Thread 2 (Thread 0x7fb3cbdfd700 (LWP 4411)):
+#0  pthread_cond_timedwait@@GLIBC_2.3.2 ()
+    at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_timedwait.S:216
+#1  0x000000356f202382 in g_cond_timed_wait_posix_impl (
+    cond=<value optimized out>, entered_mutex=<value optimized out>, 
+    abs_time=<value optimized out>) at gthread-posix.c:242
+#2  0x000000356de14c7f in g_async_queue_pop_intern_unlocked (queue=0x1ce0880, 
+    try=0, end_time=0x7fb3cbdfcc00) at gasyncqueue.c:365
+#3  0x000000356de63641 in g_thread_pool_wait_for_new_task (
+    data=<value optimized out>) at gthreadpool.c:220
+#4  g_thread_pool_thread_proxy (data=<value optimized out>)
+    at gthreadpool.c:254
+#5  0x000000356de62074 in g_thread_create_proxy (data=0x28c9bc0)
+    at gthread.c:635
+#6  0x00007fb3e160e7e1 in start_thread (arg=0x7fb3cbdfd700)
+    at pthread_create.c:301
+#7  0x00007fb3e0ed177d in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:115
+
+---Type <return> to continue, or q <return> to quit---
+Thread 1 (Thread 0x7fb3e1c57940 (LWP 3596)):
+#0  nautilus_file_peek_display_name (file=0x0) at nautilus-file.c:3692
+#1  0x00000000004cb949 in nautilus_file_get_display_name (
+    file=<value optimized out>) at nautilus-file.c:3715
+#2  0x000000000043d3e9 in selection_changed_callback (window=0x244c350, panel=
+    0x27715a0 [NautilusInformationPanel]) at nautilus-information-panel.c:1124
+#3  0x000000356e60bb3e in IA__g_closure_invoke (closure=0x267e6e0, 
+    return_value=0x0, n_param_values=1, param_values=0x2677300, 
+    invocation_hint=0x7fff71d98c00) at gclosure.c:767
+#4  0x000000356e620e23 in signal_emit_unlocked_R (node=<value optimized out>, 
+    detail=0, instance=0x244c350, emission_return=0x0, instance_and_params=
+    0x2677300) at gsignal.c:3247
+#5  0x000000356e6220af in IA__g_signal_emit_valist (
+    instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fff71d98e00) at gsignal.c:2980
+#6  0x000000356e622414 in IA__g_signal_emit_by_name (instance=0x244c350, 
+    detailed_signal=0x56b765 "selection_changed") at gsignal.c:3074
+#7  0x000000000046d043 in fm_directory_view_send_selection_change (view=
+    0x27fa590 [FMListView]) at fm-directory-view.c:2295
+#8  0x0000000000471ba4 in process_old_files (data=<value optimized out>)
+---Type <return> to continue, or q <return> to quit---
+    at fm-directory-view.c:2840
+#9  display_pending_files (data=<value optimized out>)
+    at fm-directory-view.c:2854
+#10 display_pending_callback (data=<value optimized out>)
+    at fm-directory-view.c:2954
+#11 0x000000356de3961b in g_timeout_dispatch (source=0x28c45a0, 
+    callback=<value optimized out>, user_data=<value optimized out>)
+    at gmain.c:3396
+#12 0x000000356de38f0e in g_main_dispatch (context=0x1c68610) at gmain.c:1960
+#13 IA__g_main_context_dispatch (context=0x1c68610) at gmain.c:2513
+#14 0x000000356de3c938 in g_main_context_iterate (context=0x1c68610, block=1, 
+    dispatch=1, self=<value optimized out>) at gmain.c:2591
+#15 0x000000356de3cd55 in IA__g_main_loop_run (loop=0x1dd1dc0) at gmain.c:2799
+#16 0x0000003d07d4c2c7 in IA__gtk_main () at gtkmain.c:1218
+#17 0x0000000000440eba in main (argc=1, argv=0x7fff71d99528)
+    at nautilus-main.c:544
+

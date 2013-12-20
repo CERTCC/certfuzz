@@ -1,0 +1,1525 @@
+(gdb) bt full
+#0  magazine_chain_pop_head (mem_size=16) at gslice.c:474
+        chunk = 0x1
+#1  thread_memory_magazine1_alloc (mem_size=16) at gslice.c:777
+        mag = 0x1605a20
+        chunk = <value optimized out>
+#2  IA__g_slice_alloc (mem_size=16) at gslice.c:815
+        tmem = 0x1605a10
+        ix = <value optimized out>
+        chunk_size = <value optimized out>
+        mem = <value optimized out>
+#3  0x0000003fb0c57dbe in IA__g_slist_prepend (list=0x0, data=0x1658190) at gslist.c:160
+        new_list = 0x2289480
+#4  0x0000003fb18118d7 in g_object_notify_queue_add (object=0x2550710, property_name=<value optimized out>) at gobjectnotifyqueue.c:151
+        redirect = <value optimized out>
+#5  IA__g_object_notify (object=0x2550710, property_name=<value optimized out>) at gobject.c:882
+        nqueue = 0x7faf7c1e4240
+        pspec = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_object_notify"
+#6  0x0000003fb867f76f in gtk_widget_set_style_internal (widget=0x2550710, style=0x189a000, initial_emission=1) at gtkwidget.c:6609
+No locals.
+#7  0x0000003fb85c8bf8 in do_size_request (widget=0x2550710) at gtksizegroup.c:626
+No locals.
+#8  0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x2550710, requisition=0x7fffa38cbaf0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#9  0x0000003fb8484711 in gtk_box_size_request (widget=<value optimized out>, requisition=0x2900728) at gtkbox.c:280
+        child_requisition = {width = 34453696, height = 0}
+        box = 0x29006f0
+        private = 0x2900770
+        child = 0x265fe30
+        children = 0x0
+        nvis_children = <value optimized out>
+        width = <value optimized out>
+        height = <value optimized out>
+#10 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x20db8c0, 
+    invocation_hint=0x7fffa38cbc70) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+---Type <return> to continue, or q <return> to quit---
+#11 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x29006f0, emission_return=0x0, 
+    instance_and_params=0x20db8c0) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cc160, instance = 0x29006f0, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23718240}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#12 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cbe70) at gsignal.c:2980
+        instance_and_params = 0x20db8c0
+        signal_return_type = 4
+        param_values = 0x20db8d8
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#13 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x29006f0, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cbfb0, reg_save_area = 0x7fffa38cbec0}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#14 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x29006f0, requisition=0x7fffa38cbff0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#15 0x0000003fb848e049 in gtk_button_size_request (widget=<value optimized out>, requisition=0x1ef1b38) at gtkbutton.c:1351
+        child_requisition = {width = 32872608, height = 0}
+        button = 0x1ef1b00
+        default_border = {left = 0, right = 0, top = 0, bottom = 0}
+        inner_border = {left = 1, right = 1, top = 1, bottom = 1}
+        focus_width = <value optimized out>
+        focus_pad = <value optimized out>
+#16 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x1f598a0, 
+    invocation_hint=0x7fffa38cc170) at gclosure.c:767
+---Type <return> to continue, or q <return> to quit---
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#17 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x1ef1b00, emission_return=0x0, 
+    instance_and_params=0x1f598a0) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cc620, instance = 0x1ef1b00, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23569712}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#18 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cc370) at gsignal.c:2980
+        instance_and_params = 0x1f598a0
+        signal_return_type = 4
+        param_values = 0x1f598b8
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#19 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x1ef1b00, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cc4b0, reg_save_area = 0x7fffa38cc3c0}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#20 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x1ef1b00, requisition=0x2353e18) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#21 0x0000003fb86304d3 in gtk_tool_item_size_request (widget=0x2353de0, requisition=0x2353e18) at gtktoolitem.c:529
+        child = 0x1ef1b00
+#22 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x1f59a00, 
+    invocation_hint=0x7fffa38cc630) at gclosure.c:767
+        marshal = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#23 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x2353de0, emission_return=0x0, 
+    instance_and_params=0x1f59a00) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38ccb70, instance = 0x2353de0, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23724000}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#24 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cc830) at gsignal.c:2980
+        instance_and_params = 0x1f59a00
+        signal_return_type = 4
+        param_values = 0x1f59a18
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#25 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x2353de0, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cc970, reg_save_area = 0x7fffa38cc880}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#26 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x2353de0, requisition=0x7fffa38cc9f0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#27 0x0000003fb862581e in toolbar_content_size_request (content=0x1cb9c40, toolbar=0x1883d80, requisition=0x7fffa38cc9f0)
+    at gtktoolbar.c:4168
+        space_size = <value optimized out>
+#28 0x0000003fb862a52a in gtk_toolbar_size_request (widget=0x1883d80, requisition=0x1883db8) at gtktoolbar.c:940
+        requisition = {width = 12, height = 1}
+        content = 0x1cb9c40
+---Type <return> to continue, or q <return> to quit---
+        toolbar = 0x1883d80
+        priv = 0x1883e30
+        list = 0x25fbaa0
+        max_child_height = <value optimized out>
+        max_child_width = <value optimized out>
+        max_homogeneous_child_width = <value optimized out>
+        max_homogeneous_child_height = <value optimized out>
+        homogeneous_size = <value optimized out>
+        long_req = <value optimized out>
+        pack_front_size = <value optimized out>
+        ipadding = <value optimized out>
+        arrow_requisition = {width = 34797584, height = 0}
+#29 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x212f810, 
+    invocation_hint=0x7fffa38ccb80) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#30 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x1883d80, emission_return=0x0, 
+    instance_and_params=0x212f810) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cd060, instance = 0x1883d80, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23716608}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#31 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38ccd80) at gsignal.c:2980
+        instance_and_params = 0x212f810
+        signal_return_type = 4
+        param_values = 0x212f828
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+---Type <return> to continue, or q <return> to quit---
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#32 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x1883d80, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38ccec0, reg_save_area = 0x7fffa38ccdd0}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#33 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x1883d80, requisition=0x7fffa38ccef0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#34 0x0000003fb8484711 in gtk_box_size_request (widget=<value optimized out>, requisition=0x200e468) at gtkbox.c:280
+        child_requisition = {width = 306, height = 25}
+        box = 0x200e430
+        private = 0x200e4b0
+        child = 0x200a520
+        children = 0x265e500
+        nvis_children = <value optimized out>
+        width = <value optimized out>
+        height = <value optimized out>
+#35 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x2540a40, 
+    invocation_hint=0x7fffa38cd070) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#36 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x200e430, emission_return=0x0, 
+    instance_and_params=0x2540a40) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cd530, instance = 0x200e430, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23730032}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#37 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cd270) at gsignal.c:2980
+---Type <return> to continue, or q <return> to quit---
+        instance_and_params = 0x2540a40
+        signal_return_type = 4
+        param_values = 0x2540a58
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#38 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x200e430, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cd3b0, reg_save_area = 0x7fffa38cd2c0}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#39 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x200e430, requisition=0x7fffa38cd3d0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#40 0x0000003fb8690bbc in gtk_window_size_request (widget=<value optimized out>, requisition=0x231ea08) at gtkwindow.c:4915
+        child_requisition = {width = 23464096, height = 0}
+        window = <value optimized out>
+        bin = 0x231e9d0
+#41 0x0000003fb180bb3e in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x235b8c0, 
+    invocation_hint=0x7fffa38cd540) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#42 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x231e9d0, emission_return=0x0, 
+    instance_and_params=0x235b8c0) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cdb80, instance = 0x231e9d0, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 32584368}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#43 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+---Type <return> to continue, or q <return> to quit---
+    detail=<value optimized out>, var_args=0x7fffa38cd740) at gsignal.c:2980
+        instance_and_params = 0x235b8c0
+        signal_return_type = 4
+        param_values = 0x235b8d8
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#44 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x231e9d0, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cd880, reg_save_area = 0x7fffa38cd790}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#45 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x231e9d0, requisition=0x0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#46 0x0000003fb868c06a in gtk_window_compute_configure_request (window=0x231e9d0, request=0x7fffa38cda00, geometry=0x7fffa38cd9c0, 
+    flags=0x7fffa38cda2c) at gtkwindow.c:5791
+        new_geometry = {min_width = -1367891096, min_height = 32687, max_width = -1367881160, max_height = 32687, 
+          base_width = -1551050320, base_height = 32767, width_inc = 36825552, height_inc = 0, min_aspect = 7.2911220753344278e-304, 
+          max_aspect = 4.5019755714700226e-319, win_gravity = 36806032}
+        new_flags = <value optimized out>
+        w = <value optimized out>
+        h = <value optimized out>
+        widget = 0x231e9d0
+        pos = <value optimized out>
+        parent_widget = <value optimized out>
+        info = <value optimized out>
+        screen = 0x163a1f0
+        x = <value optimized out>
+        y = <value optimized out>
+        __PRETTY_FUNCTION__ = "gtk_window_compute_configure_request"
+#47 0x0000003fb8693e70 in gtk_window_show (widget=0x231e9d0) at gtkwindow.c:4465
+        info = 0x1df2200
+        allocation = {x = 0, y = 0, width = 0, height = 0}
+        was_realized = <value optimized out>
+        configure_request = {x = 1, y = 0, width = -1316824091, height = 63}
+        new_geometry = {min_width = -1461804040, min_height = 0, max_width = -1358914214, max_height = 63, base_width = 0, 
+          base_height = 0, width_inc = 0, height_inc = 0, min_aspect = 6.7903865311876845e-313, max_aspect = 0, win_gravity = 30304032}
+        new_flags = 63
+---Type <return> to continue, or q <return> to quit---
+        window = 0x231e9d0
+        container = 0x231e9d0
+        need_resize = 1
+#48 0x0000003fb180bb3e in IA__g_closure_invoke (closure=0x160a6c0, return_value=0x0, n_param_values=1, param_values=0x1ce6720, 
+    invocation_hint=0x7fffa38cdb90) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#49 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x231e9d0, emission_return=0x0, 
+    instance_and_params=0x1ce6720) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x0, instance = 0x231e9d0, ihint = {signal_id = 18, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 32584368}
+        class_closure = 0x160a6c0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 18
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#50 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cdd80) at gsignal.c:2980
+        instance_and_params = 0x1ce6720
+        signal_return_type = 4
+        param_values = 0x1ce6738
+        node = 0x16600c0
+        i = <value optimized out>
+        n_params = 0
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#51 0x0000003fb18225f3 in IA__g_signal_emit (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>) at gsignal.c:3037
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cde60, reg_save_area = 0x7fffa38cdda0}}
+#52 0x0000003fb868239b in IA__gtk_widget_show (widget=0x231e9d0) at gtkwidget.c:3020
+        __PRETTY_FUNCTION__ = "IA__gtk_widget_show"
+#53 0x00007fafb5f325e1 in em_utils_reply_to_message (folder=0x16be170, uid=0x1cfd0a0 "2000", message=0x7fafa40644f0, mode=0, 
+    source=0x19e6080) at em-composer-utils.c:2416
+        to = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        cc = <value optimized out>
+        postto = <value optimized out>
+        r = 0x231e9d0
+        account = 0x173c810
+        flags = 17
+        eme = 0x168b340
+        target = <value optimized out>
+        __PRETTY_FUNCTION__ = "em_utils_reply_to_message"
+#54 0x00007fafb5f329d4 in reply_to_message (folder=<value optimized out>, uid=<value optimized out>, message=<value optimized out>, 
+    user_data=0x24143e0) at em-composer-utils.c:2313
+        rd = 0x24143e0
+#55 0x00007fafb5f5a821 in mail_msg_idle_cb () at mail-mt.c:502
+        msg = 0x21535e0
+        __PRETTY_FUNCTION__ = "mail_msg_idle_cb"
+#56 0x0000003fb0c38f0e in g_main_dispatch (context=0x16430c0) at gmain.c:1960
+        dispatch = 0x3fb0c37070 <g_idle_dispatch>
+        was_in_call = 0
+        user_data = 0x0
+        callback = 0x7fafb5f5a720 <mail_msg_idle_cb>
+        cb_funcs = 0x3fb0ee4970
+        cb_data = 0x7faf9c1c8c30
+        current_source_link = {data = 0x7faf9c1662b0, next = 0x0}
+        need_destroy = <value optimized out>
+        source = 0x7faf9c1662b0
+        current = 0x1695b20
+        i = <value optimized out>
+#57 IA__g_main_context_dispatch (context=0x16430c0) at gmain.c:2513
+No locals.
+#58 0x0000003fb0c3c938 in g_main_context_iterate (context=0x16430c0, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2591
+        max_priority = 200
+        timeout = 0
+        some_ready = 1
+        nfds = 9
+        allocated_nfds = <value optimized out>
+        fds = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_main_context_iterate"
+#59 0x0000003fb0c3cd55 in IA__g_main_loop_run (loop=0x16b2d60) at gmain.c:2799
+        self = 0x1605400
+        __PRETTY_FUNCTION__ = "IA__g_main_loop_run"
+#60 0x0000003fc2c2d106 in bonobo_main () at bonobo-main.c:311
+---Type <return> to continue, or q <return> to quit---
+
+        loop = 0x16b2d60
+#61 0x000000000041569a in main (argc=<value optimized out>, argv=<value optimized out>) at main.c:732
+        client = 0x1687ea0
+        program = 0x1612840
+        master_client = 0x1615830
+        context = <value optimized out>
+        filename = <value optimized out>
+
+
+
+
+(gdb) disass
+Dump of assembler code for function IA__g_slice_alloc:
+   0x0000003fb0c56140 <+0>:	mov    %rbx,-0x30(%rsp)
+   0x0000003fb0c56145 <+5>:	lea    0xf(%rdi),%rbx
+   0x0000003fb0c56149 <+9>:	mov    %rbp,-0x28(%rsp)
+   0x0000003fb0c5614e <+14>:	mov    %r12,-0x20(%rsp)
+   0x0000003fb0c56153 <+19>:	mov    %r13,-0x18(%rsp)
+   0x0000003fb0c56158 <+24>:	mov    %rdi,%rbp
+   0x0000003fb0c5615b <+27>:	mov    %r14,-0x10(%rsp)
+   0x0000003fb0c56160 <+32>:	mov    %r15,-0x8(%rsp)
+   0x0000003fb0c56165 <+37>:	sub    $0x88,%rsp
+   0x0000003fb0c5616c <+44>:	and    $0xfffffffffffffff0,%rbx
+   0x0000003fb0c56170 <+48>:	je     0x3fb0c5617f <IA__g_slice_alloc+63>
+   0x0000003fb0c56172 <+50>:	cmp    0x28eeb7(%rip),%rbx        # 0x3fb0ee5030 <allocator+48>
+   0x0000003fb0c56179 <+57>:	jbe    0x3fb0c56210 <IA__g_slice_alloc+208>
+   0x0000003fb0c5617f <+63>:	cmpq   $0x0,0x28eef1(%rip)        # 0x3fb0ee5078 <sys_page_size>
+   0x0000003fb0c56187 <+71>:	je     0x3fb0c56699 <IA__g_slice_alloc+1369>
+   0x0000003fb0c5618d <+77>:	test   %rbx,%rbx
+   0x0000003fb0c56190 <+80>:	je     0x3fb0c56612 <IA__g_slice_alloc+1234>
+   0x0000003fb0c56196 <+86>:	cmpl   $0x0,0x28ee73(%rip)        # 0x3fb0ee5010 <allocator+16>
+   0x0000003fb0c5619d <+93>:	jne    0x3fb0c56612 <IA__g_slice_alloc+1234>
+   0x0000003fb0c561a3 <+99>:	mov    0x28ee5e(%rip),%rax        # 0x3fb0ee5008 <allocator+8>
+   0x0000003fb0c561aa <+106>:	sub    $0x30,%rax
+   0x0000003fb0c561ae <+110>:	shr    $0x3,%rax
+   0x0000003fb0c561b2 <+114>:	cmp    %rax,%rbx
+   0x0000003fb0c561b5 <+117>:	ja     0x3fb0c56612 <IA__g_slice_alloc+1234>
+   0x0000003fb0c561bb <+123>:	cmpl   $0x0,0x28ee52(%rip)        # 0x3fb0ee5014 <allocator+20>
+   0x0000003fb0c561c2 <+130>:	je     0x3fb0c56210 <IA__g_slice_alloc+208>
+   0x0000003fb0c561c4 <+132>:	mov    0x28e145(%rip),%r12        # 0x3fb0ee4310
+   0x0000003fb0c561cb <+139>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c561d0 <+144>:	je     0x3fb0c561e3 <IA__g_slice_alloc+163>
+   0x0000003fb0c561d2 <+146>:	mov    0x28e107(%rip),%rax        # 0x3fb0ee42e0
+   0x0000003fb0c561d9 <+153>:	mov    0x28ee80(%rip),%rdi        # 0x3fb0ee5060 <allocator+96>
+   0x0000003fb0c561e0 <+160>:	callq  *0x8(%rax)
+   0x0000003fb0c561e3 <+163>:	mov    %rbx,%rdi
+   0x0000003fb0c561e6 <+166>:	callq  0x3fb0c55eb0 <slab_allocator_alloc_chunk>
+   0x0000003fb0c561eb <+171>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c561f0 <+176>:	mov    %rax,%rbx
+   0x0000003fb0c561f3 <+179>:	je     0x3fb0c56282 <IA__g_slice_alloc+322>
+   0x0000003fb0c561f9 <+185>:	mov    0x28e0e0(%rip),%rax        # 0x3fb0ee42e0
+   0x0000003fb0c56200 <+192>:	mov    0x28ee59(%rip),%rdi        # 0x3fb0ee5060 <allocator+96>
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c56207 <+199>:	callq  *0x18(%rax)
+   0x0000003fb0c5620a <+202>:	jmp    0x3fb0c56282 <IA__g_slice_alloc+322>
+   0x0000003fb0c5620c <+204>:	nopl   0x0(%rax)
+   0x0000003fb0c56210 <+208>:	mov    0x28e0f9(%rip),%r12        # 0x3fb0ee4310
+   0x0000003fb0c56217 <+215>:	mov    (%r12),%r13d
+   0x0000003fb0c5621b <+219>:	test   %r13d,%r13d
+   0x0000003fb0c5621e <+222>:	jne    0x3fb0c56420 <IA__g_slice_alloc+736>
+   0x0000003fb0c56224 <+228>:	mov    0x28ee55(%rip),%r13        # 0x3fb0ee5080 <private_thread_memory>
+   0x0000003fb0c5622b <+235>:	test   %r13,%r13
+   0x0000003fb0c5622e <+238>:	je     0x3fb0c5643d <IA__g_slice_alloc+765>
+   0x0000003fb0c56234 <+244>:	shr    $0x4,%rbx
+   0x0000003fb0c56238 <+248>:	lea    -0x1(%rbx),%ecx
+   0x0000003fb0c5623b <+251>:	mov    %ecx,%edx
+   0x0000003fb0c5623d <+253>:	mov    %rdx,%r15
+   0x0000003fb0c56240 <+256>:	shl    $0x4,%r15
+   0x0000003fb0c56244 <+260>:	mov    %r15,%r14
+   0x0000003fb0c56247 <+263>:	add    0x0(%r13),%r14
+   0x0000003fb0c5624b <+267>:	mov    (%r14),%rax
+   0x0000003fb0c5624e <+270>:	test   %rax,%rax
+   0x0000003fb0c56251 <+273>:	je     0x3fb0c564e0 <IA__g_slice_alloc+928>
+   0x0000003fb0c56257 <+279>:	mov    0x8(%rax),%rdx
+   0x0000003fb0c5625b <+283>:	test   %rdx,%rdx
+   0x0000003fb0c5625e <+286>:	je     0x3fb0c564d0 <IA__g_slice_alloc+912>
+=> 0x0000003fb0c56264 <+292>:	mov    (%rdx),%rcx
+   0x0000003fb0c56267 <+295>:	mov    %rcx,0x8(%rax)
+   0x0000003fb0c5626b <+299>:	mov    %rdx,%rax
+   0x0000003fb0c5626e <+302>:	mov    0x8(%r14),%rdx
+   0x0000003fb0c56272 <+306>:	test   %rdx,%rdx
+   0x0000003fb0c56275 <+309>:	je     0x3fb0c5627f <IA__g_slice_alloc+319>
+   0x0000003fb0c56277 <+311>:	sub    $0x1,%rdx
+   0x0000003fb0c5627b <+315>:	mov    %rdx,0x8(%r14)
+   0x0000003fb0c5627f <+319>:	mov    %rax,%rbx
+   0x0000003fb0c56282 <+322>:	mov    0x28ed8f(%rip),%r11d        # 0x3fb0ee5018 <allocator+24>
+   0x0000003fb0c56289 <+329>:	test   %r11d,%r11d
+   0x0000003fb0c5628c <+332>:	je     0x3fb0c563f0 <IA__g_slice_alloc+688>
+   0x0000003fb0c56292 <+338>:	test   %rbx,%rbx
+   0x0000003fb0c56295 <+341>:	je     0x3fb0c563f0 <IA__g_slice_alloc+688>
+   0x0000003fb0c5629b <+347>:	mov    0x28e06e(%rip),%r12        # 0x3fb0ee4310
+   0x0000003fb0c562a2 <+354>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c562a7 <+359>:	jne    0x3fb0c5665a <IA__g_slice_alloc+1306>
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c562ad <+365>:	mov    0x28ede4(%rip),%rcx        # 0x3fb0ee5098 <smc_tree_root>
+   0x0000003fb0c562b4 <+372>:	test   %rcx,%rcx
+   0x0000003fb0c562b7 <+375>:	je     0x3fb0c566e4 <IA__g_slice_alloc+1444>
+   0x0000003fb0c562bd <+381>:	mov    $0xfe609,%esi
+   0x0000003fb0c562c2 <+386>:	xor    %edx,%edx
+   0x0000003fb0c562c4 <+388>:	mov    %rbx,%rax
+   0x0000003fb0c562c7 <+391>:	div    %rsi
+   0x0000003fb0c562ca <+394>:	xor    %edx,%edx
+   0x0000003fb0c562cc <+396>:	mov    $0xffd,%esi
+   0x0000003fb0c562d1 <+401>:	div    %rsi
+   0x0000003fb0c562d4 <+404>:	mov    %edx,%r13d
+   0x0000003fb0c562d7 <+407>:	lea    (%rcx,%r13,8),%r15
+   0x0000003fb0c562db <+411>:	mov    (%r15),%rcx
+   0x0000003fb0c562de <+414>:	test   %rcx,%rcx
+   0x0000003fb0c562e1 <+417>:	je     0x3fb0c566a3 <IA__g_slice_alloc+1379>
+   0x0000003fb0c562e7 <+423>:	xor    %edx,%edx
+   0x0000003fb0c562e9 <+425>:	mov    $0x1ff,%esi
+   0x0000003fb0c562ee <+430>:	mov    %rbx,%rax
+   0x0000003fb0c562f1 <+433>:	div    %rsi
+   0x0000003fb0c562f4 <+436>:	shl    $0x4,%rdx
+   0x0000003fb0c562f8 <+440>:	lea    (%rcx,%rdx,1),%r14
+   0x0000003fb0c562fc <+444>:	mov    0x8(%r14),%r15d
+   0x0000003fb0c56300 <+448>:	mov    (%r14),%rdi
+   0x0000003fb0c56303 <+451>:	test   %r15d,%r15d
+   0x0000003fb0c56306 <+454>:	mov    %rdi,%r13
+   0x0000003fb0c56309 <+457>:	je     0x3fb0c56343 <IA__g_slice_alloc+515>
+   0x0000003fb0c5630b <+459>:	mov    %r15d,%ecx
+   0x0000003fb0c5630e <+462>:	xor    %edx,%edx
+   0x0000003fb0c56310 <+464>:	jmp    0x3fb0c56326 <IA__g_slice_alloc+486>
+   0x0000003fb0c56312 <+466>:	lea    0x1(%rax),%edx
+   0x0000003fb0c56315 <+469>:	mov    $0x1,%esi
+   0x0000003fb0c5631a <+474>:	mov    %ecx,%eax
+   0x0000003fb0c5631c <+476>:	cmp    %eax,%edx
+   0x0000003fb0c5631e <+478>:	jae    0x3fb0c56689 <IA__g_slice_alloc+1353>
+   0x0000003fb0c56324 <+484>:	mov    %eax,%ecx
+   0x0000003fb0c56326 <+486>:	lea    (%rdx,%rcx,1),%eax
+   0x0000003fb0c56329 <+489>:	mov    $0xffffffff,%esi
+   0x0000003fb0c5632e <+494>:	shr    %eax
+   0x0000003fb0c56330 <+496>:	mov    %eax,%r13d
+   0x0000003fb0c56333 <+499>:	shl    $0x4,%r13
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c56337 <+503>:	lea    (%rdi,%r13,1),%r13
+   0x0000003fb0c5633b <+507>:	cmp    0x0(%r13),%rbx
+   0x0000003fb0c5633f <+511>:	jb     0x3fb0c5631c <IA__g_slice_alloc+476>
+   0x0000003fb0c56341 <+513>:	jne    0x3fb0c56312 <IA__g_slice_alloc+466>
+   0x0000003fb0c56343 <+515>:	test   %r13,%r13
+   0x0000003fb0c56346 <+518>:	je     0x3fb0c5635e <IA__g_slice_alloc+542>
+   0x0000003fb0c56348 <+520>:	mov    %r15d,%eax
+   0x0000003fb0c5634b <+523>:	shl    $0x4,%rax
+   0x0000003fb0c5634f <+527>:	lea    (%rdi,%rax,1),%rax
+   0x0000003fb0c56353 <+531>:	cmp    %rax,%r13
+   0x0000003fb0c56356 <+534>:	jae    0x3fb0c5635e <IA__g_slice_alloc+542>
+   0x0000003fb0c56358 <+536>:	cmp    0x0(%r13),%rbx
+   0x0000003fb0c5635c <+540>:	je     0x3fb0c563cd <IA__g_slice_alloc+653>
+   0x0000003fb0c5635e <+542>:	sub    %rdi,%r13
+   0x0000003fb0c56361 <+545>:	shr    $0x4,%r13
+   0x0000003fb0c56365 <+549>:	cmp    %r13d,%r15d
+   0x0000003fb0c56368 <+552>:	mov    %r13d,0x30(%rsp)
+   0x0000003fb0c5636d <+557>:	jae    0x3fb0c56387 <IA__g_slice_alloc+583>
+   0x0000003fb0c5636f <+559>:	lea    0x402df(%rip),%rdi        # 0x3fb0c96655
+   0x0000003fb0c56376 <+566>:	lea    0x40304(%rip),%rsi        # 0x3fb0c96681
+   0x0000003fb0c5637d <+573>:	xor    %eax,%eax
+   0x0000003fb0c5637f <+575>:	callq  0x3fb0c55420 <mem_error>
+   0x0000003fb0c56384 <+580>:	mov    (%r14),%rdi
+   0x0000003fb0c56387 <+583>:	mov    %r15d,%esi
+   0x0000003fb0c5638a <+586>:	shl    $0x4,%esi
+   0x0000003fb0c5638d <+589>:	add    $0x10,%esi
+   0x0000003fb0c56390 <+592>:	mov    %esi,%esi
+   0x0000003fb0c56392 <+594>:	callq  0x3fb0c13360 <realloc@plt>
+   0x0000003fb0c56397 <+599>:	test   %rax,%rax
+   0x0000003fb0c5639a <+602>:	mov    %rax,(%r14)
+   0x0000003fb0c5639d <+605>:	je     0x3fb0c567c9 <IA__g_slice_alloc+1673>
+   0x0000003fb0c563a3 <+611>:	mov    0x30(%rsp),%r13d
+   0x0000003fb0c563a8 <+616>:	mov    0x8(%r14),%edx
+   0x0000003fb0c563ac <+620>:	sub    0x30(%rsp),%edx
+   0x0000003fb0c563b0 <+624>:	shl    $0x4,%r13
+   0x0000003fb0c563b4 <+628>:	lea    (%rax,%r13,1),%r13
+   0x0000003fb0c563b8 <+632>:	shl    $0x4,%rdx
+   0x0000003fb0c563bc <+636>:	lea    0x10(%r13),%rdi
+   0x0000003fb0c563c0 <+640>:	mov    %r13,%rsi
+   0x0000003fb0c563c3 <+643>:	callq  0x3fb0c13090 <memmove@plt>
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c563c8 <+648>:	addl   $0x1,0x8(%r14)
+   0x0000003fb0c563cd <+653>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c563d2 <+658>:	mov    %rbx,0x0(%r13)
+   0x0000003fb0c563d6 <+662>:	mov    %rbp,0x8(%r13)
+   0x0000003fb0c563da <+666>:	je     0x3fb0c563f0 <IA__g_slice_alloc+688>
+   0x0000003fb0c563dc <+668>:	mov    0x28defd(%rip),%rax        # 0x3fb0ee42e0
+   0x0000003fb0c563e3 <+675>:	mov    0x28eca6(%rip),%rdi        # 0x3fb0ee5090 <smc_tree_mutex>
+   0x0000003fb0c563ea <+682>:	callq  *0x18(%rax)
+   0x0000003fb0c563ed <+685>:	nopl   (%rax)
+   0x0000003fb0c563f0 <+688>:	mov    %rbx,%rax
+   0x0000003fb0c563f3 <+691>:	mov    0x60(%rsp),%rbp
+   0x0000003fb0c563f8 <+696>:	mov    0x58(%rsp),%rbx
+   0x0000003fb0c563fd <+701>:	mov    0x68(%rsp),%r12
+   0x0000003fb0c56402 <+706>:	mov    0x70(%rsp),%r13
+   0x0000003fb0c56407 <+711>:	mov    0x78(%rsp),%r14
+   0x0000003fb0c5640c <+716>:	mov    0x80(%rsp),%r15
+   0x0000003fb0c56414 <+724>:	add    $0x88,%rsp
+   0x0000003fb0c5641b <+731>:	retq   
+   0x0000003fb0c5641c <+732>:	nopl   0x0(%rax)
+   0x0000003fb0c56420 <+736>:	mov    0x28deb9(%rip),%rax        # 0x3fb0ee42e0
+   0x0000003fb0c56427 <+743>:	mov    0x28ec52(%rip),%rdi        # 0x3fb0ee5080 <private_thread_memory>
+   0x0000003fb0c5642e <+750>:	callq  *0x60(%rax)
+   0x0000003fb0c56431 <+753>:	mov    %rax,%r13
+   0x0000003fb0c56434 <+756>:	test   %r13,%r13
+   0x0000003fb0c56437 <+759>:	jne    0x3fb0c56234 <IA__g_slice_alloc+244>
+   0x0000003fb0c5643d <+765>:	cmpq   $0x0,0x28ec43(%rip)        # 0x3fb0ee5088 <single_thread_memory.10975>
+   0x0000003fb0c56445 <+773>:	je     0x3fb0c5661f <IA__g_slice_alloc+1247>
+   0x0000003fb0c5644b <+779>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c56450 <+784>:	je     0x3fb0c5661f <IA__g_slice_alloc+1247>
+   0x0000003fb0c56456 <+790>:	mov    0x28de83(%rip),%r14        # 0x3fb0ee42e0
+   0x0000003fb0c5645d <+797>:	mov    0x28ebfc(%rip),%rdi        # 0x3fb0ee5060 <allocator+96>
+   0x0000003fb0c56464 <+804>:	callq  *0x8(%r14)
+   0x0000003fb0c56468 <+808>:	mov    0x28ec19(%rip),%r13        # 0x3fb0ee5088 <single_thread_memory.10975>
+   0x0000003fb0c5646f <+815>:	test   %r13,%r13
+   0x0000003fb0c56472 <+818>:	je     0x3fb0c5647f <IA__g_slice_alloc+831>
+   0x0000003fb0c56474 <+820>:	movq   $0x0,0x28ec09(%rip)        # 0x3fb0ee5088 <single_thread_memory.10975>
+   0x0000003fb0c5647f <+831>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c56484 <+836>:	jne    0x3fb0c567b9 <IA__g_slice_alloc+1657>
+   0x0000003fb0c5648a <+842>:	test   %r13,%r13
+   0x0000003fb0c5648d <+845>:	je     0x3fb0c5661f <IA__g_slice_alloc+1247>
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c56493 <+851>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c56498 <+856>:	jne    0x3fb0c56670 <IA__g_slice_alloc+1328>
+   0x0000003fb0c5649e <+862>:	mov    %r13,0x28ebdb(%rip)        # 0x3fb0ee5080 <private_thread_memory>
+   0x0000003fb0c564a5 <+869>:	cmpq   $0x0,0x28ebdb(%rip)        # 0x3fb0ee5088 <single_thread_memory.10975>
+   0x0000003fb0c564ad <+877>:	jne    0x3fb0c56234 <IA__g_slice_alloc+244>
+   0x0000003fb0c564b3 <+883>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c564b8 <+888>:	jne    0x3fb0c56234 <IA__g_slice_alloc+244>
+   0x0000003fb0c564be <+894>:	mov    %r13,0x28ebc3(%rip)        # 0x3fb0ee5088 <single_thread_memory.10975>
+   0x0000003fb0c564c5 <+901>:	jmpq   0x3fb0c56234 <IA__g_slice_alloc+244>
+   0x0000003fb0c564ca <+906>:	nopw   0x0(%rax,%rax,1)
+   0x0000003fb0c564d0 <+912>:	mov    (%rax),%rdx
+   0x0000003fb0c564d3 <+915>:	mov    %rdx,(%r14)
+   0x0000003fb0c564d6 <+918>:	jmpq   0x3fb0c5626e <IA__g_slice_alloc+302>
+   0x0000003fb0c564db <+923>:	nopl   0x0(%rax,%rax,1)
+   0x0000003fb0c564e0 <+928>:	mov    0x8(%r13),%rax
+   0x0000003fb0c564e4 <+932>:	mov    0x8(%r14),%rsi
+   0x0000003fb0c564e8 <+936>:	mov    (%rax,%r15,1),%rdi
+   0x0000003fb0c564ec <+940>:	mov    %rdi,(%r14)
+   0x0000003fb0c564ef <+943>:	mov    0x8(%rax,%r15,1),%rax
+   0x0000003fb0c564f4 <+948>:	mov    %rax,0x8(%r14)
+   0x0000003fb0c564f8 <+952>:	mov    %r15,%rax
+   0x0000003fb0c564fb <+955>:	add    0x8(%r13),%rax
+   0x0000003fb0c564ff <+959>:	mov    %rsi,0x8(%rax)
+   0x0000003fb0c56503 <+963>:	movq   $0x0,(%rax)
+   0x0000003fb0c5650a <+970>:	mov    (%r14),%rax
+   0x0000003fb0c5650d <+973>:	test   %rax,%rax
+   0x0000003fb0c56510 <+976>:	jne    0x3fb0c56257 <IA__g_slice_alloc+279>
+   0x0000003fb0c56516 <+982>:	lea    0x0(,%rdx,4),%rsi
+   0x0000003fb0c5651e <+990>:	add    0x28eb23(%rip),%rsi        # 0x3fb0ee5048 <allocator+72>
+   0x0000003fb0c56525 <+997>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c5652a <+1002>:	movq   $0x0,0x8(%r14)
+   0x0000003fb0c56532 <+1010>:	mov    0x28eaff(%rip),%r9        # 0x3fb0ee5038 <allocator+56>
+   0x0000003fb0c56539 <+1017>:	jne    0x3fb0c5671e <IA__g_slice_alloc+1502>
+   0x0000003fb0c5653f <+1023>:	mov    0x28eb0b(%rip),%eax        # 0x3fb0ee5050 <allocator+80>
+   0x0000003fb0c56545 <+1029>:	sub    $0x1,%eax
+   0x0000003fb0c56548 <+1032>:	cmp    $0xfffffffffffffff5,%eax
+   0x0000003fb0c5654b <+1035>:	mov    %eax,0x28eaff(%rip)        # 0x3fb0ee5050 <allocator+80>
+   0x0000003fb0c56551 <+1041>:	jge    0x3fb0c5656d <IA__g_slice_alloc+1069>
+   0x0000003fb0c56553 <+1043>:	movl   $0x0,0x28eaf3(%rip)        # 0x3fb0ee5050 <allocator+80>
+   0x0000003fb0c5655d <+1053>:	cmpl   $0x0,(%rsi)
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c56560 <+1056>:	mov    $0x1,%eax
+   0x0000003fb0c56565 <+1061>:	cmovne (%rsi),%eax
+   0x0000003fb0c56568 <+1064>:	sub    $0x1,%eax
+   0x0000003fb0c5656b <+1067>:	mov    %eax,(%rsi)
+   0x0000003fb0c5656d <+1069>:	mov    0x28eacc(%rip),%rdi        # 0x3fb0ee5040 <allocator+64>
+   0x0000003fb0c56574 <+1076>:	mov    (%rdi,%rdx,8),%rsi
+   0x0000003fb0c56578 <+1080>:	test   %rsi,%rsi
+   0x0000003fb0c5657b <+1083>:	je     0x3fb0c567dd <IA__g_slice_alloc+1693>
+   0x0000003fb0c56581 <+1089>:	mov    0x8(%rsi),%rcx
+   0x0000003fb0c56585 <+1093>:	mov    (%rsi),%rax
+   0x0000003fb0c56588 <+1096>:	mov    (%rcx),%rbx
+   0x0000003fb0c5658b <+1099>:	mov    (%rax),%rax
+   0x0000003fb0c5658e <+1102>:	mov    (%rbx),%rbx
+   0x0000003fb0c56591 <+1105>:	mov    0x8(%rax),%rax
+   0x0000003fb0c56595 <+1109>:	mov    %rax,0x8(%rbx)
+   0x0000003fb0c56599 <+1113>:	cmp    %rax,%rsi
+   0x0000003fb0c5659c <+1116>:	mov    %rcx,0x8(%rax)
+   0x0000003fb0c565a0 <+1120>:	mov    $0x0,%ecx
+   0x0000003fb0c565a5 <+1125>:	cmove  %rcx,%rax
+   0x0000003fb0c565a9 <+1129>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c565ae <+1134>:	mov    %rax,(%rdi,%rdx,8)
+   0x0000003fb0c565b2 <+1138>:	je     0x3fb0c565cf <IA__g_slice_alloc+1167>
+   0x0000003fb0c565b4 <+1140>:	mov    0x28dd25(%rip),%rax        # 0x3fb0ee42e0
+   0x0000003fb0c565bb <+1147>:	mov    %rsi,0x8(%rsp)
+   0x0000003fb0c565c0 <+1152>:	mov    0x28ea71(%rip),%rdi        # 0x3fb0ee5038 <allocator+56>
+   0x0000003fb0c565c7 <+1159>:	callq  *0x18(%rax)
+   0x0000003fb0c565ca <+1162>:	mov    0x8(%rsp),%rsi
+   0x0000003fb0c565cf <+1167>:	mov    (%rsi),%rax
+   0x0000003fb0c565d2 <+1170>:	mov    (%rax),%rcx
+   0x0000003fb0c565d5 <+1173>:	mov    (%rcx),%rdx
+   0x0000003fb0c565d8 <+1176>:	mov    0x8(%rdx),%rbx
+   0x0000003fb0c565dc <+1180>:	movq   $0x0,0x8(%rsi)
+   0x0000003fb0c565e4 <+1188>:	movq   $0x0,0x8(%rcx)
+   0x0000003fb0c565ec <+1196>:	movq   $0x0,0x8(%rdx)
+   0x0000003fb0c565f4 <+1204>:	movq   $0x0,0x8(%rax)
+   0x0000003fb0c565fc <+1212>:	mov    %rbx,0x8(%r14)
+   0x0000003fb0c56600 <+1216>:	mov    %rsi,(%r14)
+   0x0000003fb0c56603 <+1219>:	mov    %r15,%r14
+   0x0000003fb0c56606 <+1222>:	add    0x0(%r13),%r14
+   0x0000003fb0c5660a <+1226>:	mov    (%r14),%rax
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c5660d <+1229>:	jmpq   0x3fb0c56257 <IA__g_slice_alloc+279>
+   0x0000003fb0c56612 <+1234>:	mov    %rbp,%rdi
+   0x0000003fb0c56615 <+1237>:	callq  0x3fb0c417b0 <IA__g_malloc>
+   0x0000003fb0c5661a <+1242>:	jmpq   0x3fb0c5627f <IA__g_slice_alloc+319>
+   0x0000003fb0c5661f <+1247>:	mov    0x28e9e2(%rip),%r14        # 0x3fb0ee5008 <allocator+8>
+   0x0000003fb0c56626 <+1254>:	sub    $0x30,%r14
+   0x0000003fb0c5662a <+1258>:	shr    $0x7,%r14
+   0x0000003fb0c5662e <+1262>:	mov    %r14d,%r14d
+   0x0000003fb0c56631 <+1265>:	lea    0x1(%r14,%r14,1),%rdi
+   0x0000003fb0c56636 <+1270>:	shl    $0x4,%r14
+   0x0000003fb0c5663a <+1274>:	shl    $0x4,%rdi
+   0x0000003fb0c5663e <+1278>:	callq  0x3fb0c416e0 <IA__g_malloc0>
+   0x0000003fb0c56643 <+1283>:	mov    %rax,%r13
+   0x0000003fb0c56646 <+1286>:	lea    0x10(%rax),%rax
+   0x0000003fb0c5664a <+1290>:	mov    %rax,0x0(%r13)
+   0x0000003fb0c5664e <+1294>:	add    %r14,%rax
+   0x0000003fb0c56651 <+1297>:	mov    %rax,0x8(%r13)
+   0x0000003fb0c56655 <+1301>:	jmpq   0x3fb0c56493 <IA__g_slice_alloc+851>
+   0x0000003fb0c5665a <+1306>:	mov    0x28dc7f(%rip),%rax        # 0x3fb0ee42e0
+   0x0000003fb0c56661 <+1313>:	mov    0x28ea28(%rip),%rdi        # 0x3fb0ee5090 <smc_tree_mutex>
+   0x0000003fb0c56668 <+1320>:	callq  *0x8(%rax)
+   0x0000003fb0c5666b <+1323>:	jmpq   0x3fb0c562ad <IA__g_slice_alloc+365>
+   0x0000003fb0c56670 <+1328>:	mov    0x28dc69(%rip),%rax        # 0x3fb0ee42e0
+   0x0000003fb0c56677 <+1335>:	mov    %r13,%rsi
+   0x0000003fb0c5667a <+1338>:	mov    0x28e9ff(%rip),%rdi        # 0x3fb0ee5080 <private_thread_memory>
+   0x0000003fb0c56681 <+1345>:	callq  *0x68(%rax)
+   0x0000003fb0c56684 <+1348>:	jmpq   0x3fb0c564a5 <IA__g_slice_alloc+869>
+   0x0000003fb0c56689 <+1353>:	lea    0x10(%r13),%rax
+   0x0000003fb0c5668d <+1357>:	cmp    $0x1,%esi
+   0x0000003fb0c56690 <+1360>:	cmove  %rax,%r13
+   0x0000003fb0c56694 <+1364>:	jmpq   0x3fb0c56343 <IA__g_slice_alloc+515>
+   0x0000003fb0c56699 <+1369>:	callq  0x3fb0c55640 <g_slice_init_nomessage>
+   0x0000003fb0c5669e <+1374>:	jmpq   0x3fb0c5618d <IA__g_slice_alloc+77>
+   0x0000003fb0c566a3 <+1379>:	mov    $0x10,%si
+   0x0000003fb0c566a7 <+1383>:	mov    $0x1ff,%edi
+   0x0000003fb0c566ac <+1388>:	callq  0x3fb0c13200 <calloc@plt>
+   0x0000003fb0c566b1 <+1393>:	mov    %rax,(%r15)
+   0x0000003fb0c566b4 <+1396>:	mov    0x28e9dd(%rip),%rax        # 0x3fb0ee5098 <smc_tree_root>
+   0x0000003fb0c566bb <+1403>:	mov    (%rax,%r13,8),%rcx
+   0x0000003fb0c566bf <+1407>:	test   %rcx,%rcx
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c566c2 <+1410>:	jne    0x3fb0c562e7 <IA__g_slice_alloc+423>
+   0x0000003fb0c566c8 <+1416>:	callq  0x3fb0c13110 <__errno_location@plt>
+   0x0000003fb0c566cd <+1421>:	mov    (%rax),%edi
+   0x0000003fb0c566cf <+1423>:	callq  0x3fb0c55e00 <smc_tree_abort>
+   0x0000003fb0c566d4 <+1428>:	mov    0x28e9bd(%rip),%rax        # 0x3fb0ee5098 <smc_tree_root>
+   0x0000003fb0c566db <+1435>:	mov    (%rax,%r13,8),%rcx
+   0x0000003fb0c566df <+1439>:	jmpq   0x3fb0c562e7 <IA__g_slice_alloc+423>
+   0x0000003fb0c566e4 <+1444>:	mov    $0x8,%esi
+   0x0000003fb0c566e9 <+1449>:	mov    $0xffd,%edi
+   0x0000003fb0c566ee <+1454>:	callq  0x3fb0c13200 <calloc@plt>
+   0x0000003fb0c566f3 <+1459>:	test   %rax,%rax
+   0x0000003fb0c566f6 <+1462>:	mov    %rax,%rcx
+   0x0000003fb0c566f9 <+1465>:	mov    %rax,0x28e998(%rip)        # 0x3fb0ee5098 <smc_tree_root>
+   0x0000003fb0c56700 <+1472>:	jne    0x3fb0c562bd <IA__g_slice_alloc+381>
+   0x0000003fb0c56706 <+1478>:	callq  0x3fb0c13110 <__errno_location@plt>
+   0x0000003fb0c5670b <+1483>:	mov    (%rax),%edi
+   0x0000003fb0c5670d <+1485>:	callq  0x3fb0c55e00 <smc_tree_abort>
+   0x0000003fb0c56712 <+1490>:	mov    0x28e97f(%rip),%rcx        # 0x3fb0ee5098 <smc_tree_root>
+   0x0000003fb0c56719 <+1497>:	jmpq   0x3fb0c562bd <IA__g_slice_alloc+381>
+   0x0000003fb0c5671e <+1502>:	mov    0x28dbbb(%rip),%r8        # 0x3fb0ee42e0
+   0x0000003fb0c56725 <+1509>:	mov    %r9,%rdi
+   0x0000003fb0c56728 <+1512>:	mov    %rdx,0x10(%rsp)
+   0x0000003fb0c5672d <+1517>:	mov    %ecx,0x18(%rsp)
+   0x0000003fb0c56731 <+1521>:	mov    %rsi,0x8(%rsp)
+   0x0000003fb0c56736 <+1526>:	mov    %r9,0x28(%rsp)
+   0x0000003fb0c5673b <+1531>:	mov    %r8,0x20(%rsp)
+   0x0000003fb0c56740 <+1536>:	callq  *0x10(%r8)
+   0x0000003fb0c56744 <+1540>:	test   %eax,%eax
+   0x0000003fb0c56746 <+1542>:	mov    0x10(%rsp),%rdx
+   0x0000003fb0c5674b <+1547>:	mov    0x18(%rsp),%ecx
+   0x0000003fb0c5674f <+1551>:	mov    0x8(%rsp),%rsi
+   0x0000003fb0c56754 <+1556>:	mov    0x20(%rsp),%r8
+   0x0000003fb0c56759 <+1561>:	mov    0x28(%rsp),%r9
+   0x0000003fb0c5675e <+1566>:	jne    0x3fb0c5653f <IA__g_slice_alloc+1023>
+   0x0000003fb0c56764 <+1572>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c56769 <+1577>:	je     0x3fb0c56780 <IA__g_slice_alloc+1600>
+   0x0000003fb0c5676b <+1579>:	mov    %r9,%rdi
+   0x0000003fb0c5676e <+1582>:	callq  *0x8(%r8)
+   0x0000003fb0c56772 <+1586>:	mov    0x10(%rsp),%rdx
+   0x0000003fb0c56777 <+1591>:	mov    0x18(%rsp),%ecx
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c5677b <+1595>:	mov    0x8(%rsp),%rsi
+   0x0000003fb0c56780 <+1600>:	mov    0x28e8ca(%rip),%eax        # 0x3fb0ee5050 <allocator+80>
+   0x0000003fb0c56786 <+1606>:	add    $0x1,%eax
+   0x0000003fb0c56789 <+1609>:	test   %eax,%eax
+   0x0000003fb0c5678b <+1611>:	mov    %eax,0x28e8bf(%rip)        # 0x3fb0ee5050 <allocator+80>
+   0x0000003fb0c56791 <+1617>:	jle    0x3fb0c5656d <IA__g_slice_alloc+1069>
+   0x0000003fb0c56797 <+1623>:	movl   $0x0,0x28e8af(%rip)        # 0x3fb0ee5050 <allocator+80>
+   0x0000003fb0c567a1 <+1633>:	addl   $0x1,(%rsi)
+   0x0000003fb0c567a4 <+1636>:	mov    $0x100,%eax
+   0x0000003fb0c567a9 <+1641>:	cmpl   $0x100,(%rsi)
+   0x0000003fb0c567af <+1647>:	cmovbe (%rsi),%eax
+   0x0000003fb0c567b2 <+1650>:	mov    %eax,(%rsi)
+   0x0000003fb0c567b4 <+1652>:	jmpq   0x3fb0c5656d <IA__g_slice_alloc+1069>
+   0x0000003fb0c567b9 <+1657>:	mov    0x28e8a0(%rip),%rdi        # 0x3fb0ee5060 <allocator+96>
+   0x0000003fb0c567c0 <+1664>:	callq  *0x18(%r14)
+   0x0000003fb0c567c4 <+1668>:	jmpq   0x3fb0c5648a <IA__g_slice_alloc+842>
+   0x0000003fb0c567c9 <+1673>:	callq  0x3fb0c13110 <__errno_location@plt>
+   0x0000003fb0c567ce <+1678>:	mov    (%rax),%edi
+   0x0000003fb0c567d0 <+1680>:	callq  0x3fb0c55e00 <smc_tree_abort>
+   0x0000003fb0c567d5 <+1685>:	mov    (%r14),%rax
+   0x0000003fb0c567d8 <+1688>:	jmpq   0x3fb0c563a3 <IA__g_slice_alloc+611>
+   0x0000003fb0c567dd <+1693>:	mov    %ecx,%edi
+   0x0000003fb0c567df <+1695>:	mov    %ebx,%ebx
+   0x0000003fb0c567e1 <+1697>:	callq  0x3fb0c560e0 <allocator_get_magazine_threshold>
+   0x0000003fb0c567e6 <+1702>:	mov    %rbx,0x30(%rsp)
+   0x0000003fb0c567eb <+1707>:	shlq   $0x4,0x30(%rsp)
+   0x0000003fb0c567f1 <+1713>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c567f6 <+1718>:	mov    %rax,0x48(%rsp)
+   0x0000003fb0c567fb <+1723>:	jne    0x3fb0c5685c <IA__g_slice_alloc+1820>
+   0x0000003fb0c567fd <+1725>:	mov    0x30(%rsp),%rdi
+   0x0000003fb0c56802 <+1730>:	mov    $0x1,%ebx
+   0x0000003fb0c56807 <+1735>:	callq  0x3fb0c55eb0 <slab_allocator_alloc_chunk>
+   0x0000003fb0c5680c <+1740>:	mov    %rax,%rsi
+   0x0000003fb0c5680f <+1743>:	movq   $0x0,0x8(%rax)
+   0x0000003fb0c56817 <+1751>:	mov    0x48(%rsp),%eax
+   0x0000003fb0c5681b <+1755>:	mov    %rsi,%rdx
+   0x0000003fb0c5681e <+1758>:	mov    %rax,0x48(%rsp)
+   0x0000003fb0c56823 <+1763>:	cmp    0x48(%rsp),%rbx
+   0x0000003fb0c56828 <+1768>:	jae    0x3fb0c56883 <IA__g_slice_alloc+1859>
+   0x0000003fb0c5682a <+1770>:	mov    0x30(%rsp),%rdi
+---Type <return> to continue, or q <return> to quit---
+   0x0000003fb0c5682f <+1775>:	mov    %rdx,0x10(%rsp)
+   0x0000003fb0c56834 <+1780>:	add    $0x1,%rbx
+   0x0000003fb0c56838 <+1784>:	mov    %rsi,0x8(%rsp)
+   0x0000003fb0c5683d <+1789>:	callq  0x3fb0c55eb0 <slab_allocator_alloc_chunk>
+   0x0000003fb0c56842 <+1794>:	mov    0x10(%rsp),%rdx
+   0x0000003fb0c56847 <+1799>:	movq   $0x0,0x8(%rax)
+   0x0000003fb0c5684f <+1807>:	mov    0x8(%rsp),%rsi
+   0x0000003fb0c56854 <+1812>:	mov    %rax,(%rdx)
+   0x0000003fb0c56857 <+1815>:	mov    %rax,%rdx
+   0x0000003fb0c5685a <+1818>:	jmp    0x3fb0c56823 <IA__g_slice_alloc+1763>
+   0x0000003fb0c5685c <+1820>:	mov    0x28da7d(%rip),%rbx        # 0x3fb0ee42e0
+   0x0000003fb0c56863 <+1827>:	mov    0x28e7ce(%rip),%rdi        # 0x3fb0ee5038 <allocator+56>
+   0x0000003fb0c5686a <+1834>:	callq  *0x18(%rbx)
+   0x0000003fb0c5686d <+1837>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c56872 <+1842>:	je     0x3fb0c567fd <IA__g_slice_alloc+1725>
+   0x0000003fb0c56874 <+1844>:	mov    0x28e7e5(%rip),%rdi        # 0x3fb0ee5060 <allocator+96>
+   0x0000003fb0c5687b <+1851>:	callq  *0x8(%rbx)
+   0x0000003fb0c5687e <+1854>:	jmpq   0x3fb0c567fd <IA__g_slice_alloc+1725>
+   0x0000003fb0c56883 <+1859>:	cmpl   $0x0,(%r12)
+   0x0000003fb0c56888 <+1864>:	movq   $0x0,(%rdx)
+   0x0000003fb0c5688f <+1871>:	je     0x3fb0c568ac <IA__g_slice_alloc+1900>
+   0x0000003fb0c56891 <+1873>:	mov    0x28da48(%rip),%rax        # 0x3fb0ee42e0
+   0x0000003fb0c56898 <+1880>:	mov    %rsi,0x8(%rsp)
+   0x0000003fb0c5689d <+1885>:	mov    0x28e7bc(%rip),%rdi        # 0x3fb0ee5060 <allocator+96>
+   0x0000003fb0c568a4 <+1892>:	callq  *0x18(%rax)
+   0x0000003fb0c568a7 <+1895>:	mov    0x8(%rsp),%rsi
+   0x0000003fb0c568ac <+1900>:	mov    %rbx,0x8(%r14)
+   0x0000003fb0c568b0 <+1904>:	jmpq   0x3fb0c56600 <IA__g_slice_alloc+1216>
+End of assembler dump.
+
+
+(gdb) thr a a bt full
+
+Thread 8 (Thread 22006):
+#0  pthread_cond_timedwait@@GLIBC_2.3.2 () at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_timedwait.S:212
+No locals.
+#1  0x0000003fb2002382 in g_cond_timed_wait_posix_impl (cond=<value optimized out>, entered_mutex=<value optimized out>, 
+    abs_time=<value optimized out>) at gthread-posix.c:242
+        result = <value optimized out>
+        end_time = {tv_sec = 1299864926, tv_nsec = 6351000}
+        timed_out = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_cond_timed_wait_posix_impl"
+#2  0x0000003fb0c14c7f in g_async_queue_pop_intern_unlocked (queue=0x166bf50, try=0, end_time=0x7faf94cfdc00) at gasyncqueue.c:365
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_async_queue_pop_intern_unlocked"
+#3  0x0000003fb0c14d8f in IA__g_async_queue_timed_pop (queue=0x166bf50, end_time=<value optimized out>) at gasyncqueue.c:491
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_async_queue_timed_pop"
+#4  0x0000003fb0c6357a in g_thread_pool_wait_for_new_pool (data=<value optimized out>) at gthreadpool.c:121
+        end_time = {tv_sec = 1299864926, tv_usec = 6351}
+        pool = <value optimized out>
+        local_max_idle_time = 15000
+        local_wakeup_thread_serial = <value optimized out>
+        local_max_unused_threads = 2
+        last_wakeup_thread_serial = 0
+        have_relayed_thread_marker = 0
+#5  g_thread_pool_thread_proxy (data=<value optimized out>) at gthreadpool.c:324
+        free_pool = <value optimized out>
+        task = <value optimized out>
+        pool = <value optimized out>
+#6  0x0000003fb0c62074 in g_thread_create_proxy (data=0x27690c0) at gthread.c:635
+        thread = 0x27690c0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#7  0x0000003fb00077e1 in start_thread (arg=0x7faf94cfe700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7faf94cfe700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140392092657408, -268059777380214721, 140735937299280, 140392092658112, 0, 3, 
+                223069549458528319, -272246717334775745}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, 
+              cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#8  0x0000003faf4e151d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:103
+No locals.
+
+Thread 7 (Thread 19373):
+#0  0x0000003faf4d7e13 in __poll (fds=0x7faf84002400, nfds=9, timeout=-1) at ../sysdeps/unix/sysv/linux/poll.c:85
+        oldtype = <value optimized out>
+        result = <value optimized out>
+#1  0x0000003fb0c3c655 in g_main_context_poll (context=0x7fafa4001000, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2904
+        poll_func = 0x3fb0c49620 <IA__g_poll>
+#2  g_main_context_iterate (context=0x7fafa4001000, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2586
+        max_priority = 2147483647
+        timeout = -1
+        some_ready = <value optimized out>
+        nfds = 9
+        allocated_nfds = <value optimized out>
+        fds = 0x7faf84002400
+        __PRETTY_FUNCTION__ = "g_main_context_iterate"
+#3  0x0000003fb0c3cd55 in IA__g_main_loop_run (loop=0x7fafa407bae0) at gmain.c:2799
+        self = 0x7fafa408ce50
+        __PRETTY_FUNCTION__ = "IA__g_main_loop_run"
+#4  0x0000003fba047580 in link_io_thread_fn (data=<value optimized out>) at linc.c:396
+No locals.
+#5  0x0000003fb0c62074 in g_thread_create_proxy (data=0x7fafa408ce50) at gthread.c:635
+        thread = 0x7fafa408ce50
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#6  0x0000003fb00077e1 in start_thread (arg=0x7fafadb76700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7fafadb76700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140392510482176, -268059777380214721, 140391768631200, 140392510482880, 0, 3, 
+                223194691920631871, -272246717334775745}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, 
+              cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#7  0x0000003faf4e151d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:103
+No locals.
+---Type <return> to continue, or q <return> to quit---
+
+Thread 6 (Thread 2763):
+#0  pthread_cond_wait@@GLIBC_2.3.2 () at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S:162
+No locals.
+#1  0x0000003fb0c14c40 in g_async_queue_pop_intern_unlocked (queue=0x18fc340, try=0, end_time=0x0) at gasyncqueue.c:358
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_async_queue_pop_intern_unlocked"
+#2  0x0000003fb0c14ff4 in IA__g_async_queue_pop (queue=0x18fc340) at gasyncqueue.c:398
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_async_queue_pop"
+#3  0x0000003fc742382b in sync_request_thread_cb (cFile=0x18fc248) at camel-db.c:78
+        data = <value optimized out>
+        flags = <value optimized out>
+#4  0x0000003fb0c62074 in g_thread_create_proxy (data=0x18fc3a0) at gthread.c:635
+        thread = 0x18fc3a0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#5  0x0000003fb00077e1 in start_thread (arg=0x7faf97df3700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7faf97df3700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140392143992576, -268059777380214721, 140735937303616, 140392143993280, 0, 3, 
+                223076285577861183, -272246717334775745}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, 
+              cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#6  0x0000003faf4e151d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:103
+No locals.
+
+Thread 5 (Thread 2762):
+#0  pthread_cond_wait@@GLIBC_2.3.2 () at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S:162
+No locals.
+#1  0x0000003fb0c14c40 in g_async_queue_pop_intern_unlocked (queue=0x19041a0, try=0, end_time=0x0) at gasyncqueue.c:358
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_async_queue_pop_intern_unlocked"
+#2  0x0000003fb0c14ff4 in IA__g_async_queue_pop (queue=0x19041a0) at gasyncqueue.c:398
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_async_queue_pop"
+#3  0x0000003fc742382b in sync_request_thread_cb (cFile=0x1904068) at camel-db.c:78
+---Type <return> to continue, or q <return> to quit---
+        data = <value optimized out>
+        flags = <value optimized out>
+#4  0x0000003fb0c62074 in g_thread_create_proxy (data=0x191d300) at gthread.c:635
+        thread = 0x191d300
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#5  0x0000003fb00077e1 in start_thread (arg=0x7fafacb8f700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7fafacb8f700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140392493807360, -268059777380214721, 140735937303616, 140392493808064, 0, 3, 
+                223192599734687807, -272246717334775745}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, 
+              cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#6  0x0000003faf4e151d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:103
+No locals.
+
+Thread 4 (Thread 2741):
+#0  pthread_cond_wait@@GLIBC_2.3.2 () at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S:162
+No locals.
+#1  0x0000003fb0c14c40 in g_async_queue_pop_intern_unlocked (queue=0x1762cb0, try=0, end_time=0x0) at gasyncqueue.c:358
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_async_queue_pop_intern_unlocked"
+#2  0x0000003fb0c14ff4 in IA__g_async_queue_pop (queue=0x1762cb0) at gasyncqueue.c:398
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_async_queue_pop"
+#3  0x0000003fc742385a in sync_request_thread_cb (cFile=0x17316b8) at camel-db.c:78
+        data = <value optimized out>
+        flags = 2
+#4  0x0000003fb0c62074 in g_thread_create_proxy (data=0x17317e0) at gthread.c:635
+        thread = 0x17317e0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#5  0x0000003fb00077e1 in start_thread (arg=0x7fafaf59d700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7fafaf59d700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140392537904896, -268059777380214721, 140735937304496, 140392537905600, 0, 3, 
+                223200580857665599, -272246717334775745}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, 
+---Type <return> to continue, or q <return> to quit---
+              cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#6  0x0000003faf4e151d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:103
+No locals.
+
+Thread 3 (Thread 2739):
+#0  pthread_cond_wait@@GLIBC_2.3.2 () at ../nptl/sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S:162
+No locals.
+#1  0x0000003fb0c14c40 in g_async_queue_pop_intern_unlocked (queue=0x1732690, try=0, end_time=0x0) at gasyncqueue.c:358
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_async_queue_pop_intern_unlocked"
+#2  0x0000003fb0c14ff4 in IA__g_async_queue_pop (queue=0x1732690) at gasyncqueue.c:398
+        retval = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_async_queue_pop"
+#3  0x0000003fc742382b in sync_request_thread_cb (cFile=0x171cb38) at camel-db.c:78
+        data = <value optimized out>
+        flags = <value optimized out>
+#4  0x0000003fb0c62074 in g_thread_create_proxy (data=0x17326f0) at gthread.c:635
+        thread = 0x17326f0
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#5  0x0000003fb00077e1 in start_thread (arg=0x7fafaff9e700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7fafaff9e700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140392548394752, -268059777380214721, 140735937304496, 140392548395456, 0, 3, 
+                223199755687073855, -272246717334775745}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, 
+              cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#6  0x0000003faf4e151d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:103
+No locals.
+
+Thread 2 (Thread 19372):
+#0  0x0000003faf4d7e13 in __poll (fds=0x7faf88065ea0, nfds=1, timeout=-1) at ../sysdeps/unix/sysv/linux/poll.c:85
+        oldtype = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        result = <value optimized out>
+#1  0x0000003fb0c3c655 in g_main_context_poll (context=0x7fafa4027660, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2904
+        poll_func = 0x3fb0c49620 <IA__g_poll>
+#2  g_main_context_iterate (context=0x7fafa4027660, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2586
+        max_priority = 2147483647
+        timeout = -1
+        some_ready = <value optimized out>
+        nfds = 1
+        allocated_nfds = <value optimized out>
+        fds = 0x7faf88065ea0
+        __PRETTY_FUNCTION__ = "g_main_context_iterate"
+#3  0x0000003fb0c3cd55 in IA__g_main_loop_run (loop=0x7faf8804c7a0) at gmain.c:2799
+        self = 0x7fafa4002080
+        __PRETTY_FUNCTION__ = "IA__g_main_loop_run"
+#4  0x0000003fc941916d in startup_mainloop (arg=<value optimized out>) at e-book.c:3783
+        loop = <value optimized out>
+#5  0x0000003fb0c62074 in g_thread_create_proxy (data=0x7fafa4002080) at gthread.c:635
+        thread = 0x7fafa4002080
+        __PRETTY_FUNCTION__ = "g_thread_create_proxy"
+#6  0x0000003fb00077e1 in start_thread (arg=0x7faf80dfa700) at pthread_create.c:301
+        __res = <value optimized out>
+        pd = 0x7faf80dfa700
+        now = <value optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140391758145280, -268059777380214721, 140391768631840, 140391758145984, 0, 3, 
+                223113665215109183, -272246717334775745}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, 
+              cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <value optimized out>
+        pagesize_m1 = <value optimized out>
+        sp = <value optimized out>
+        freesize = <value optimized out>
+#7  0x0000003faf4e151d in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:103
+No locals.
+
+Thread 1 (Thread 2346):
+#0  magazine_chain_pop_head (mem_size=16) at gslice.c:474
+        chunk = 0x1
+#1  thread_memory_magazine1_alloc (mem_size=16) at gslice.c:777
+        mag = 0x1605a20
+        chunk = <value optimized out>
+#2  IA__g_slice_alloc (mem_size=16) at gslice.c:815
+---Type <return> to continue, or q <return> to quit---
+        tmem = 0x1605a10
+        ix = <value optimized out>
+        chunk_size = <value optimized out>
+        mem = <value optimized out>
+#3  0x0000003fb0c57dbe in IA__g_slist_prepend (list=0x0, data=0x1658190) at gslist.c:160
+        new_list = 0x2289480
+#4  0x0000003fb18118d7 in g_object_notify_queue_add (object=0x2550710, property_name=<value optimized out>) at gobjectnotifyqueue.c:151
+        redirect = <value optimized out>
+#5  IA__g_object_notify (object=0x2550710, property_name=<value optimized out>) at gobject.c:882
+        nqueue = 0x7faf7c1e4240
+        pspec = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_object_notify"
+#6  0x0000003fb867f76f in gtk_widget_set_style_internal (widget=0x2550710, style=0x189a000, initial_emission=1) at gtkwidget.c:6609
+No locals.
+#7  0x0000003fb85c8bf8 in do_size_request (widget=0x2550710) at gtksizegroup.c:626
+No locals.
+#8  0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x2550710, requisition=0x7fffa38cbaf0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#9  0x0000003fb8484711 in gtk_box_size_request (widget=<value optimized out>, requisition=0x2900728) at gtkbox.c:280
+        child_requisition = {width = 34453696, height = 0}
+        box = 0x29006f0
+        private = 0x2900770
+        child = 0x265fe30
+        children = 0x0
+        nvis_children = <value optimized out>
+        width = <value optimized out>
+        height = <value optimized out>
+#10 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x20db8c0, 
+    invocation_hint=0x7fffa38cbc70) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#11 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x29006f0, emission_return=0x0, 
+    instance_and_params=0x20db8c0) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cc160, instance = 0x29006f0, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23718240}
+        class_closure = 0x16608a0
+---Type <return> to continue, or q <return> to quit---
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#12 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cbe70) at gsignal.c:2980
+        instance_and_params = 0x20db8c0
+        signal_return_type = 4
+        param_values = 0x20db8d8
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#13 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x29006f0, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cbfb0, reg_save_area = 0x7fffa38cbec0}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#14 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x29006f0, requisition=0x7fffa38cbff0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#15 0x0000003fb848e049 in gtk_button_size_request (widget=<value optimized out>, requisition=0x1ef1b38) at gtkbutton.c:1351
+        child_requisition = {width = 32872608, height = 0}
+        button = 0x1ef1b00
+        default_border = {left = 0, right = 0, top = 0, bottom = 0}
+        inner_border = {left = 1, right = 1, top = 1, bottom = 1}
+        focus_width = <value optimized out>
+        focus_pad = <value optimized out>
+#16 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x1f598a0, 
+    invocation_hint=0x7fffa38cc170) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#17 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x1ef1b00, emission_return=0x0, 
+    instance_and_params=0x1f598a0) at gsignal.c:3177
+---Type <return> to continue, or q <return> to quit---
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cc620, instance = 0x1ef1b00, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23569712}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#18 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cc370) at gsignal.c:2980
+        instance_and_params = 0x1f598a0
+        signal_return_type = 4
+        param_values = 0x1f598b8
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#19 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x1ef1b00, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cc4b0, reg_save_area = 0x7fffa38cc3c0}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#20 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x1ef1b00, requisition=0x2353e18) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#21 0x0000003fb86304d3 in gtk_tool_item_size_request (widget=0x2353de0, requisition=0x2353e18) at gtktoolitem.c:529
+        child = 0x1ef1b00
+#22 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x1f59a00, 
+    invocation_hint=0x7fffa38cc630) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#23 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x2353de0, emission_return=0x0, 
+    instance_and_params=0x1f59a00) at gsignal.c:3177
+        accumulator = 0x0
+---Type <return> to continue, or q <return> to quit---
+        emission = {next = 0x7fffa38ccb70, instance = 0x2353de0, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23724000}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#24 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cc830) at gsignal.c:2980
+        instance_and_params = 0x1f59a00
+        signal_return_type = 4
+        param_values = 0x1f59a18
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#25 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x2353de0, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cc970, reg_save_area = 0x7fffa38cc880}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#26 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x2353de0, requisition=0x7fffa38cc9f0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#27 0x0000003fb862581e in toolbar_content_size_request (content=0x1cb9c40, toolbar=0x1883d80, requisition=0x7fffa38cc9f0)
+    at gtktoolbar.c:4168
+        space_size = <value optimized out>
+#28 0x0000003fb862a52a in gtk_toolbar_size_request (widget=0x1883d80, requisition=0x1883db8) at gtktoolbar.c:940
+        requisition = {width = 12, height = 1}
+        content = 0x1cb9c40
+        toolbar = 0x1883d80
+        priv = 0x1883e30
+        list = 0x25fbaa0
+        max_child_height = <value optimized out>
+        max_child_width = <value optimized out>
+        max_homogeneous_child_width = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        max_homogeneous_child_height = <value optimized out>
+        homogeneous_size = <value optimized out>
+        long_req = <value optimized out>
+        pack_front_size = <value optimized out>
+        ipadding = <value optimized out>
+        arrow_requisition = {width = 34797584, height = 0}
+#29 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x212f810, 
+    invocation_hint=0x7fffa38ccb80) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#30 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x1883d80, emission_return=0x0, 
+    instance_and_params=0x212f810) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cd060, instance = 0x1883d80, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23716608}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#31 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38ccd80) at gsignal.c:2980
+        instance_and_params = 0x212f810
+        signal_return_type = 4
+        param_values = 0x212f828
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#32 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x1883d80, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38ccec0, reg_save_area = 0x7fffa38ccdd0}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+---Type <return> to continue, or q <return> to quit---
+#33 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x1883d80, requisition=0x7fffa38ccef0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#34 0x0000003fb8484711 in gtk_box_size_request (widget=<value optimized out>, requisition=0x200e468) at gtkbox.c:280
+        child_requisition = {width = 306, height = 25}
+        box = 0x200e430
+        private = 0x200e4b0
+        child = 0x200a520
+        children = 0x265e500
+        nvis_children = <value optimized out>
+        width = <value optimized out>
+        height = <value optimized out>
+#35 0x0000003fb180ba89 in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x2540a40, 
+    invocation_hint=0x7fffa38cd070) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = 1
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#36 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x200e430, emission_return=0x0, 
+    instance_and_params=0x2540a40) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cd530, instance = 0x200e430, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 23730032}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#37 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cd270) at gsignal.c:2980
+        instance_and_params = 0x2540a40
+        signal_return_type = 4
+        param_values = 0x2540a58
+        node = 0x1660950
+        i = <value optimized out>
+        n_params = 1
+---Type <return> to continue, or q <return> to quit---
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#38 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x200e430, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cd3b0, reg_save_area = 0x7fffa38cd2c0}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#39 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x200e430, requisition=0x7fffa38cd3d0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#40 0x0000003fb8690bbc in gtk_window_size_request (widget=<value optimized out>, requisition=0x231ea08) at gtkwindow.c:4915
+        child_requisition = {width = 23464096, height = 0}
+        window = <value optimized out>
+        bin = 0x231e9d0
+#41 0x0000003fb180bb3e in IA__g_closure_invoke (closure=0x16608a0, return_value=0x0, n_param_values=2, param_values=0x235b8c0, 
+    invocation_hint=0x7fffa38cd540) at gclosure.c:767
+        marshal = <value optimized out>
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#42 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x231e9d0, emission_return=0x0, 
+    instance_and_params=0x235b8c0) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x7fffa38cdb80, instance = 0x231e9d0, ihint = {signal_id = 24, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 32584368}
+        class_closure = 0x16608a0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 24
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#43 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cd740) at gsignal.c:2980
+        instance_and_params = 0x235b8c0
+        signal_return_type = 4
+        param_values = 0x235b8d8
+        node = 0x1660950
+        i = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        n_params = 1
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#44 0x0000003fb1822414 in IA__g_signal_emit_by_name (instance=0x231e9d0, detailed_signal=0x3fb8796332 "size-request") at gsignal.c:3074
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cd880, reg_save_area = 0x7fffa38cd790}}
+        detail = <value optimized out>
+        signal_id = 24
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_by_name"
+#45 0x0000003fb85c8ee8 in _gtk_size_group_compute_requisition (widget=0x231e9d0, requisition=0x0) at gtksizegroup.c:828
+        width = <value optimized out>
+        height = <value optimized out>
+#46 0x0000003fb868c06a in gtk_window_compute_configure_request (window=0x231e9d0, request=0x7fffa38cda00, geometry=0x7fffa38cd9c0, 
+    flags=0x7fffa38cda2c) at gtkwindow.c:5791
+        new_geometry = {min_width = -1367891096, min_height = 32687, max_width = -1367881160, max_height = 32687, 
+          base_width = -1551050320, base_height = 32767, width_inc = 36825552, height_inc = 0, min_aspect = 7.2911220753344278e-304, 
+          max_aspect = 4.5019755714700226e-319, win_gravity = 36806032}
+        new_flags = <value optimized out>
+        w = <value optimized out>
+        h = <value optimized out>
+        widget = 0x231e9d0
+        pos = <value optimized out>
+        parent_widget = <value optimized out>
+        info = <value optimized out>
+        screen = 0x163a1f0
+        x = <value optimized out>
+        y = <value optimized out>
+        __PRETTY_FUNCTION__ = "gtk_window_compute_configure_request"
+#47 0x0000003fb8693e70 in gtk_window_show (widget=0x231e9d0) at gtkwindow.c:4465
+        info = 0x1df2200
+        allocation = {x = 0, y = 0, width = 0, height = 0}
+        was_realized = <value optimized out>
+        configure_request = {x = 1, y = 0, width = -1316824091, height = 63}
+        new_geometry = {min_width = -1461804040, min_height = 0, max_width = -1358914214, max_height = 63, base_width = 0, 
+          base_height = 0, width_inc = 0, height_inc = 0, min_aspect = 6.7903865311876845e-313, max_aspect = 0, win_gravity = 30304032}
+        new_flags = 63
+        window = 0x231e9d0
+        container = 0x231e9d0
+        need_resize = 1
+#48 0x0000003fb180bb3e in IA__g_closure_invoke (closure=0x160a6c0, return_value=0x0, n_param_values=1, param_values=0x1ce6720, 
+    invocation_hint=0x7fffa38cdb90) at gclosure.c:767
+        marshal = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        marshal_data = <value optimized out>
+        in_marshal = <value optimized out>
+        __PRETTY_FUNCTION__ = "IA__g_closure_invoke"
+#49 0x0000003fb182063c in signal_emit_unlocked_R (node=<value optimized out>, detail=0, instance=0x231e9d0, emission_return=0x0, 
+    instance_and_params=0x1ce6720) at gsignal.c:3177
+        accumulator = 0x0
+        emission = {next = 0x0, instance = 0x231e9d0, ihint = {signal_id = 18, detail = 0, run_type = G_SIGNAL_RUN_FIRST}, 
+          state = EMISSION_RUN, chain_type = 32584368}
+        class_closure = 0x160a6c0
+        handler_list = <value optimized out>
+        return_accu = 0x0
+        accu = {g_type = 0, data = {{v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}, {v_int = 0, v_uint = 0, v_long = 0, v_ulong = 0, v_int64 = 0, v_uint64 = 0, v_float = 0, 
+              v_double = 0, v_pointer = 0x0}}}
+        signal_id = 18
+        max_sequential_handler_number = 91123
+        return_value_altered = <value optimized out>
+#50 0x0000003fb18220af in IA__g_signal_emit_valist (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>, var_args=0x7fffa38cdd80) at gsignal.c:2980
+        instance_and_params = 0x1ce6720
+        signal_return_type = 4
+        param_values = 0x1ce6738
+        node = 0x16600c0
+        i = <value optimized out>
+        n_params = 0
+        __PRETTY_FUNCTION__ = "IA__g_signal_emit_valist"
+#51 0x0000003fb18225f3 in IA__g_signal_emit (instance=<value optimized out>, signal_id=<value optimized out>, 
+    detail=<value optimized out>) at gsignal.c:3037
+        var_args = {{gp_offset = 24, fp_offset = 48, overflow_arg_area = 0x7fffa38cde60, reg_save_area = 0x7fffa38cdda0}}
+#52 0x0000003fb868239b in IA__gtk_widget_show (widget=0x231e9d0) at gtkwidget.c:3020
+        __PRETTY_FUNCTION__ = "IA__gtk_widget_show"
+#53 0x00007fafb5f325e1 in em_utils_reply_to_message (folder=0x16be170, uid=0x1cfd0a0 "2000", message=0x7fafa40644f0, mode=0, 
+    source=0x19e6080) at em-composer-utils.c:2416
+        to = <value optimized out>
+        cc = <value optimized out>
+        postto = <value optimized out>
+        r = 0x231e9d0
+        account = 0x173c810
+        flags = 17
+        eme = 0x168b340
+---Type <return> to continue, or q <return> to quit---
+        target = <value optimized out>
+        __PRETTY_FUNCTION__ = "em_utils_reply_to_message"
+#54 0x00007fafb5f329d4 in reply_to_message (folder=<value optimized out>, uid=<value optimized out>, message=<value optimized out>, 
+    user_data=0x24143e0) at em-composer-utils.c:2313
+        rd = 0x24143e0
+#55 0x00007fafb5f5a821 in mail_msg_idle_cb () at mail-mt.c:502
+        msg = 0x21535e0
+        __PRETTY_FUNCTION__ = "mail_msg_idle_cb"
+#56 0x0000003fb0c38f0e in g_main_dispatch (context=0x16430c0) at gmain.c:1960
+        dispatch = 0x3fb0c37070 <g_idle_dispatch>
+        was_in_call = 0
+        user_data = 0x0
+        callback = 0x7fafb5f5a720 <mail_msg_idle_cb>
+        cb_funcs = 0x3fb0ee4970
+        cb_data = 0x7faf9c1c8c30
+        current_source_link = {data = 0x7faf9c1662b0, next = 0x0}
+        need_destroy = <value optimized out>
+        source = 0x7faf9c1662b0
+        current = 0x1695b20
+        i = <value optimized out>
+#57 IA__g_main_context_dispatch (context=0x16430c0) at gmain.c:2513
+No locals.
+#58 0x0000003fb0c3c938 in g_main_context_iterate (context=0x16430c0, block=1, dispatch=1, self=<value optimized out>) at gmain.c:2591
+        max_priority = 200
+        timeout = 0
+        some_ready = 1
+        nfds = 9
+        allocated_nfds = <value optimized out>
+        fds = <value optimized out>
+        __PRETTY_FUNCTION__ = "g_main_context_iterate"
+#59 0x0000003fb0c3cd55 in IA__g_main_loop_run (loop=0x16b2d60) at gmain.c:2799
+        self = 0x1605400
+        __PRETTY_FUNCTION__ = "IA__g_main_loop_run"
+#60 0x0000003fc2c2d106 in bonobo_main () at bonobo-main.c:311
+        loop = 0x16b2d60
+#61 0x000000000041569a in main (argc=<value optimized out>, argv=<value optimized out>) at main.c:732
+        client = 0x1687ea0
+        program = 0x1612840
+        master_client = 0x1615830
+        context = <value optimized out>
+---Type <return> to continue, or q <return> to quit---
+        filename = <value optimized out>
+
+

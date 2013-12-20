@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>runterminal.applescript</string>
+	<key>CFBundleExecutable</key>
+	<string>runterminal.applescript</string>
+	<key>CFBundleGetInfoString</key>
+	<string>runterminal.applescript 1.0 Copyright 2011 WD</string>
+	<key>CFBundleIconFile</key>
+	<string>appIcon.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.cert.runterminal.applescript</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>runterminal.applescript</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>LSEnvironment</key>
+	<dict/>
+	<key>LSHasLocalizedDisplayName</key>
+	<false/>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.4</string>
+	<key>LSUIElement</key>
+	<false/>
+	<key>NSAppleScriptEnabled</key>
+	<false/>
+	<key>NSHumanReadableCopyright</key>
+	<string>runterminal.applescript 1.0 Copyright 2011 WD</string>
+	<key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+</dict>
+</plist>

@@ -1,0 +1,53 @@
+[Thread debugging using libthread_db enabled]
+
+Program received signal SIGSEGV, Segmentation fault.
+0xd2d2d2d2 in ?? ()
+process 32276
+cmdline = '/usr/local/bin/ffmpeg'
+cwd = '/home/fuzz'
+exe = '/usr/local/bin/ffmpeg'
+Mapped address spaces:
+
+	Start Addr   End Addr       Size     Offset objfile
+	 0x8048000  0x87eb000   0x7a3000          0      /usr/local/bin/ffmpeg
+	 0x87eb000  0x8802000    0x17000   0x7a3000      /usr/local/bin/ffmpeg
+	 0x8802000  0x8e1f000   0x61d000          0           [heap]
+	0xb7dfb000 0xb7e3d000    0x42000          0        
+	0xb7e3d000 0xb7f7d000   0x140000          0      /lib/i686/cmov/libc-2.11.2.so
+	0xb7f7d000 0xb7f7e000     0x1000   0x140000      /lib/i686/cmov/libc-2.11.2.so
+	0xb7f7e000 0xb7f80000     0x2000   0x140000      /lib/i686/cmov/libc-2.11.2.so
+	0xb7f80000 0xb7f81000     0x1000   0x142000      /lib/i686/cmov/libc-2.11.2.so
+	0xb7f81000 0xb7f84000     0x3000          0        
+	0xb7f84000 0xb7f99000    0x15000          0      /lib/i686/cmov/libpthread-2.11.2.so
+	0xb7f99000 0xb7f9a000     0x1000    0x14000      /lib/i686/cmov/libpthread-2.11.2.so
+	0xb7f9a000 0xb7f9b000     0x1000    0x15000      /lib/i686/cmov/libpthread-2.11.2.so
+	0xb7f9b000 0xb7f9e000     0x3000          0        
+	0xb7f9e000 0xb7fb1000    0x13000          0      /usr/lib/libz.so.1.2.3.4
+	0xb7fb1000 0xb7fb2000     0x1000    0x13000      /usr/lib/libz.so.1.2.3.4
+	0xb7fb2000 0xb7fd6000    0x24000          0      /lib/i686/cmov/libm-2.11.2.so
+	0xb7fd6000 0xb7fd7000     0x1000    0x23000      /lib/i686/cmov/libm-2.11.2.so
+	0xb7fd7000 0xb7fd8000     0x1000    0x24000      /lib/i686/cmov/libm-2.11.2.so
+	0xb7fe0000 0xb7fe2000     0x2000          0        
+	0xb7fe2000 0xb7fe3000     0x1000          0           [vdso]
+	0xb7fe3000 0xb7ffe000    0x1b000          0      /lib/ld-2.11.2.so
+	0xb7ffe000 0xb7fff000     0x1000    0x1a000      /lib/ld-2.11.2.so
+	0xb7fff000 0xb8000000     0x1000    0x1b000      /lib/ld-2.11.2.so
+	0xbffeb000 0xc0000000    0x15000          0           [stack]
+eax            0x8d6ff80	148307840
+ecx            0x20	32
+edx            0x8d6fee0	148307680
+ebx            0x8e09360	148935520
+esp            0xbfffd29c	0xbfffd29c
+ebp            0x8d6bd00	0x8d6bd00
+esi            0x20	32
+edi            0x86b52cd	141251277
+eip            0xd2d2d2d2	0xd2d2d2d2
+eflags         0x10246	[ PF ZF IF RF ]
+cs             0x73	115
+ss             0x7b	123
+ds             0x7b	123
+es             0x7b	123
+fs             0x0	0
+gs             0x33	51
+Dump of assembler code from 0xd2d2d2b2 to 0xd2d2d2d2:
+0xd2d2d2b2:	

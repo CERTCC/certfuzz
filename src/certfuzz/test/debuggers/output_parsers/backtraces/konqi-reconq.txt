@@ -1,0 +1,76 @@
+Application that crashed: rekonq
+Version of the application: 0.1.9
+KDE Version: 4.2.96 (KDE 4.2.96 (KDE 4.3 RC2))
+Qt Version: 4.5.2
+Operating System: Linux 2.6.30-8-generic i686
+Distribution: Ubuntu karmic (development branch)
+
+What I was doing when the application crashed:
+<In detail, tell us what you were doing  when the application crashed.>
+
+ -- Backtrace:
+Application: rekonq (rekonq), signal: Segmentation fault
+[Current thread is 1 (Thread 0xb80bd700 (LWP 9322))]
+
+Thread 4 (Thread 0xb6955b90 (LWP 9323)):
+#0  0x00778422 in __kernel_vsyscall ()
+#1  0x007bc0a5 in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib/tls/i686/cmov/libpthread.so.0
+#2  0x064c9c7d in pthread_cond_wait () from /lib/tls/i686/cmov/libc.so.6
+#3  0x0567fe37 in QWaitCondition::wait(QMutex*, unsigned long) () from 
+/usr/lib/libQtCore.so.4
+#4  0x00bb3c10 in ctiVMThrowTrampoline () from /usr/lib/libQtWebKit.so.4
+#5  0x010bbe34 in ?? () from /usr/lib/libQtWebKit.so.4
+#6  0x010bbf1b in ?? () from /usr/lib/libQtWebKit.so.4
+#7  0x00bb3b34 in ctiVMThrowTrampoline () from /usr/lib/libQtWebKit.so.4
+#8  0x00bb3b63 in ctiVMThrowTrampoline () from /usr/lib/libQtWebKit.so.4
+#9  0x0567ee02 in ?? () from /usr/lib/libQtCore.so.4
+#10 0x007b84df in start_thread () from /lib/tls/i686/cmov/libpthread.so.0
+#11 0x064baf3e in clone () from /lib/tls/i686/cmov/libc.so.6
+
+Thread 3 (Thread 0xb6154b90 (LWP 9802)):
+#0  0x00778422 in __kernel_vsyscall ()
+#1  0x007bc0a5 in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib/tls/i686/cmov/libpthread.so.0
+#2  0x064c9c7d in pthread_cond_wait () from /lib/tls/i686/cmov/libc.so.6
+#3  0xb4c0569f in ?? () from /usr/lib/adobe-flashplugin/libflashplayer.so
+#4  0xb4d378ef in ?? () from /usr/lib/adobe-flashplugin/libflashplayer.so
+#5  0xb4c05b4d in ?? () from /usr/lib/adobe-flashplugin/libflashplayer.so
+#6  0x007b84df in start_thread () from /lib/tls/i686/cmov/libpthread.so.0
+#7  0x064baf3e in clone () from /lib/tls/i686/cmov/libc.so.6
+
+Thread 2 (Thread 0xaff9cb90 (LWP 9803)):
+#0  0x00778422 in __kernel_vsyscall ()
+#1  0x007bc0a5 in pthread_cond_wait@@GLIBC_2.3.2 () from 
+/lib/tls/i686/cmov/libpthread.so.0
+#2  0x064c9c7d in pthread_cond_wait () from /lib/tls/i686/cmov/libc.so.6
+#3  0xb4c0569f in ?? () from /usr/lib/adobe-flashplugin/libflashplayer.so
+#4  0xb4d378ef in ?? () from /usr/lib/adobe-flashplugin/libflashplayer.so
+#5  0xb4c05b4d in ?? () from /usr/lib/adobe-flashplugin/libflashplayer.so
+#6  0x007b84df in start_thread () from /lib/tls/i686/cmov/libpthread.so.0
+#7  0x064baf3e in clone () from /lib/tls/i686/cmov/libc.so.6
+
+Thread 1 (Thread 0xb80bd700 (LWP 9322)):
+[KCrash Handler]
+#6  0x0576f7ce in QCoreApplication::notifyInternal(QObject*, QEvent*) () from 
+/usr/lib/libQtCore.so.4
+#7  0x0480778c in QApplicationPrivate::dispatchEnterLeave(QWidget*, QWidget*) 
+() from /usr/lib/libQtGui.so.4
+#8  0x04874a2c in QApplication::x11ProcessEvent(_XEvent*) () from 
+/usr/lib/libQtGui.so.4
+#9  0x048a2102 in ?? () from /usr/lib/libQtGui.so.4
+#10 0x018e5c48 in g_main_context_dispatch () from /usr/lib/libglib-2.0.so.0
+#11 0x018e94f0 in ?? () from /usr/lib/libglib-2.0.so.0
+#12 0x018e9623 in g_main_context_iteration () from /usr/lib/libglib-2.0.so.0
+#13 0x0579a14c in 
+QEventDispatcherGlib::processEvents(QFlags<QEventLoop::ProcessEventsFlag>) () 
+from /usr/lib/libQtCore.so.4
+#14 0x048a17e5 in ?? () from /usr/lib/libQtGui.so.4
+#15 0x0576dd99 in 
+QEventLoop::processEvents(QFlags<QEventLoop::ProcessEventsFlag>) () from 
+/usr/lib/libQtCore.so.4
+#16 0x0576e1ea in QEventLoop::exec(QFlags<QEventLoop::ProcessEventsFlag>) () 
+from /usr/lib/libQtCore.so.4
+#17 0x0577065f in QCoreApplication::exec() () from /usr/lib/libQtCore.so.4
+#18 0x04800af7 in QApplication::exec() () from /usr/lib/libQtGui.so.4
+#19 0x080ae823 in _start ()
