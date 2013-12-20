@@ -314,4 +314,3 @@ class Iteration(IterationBase):
             self._build_crash(fuzzer, cmdlist, dbg_opts, fuzzed_file)
         else:
             logger.debug('...no crash')
-
