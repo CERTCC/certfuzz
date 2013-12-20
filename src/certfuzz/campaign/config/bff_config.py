@@ -11,10 +11,8 @@ import shutil
 import os
 import ConfigParser
 import subprocess
-import uuid
 import re
 import shlex
-#import string
 import logging
 from ...fuzztools import filetools
 
@@ -35,6 +33,7 @@ CACHED_RANGEFINDER_OBJECT_FILE = 'rangefinder.pkl'
 CACHED_SEEDFILESET_OBJECT_FILE = 'seedfile_set.pkl'
 SEEDFILE_REPLACE_STRING = '\$SEEDFILE'
 
+
 def read_config_options(cfg_file):
     '''
     Reads and parses <cfg_file>, returning a ConfigHelper object
@@ -43,6 +42,7 @@ def read_config_options(cfg_file):
     config = ConfigParser.ConfigParser()
     config.read(cfg_file)
     return ConfigHelper(config)
+
 
 class ConfigHelper:
     '''ConfigHelper takes a generic ConfigParser raw object and provides the properties and

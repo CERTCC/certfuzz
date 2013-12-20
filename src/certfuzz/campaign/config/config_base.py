@@ -13,8 +13,10 @@ logger = logging.getLogger(__name__)
 def parse_yaml(yaml_file):
     return yaml.load(open(yaml_file, 'r'))
 
+
 class ConfigError(Exception):
     pass
+
 
 class Config(object):
     '''

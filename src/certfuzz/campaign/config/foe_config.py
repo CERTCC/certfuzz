@@ -13,6 +13,7 @@ import shlex
 
 logger = logging.getLogger(__name__)
 
+
 def get_command_args_list(cmd_template, infile, posix=True):
     '''
     Given a command template and infile, will substitute infile into the
@@ -27,6 +28,7 @@ def get_command_args_list(cmd_template, infile, posix=True):
     cmdlist = shlex.split(cmd, posix=posix)
     return cmd, cmdlist
 
+
 class Config(ConfigBase):
     def _add_validations(self):
         self.validations.append(self._validate_debugger_timeout_exceeds_runner)
@@ -39,7 +41,7 @@ class Config(ConfigBase):
 #        self.config['target']['cmdline_template'] = t.safe_substitute(PROGRAM=self.config['target']['program'])
         self.config['target']['cmdline_template'] = t.safe_substitute(PROGRAM=quoted(self.config['target']['program']),
                           SEEDFILE=quoted('$SEEDFILE'))
-        
+
     def _validate_new_options(self):
         if 'minimizer_timeout' not in self.config['runoptions']:
             self.config['runoptions']['minimizer_timeout'] = 3600

@@ -6,7 +6,6 @@ Created on Mar 20, 2013
 from .config_base import Config as ConfigBase
 #from ...android.controller.defaults import CONFIG as DEFAULT_CONFIG
 import logging
-import os
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ class AndroidConfig(ConfigBase):
         # Make sure apk_dir exists if it is specified, otherwise it
         # should be None
         try:
-            apk_dir = self.config['directories']['apk_dir']
+            self.config['directories']['apk_dir']
         except KeyError:
             logger.warning('No APK installation directory specified. ' +
                            'Make sure any needed APKs are already installed.')
@@ -58,7 +57,7 @@ class AndroidConfig(ConfigBase):
 
         # Validate host
         try:
-            host = self.config['db']['host']
+            self.config['db']['host']
         except KeyError:
             logger.warning('No host specified in config.  Defaulting to localhost.')
             self.config['db']['host'] = 'localhost'
@@ -75,8 +74,7 @@ class AndroidConfig(ConfigBase):
 
         # Validate dbname
         try:
-            dbname = self.config['db']['dbname']
+            self.config['db']['dbname']
         except KeyError:
             logger.warning('No dbname specified in config.  Defaulting to bff.')
             self.config['db']['dbname'] = 'bff'
-
