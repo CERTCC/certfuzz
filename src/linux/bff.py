@@ -31,6 +31,7 @@ from certfuzz.fuzztools.object_caching import get_cached_state
 from certfuzz.fuzztools.object_caching import cache_state
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.seedrange import SeedRange
+from certfuzz.fuzztools.state_timer import StateTimer
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.fuzztools.zzuf import Zzuf
 from certfuzz.fuzztools.zzuflog import ZzufLog
@@ -55,6 +56,8 @@ SEED_INTERVAL = 500
 
 SEED_TS = performance.TimeStamper()
 START_SEED = 0
+
+STATE_TIMER = StateTimer()
 
 logger = logging.getLogger()
 logger.name = 'bff'
@@ -111,6 +114,7 @@ def analyze_crasher(cfg, crash):
     logger.debug('Original debugger file: %s', dbg_out_file_orig)
 
     if cfg.minimizecrashers:
+        STATE_TIMER.enter_state('minimize_testcase')
         # try to reduce the Hamming Distance between the crasher file and the known good seedfile
         # crash.fuzzedfile will be replaced with the minimized result
         try:
@@ -130,6 +134,7 @@ def analyze_crasher(cfg, crash):
     crash.calculate_hamming_distances()
 
     if cfg.minimize_to_string:
+        STATE_TIMER.enter_state('minimize_testcase_to_string')
         # Minimize to a string of 'x's
         # crash.fuzzedfile will be replaced with the minimized result
         try:
@@ -143,6 +148,8 @@ def analyze_crasher(cfg, crash):
             logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', crash.signature, e)
             min2string = None
     touch_watchdog_file(cfg)
+
+    STATE_TIMER.enter_state('analyze_testcase')
 
     # get one last debugger output for the newly minimized file
     if crash.pc_in_function:
@@ -210,6 +217,7 @@ def verify_crasher(c, hashes, cfg, seedfile_set):
     for crash in crashes:
         # loop until we're out of crashes to verify
         logger.debug('crashes to verify: %d', len(crashes))
+        STATE_TIMER.enter_state('verify_testcase')
 
         # crashes may be added as a result of minimization
         crash.is_unique = False
@@ -439,6 +447,7 @@ def main():
 
         r = sf.rangefinder.next_item()
         sr.set_s2()
+        logger.info(STATE_TIMER)
 
         while sr.in_range():
             # interval.go
@@ -464,6 +473,7 @@ def main():
             else:
                 quiet_flag = True
 
+            STATE_TIMER.enter_state('fuzzing')
             zzuf = Zzuf(cfg.local_dir,
                         sr.s1,
                         sr.s2,
@@ -477,6 +487,7 @@ def main():
                         quiet_flag,
                         )
             saw_crash = zzuf.go()
+            STATE_TIMER.enter_state('checking_results')
 
             if not saw_crash:
                 # we must have made it through this chunk without a crash
