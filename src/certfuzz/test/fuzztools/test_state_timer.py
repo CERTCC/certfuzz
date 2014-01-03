@@ -15,6 +15,11 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_total_time(self):
+        self.assertEqual(0.0, self.st.total_time())
+        self.st.timers = {'a': 1.0, 'b': 2.0, 'c': 3.0}
+        self.assertEqual(6.0, self.st.total_time())
+
     def test__str__(self):
         # expect no commas in empty timer
         delim = self.st._delim

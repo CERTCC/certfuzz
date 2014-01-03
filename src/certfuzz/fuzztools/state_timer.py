@@ -46,6 +46,9 @@ class StateTimer(object):
             if not self.current_state in self.timers:
                 self.timers[self.current_state] = 0.0
 
+    def total_time(self):
+        return sum(self.timers.itervalues())
+
     def time_in(self, state):
         if state in self.timers:
             return self.timers[state]
