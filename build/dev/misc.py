@@ -5,7 +5,7 @@ Created on Dec 9, 2013
 '''
 import logging
 import os
-import distutils
+from distutils import dir_util
 import shutil
 
 logger = logging.getLogger()
@@ -36,7 +36,7 @@ def onerror(func, path, exc_info):
 
 def copydir(src, dst):
     logger.info('Copy dir  %s -> %s', src, dst)
-    distutils.dir_util.copy_tree(src, dst)
+    dir_util.copy_tree(src, dst)
 
 
 def copyfile(src, dst):
