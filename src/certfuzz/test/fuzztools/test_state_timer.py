@@ -38,6 +38,9 @@ class Test(unittest.TestCase):
         self.assertAlmostEqual(2.0, st.time_in('alpha'), 1)
         self.assertAlmostEqual(1.0, st.time_in('beta'), 1)
 
+        self.assertTrue('alpha' in str(st))
+        self.assertTrue('beta' in str(st))
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

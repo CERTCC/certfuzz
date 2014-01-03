@@ -5,6 +5,7 @@ Created on Jan 3, 2014
 '''
 import time
 
+
 class StateTimer(object):
     '''
     Implements a timer with multiple states
@@ -13,6 +14,9 @@ class StateTimer(object):
         self.current_state = None
         self.timers = {}
         self._in = None
+
+    def __str__(self):
+        return 'State Timer - ' + ', '.join('{}: {}'.format(k, v) for k, v in self.timers.iteritems())
 
     def _reset(self):
         self.current_state = None
