@@ -4,7 +4,7 @@ Created on Feb 8, 2012
 @organization: cert.org
 '''
 
-__version__ = '2.1'
+__version__ = '2.2'
 
 import sys
 import logging
@@ -72,7 +72,7 @@ def parse_options():
                       help='Silence messages to screen (log file will remain at INFO level')
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                       help='Enable verbose logging messages to screen and log file (overrides --quiet)')
-    parser.add_option('-c', '--config', dest='configfile', help='Path to config file', 
+    parser.add_option('-c', '--config', dest='configfile', help='Path to config file',
                       default='configs/foe.yaml', metavar='FILE')
     parser.add_option('-l', '--logfile', dest='logfile', help='Path to log file', metavar='FILE')
     parser.add_option('-r', '--result-dir', dest='resultdir', help='Path to result directory (overrides config)', metavar='DIR')

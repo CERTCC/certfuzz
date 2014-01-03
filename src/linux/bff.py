@@ -3,7 +3,7 @@ Created on Oct 15, 2010
 
 @organization: cert.org
 '''
-__version__ = '2.7'
+__version__ = '2.8'
 
 import os
 import sys
