@@ -15,6 +15,18 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test__str__(self):
+        # expect no commas in empty timer
+        delim = self.st._delim
+        self.assertFalse(delim in str(self.st))
+        self.st.enter_state('foo')
+        self.assertTrue('foo' in str(self.st))
+        self.assertFalse(delim in str(self.st))
+        self.st.enter_state('bar')
+        self.assertTrue('foo' in str(self.st))
+        self.assertTrue('bar' in str(self.st))
+        self.assertTrue(delim in str(self.st))
+
     def test_enter_state(self):
         st = self.st
 
@@ -37,9 +49,6 @@ class Test(unittest.TestCase):
         st.enter_state(None)
         self.assertAlmostEqual(2.0, st.time_in('alpha'), 1)
         self.assertAlmostEqual(1.0, st.time_in('beta'), 1)
-
-        self.assertTrue('alpha' in str(st))
-        self.assertTrue('beta' in str(st))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

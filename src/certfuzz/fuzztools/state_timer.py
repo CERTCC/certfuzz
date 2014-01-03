@@ -14,9 +14,10 @@ class StateTimer(object):
         self.current_state = None
         self.timers = {}
         self._in = None
+        self._delim = ', '
 
     def __str__(self):
-        return 'State Timer - ' + ', '.join('{}: {}'.format(k, v) for k, v in self.timers.iteritems())
+        return 'State Timer - ' + self._delim.join('{}: {}'.format(k, v) for k, v in self.timers.iteritems())
 
     def _reset(self):
         self.current_state = None
