@@ -34,9 +34,7 @@ logger = logging.getLogger(__name__)
 MAX_OTHER_CRASHES = 20
 
 
-
-
-class Minimizer:
+class Minimizer(object):
     use_watchdog = False
 
     def __init__(self, cfg=None, crash=None, crash_dst_dir=None,
