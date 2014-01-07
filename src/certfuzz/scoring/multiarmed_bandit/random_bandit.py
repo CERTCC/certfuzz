@@ -6,6 +6,7 @@ Created on Feb 22, 2013
 from .multiarmed_bandit_base import MultiArmedBanditBase
 import random
 
+
 class RandomMultiArmedBandit(MultiArmedBanditBase):
     '''
     Returns a random thing from its collection.

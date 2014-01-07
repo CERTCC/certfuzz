@@ -7,6 +7,7 @@ import itertools
 from .errors import MultiArmedBanditError
 from .arms.base import BanditArmBase
 
+
 class MultiArmedBanditBase(object):
     '''
     Implements a simple round robin iterator
@@ -63,6 +64,7 @@ class MultiArmedBanditBase(object):
         Implements a simple round robin iterator
         '''
         return itertools.cycle(self.things.values())
+
 
 class RoundRobinMultiArmedBandit(MultiArmedBanditBase):
     pass
