@@ -3,7 +3,8 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from . import BanditArmBase
+from .base import BanditArmBase
+
 
 class BanditArmBayesLaplace(BanditArmBase):
     '''
