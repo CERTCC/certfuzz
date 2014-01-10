@@ -13,6 +13,7 @@ from .errors import ScorableSetError, EmptySetError
 
 logger = logging.getLogger(__name__)
 
+
 # Simplified reimplementation of ScorableSet with a Bayesian approach
 class ScorableSet2(object):
     '''

@@ -10,7 +10,8 @@ from .directory import Directory
 from ..fuzztools import filetools
 from .seedfile import SeedFile
 from .errors import SeedFileError
-from ..scoring.scorable_set import ScorableSet2, EmptySetError
+from ..scoring.scorable_set import ScorableSet2
+from ..scoring.errors import EmptySetError
 logger = logging.getLogger(__name__)
 
 
