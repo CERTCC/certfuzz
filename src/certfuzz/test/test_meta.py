@@ -71,7 +71,7 @@ class Test(unittest.TestCase):
     def test_each_module_has_a_test_module(self):
         module_list = find_modules(self.basedir)
         missing_modules = []
-        _ignored_modules = set(['errors'])
+        _ignored_modules = set(['errors.py'])
         for m in module_list:
             d, b = os.path.split(m)
             if b in _ignored_modules:
