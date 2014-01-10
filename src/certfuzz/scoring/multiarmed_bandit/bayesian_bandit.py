@@ -3,7 +3,7 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from certfuzz.fuzztools.probability import weighted_choice
+from ...fuzztools.probability import weighted_choice
 from .multiarmed_bandit_base import MultiArmedBanditBase
 from .arms.bayes_laplace import BanditArmBayesLaplace
 
