@@ -4,13 +4,13 @@ Created on Feb 22, 2013
 @organization: cert.org
 '''
 import unittest
-from certfuzz.scoring.multiarmed_bandit.multiarmed_bandit_base import MultiArmedBanditBase
+from certfuzz.scoring.multiarmed_bandit.round_robin_bandit import RoundRobinMultiArmedBandit
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.mab = MultiArmedBanditBase()
+        self.mab = RoundRobinMultiArmedBandit()
         self.keys = 'abcdefghijklmnopqrstuvwxyz'
         for arm in self.keys:
             self.mab.add(arm, arm)
