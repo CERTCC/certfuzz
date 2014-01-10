@@ -11,6 +11,7 @@ from certfuzz.fuzztools import filetools
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'certfuzz'))
 ignorelist = ['obsolete', 'dist']
 
+
 def find_packages(d):
     dirlist = [os.path.join(d, x) for x in os.listdir(d) if not x in ignorelist]
     dirs = [x for x in dirlist if os.path.isdir(x)]
@@ -21,6 +22,7 @@ def find_packages(d):
 
     pkgs.extend(subpkgs)
     return pkgs
+
 
 def non_tst_packages(d):
     pkglist = []
@@ -37,9 +39,11 @@ def find_all_modules(d):
     ignore = lambda f: any(['%s%s%s' % (os.sep, x, os.sep) in f for x in ignore_list])
     return [x for x in filetools.all_files(d, "*.py") if not ignore(x)]
 
+
 def find_modules(d):
     # ignore __init__.py modules
     return [x for x in find_all_modules(d) if not x.endswith('__init__.py')]
+
 
 class Test(unittest.TestCase):
 
@@ -67,8 +71,11 @@ class Test(unittest.TestCase):
     def test_each_module_has_a_test_module(self):
         module_list = find_modules(self.basedir)
         missing_modules = []
+        _ignored_modules = set(['errors'])
         for m in module_list:
             d, b = os.path.split(m)
+            if b in _ignored_modules:
+                continue
             test_b = 'test_%s' % b
             relpath = os.path.relpath(d, basedir)
             test_path = os.path.join(basedir, 'test', relpath, test_b)
