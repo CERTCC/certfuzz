@@ -3,7 +3,6 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-import itertools
 from .errors import MultiArmedBanditError
 from .arms.base import BanditArmBase
 
@@ -60,11 +59,7 @@ class MultiArmedBanditBase(object):
         return float(total) / count
 
     def __iter__(self):
-        '''
-        Implements a simple round robin iterator
-        '''
-        return itertools.cycle(self.things.values())
+        return self
 
-
-class RoundRobinMultiArmedBandit(MultiArmedBanditBase):
-    pass
+    def next(self):
+        raise NotImplementedError()

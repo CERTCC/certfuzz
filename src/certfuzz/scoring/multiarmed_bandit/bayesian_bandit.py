@@ -28,9 +28,6 @@ class BayesianMultiArmedBandit(MultiArmedBanditBase):
     def _next_key(self):
         return weighted_choice(self._scaled_scores)
 
-    def __iter__(self):
-        return self
-
     def next(self):
         key = self._next_key()
         return self.things[key]

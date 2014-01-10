@@ -27,9 +27,6 @@ class EpsilonGreedyMultiArmedBandit(MultiArmedBanditBase):
 
         self.e = epsilon
 
-    def __iter__(self):
-        return self
-
     def _max_keys(self):
         max_p = 0.0
         _maybe_max_k = []

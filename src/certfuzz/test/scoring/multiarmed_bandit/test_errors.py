@@ -6,6 +6,7 @@ Created on Feb 22, 2013
 import unittest
 from certfuzz.scoring.multiarmed_bandit import errors
 
+
 class Test(unittest.TestCase):
 
     def setUp(self):

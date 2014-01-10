@@ -7,6 +7,7 @@ import unittest
 from certfuzz.scoring.multiarmed_bandit.multiarmed_bandit_base import MultiArmedBanditBase
 from certfuzz.scoring.multiarmed_bandit.errors import MultiArmedBanditError
 
+
 class Test(unittest.TestCase):
 
     def setUp(self):
@@ -74,24 +75,8 @@ class Test(unittest.TestCase):
         self.assertEqual(total * 0.5, self.mab._total_p)
 
     def test_next(self):
-        arms = 'abcdefghijklmnopqrstuvwxyz'
-        for arm in arms:
-            self.mab.add(arm, arm)
+        self.assertRaises(NotImplementedError, self.mab.next)
 
-        i = 1
-        n = 1000
-        limit = n * len(arms)
-        from collections import defaultdict
-        seen = defaultdict(int)
-        for arm in self.mab:
-            if i > limit:
-                break
-            seen[arm] += 1
-            i += 1
-
-        for arm in arms:
-            # ensure we saw each arm n times
-            self.assertEqual(n, seen[arm])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
