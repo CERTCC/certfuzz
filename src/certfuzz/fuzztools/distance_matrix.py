@@ -8,13 +8,10 @@ import os
 import numpy
 import hcluster
 import logging
+from .errors import DistanceMatrixError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
-
-class DistanceMatrixError(Exception):
-    pass
 
 
 class DistanceMatrix(object):

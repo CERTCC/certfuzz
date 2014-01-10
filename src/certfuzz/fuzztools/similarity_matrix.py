@@ -9,15 +9,14 @@ import collections
 import sys
 import operator
 
-from ..fuzztools.filetools import all_files_nonzero_length
-from ..fuzztools.vectors import compare
+from .filetools import all_files_nonzero_length
+from .vectors import compare
 from ..analyzers.callgrind.annotation_file import AnnotationFile
+from .errors import SimilarityMatrixError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-class SimilarityMatrixError(Exception):
-    pass
 
 class SimilarityMatrix(object):
     def __init__(self, dirs):

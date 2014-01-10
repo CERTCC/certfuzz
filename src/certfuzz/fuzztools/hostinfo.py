@@ -8,14 +8,6 @@ import platform
 
 system = platform.system()
 
-class HostInfoError(Exception):
-    pass
-
-class UnsupportedPlatformError(HostInfoError):
-    def __init__(self, system):
-        self.system = system
-    def __str__(self):
-        return "'%s' is not a supported platform." % self.system
 
 class HostInfo(object):
     def __init__(self):

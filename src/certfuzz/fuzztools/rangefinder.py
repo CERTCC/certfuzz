@@ -8,12 +8,12 @@ import logging
 
 from ..scoring.scorable_set import ScorableSet2
 from .range import Range
+from .errors import RangeFinderError
 
 range_scale_factor = (math.sqrt(5) + 1.0) / 2.0
 
 logger = logging.getLogger(__name__)
-class RangeFinderError(Exception):
-    pass
+
 
 class RangeFinder(ScorableSet2):
     '''
