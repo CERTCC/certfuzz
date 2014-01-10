@@ -7,6 +7,7 @@ from certfuzz.fuzztools.probability import weighted_choice
 from .multiarmed_bandit_base import MultiArmedBanditBase
 from .arms.bayes_laplace import BanditArmBayesLaplace
 
+
 class BayesianMultiArmedBandit(MultiArmedBanditBase):
     '''
     Bayesian arms, weighted choice proportionate to each arm's share
