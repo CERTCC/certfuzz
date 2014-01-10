@@ -8,7 +8,8 @@ import os
 
 from .directory import Directory
 from ..fuzztools import filetools
-from .seedfile import SeedFile, SeedFileError
+from .seedfile import SeedFile
+from .errors import SeedFileError
 from ..scoring.scorable_set import ScorableSet2, EmptySetError
 logger = logging.getLogger(__name__)
 

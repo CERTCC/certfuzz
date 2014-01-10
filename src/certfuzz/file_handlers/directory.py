@@ -7,11 +7,9 @@ import os
 from ..fuzztools import filetools
 from .basicfile import BasicFile
 import logging
+from .errors import DirectoryError
 logger = logging.getLogger(__name__)
 
-
-class DirectoryError(Exception):
-    pass
 
 blacklist = ['.DS_Store', ]
 
