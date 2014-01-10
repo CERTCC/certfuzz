@@ -11,7 +11,7 @@ import logging
 import os
 from optparse import OptionParser
 
-from certfuzz.campaign.campaign import WindowsCampaign
+from certfuzz.campaign.campaign_windows import WindowsCampaign
 from logging.handlers import RotatingFileHandler
 
 
