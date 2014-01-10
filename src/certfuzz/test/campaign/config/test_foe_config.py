@@ -9,13 +9,13 @@ import os
 import yaml
 import tempfile
 import shutil
-#import pprint
-from certfuzz.campaign.config import ConfigError
+from certfuzz.campaign.config.errors import ConfigError
 import logging
 
 logger = logging.getLogger()
 hdlr = logging.FileHandler(os.devnull)
 logger.addHandler(hdlr)
+
 
 class Test(unittest.TestCase):
 

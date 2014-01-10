@@ -8,7 +8,7 @@ from ..crash.foe_crash import FoeCrash
 from ..debuggers.output_parsers import DebuggerFileError
 from ..file_handlers.basicfile import BasicFile
 from ..file_handlers.tmp_reaper import TmpReaper
-from ..fuzzers import FuzzerError, FuzzerExhaustedError, \
+from ..fuzzers.errors import FuzzerError, FuzzerExhaustedError, \
     FuzzerInputMatchesOutputError
 from ..fuzztools import filetools
 from ..fuzztools.filetools import delete_files_or_dirs

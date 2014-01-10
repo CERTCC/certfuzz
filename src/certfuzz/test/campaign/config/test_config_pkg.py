@@ -7,6 +7,7 @@ import unittest
 from certfuzz.test import misc
 import certfuzz.campaign.config
 
+
 class Test(unittest.TestCase):
 
     def setUp(self):
@@ -19,7 +20,6 @@ class Test(unittest.TestCase):
         module = certfuzz.campaign.config
         api_list = ['parse_yaml',
                     'Config',
-                    'ConfigError',
                     ]
         (is_fail, msg) = misc.check_for_apis(module, api_list)
         self.assertFalse(is_fail, msg)

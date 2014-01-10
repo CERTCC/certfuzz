@@ -13,9 +13,11 @@ import os
 import tempfile
 from certfuzz.fuzztools import filetools
 
+
 class Mock(object):
     def __getstate__(self):
         return dict(x=1, y=2, z=3)
+
 
 class Test(unittest.TestCase):
 
@@ -82,27 +84,6 @@ class Test(unittest.TestCase):
         except Exception, e:
             self.fail(e)
 
-#    def test_to_json(self):
-#        self.campaign.seedfile_set = Mock()
-#
-#        # make sure we can write
-#        as_json = self.campaign.to_json()
-#
-#        pprint.pprint(as_json)
-#        from_json = json.loads(as_json)
-#
-#        for k, v in self.campaign.__getstate__().iteritems():
-#            self.assertTrue(k in from_json, '%s not found' % k)
-#            if k == 'seedfile_set':
-#                # make sure everything in the json version
-#                # matches what was in our original sfs
-#                sfs = from_json[k]
-#                for k1, v1 in Mock().__getstate__().iteritems():
-#                    self.assertTrue(k1 in sfs)
-#                    self.assertEqual(sfs[k1], v1)
-#            else:
-#                self.assertEqual(from_json[k], v)
-
     def counter(self, *args):
         self.count += 1
 
@@ -112,21 +93,6 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(self.campaign.cached_state_file))
         self.campaign._save_state()
         self.assertTrue(os.path.exists(self.campaign.cached_state_file))
-
-#    @unittest.skip("JSON has been removed")
-#    def test_read_state(self):
-#        state = {'a': 1, 'b': 2, 'c': 3}
-#        fd, f = tempfile.mkstemp(dir=self.tmpdir)
-#        os.close(fd)
-#        json.dump(state, open(f, 'wb'))
-#
-#        self.assertTrue(os.path.exists(f))
-#        self.assertTrue(os.path.getsize(f) > 0)
-#
-#        self.count = 0
-#        self.campaign.__setstate__ = self.counter
-#        self.campaign._read_state(f)
-#        self.assertEqual(self.count, 1)
 
     def test_set_state(self):
         state = {'crashes_seen': [1, 2, 3, 3],
