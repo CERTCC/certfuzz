@@ -7,7 +7,7 @@ import logging
 from string import Template
 
 from . import Config as ConfigBase
-from . import ConfigError
+from .errors import ConfigError
 from ...helpers import quoted
 import shlex
 
