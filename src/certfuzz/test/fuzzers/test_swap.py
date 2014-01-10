@@ -6,10 +6,10 @@ Created on Apr 10, 2012
 import unittest
 from certfuzz.fuzzers.swap import SwapFuzzer
 from certfuzz.test import MockSeedfile
-from certfuzz.fuzzers import FuzzerExhaustedError
-import os
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
 import shutil
 import tempfile
+
 
 class Test(unittest.TestCase):
 

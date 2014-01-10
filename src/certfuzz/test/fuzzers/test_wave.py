@@ -8,13 +8,13 @@ import unittest
 from certfuzz.fuzzers.wave import WaveFuzzer
 import certfuzz.fuzzers.wave
 import shutil
-import os
-from certfuzz.fuzzers import FuzzerExhaustedError
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
 import logging
 from certfuzz.test import MockSeedfile
 import tempfile
 
 certfuzz.fuzzers.wave.logger.setLevel(logging.WARNING)
+
 
 class Test(unittest.TestCase):
 

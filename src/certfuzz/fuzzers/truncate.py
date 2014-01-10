@@ -4,15 +4,10 @@ Created on Jul 12, 2012
 @organization: cert.org
 '''
 from . import Fuzzer
-from . import FuzzerError
-from . import FuzzerExhaustedError
+from .errors import FuzzerExhaustedError
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-class TruncateFuzzerError(FuzzerError):
-    pass
 
 
 class TruncateFuzzer(Fuzzer):

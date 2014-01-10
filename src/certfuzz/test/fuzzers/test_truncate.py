@@ -8,13 +8,13 @@ import unittest
 from certfuzz.fuzzers.truncate import TruncateFuzzer
 import certfuzz.fuzzers.drop
 import shutil
-import os
-from certfuzz.fuzzers import FuzzerExhaustedError
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
 import logging
 from certfuzz.test import MockSeedfile
 import tempfile
 
 certfuzz.fuzzers.drop.logger.setLevel(logging.WARNING)
+
 
 class Test(unittest.TestCase):
 

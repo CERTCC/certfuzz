@@ -2,8 +2,7 @@
 as it goes. E.g. try 0-255 for the first byte, 0-255 for the second byte, etc.
 """
 from . import MinimizableFuzzer
-from . import FuzzerError
-from . import FuzzerExhaustedError
+from .errors import FuzzerExhaustedError
 import logging
 
 logger = logging.getLogger(__name__)
@@ -11,10 +10,6 @@ logger = logging.getLogger(__name__)
 
 def fuzz(*args):
     return WaveFuzzer(*args).fuzz()
-
-
-class WaveFuzzerError(FuzzerError):
-    pass
 
 
 class WaveFuzzer(MinimizableFuzzer):

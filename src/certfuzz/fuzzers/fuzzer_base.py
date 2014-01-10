@@ -9,12 +9,9 @@ import StringIO
 import zipfile
 import collections
 
-from ..fuzztools.hamming import bytewise_hd, bitwise_hd
 from ..fuzztools.filetools import write_file
 from ..fuzztools.filetools import find_or_create_dir
 from ..helpers import log_object
-from .errors import FuzzerInputMatchesOutputError
-
 
 MAXDEPTH = 3
 SLEEPTIMER = 0.5
@@ -247,25 +244,3 @@ class MinimizableFuzzer(Fuzzer):
         # get the byte string version of the archive and put in self.fuzzed
         self.fuzzed = inmemzip.getvalue()
         inmemzip.close()
-
-#     def bitwise_hd(self):
-#         '''
-#         Convenience function that returns the bitwise hamming distance
-#         between input and fuzzed
-#         '''
-#         fuzzed = [chr(x) for x in self.fuzzed]
-#         return bitwise_hd(self.input, fuzzed)
-#
-#     def bytewise_hd(self):
-#         '''
-#         Convenience function that returns the bytewise hamming distance
-#         between input and fuzzed
-#         '''
-#         fuzzed = [chr(x) for x in self.fuzzed]
-#         return bytewise_hd(self.input, fuzzed)
-#
-#     def fuzzed_bit_ratio(self):
-#         return  self.bitwise_hd() / float(len(self.input) * 8)
-#
-#     def fuzzed_byte_ratio(self):
-#         return  self.bytewise_hd() / float(len(self.input))
