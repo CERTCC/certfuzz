@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
         # high probability
         zarm = self.mab.arms['z']
         self.assertEqual(0.5, zarm.probability)
-        scaled = self.mab._scaled_scores
+        scaled = self.mab._scaled_scores()
         self.assertEqual(0.8, scaled['z'])
         for key in 'abcdefghijklmnopqrstuvwxy':
             arm = self.mab.arms[key]
@@ -57,7 +57,7 @@ class Test(unittest.TestCase):
             self.assertEqual(0.008, scaled[key])
         # go ahead and pull z
         zarm.update(successes=0, trials=198)
-        scaled = self.mab._scaled_scores
+        scaled = self.mab._scaled_scores()
         for key in self.arms:
             # now they should all be equal again
             arm = self.mab.arms[key]
