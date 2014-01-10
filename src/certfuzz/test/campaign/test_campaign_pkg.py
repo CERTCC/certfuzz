@@ -19,7 +19,6 @@ class Test(unittest.TestCase):
         module = certfuzz.campaign
         api_list = ['__version__',
                     'import_module_by_name',
-                    'CampaignError',
                     'CampaignBase',
                     ]
         (is_fail, msg) = misc.check_for_apis(module, api_list)
