@@ -20,3 +20,7 @@ class FuzzedFileError(BasicFileError):
 
 class SeedFileError(BasicFileError):
     pass
+
+
+class DirectoryError(FileHandlerError):
+    pass

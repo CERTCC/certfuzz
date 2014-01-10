@@ -14,10 +14,6 @@ def parse_yaml(yaml_file):
     return yaml.load(open(yaml_file, 'r'))
 
 
-class ConfigError(Exception):
-    pass
-
-
 class Config(object):
     '''
     If you are inheriting this class, add validation methods to self.validations

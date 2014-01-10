@@ -1,15 +1,10 @@
 """
 """
 from . import Fuzzer
-from . import FuzzerError
-from . import FuzzerExhaustedError
+from .errors import FuzzerExhaustedError
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-class DropFuzzerError(FuzzerError):
-    pass
 
 
 class DropFuzzer(Fuzzer):

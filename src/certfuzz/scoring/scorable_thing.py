@@ -6,6 +6,7 @@ Created on Mar 26, 2012
 import json
 from ..helpers import random_str
 
+
 def beta_estimate(m, N, a_prior=1.0, b_prior=1.0):
     numerator = alpha = m + a_prior
     l = N - m
@@ -14,8 +15,6 @@ def beta_estimate(m, N, a_prior=1.0, b_prior=1.0):
     p_success = float(numerator) / float(denominator)
     return (alpha, beta, p_success)
 
-class ScorableThingError(Exception):
-    pass
 
 class ScorableThing(object):
     def __init__(self, key=None, a=None, b=None, uniques_only=True):

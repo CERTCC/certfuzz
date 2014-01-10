@@ -1,16 +1,11 @@
 """
 """
 from . import Fuzzer
-from . import FuzzerError
-from . import FuzzerExhaustedError
+from .errors import FuzzerExhaustedError
 import logging
 from random import getrandbits
 
 logger = logging.getLogger(__name__)
-
-
-class InsertFuzzerError(FuzzerError):
-    pass
 
 
 class InsertFuzzer(Fuzzer):

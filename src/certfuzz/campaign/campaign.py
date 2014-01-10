@@ -19,14 +19,14 @@ import gc
 from . import __version__
 from . import import_module_by_name
 from . import CampaignBase
-from . import CampaignError
+from .errors import CampaignError
 from .config.foe_config import Config
 from .iteration import Iteration
 
 from ..debuggers import registration
 from ..fuzztools import filetools
 from ..file_handlers.seedfile_set import SeedfileSet
-from ..fuzzers import FuzzerExhaustedError
+from ..fuzzers.errors import FuzzerExhaustedError
 from ..scoring.scorable_set import EmptySetError
 from ..runners import RunnerArchitectureError
 from ..runners.killableprocess import Popen

@@ -2,13 +2,10 @@
 bytes.
 """
 import logging
-from . import MinimizableFuzzer, FuzzerError, FuzzerExhaustedError
+from . import MinimizableFuzzer
+from .errors import FuzzerExhaustedError
 
 logger = logging.getLogger(__name__)
-
-
-class SwapFuzzerError(FuzzerError):
-    pass
 
 
 class SwapFuzzer(MinimizableFuzzer):

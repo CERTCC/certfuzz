@@ -4,7 +4,8 @@ Created on Apr 10, 2012
 @organization: cert.org
 '''
 import unittest
-from certfuzz.scoring.scorable_thing import ScorableThing, ScorableThingError
+from certfuzz.scoring.scorable_thing import ScorableThing
+
 
 class Test(unittest.TestCase):
 

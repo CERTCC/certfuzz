@@ -22,10 +22,6 @@ def import_module_by_name(name, logger=None):
     return module
 
 
-class CampaignError(Exception):
-    pass
-
-
 class CampaignBase(object):
     __metaclass__ = abc.ABCMeta
 
