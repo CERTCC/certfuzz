@@ -74,11 +74,14 @@ class Test(unittest.TestCase):
         _ignored_modules = set(['errors.py'])
         for m in module_list:
             d, b = os.path.split(m)
+
             if b in _ignored_modules:
                 continue
+
             test_b = 'test_%s' % b
             relpath = os.path.relpath(d, basedir)
             test_path = os.path.join(basedir, 'test', relpath, test_b)
+
             if not os.path.exists(test_path):
                 missing_modules.append((os.path.relpath(m, basedir), os.path.relpath(test_path, basedir)))
         fail_lines = ['Module %s has no corresponding test module %s' % mm for mm in missing_modules]
