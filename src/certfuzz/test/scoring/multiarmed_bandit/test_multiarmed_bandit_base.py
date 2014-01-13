@@ -75,8 +75,8 @@ class Test(unittest.TestCase):
         self.assertEqual(total * 0.5, self.mab._total_p)
 
     def test_next(self):
-        self.assertRaises(NotImplementedError, self.mab.next)
-
+        # empty set raises StopIteration
+        self.assertRaises(StopIteration, self.mab.next)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

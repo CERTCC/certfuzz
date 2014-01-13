@@ -26,6 +26,17 @@ class MultiArmedBanditBase(object):
         # create a new arm of the desired type
         self.arms[key] = self.arm_type()
 
+    def del_item(self, key=None):
+        if key is None:
+            return
+
+        for d in (self.things, self.arms):
+            try:
+                del(d[key])
+            except KeyError:
+                # if there was a keyerror, our job is already done
+                pass
+
     def record_result(self, key, successes=0, trials=0):
         arm = self.arms[key]
         arm.update(successes, trials)
@@ -62,4 +73,4 @@ class MultiArmedBanditBase(object):
         return self
 
     def next(self):
-        raise NotImplementedError()
+        raise StopIteration()
