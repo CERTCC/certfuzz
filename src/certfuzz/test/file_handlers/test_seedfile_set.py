@@ -17,6 +17,7 @@ import hashlib
 from certfuzz.scoring.scorable_set import EmptySetError
 #from pprint import pprint
 
+
 class Test(unittest.TestCase):
 
     def setUp(self):
@@ -57,7 +58,9 @@ class Test(unittest.TestCase):
         # confirm that the files are there
         self.assertEqual(self.file_count, len(self.sfs.things))
         unpickled = pickle.loads(pickle.dumps(self.sfs))
-        pprint(unpickled.__dict__)
+
+        self.assertTrue(hasattr(unpickled, 'things'))
+        self.assertEqual(self.file_count, len(unpickled.things))
 
     def test_set_directories(self):
         self.assertEqual(self.sfs.originpath, self.origindir)
@@ -116,7 +119,7 @@ class Test(unittest.TestCase):
         state = self.sfs.__getstate__()
         self.assertEqual(dict, type(state))
 
-        for k, v in self.sfs.__dict__.iteritems():
+        for k in self.sfs.__dict__.iterkeys():
             # make sure we're deleting what we need to
             if k in ['localdir', 'origindir', 'outputdir']:
                 self.assertFalse(k in state)
@@ -139,7 +142,7 @@ class Test(unittest.TestCase):
             # is there a corresponding thing in sfs?
             self.assertTrue(k in self.sfs.things)
 
-            for x, y in thing.iteritems():
+            for x in thing.iterkeys():
                 # was it set correctly?
                 self.assertEqual(thing[x], self.sfs.things[k].__dict__[x])
 
