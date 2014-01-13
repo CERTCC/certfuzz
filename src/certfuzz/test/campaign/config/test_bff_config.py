@@ -11,6 +11,7 @@ from certfuzz.campaign.config.bff_config import MINIMIZED_EXT
 import tempfile
 from certfuzz.campaign.config.bff_config import read_config_options
 
+
 class Test(unittest.TestCase):
     def delete_file(self, f):
         os.remove(f)
@@ -95,7 +96,6 @@ class Test(unittest.TestCase):
             # trim the last char ('c')
             f = f[:-1]
         self.cfg.program = f
-        print f
         self.assertTrue(self.cfg.program_is_script())
 
     def test_get_minimized_file(self):
