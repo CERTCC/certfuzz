@@ -14,7 +14,7 @@ mydir = os.path.dirname(os.path.abspath(__file__))
 parentdir = os.path.abspath(os.path.join(mydir, '..'))
 sys.path.append(parentdir)
 
-import bff
+import certfuzz.bff.linux as bff
 
 class Mock(object):
     def __init__(self):
