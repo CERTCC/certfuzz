@@ -6,7 +6,6 @@ Created on Apr 8, 2011
 
 import os
 import tempfile
-import json
 import unittest
 
 from certfuzz.fuzztools.rangefinder import RangeFinder
