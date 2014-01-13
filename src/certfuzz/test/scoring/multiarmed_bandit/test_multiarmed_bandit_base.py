@@ -14,19 +14,19 @@ class Test(unittest.TestCase):
         self.mab = MultiArmedBanditBase()
         self.keys = 'abcdefghijklmnopqrstuvwxyz'
         for arm in self.keys:
-            self.mab.add(arm, arm)
+            self.mab.add_item(arm, arm)
 
     def tearDown(self):
         pass
 
     def test_add(self):
-        self.assertRaises(MultiArmedBanditError, self.mab.add)
-        self.assertRaises(MultiArmedBanditError, self.mab.add, key=None, obj='obj')
-        self.assertRaises(MultiArmedBanditError, self.mab.add, key='key', obj=None)
+        self.assertRaises(MultiArmedBanditError, self.mab.add_item)
+        self.assertRaises(MultiArmedBanditError, self.mab.add_item, key=None, obj='obj')
+        self.assertRaises(MultiArmedBanditError, self.mab.add_item, key='key', obj=None)
 
         self.assertEqual(len(self.keys), len(self.mab.things))
         self.assertEqual(len(self.keys), len(self.mab.arms))
-        self.mab.add('foo', 'bar')
+        self.mab.add_item('foo', 'bar')
         self.assertEqual(len(self.keys) + 1, len(self.mab.things))
         self.assertEqual(len(self.keys) + 1, len(self.mab.arms))
         self.assertEqual(1.0, self.mab.arms['foo'].probability)

@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
 
     def _add_things(self):
         for v, k in enumerate(self.keys):
-            self.mab.add(k, v)
+            self.mab.add_item(k, v)
 
     def _bump_p(self, k):
         # bump p(k) up half the distance to the goal

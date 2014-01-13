@@ -15,6 +15,7 @@ import os
 import shutil
 import csv
 
+
 class MockScorableThing(object):
     def __init__(self):
         self.key = random_str(8)

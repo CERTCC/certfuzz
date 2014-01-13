@@ -17,7 +17,7 @@ class MultiArmedBanditBase(object):
         self.things = {}
         self.arms = {}
 
-    def add(self, key=None, obj=None):
+    def add_item(self, key=None, obj=None):
         if key is None:
             raise MultiArmedBanditError('unspecified key for arm')
         if obj is None:

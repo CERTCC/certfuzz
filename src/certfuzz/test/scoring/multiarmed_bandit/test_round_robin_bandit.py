@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
         self.mab = RoundRobinMultiArmedBandit()
         self.keys = 'abcdefghijklmnopqrstuvwxyz'
         for arm in self.keys:
-            self.mab.add(arm, arm)
+            self.mab.add_item(arm, arm)
 
     def tearDown(self):
         pass
@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
     def test_next(self):
         arms = 'abcdefghijklmnopqrstuvwxyz'
         for arm in arms:
-            self.mab.add(arm, arm)
+            self.mab.add_item(arm, arm)
 
         i = 1
         n = 1000

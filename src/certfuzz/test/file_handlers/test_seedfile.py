@@ -8,8 +8,8 @@ import unittest
 import tempfile
 import os
 from certfuzz.file_handlers.seedfile import SeedFile
-from pprint import pprint
 from certfuzz.fuzztools.rangefinder import RangeFinder
+
 
 class Test(unittest.TestCase):
 
@@ -28,13 +28,6 @@ class Test(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.sf.output_dir, os.path.join(self.dir, self.sf.md5))
 
-    def test_record_hit(self):
-        self.assertEqual(0, self.sf.successes)
-        self.assertFalse('x' in self.sf.seen)
-        self.sf.record_success('x')
-        self.assertEqual(1, self.sf.successes)
-        self.assertTrue('x' in self.sf.seen)
-
     def test_getstate(self):
         self.assertEqual(RangeFinder, type(self.sf.rangefinder))
         state = self.sf.__getstate__()
@@ -43,14 +36,7 @@ class Test(unittest.TestCase):
 
     def test_setstate(self):
         state = self.sf.__getstate__()
-
-        self.assertEqual(0, self.sf.tries)
-        self.assertEqual(0, state['tries'])
-
-        # can we change something?
-        state['tries'] = 1000
         self.sf.__setstate__(state)
-        self.assertEqual(1000, self.sf.tries)
         # make sure we restore rangefinder
         self.assertEqual(RangeFinder, type(self.sf.rangefinder))
 

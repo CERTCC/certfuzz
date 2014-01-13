@@ -11,13 +11,13 @@ from certfuzz.file_handlers.errors import SeedFileError
 from certfuzz.file_handlers.seedfile import SeedFile
 from certfuzz.fuzztools import filetools
 from certfuzz.scoring.errors import EmptySetError
-from certfuzz.scoring.scorable_set import ScorableSet2
+from certfuzz.scoring.scorable_set import ScorableSet3
 
 
 logger = logging.getLogger(__name__)
 
 
-class SeedfileSet(ScorableSet2):
+class SeedfileSet(ScorableSet3):
     '''
     classdocs
     '''
@@ -147,15 +147,15 @@ class SeedfileSet(ScorableSet2):
                 self.things[k].__setstate__(old_sf)
                 self.sfcount += 1
 
-    def __getstate__(self):
-        state = ScorableSet2.__getstate__(self)
-
-        # remove things we can recreate
-        try:
-            for k in ('origindir', 'localdir', 'outputdir'):
-                del state[k]
-        except KeyError:
-            # it's ok if they don't exist
-            pass
-
-        return state
+#    def __getstate__(self):
+#        state = ScorableSet3.__getstate__(self)
+#
+#        # remove things we can recreate
+#        try:
+#            for k in ('origindir', 'localdir', 'outputdir'):
+#                del state[k]
+#        except KeyError:
+#            # it's ok if they don't exist
+#            pass
+#
+#        return state

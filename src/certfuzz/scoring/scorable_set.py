@@ -13,6 +13,14 @@ from .errors import ScorableSetError, EmptySetError
 
 logger = logging.getLogger(__name__)
 
+from .multiarmed_bandit.bayesian_bandit import BayesianMultiArmedBandit
+
+
+class ScorableSet3(BayesianMultiArmedBandit):
+    def __init__(self, datafile=None):
+        self.datafile = datafile
+        BayesianMultiArmedBandit.__init__(self)
+
 
 # Simplified reimplementation of ScorableSet with a Bayesian approach
 class ScorableSet2(object):

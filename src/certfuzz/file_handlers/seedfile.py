@@ -10,7 +10,6 @@ from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.file_handlers.errors import SeedFileError
 from certfuzz.fuzztools import filetools
 from certfuzz.fuzztools.rangefinder import RangeFinder
-from certfuzz.scoring.scorable_thing import ScorableThing
 
 
 # TODO: replace with a common function in some helper module
@@ -24,9 +23,7 @@ def print_dict(d, indent=0):
             print indent_str + "%s (%s): %s" % (k, type(v).__name__, v)
 
 
-# ScorableThing mixin gives us the probability stuff needed for use as part of
-# a scorable set like SeedfileSet
-class SeedFile(BasicFile, ScorableThing):
+class SeedFile(BasicFile):
     '''
     '''
 
@@ -37,7 +34,6 @@ class SeedFile(BasicFile, ScorableThing):
         @raise SeedFileError: zero-length files will raise a SeedFileError
         '''
         BasicFile.__init__(self, path)
-        ScorableThing.__init__(self, key=self.md5)
 
         if not self.len > 0:
             raise SeedFileError('You cannot do bitwise fuzzing on a zero-length file: %s' % self.path)
@@ -72,13 +68,6 @@ class SeedFile(BasicFile, ScorableThing):
 
     def __setstate__(self, state):
         old_rf = state.pop('rangefinder')
-
-        self.a = state['a']
-        self.b = state['b']
-        self.seen = state['seen']
-        self.successes = state['successes']
-        self.tries = state['tries']
-        self.uniques_only = state['uniques_only']
 
         # rebuild the rangefinder
         new_rf = self._get_rangefinder()

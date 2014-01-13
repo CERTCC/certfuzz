@@ -4,7 +4,6 @@ Created on Apr 14, 2011
 @organization: cert.org
 '''
 import unittest
-import logging
 import tempfile
 import os
 import shutil
@@ -48,19 +47,19 @@ class Test(unittest.TestCase):
             shutil.rmtree(d)
             self.assertFalse(os.path.exists(d))
 
-    def test_pickle(self):
-        import pickle
-        self.assertTrue(hasattr(self.sfs, 'things'))
-        # no files added yet
-        self.assertEqual(0, len(self.sfs.things))
-        # add the files
-        self.sfs._setup()
-        # confirm that the files are there
-        self.assertEqual(self.file_count, len(self.sfs.things))
-        unpickled = pickle.loads(pickle.dumps(self.sfs))
-
-        self.assertTrue(hasattr(unpickled, 'things'))
-        self.assertEqual(self.file_count, len(unpickled.things))
+#    def test_pickle(self):
+#        import pickle
+#        self.assertTrue(hasattr(self.sfs, 'things'))
+#        # no files added yet
+#        self.assertEqual(0, len(self.sfs.things))
+#        # add the files
+#        self.sfs._setup()
+#        # confirm that the files are there
+#        self.assertEqual(self.file_count, len(self.sfs.things))
+#        unpickled = pickle.loads(pickle.dumps(self.sfs))
+#
+#        self.assertTrue(hasattr(unpickled, 'things'))
+#        self.assertEqual(self.file_count, len(unpickled.things))
 
     def test_set_directories(self):
         self.assertEqual(self.sfs.originpath, self.origindir)
@@ -106,101 +105,101 @@ class Test(unittest.TestCase):
         self.assertEqual(self.outputdir, self.sfs.seedfile_output_base_dir)
         self.assertEqual(0, len(self.sfs.things))
 
-    def test_getstate_is_pickle_friendly(self):
-        # getstate should return a pickleable object
-        import pickle
-        state = self.sfs.__getstate__()
-        try:
-            pickle.dumps(state)
-        except Exception, e:
-            self.fail('Failed to pickle state: %s' % e)
+#    def test_getstate_is_pickle_friendly(self):
+#        # getstate should return a pickleable object
+#        import pickle
+#        state = self.sfs.__getstate__()
+#        try:
+#            pickle.dumps(state)
+#        except Exception, e:
+#            self.fail('Failed to pickle state: %s' % e)
+#
+#    def test_getstate(self):
+#        state = self.sfs.__getstate__()
+#        self.assertEqual(dict, type(state))
+#
+#        for k in self.sfs.__dict__.iterkeys():
+#            # make sure we're deleting what we need to
+#            if k in ['localdir', 'origindir', 'outputdir']:
+#                self.assertFalse(k in state)
+#            else:
+#                self.assertTrue(k in state, '%s not found' % k)
 
-    def test_getstate(self):
-        state = self.sfs.__getstate__()
-        self.assertEqual(dict, type(state))
+#    def test_setstate(self):
+#        self.sfs.__enter__()
+#        state_before = self.sfs.__getstate__()
+#        self.sfs.__setstate__(state_before)
+#        self.assertEqual(self.file_count, self.sfs.sfcount)
+#        state_after = self.sfs.__getstate__()
+#
+#        for k, v in state_before.iteritems():
+#            self.assertTrue(k in state_after)
+#            if not k == 'things':
+#                self.assertEqual(v, state_after[k])
+#
+#        for k, thing in state_before['things'].iteritems():
+#            # is there a corresponding thing in sfs?
+#            self.assertTrue(k in self.sfs.things)
+#
+#            for x in thing.iterkeys():
+#                # was it set correctly?
+#                self.assertEqual(thing[x], self.sfs.things[k].__dict__[x])
+#
+#        self.assertEqual(self.file_count, self.sfs.sfcount)
 
-        for k in self.sfs.__dict__.iterkeys():
-            # make sure we're deleting what we need to
-            if k in ['localdir', 'origindir', 'outputdir']:
-                self.assertFalse(k in state)
-            else:
-                self.assertTrue(k in state, '%s not found' % k)
-
-    def test_setstate(self):
-        self.sfs.__enter__()
-        state_before = self.sfs.__getstate__()
-        self.sfs.__setstate__(state_before)
-        self.assertEqual(self.file_count, self.sfs.sfcount)
-        state_after = self.sfs.__getstate__()
-
-        for k, v in state_before.iteritems():
-            self.assertTrue(k in state_after)
-            if not k == 'things':
-                self.assertEqual(v, state_after[k])
-
-        for k, thing in state_before['things'].iteritems():
-            # is there a corresponding thing in sfs?
-            self.assertTrue(k in self.sfs.things)
-
-            for x in thing.iterkeys():
-                # was it set correctly?
-                self.assertEqual(thing[x], self.sfs.things[k].__dict__[x])
-
-        self.assertEqual(self.file_count, self.sfs.sfcount)
-
-    def test_setstate_with_changed_files(self):
-        # refresh the sfs
-        self.sfs.__enter__()
-
-        # get the original state
-        state_before = self.sfs.__getstate__()
-        self.assertEqual(len(state_before['things']), self.file_count)
-
-        # delete one of the files
-        file_to_remove = self.files.pop()
-        localfile_md5 = hashlib.md5(open(file_to_remove, 'rb').read()).hexdigest()
-        localfilename = "sf_%s" % localfile_md5
-
-        # remove it from origin
-        os.remove(file_to_remove)
-        self.assertFalse(file_to_remove in self.files)
-        self.assertFalse(os.path.exists(file_to_remove))
-#        print "removed %s" % file_to_remove
-
-#        # remove it from localdir
-        localfile_to_remove = os.path.join(self.localdir, localfilename)
-        os.remove(localfile_to_remove)
-        self.assertFalse(os.path.exists(localfile_to_remove))
-
-        # create a new sfs
-        new_sfs = SeedfileSet()
-        new_sfs.__setstate__(state_before)
-
-        self.assertEqual(len(new_sfs.things), (self.file_count - 1))
-
-#        print "Newthings: %s" % new_sfs.things.keys()
-        for k, thing in state_before['things'].iteritems():
-#            print "k: %s" % k
-            if k == localfile_md5:
-                self.assertFalse(k in new_sfs.things)
-                continue
-            else:
-                # is there a corresponding thing in sfs?
-                self.assertTrue(k in new_sfs.things)
-
-            for x, y in thing.iteritems():
-                # was it set correctly?
-                sfsthing = new_sfs.things[k].__dict__[x]
-                if hasattr(sfsthing, '__dict__'):
-                    # some things are complex objects themselves
-                    # so we have to compare their __dict__ versions
-                    self._same_dict(y, sfsthing.__dict__)
-                else:
-                    # others are just simple objects and we can
-                    # compare them directly
-                    self.assertEqual(y, sfsthing)
-
-        self.assertEqual(self.file_count - 1, new_sfs.sfcount)
+#    def test_setstate_with_changed_files(self):
+#        # refresh the sfs
+#        self.sfs.__enter__()
+#
+#        # get the original state
+#        state_before = self.sfs.__getstate__()
+#        self.assertEqual(len(state_before['things']), self.file_count)
+#
+#        # delete one of the files
+#        file_to_remove = self.files.pop()
+#        localfile_md5 = hashlib.md5(open(file_to_remove, 'rb').read()).hexdigest()
+#        localfilename = "sf_%s" % localfile_md5
+#
+#        # remove it from origin
+#        os.remove(file_to_remove)
+#        self.assertFalse(file_to_remove in self.files)
+#        self.assertFalse(os.path.exists(file_to_remove))
+##        print "removed %s" % file_to_remove
+#
+##        # remove it from localdir
+#        localfile_to_remove = os.path.join(self.localdir, localfilename)
+#        os.remove(localfile_to_remove)
+#        self.assertFalse(os.path.exists(localfile_to_remove))
+#
+#        # create a new sfs
+#        new_sfs = SeedfileSet()
+#        new_sfs.__setstate__(state_before)
+#
+#        self.assertEqual(len(new_sfs.things), (self.file_count - 1))
+#
+##        print "Newthings: %s" % new_sfs.things.keys()
+#        for k, thing in state_before['things'].iteritems():
+##            print "k: %s" % k
+#            if k == localfile_md5:
+#                self.assertFalse(k in new_sfs.things)
+#                continue
+#            else:
+#                # is there a corresponding thing in sfs?
+#                self.assertTrue(k in new_sfs.things)
+#
+#            for x, y in thing.iteritems():
+#                # was it set correctly?
+#                sfsthing = new_sfs.things[k].__dict__[x]
+#                if hasattr(sfsthing, '__dict__'):
+#                    # some things are complex objects themselves
+#                    # so we have to compare their __dict__ versions
+#                    self._same_dict(y, sfsthing.__dict__)
+#                else:
+#                    # others are just simple objects and we can
+#                    # compare them directly
+#                    self.assertEqual(y, sfsthing)
+#
+#        self.assertEqual(self.file_count - 1, new_sfs.sfcount)
 
     def _same_dict(self, d1, d2):
         for k, v in d1.iteritems():
@@ -212,10 +211,10 @@ class Test(unittest.TestCase):
 
             self.assertEqual(v, d2[k])
 
-    def test_next_item(self):
-        self.assertEqual(0, len(self.sfs.things))
-        self.assertRaises(EmptySetError, self.sfs.next_key)
-        self.assertRaises(EmptySetError, self.sfs.next_item)
+#    def test_next_item(self):
+#        self.assertEqual(0, len(self.sfs.things))
+#        self.assertRaises(EmptySetError, self.sfs.next_key)
+#        self.assertRaises(EmptySetError, self.sfs.next_item)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

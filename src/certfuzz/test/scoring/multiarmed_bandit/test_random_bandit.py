@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
     def test_next(self):
         arms = 'abcdefghijklmnopqrstuvwxyz'
         for arm in arms:
-            self.mab.add(arm, arm)
+            self.mab.add_item(arm, arm)
 
         i = 1
         n = 10000

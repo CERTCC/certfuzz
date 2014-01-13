@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
         self.mab = BayesianMultiArmedBandit()
         self.arms = 'abcdefghijklmnopqrstuvwxyz'
         for arm in self.arms:
-            self.mab.add(arm, arm)
+            self.mab.add_item(arm, arm)
 
     def tearDown(self):
         pass
