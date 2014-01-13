@@ -11,27 +11,24 @@ from certfuzz.file_handlers.errors import SeedFileError
 from certfuzz.file_handlers.seedfile import SeedFile
 from certfuzz.fuzztools import filetools
 from certfuzz.scoring.errors import EmptySetError
-from certfuzz.scoring.scorable_set import ScorableSet3
 
+# Using a generic name here so we can easily swap out other MAB implementations if we want to
+from ..scoring.multiarmed_bandit.bayesian_bandit import BayesianMultiArmedBandit as MultiArmedBandit
 
 logger = logging.getLogger(__name__)
 
 
 class SeedfileSet(ScorableSet3):
+class SeedfileSet(MultiArmedBandit):
     '''
     classdocs
     '''
     def __init__(self, campaign_id=None, originpath=None, localpath=None,
-                 outputpath='.', logfile=None, datafile=None):
+                 outputpath='.', logfile=None):
         '''
         Constructor
         '''
-
-        if not datafile:
-            datafile = os.path.join(outputpath, 'seedfile_set_data.csv')
-
-        super(self.__class__, self).__init__(datafile=datafile)
-
+        MultiArmedBandit.__init__(self)
         self.campaign_id = campaign_id
         self.seedfile_output_base_dir = outputpath
 
@@ -117,7 +114,7 @@ class SeedfileSet(ScorableSet3):
         while len(self.things):
             logger.debug('Thing count: %d', len(self.things))
             # continue until we find one that exists, or else the set is empty
-            sf = ScorableSet3.next(self)
+            sf = MultiArmedBandit.next(self)
             if sf.exists():
                 # it's still there, proceed
                 return sf

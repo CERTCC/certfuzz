@@ -41,8 +41,11 @@ class MultiArmedBanditBase(object):
         arm = self.arms[key]
         arm.update(successes, trials)
 
-    def record_tries(self, key=None, tries=0):
+    def record_tries(self, key=None, tries=1):
         self.record_result(key, successes=0, trials=tries)
+
+    def record_success(self, key=None, successes=1):
+        self.record_result(key, successes, trials=0)
 
     @property
     def successes(self):
