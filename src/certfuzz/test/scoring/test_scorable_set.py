@@ -5,16 +5,12 @@ Created on Mar 26, 2012
 '''
 
 import unittest
-import random
 import tempfile
 
-from certfuzz.scoring.scorable_set import ScorableSet3
-from certfuzz.scoring.errors import ScorableSetError, EmptySetError
-from certfuzz.helpers import random_str
 import os
 import shutil
-import csv
 
+from certfuzz.scoring.multiarmed_bandit.bayesian_bandit import BayesianMultiArmedBandit as ScorableSet3
 
 class Test(unittest.TestCase):
 
