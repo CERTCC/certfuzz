@@ -31,10 +31,10 @@ class Test(unittest.TestCase):
         ranges = self._ranges()
 
         # the high end of the last range should be the max
-        self.assertAlmostEqual(ranges[-1].max, self.max)
+        self.assertAlmostEqual(ranges[-1].max, self.max, 3)
 
         # the low end of the first range should be the min
-        self.assertAlmostEqual(ranges[0].min, self.min)
+        self.assertAlmostEqual(ranges[0].min, self.min, 3)
 
         # make sure the internal ranges match up
         for (this, next_element) in zip(ranges[:-1], ranges[1:]):
@@ -50,22 +50,26 @@ class Test(unittest.TestCase):
         self.assertAlmostEqual(ranges[1].max, 0.999)
 
     def _ranges(self):
-        keys = sorted(self.r.things.keys())
+        minkeys = sorted([(v.min, k) for (k, v) in self.r.things.iteritems()])
+        keys = [k[1] for k in minkeys]
         return [self.r.things[k] for k in keys]
 
     def test_range_orderings(self):
         # first term should be smaller than second term
         ranges = self.r.things.values()
-        [self.assertTrue(x.min <= x.max) for x in ranges]
+        for x in ranges:
+            self.assertTrue(x.min <= x.max)
 
     def test_range_overlaps(self):
         # this one's min should be the next_element one's max
         ranges = self._ranges()
-        [self.assertEqual(x.min, y.max) for (x, y) in zip(ranges[1:], ranges[:-1])]
+        for (x, y) in zip(ranges[1:], ranges[:-1]):
+            self.assertEqual(x.min, y.max)
 
     def test_range_mean(self):
         # mean should be halfway between min and max
-        [self.assertAlmostEqual(x.mean, ((x.max + x.min) / 2)) for x in self.r.things.values()]
+        for x in self.r.things.values():
+            self.assertAlmostEqual(x.mean, ((x.max + x.min) / 2))
 
 #    def test_getstate_is_pickle_friendly(self):
 #        # getstate should return a pickleable object

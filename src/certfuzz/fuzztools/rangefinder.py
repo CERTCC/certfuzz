@@ -90,6 +90,9 @@ class RangeFinder(MultiArmedBandit):
             ranges.append(merged_range)
 
         for r in ranges:
-            self.add_item(r.__repr__(), r)
+            self.add_item(r.id, r)
 
         self.logger.debug('Ranges: [%s]', ', '.join([str(r) for r in self.things.keys()]))
+
+    def next_item(self):
+        return self.next()

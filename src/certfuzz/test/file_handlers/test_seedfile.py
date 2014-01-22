@@ -28,17 +28,17 @@ class Test(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.sf.output_dir, os.path.join(self.dir, self.sf.md5))
 
-    def test_getstate(self):
-        self.assertEqual(RangeFinder, type(self.sf.rangefinder))
-        state = self.sf.__getstate__()
-        self.assertEqual(dict, type(state))
-        self.assertEqual(dict, type(state['rangefinder']))
-
-    def test_setstate(self):
-        state = self.sf.__getstate__()
-        self.sf.__setstate__(state)
-        # make sure we restore rangefinder
-        self.assertEqual(RangeFinder, type(self.sf.rangefinder))
+#    def test_getstate(self):
+#        self.assertEqual(RangeFinder, type(self.sf.rangefinder))
+#        state = self.sf.__getstate__()
+#        self.assertEqual(dict, type(state))
+#        self.assertEqual(dict, type(state['rangefinder']))
+#
+#    def test_setstate(self):
+#        state = self.sf.__getstate__()
+#        self.sf.__setstate__(state)
+#        # make sure we restore rangefinder
+#        self.assertEqual(RangeFinder, type(self.sf.rangefinder))
 
 
 if __name__ == "__main__":

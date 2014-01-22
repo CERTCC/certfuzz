@@ -204,7 +204,7 @@ def analyze_crasher(cfg, crash):
     return other_crashers_found
 
 
-def verify_crasher(c, hashes, cfg, seedfile_set, rangefinder):
+def verify_crasher(c, hashes, cfg, seedfile_set, rangefinder, r):
     logger.debug('verifying crash')
     new_crash_count = 0
 
@@ -254,10 +254,10 @@ def verify_crasher(c, hashes, cfg, seedfile_set, rangefinder):
         crash.logger.info('PC=%s', crash.pc)
 
         # score this crash for the seedfile
-        seedfile_set.record_success(crash.seedfile.md5)
+        seedfile_set.record_success(key=crash.seedfile.md5)
         if crash.range:
             # ...and for the range
-            rangefinder.record_success(crash.signature, tries=0)
+            rangefinder.record_success(key=r.id)
 
     return new_crash_count
 
@@ -389,9 +389,11 @@ def main():
     # make sure we cache it for the next run
     # cache_state(cfg.campaign_id, 'cfg', cfg, cfg.cached_config_file)
 
-    sr = get_cached_state('seedrange', cfg.campaign_id, cfg.cached_seedrange_file)
+    sr = None
+#    sr = get_cached_state('seedrange', cfg.campaign_id, cfg.cached_seedrange_file)
     if not sr:
         sr = SeedRange(cfg.start_seed, cfg.seed_interval, cfg.max_seed)
+
 
     # set START_SEED global for timestamping
     START_SEED = sr.s1
@@ -400,8 +402,9 @@ def main():
 
     z.set_unbuffered_stdout()
 
-    # set up the seedfile set so we can pick seedfiles for everything else...
-    seedfile_set = get_cached_state('seedfile_set', cfg.campaign_id, cfg.cached_seedfile_set)
+    seedfile_set = None
+#    # set up the seedfile set so we can pick seedfiles for everything else...
+#    seedfile_set = get_cached_state('seedfile_set', cfg.campaign_id, cfg.cached_seedfile_set)
     if not seedfile_set:
         logger.info('Building seedfile set')
         sfs_logfile = os.path.join(cfg.seedfile_output_dir, 'seedfile_set.log')
@@ -419,7 +422,7 @@ def main():
         touch_watchdog_file(cfg)
         watchdog.go()
 
-    cache_state(cfg.campaign_id, 'seedfile_set', seedfile_set, cfg.cached_seedfile_set)
+#    cache_state(cfg.campaign_id, 'seedfile_set', seedfile_set, cfg.cached_seedfile_set)
 
     sf = seedfile_set.next_item()
 
@@ -493,7 +496,7 @@ def main():
                 # so go to next chunk
                 try_count = sr.s1_s2_delta()
                 seedfile_set.record_tries(key=sf.md5, tries=try_count)
-                rangefinder.record_tries(tries=try_count)
+                rangefinder.record_tries(key=r.id, tries=try_count)
 
                 # emit a log entry
                 crashcount = z.get_crashcount(cfg.crashers_dir)
@@ -523,7 +526,7 @@ def main():
             # record the fact that we've made it this far
             try_count = sr.s1_delta()
             seedfile_set.record_tries(key=sf.md5, tries=try_count)
-            rangefinder.record_tries(tries=try_count)
+            rangefinder.record_tries(key=r.id, tries=try_count)
 
             new_uniq_crash = None
             if crash_status:
@@ -543,7 +546,7 @@ def main():
                               cfg.killprocname, cfg.backtracelevels,
                               cfg.crashers_dir, sr.s1, r) as c:
                     if c.is_crash:
-                        _crash_count = verify_crasher(c, hashes, cfg, seedfile_set, rangefinder)
+                        _crash_count = verify_crasher(c, hashes, cfg, seedfile_set, rangefinder, r)
                         new_uniq_crash = _crash_count > 0
 
                     # record the zzuf log line for this crash
@@ -557,10 +560,10 @@ def main():
             sr.increment_seed()
 
             # cache objects in case of reboot
-            cache_state(cfg.campaign_id, 'seedrange', sr, cfg.cached_seedrange_file)
-            pickled_seedfile_file = os.path.join(cfg.cached_objects_dir, sf.pkl_file())
-            cache_state(cfg.campaign_id, sf.cache_key(), sf, pickled_seedfile_file)
-            cache_state(cfg.campaign_id, 'seedfile_set', seedfile_set, cfg.cached_seedfile_set)
+#            cache_state(cfg.campaign_id, 'seedrange', sr, cfg.cached_seedrange_file)
+#            pickled_seedfile_file = os.path.join(cfg.cached_objects_dir, sf.pkl_file())
+#            cache_state(cfg.campaign_id, sf.cache_key(), sf, pickled_seedfile_file)
+#            cache_state(cfg.campaign_id, 'seedfile_set', seedfile_set, cfg.cached_seedfile_set)
 
             if new_uniq_crash:
                 # we had a hit, so break the inner while() loop

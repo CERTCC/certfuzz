@@ -8,7 +8,7 @@ Created on Apr 8, 2011
 
 class Range(object):
     def __init__(self, low, high):
-
+        self.id = id(self)
         self.min = float(low)
         self.max = float(high)
         self.mean = (self.min + self.max) / 2.0
