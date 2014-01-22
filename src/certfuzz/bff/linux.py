@@ -5,49 +5,37 @@ Created on Jan 13, 2014
 '''
 __version__ = '2.8'
 
-import os
-import sys
-from optparse import OptionParser
-import time
 import logging
-import platform
 from logging.handlers import RotatingFileHandler
+from optparse import OptionParser
+import os
+import platform
+import sys
+import time
 
-from certfuzz import file_handlers
-from certfuzz import debuggers
-from certfuzz.debuggers import gdb  # @UnusedImport
-from certfuzz.debuggers import crashwrangler  # @UnusedImport
-
-from certfuzz.fuzztools import bff_helper as z
-from certfuzz.campaign.config import bff_config as cfg_helper
-from certfuzz.fuzztools import filetools
-from certfuzz.fuzztools import performance
-
-from certfuzz.file_handlers.seedfile_set import SeedfileSet
-from certfuzz.file_handlers.tmp_reaper import TmpReaper
-
-from certfuzz.crash.bff_crash import BffCrash
-from certfuzz.fuzztools.object_caching import get_cached_state
-from certfuzz.fuzztools.object_caching import cache_state
-from certfuzz.fuzztools.process_killer import ProcessKiller
-from certfuzz.fuzztools.seedrange import SeedRange
-from certfuzz.fuzztools.state_timer import StateTimer
-from certfuzz.fuzztools.watchdog import WatchDog
-from certfuzz.fuzztools.zzuf import Zzuf
-from certfuzz.fuzztools.zzuflog import ZzufLog
-
-from certfuzz.analyzers import valgrind
-from certfuzz.analyzers import cw_gmalloc
-from certfuzz.analyzers import stderr
-from certfuzz.analyzers import pin_calltrace
-from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
-from certfuzz.analyzers.callgrind import callgrind
-from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateEmptyOutputFileError
-from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateMissingInputFileError
-from certfuzz.analyzers.callgrind.annotate import annotate_callgrind
-from certfuzz.analyzers.callgrind.annotate import annotate_callgrind_tree
-from certfuzz.minimizer import UnixMinimizer as Minimizer
-from certfuzz.minimizer import MinimizerError
+from .. import debuggers, file_handlers
+from ..analyzers import cw_gmalloc, pin_calltrace, stderr, valgrind
+from ..analyzers.callgrind import callgrind
+from ..analyzers.callgrind.annotate import annotate_callgrind
+from ..analyzers.callgrind.annotate import annotate_callgrind_tree
+from ..analyzers.callgrind.errors import CallgrindAnnotateEmptyOutputFileError
+from ..analyzers.callgrind.errors import CallgrindAnnotateMissingInputFileError
+from ..analyzers.errors import AnalyzerEmptyOutputError
+from ..campaign.config import bff_config as cfg_helper
+from ..crash.bff_crash import BffCrash
+from ..debuggers import crashwrangler  # @UnusedImport
+from ..debuggers import gdb  # @UnusedImport
+from ..file_handlers.seedfile_set import SeedfileSet
+from ..file_handlers.tmp_reaper import TmpReaper
+from ..fuzztools import bff_helper as z, filetools, performance
+from ..fuzztools.object_caching import cache_state, get_cached_state
+from ..fuzztools.process_killer import ProcessKiller
+from ..fuzztools.seedrange import SeedRange
+from ..fuzztools.state_timer import StateTimer
+from ..fuzztools.watchdog import WatchDog
+from ..fuzztools.zzuf import Zzuf
+from ..fuzztools.zzuflog import ZzufLog
+from ..minimizer import MinimizerError, UnixMinimizer as Minimizer
 
 
 DEBUG = True

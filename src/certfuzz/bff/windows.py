@@ -6,13 +6,13 @@ Created on Jan 13, 2014
 
 __version__ = '2.2'
 
-import sys
 import logging
-import os
-from optparse import OptionParser
-
-from certfuzz.campaign.campaign_windows import WindowsCampaign
 from logging.handlers import RotatingFileHandler
+from optparse import OptionParser
+import os
+import sys
+
+from ..campaign.campaign_windows import WindowsCampaign
 
 
 def _setup_logging_to_screen(options, logger, fmt):
