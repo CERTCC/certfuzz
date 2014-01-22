@@ -5,5 +5,6 @@ Created on Feb 22, 2013
 '''
 from ..errors import ScoringError
 
+
 class MultiArmedBanditError(ScoringError):
     pass
