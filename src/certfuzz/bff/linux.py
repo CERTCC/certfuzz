@@ -204,7 +204,7 @@ def analyze_crasher(cfg, crash):
     return other_crashers_found
 
 
-def verify_crasher(c, hashes, cfg, seedfile_set):
+def verify_crasher(c, hashes, cfg, seedfile_set, rangefinder):
     logger.debug('verifying crash')
     new_crash_count = 0
 
@@ -257,7 +257,7 @@ def verify_crasher(c, hashes, cfg, seedfile_set):
         seedfile_set.record_success(crash.seedfile.md5)
         if crash.range:
             # ...and for the range
-            crash.range.record_success(crash.signature, tries=0)
+            rangefinder.record_success(crash.signature, tries=0)
 
     return new_crash_count
 
@@ -387,7 +387,7 @@ def main():
     z.setup_dirs_and_files(local_cfg_file, cfg)
 
     # make sure we cache it for the next run
-#    cache_state(cfg.campaign_id, 'cfg', cfg, cfg.cached_config_file)
+    # cache_state(cfg.campaign_id, 'cfg', cfg, cfg.cached_config_file)
 
     sr = get_cached_state('seedrange', cfg.campaign_id, cfg.cached_seedrange_file)
     if not sr:
@@ -442,8 +442,9 @@ def main():
         TmpReaper().clean_tmp()
 
         sf = seedfile_set.next_item()
+        rangefinder = sf.rangefinder
+        r = rangefinder.next_item()
 
-        r = sf.rangefinder.next_item()
         sr.set_s2()
         logger.info(STATE_TIMER)
 
@@ -492,7 +493,7 @@ def main():
                 # so go to next chunk
                 try_count = sr.s1_s2_delta()
                 seedfile_set.record_tries(key=sf.md5, tries=try_count)
-                r.record_tries(tries=try_count)
+                rangefinder.record_tries(tries=try_count)
 
                 # emit a log entry
                 crashcount = z.get_crashcount(cfg.crashers_dir)
@@ -522,7 +523,7 @@ def main():
             # record the fact that we've made it this far
             try_count = sr.s1_delta()
             seedfile_set.record_tries(key=sf.md5, tries=try_count)
-            r.record_tries(tries=try_count)
+            rangefinder.record_tries(tries=try_count)
 
             new_uniq_crash = None
             if crash_status:
@@ -542,7 +543,7 @@ def main():
                               cfg.killprocname, cfg.backtracelevels,
                               cfg.crashers_dir, sr.s1, r) as c:
                     if c.is_crash:
-                        _crash_count = verify_crasher(c, hashes, cfg, seedfile_set)
+                        _crash_count = verify_crasher(c, hashes, cfg, seedfile_set, rangefinder)
                         new_uniq_crash = _crash_count > 0
 
                     # record the zzuf log line for this crash
