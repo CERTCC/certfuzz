@@ -3,7 +3,7 @@ Created on Aug 1, 2013
 
 @organization: cert.org
 '''
-from certfuzz.errors import CERTFuzzError
+from ..errors import CERTFuzzError
 
 
 class CampaignError(CERTFuzzError):
@@ -11,8 +11,4 @@ class CampaignError(CERTFuzzError):
 
 
 class AndroidCampaignError(CampaignError):
-    pass
-
-
-class IterationError(CERTFuzzError):
     pass

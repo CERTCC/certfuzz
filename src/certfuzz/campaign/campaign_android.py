@@ -7,7 +7,7 @@ import logging
 import random
 from . import __version__
 from .campaign import Campaign
-from .iteration_android import do_iteration
+from ..iteration.iteration_android import do_iteration
 from .config.android_config import AndroidConfig
 from ..db.couchdb.db import TestCaseDb, put_file
 from ..db.couchdb.datatypes.campaign_doc import AndroidCampaignDoc

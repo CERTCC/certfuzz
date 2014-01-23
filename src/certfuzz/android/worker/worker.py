@@ -3,7 +3,7 @@ Created on Jan 10, 2013
 
 @organization: cert.org
 '''
-from ...campaign.iteration_android import emu as iteration_emu
+from ...iteration.iteration_android import emu as iteration_emu
 from ..api import AdbCmd
 from ..api.log_helper import log_formatter
 from ..avd_mgr.main import avd_manager

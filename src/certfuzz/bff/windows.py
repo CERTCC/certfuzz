@@ -77,9 +77,7 @@ def parse_options():
     parser.add_option('-l', '--logfile', dest='logfile', help='Path to log file', metavar='FILE')
     parser.add_option('-r', '--result-dir', dest='resultdir', help='Path to result directory (overrides config)', metavar='DIR')
 
-    (options, args) = parser.parse_args()
-
-    return options, args
+    return parser.parse_args()
 
 
 def setup_debugging(logger):

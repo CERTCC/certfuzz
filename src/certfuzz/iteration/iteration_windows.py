@@ -14,7 +14,7 @@ from ..fuzztools import filetools
 from ..fuzztools.filetools import delete_files_or_dirs
 from ..minimizer import MinimizerError, WindowsMinimizer as Minimizer
 from ..runners.errors import RunnerRegistryError
-from .config.foe_config import get_command_args_list
+from ..campaign.config.foe_config import get_command_args_list
 from .errors import IterationError
 from .iteration_base import IterationBase
 import glob
@@ -231,7 +231,6 @@ class Iteration(IterationBase):
             # found in this iteration. Others found via minimization
             # don't count for this r
             self.r.record_success(crash.signature)
-
         self.sf.record_success(crash.signature)
 
     def record_failure(self):
