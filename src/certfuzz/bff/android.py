@@ -5,10 +5,10 @@ Created on Jan 17, 2013
 '''
 import logging
 import os
-from ...campaign.campaign_android import AndroidCampaign
-from ...fuzztools import filetools
-from ...campaign.errors import AndroidCampaignError
-from ..api.log_helper import log_formatter
+from ..campaign.campaign_android import AndroidCampaign
+from ..fuzztools import filetools
+from ..campaign.errors import AndroidCampaignError
+from ..android.api.log_helper import log_formatter
 
 
 logger = logging.getLogger()

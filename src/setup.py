@@ -26,7 +26,7 @@ setup(name="CERT_Basic_Fuzzing_Framework",
                ],
       entry_points={'console_scripts': [
             'bff_avd_mgr = certfuzz.android.avd_mgr.main:main',
-            'bff_android = certfuzz.android.controller.bff_android:main',
+            'bff_android = certfuzz.bff.android:main',
             'bff_avd_cloner = certfuzz.android.celery.avd_mgr.cloner:main',
             'bff_apk_dumper = certfuzz.tools.android.apk_dumper:main',
             'config_init = certfuzz.tools.android.config_tools:main'
