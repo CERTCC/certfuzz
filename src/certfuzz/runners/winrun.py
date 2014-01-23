@@ -198,7 +198,7 @@ class WinRunner(RunnerBase):
     def kill(self, p):
         kill(p)
 
-    def run(self):
+    def _run(self):
         '''
         Runs the command in self.cmdlist from self.workingdir with a timer
         bounded by self.runtimeout
