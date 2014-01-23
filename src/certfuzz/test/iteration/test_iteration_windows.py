@@ -5,7 +5,8 @@ Created on Mar 23, 2012
 '''
 
 import unittest
-from certfuzz.campaign.iteration import Iteration
+from certfuzz.iteration.iteration_windows import Iteration
+
 
 class Test(unittest.TestCase):
 

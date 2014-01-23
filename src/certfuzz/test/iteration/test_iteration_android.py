@@ -4,7 +4,8 @@ Created on Feb 22, 2013
 @organization: cert.org
 '''
 import unittest
-# from certfuzz.campaign import iteration_android
+# from certfuzz.iteration import iteration_android
+
 
 class Test(unittest.TestCase):
 

@@ -14,9 +14,9 @@ from ..fuzztools import filetools
 from ..fuzztools.filetools import delete_files_or_dirs
 from ..minimizer import MinimizerError, WindowsMinimizer as Minimizer
 from ..runners.errors import RunnerRegistryError
-from .config.foe_config import get_command_args_list
+from ..campaign.config.foe_config import get_command_args_list
 from .errors import IterationError
-from ..iteration.iteration_base import IterationBase
+from .iteration_base import IterationBase
 import glob
 import logging
 import os

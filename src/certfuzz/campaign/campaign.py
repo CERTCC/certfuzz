@@ -18,7 +18,7 @@ from . import import_module_by_name
 from . import CampaignBase
 from .errors import CampaignError
 from .config.foe_config import Config
-from .iteration import Iteration
+from ..iteration.iteration_windows import Iteration
 
 from ..debuggers import registration
 from ..fuzztools import filetools
