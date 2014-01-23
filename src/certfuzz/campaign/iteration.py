@@ -16,7 +16,7 @@ from ..minimizer import MinimizerError, WindowsMinimizer as Minimizer
 from ..runners.errors import RunnerRegistryError
 from .config.foe_config import get_command_args_list
 from .errors import IterationError
-from .iteration_base import IterationBase
+from ..iteration.iteration_base import IterationBase
 import glob
 import logging
 import os
