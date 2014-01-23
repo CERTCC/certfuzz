@@ -231,7 +231,6 @@ class Iteration(IterationBase):
             # found in this iteration. Others found via minimization
             # don't count for this r
             self.r.record_success(crash.signature)
-
         self.sf.record_success(crash.signature)
 
     def record_failure(self):
