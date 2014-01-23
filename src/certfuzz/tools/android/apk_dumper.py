@@ -5,9 +5,10 @@ Created on Feb 28, 2013
 '''
 import logging
 import argparse
-from ..api.aapt import Aapt
-from ..api.android_manifest import AndroidManifest
+from ...android.api.aapt import Aapt
+from ...android.api.android_manifest import AndroidManifest
 import os
+
 
 def main():
     logger = logging.getLogger()
@@ -36,7 +37,6 @@ def main():
     manifest_text = aapt.stdout
 
     manifest = AndroidManifest(manifest_text)
-
 
     vstr = '{} {}'.format(os.path.basename(args.apk), manifest.version_info)
     print '#' * (len(vstr) + 4)

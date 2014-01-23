@@ -9,7 +9,7 @@ import os
 import shutil
 import yaml
 import argparse
-from ..api.log_helper import log_formatter
+from ...android.api.log_helper import log_formatter
 
 logger = logging.getLogger()
 hdlr = logging.StreamHandler()
@@ -20,7 +20,7 @@ logger.addHandler(hdlr)
 def main():
     parser = argparse.ArgumentParser(description='Create a configuration file with the default options')
     parser.add_argument('--force', '-f',
-                        help='Overwrite the config file if it already exists', 
+                        help='Overwrite the config file if it already exists',
                         action='store_true', default=False)
     parser.add_argument('--directory', '--dir', '-d',
                         help='The directory in which to store the config file',

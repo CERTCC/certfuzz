@@ -28,8 +28,8 @@ setup(name="CERT_Basic_Fuzzing_Framework",
             'bff_avd_mgr = certfuzz.android.avd_mgr.main:main',
             'bff_android = certfuzz.android.controller.bff_android:main',
             'bff_avd_cloner = certfuzz.android.celery.avd_mgr.cloner:main',
-            'bff_apk_dumper = certfuzz.android.tools.apk_dumper:main',
-            'config_init = certfuzz.android.tools.config_tools:main'
+            'bff_apk_dumper = certfuzz.tools.android.apk_dumper:main',
+            'config_init = certfuzz.tools.android.config_tools:main'
             ]},
       include_package_data=True,
       )
