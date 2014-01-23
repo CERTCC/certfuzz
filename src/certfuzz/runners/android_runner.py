@@ -3,8 +3,8 @@ Created on Apr 4, 2013
 
 @organization: cert.org
 '''
-from . import Runner
-from . import AndroidRunnerError
+from .runner_base import Runner
+from .errors import AndroidRunnerError
 from ..android.api.adb_cmd import AdbCmd
 from ..android.api.activity_manager import ActivityManager
 from ..android.api.errors import AdbCmdError

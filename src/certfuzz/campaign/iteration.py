@@ -13,7 +13,7 @@ from ..fuzzers.errors import FuzzerError, FuzzerExhaustedError, \
 from ..fuzztools import filetools
 from ..fuzztools.filetools import delete_files_or_dirs
 from ..minimizer import MinimizerError, WindowsMinimizer as Minimizer
-from ..runners import RunnerRegistryError
+from ..runners.errors import RunnerRegistryError
 from .config.foe_config import get_command_args_list
 from .errors import IterationError
 from .iteration_base import IterationBase

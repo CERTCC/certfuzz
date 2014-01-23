@@ -3,7 +3,7 @@ from ..helpers import check_os_compatibility
 check_os_compatibility('Windows')
 
 import platform
-from . import RunnerPlatformVersionError
+from .errors import RunnerPlatformVersionError
 
 if not platform.version().startswith('5.'):
     raise RunnerPlatformVersionError('Incompatible OS: winrun only works on Windows XP and 2003')
@@ -37,7 +37,7 @@ except ImportError:
             # but don't panic if we can't do that either
             return longname
 
-from . import Runner as RunnerBase
+from .runner_base import Runner as RunnerBase
 from ..debuggers import jit as dbg
 
 
