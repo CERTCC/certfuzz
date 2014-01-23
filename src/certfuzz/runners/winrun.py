@@ -1,4 +1,5 @@
 from ..helpers import check_os_compatibility
+
 check_os_compatibility('Windows')
 
 import platform
@@ -16,7 +17,10 @@ import logging
 import sys
 import wmi
 import time
-from . import RunnerArchitectureError, RunnerRegistryError
+from .errors import RunnerArchitectureError, RunnerRegistryError
+from .errors import RunnerError
+from ..campaign.config.foe_config import get_command_args_list
+from ..fuzztools.filetools import find_or_create_dir
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +61,27 @@ def kill(p):
 class WinRunner(RunnerBase):
     def __init__(self, options, cmd_template, fuzzed_file, workingdir_base):
         RunnerBase.__init__(self, options, cmd_template, fuzzed_file, workingdir_base)
+
+        logger.debug('Initialize Runner')
+        self.runtimeout = None
+        self.exceptions = []
+
+        self.watchcpu = options.get('watchcpu', False)
+        try:
+            self.exceptions = options['exceptions']
+        except KeyError:
+            raise RunnerError('At least one exception code must be specified in runner config.')
+
+#        self._parse_options()
+        self.saw_crash = False
+
+        self.workingdir = workingdir_base
+
+        (self.cmd, self.cmdlist) = get_command_args_list(cmd_template, fuzzed_file)
+        logger.debug('Command: %s', self.cmd)
+
+        find_or_create_dir(self.workingdir)
+
         self.t = None
         self.returncode = None
         self.remembered = []
@@ -173,7 +198,7 @@ class WinRunner(RunnerBase):
     def kill(self, p):
         kill(p)
 
-    def run(self):
+    def _run(self):
         '''
         Runs the command in self.cmdlist from self.workingdir with a timer
         bounded by self.runtimeout
@@ -212,7 +237,7 @@ class WinRunner(RunnerBase):
                     n1, d1 = long(proc.PercentProcessorTime), long(proc.Timestamp_Sys100NS)
                     n0, d0 = process_info.get(id, (0, 0))
                     try:
-                        percent_processor_time = (float(n1 - n0) / float(d1 - d0)) *100.0
+                        percent_processor_time = (float(n1 - n0) / float(d1 - d0)) * 100.0
                     except ZeroDivisionError:
                         percent_processor_time = 0.0
                     process_info[id] = (n1, d1)
