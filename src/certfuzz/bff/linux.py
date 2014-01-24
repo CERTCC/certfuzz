@@ -42,8 +42,8 @@ DEBUG = True
 
 SEED_INTERVAL = 500
 
-SEED_TS = performance.TimeStamper()
-START_SEED = 0
+#SEED_TS = performance.TimeStamper()
+#START_SEED = 0
 
 STATE_TIMER = StateTimer()
 
@@ -52,10 +52,10 @@ logger.name = 'bff'
 logger.setLevel(0)
 
 
-def get_rate(current_seed):
-    seeds = current_seed - START_SEED
-    rate = seeds / SEED_TS.since_start()
-    return rate
+#def get_rate(current_seed):
+#    seeds = current_seed - START_SEED
+#    rate = seeds / SEED_TS.since_start()
+#    return rate
 
 
 def get_uniq_logger(logfile):
@@ -290,20 +290,20 @@ def setup_logging_to_console(log_obj, level):
     add_log_handler(log_obj, level, hdlr, formatter)
 
 
-def setup_logfile(logdir, log_basename='bff.log', level=logging.DEBUG,
-                  max_bytes=1e8, backup_count=5):
-    '''
-    Creates a log file in <logdir>/<log_basename> at level <level>
-    @param logdir: the directory where the log file should reside
-    @param log_basename: the basename of the logfile (defaults to 'bff_log.txt')
-    @param level: the logging level (defaults to logging.DEBUG)
-    '''
-    filetools.make_directories(logdir)
-    logfile = os.path.join(logdir, log_basename)
-    handler = RotatingFileHandler(logfile, maxBytes=max_bytes, backupCount=backup_count)
-    formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s")
-    add_log_handler(logger, level, handler, formatter)
-    logger.info('Logging %s at %s', logging.getLevelName(level), logfile)
+#def setup_logfile(logdir, log_basename='bff.log', level=logging.DEBUG,
+#                  max_bytes=1e8, backup_count=5):
+#    '''
+#    Creates a log file in <logdir>/<log_basename> at level <level>
+#    @param logdir: the directory where the log file should reside
+#    @param log_basename: the basename of the logfile (defaults to 'bff_log.txt')
+#    @param level: the logging level (defaults to logging.DEBUG)
+#    '''
+#    filetools.make_directories(logdir)
+#    logfile = os.path.join(logdir, log_basename)
+#    handler = RotatingFileHandler(logfile, maxBytes=max_bytes, backupCount=backup_count)
+#    formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s")
+#    add_log_handler(logger, level, handler, formatter)
+#    logger.info('Logging %s at %s', logging.getLevelName(level), logfile)
 
 
 def get_config_file(basedir):
@@ -322,9 +322,302 @@ def get_config_file(basedir):
 
     return config_file
 
+class Intervals(object):
+    def __init__(self, min=0, max=1e10, interval=1):
+        self.min = min
+        self.max = max
+        self.interval = interval
+        self.curr_pos = self.min
+
+    def __iter__(self):
+        start = self.curr_pos
+        end = self.curr_pos + self.interval
+        self.curr_pos += self.interval
+        return xrange(start, end)
+
+
+class CampaignScriptError(Exception):
+    pass
+
+
+class Iteration(object):
+    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None):
+        self.cfg = cfg
+        self.seednum = seednum
+        self.seedfile = seedfile
+        self.r = r
+
+        # convenience aliases
+        self.s1 = self.seednum
+        self.s2 = self.s1
+        self.sf = self.seedfile
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        pass
+
+    def _fuzz_and_run(self, quiet_flag):
+        if self.first_chunk:
+            # disable the --quiet option in zzuf
+            # on the first chunk only
+            quiet_flag = False
+            self.first_chunk = False
+        else:
+            quiet_flag = True
+
+        # do the fuzz
+        cmdline = self.cfg.get_command(self.sf.path)
+
+        STATE_TIMER.enter_state('fuzzing')
+        zzuf = Zzuf(self.cfg.local_dir, self.s1,
+            self.s2,
+            cmdline,
+            self.sf.path,
+            self.cfg.zzuf_log_file,
+            self.cfg.copymode,
+            self.r.min,
+            self.r.max,
+            self.cfg.progtimeout,
+            quiet_flag)
+        saw_crash = zzuf.go()
+        return saw_crash, zzuf
+
+    def _log(self):
+#        # emit a log entry
+        crashcount = z.get_crashcount(self.cfg.crashers_dir)
+#        rate = get_rate(self.s1)
+#        seed_str = "seeds=%d-%d" % (self.s1, self.s2)
+#        range_str = "range=%.6f-%.6f" % (self.r.min, self.r.max)
+#        rate_str = "Rate=(%.2f/s %.1f/m %.0f/h %.0f/d)" % (rate, rate * 60, rate * 3600, rate * 86400)
+#        expected_density = self.seedfile_set.expected_crash_density
+#        xd_str = "expected=%.9f" % expected_density
+#        xr_str = 'expected_rate=%.6f uniq/day' % (expected_density * rate * 86400)
+#        logger.info('Fuzzing %s %s %s %s %s %s crash_count=%d',
+#            self.sf.path, seed_str, range_str, rate_str, xd_str, xr_str, crashcount)
+        logger.info('Fuzzing...crash_count=%d', crashcount)
+
+    def go2(self):
+        self._fuzz()
+        self._run()
+        for testcase in self.candidates:
+            self.verify(testcase)
+
+        for testcase in self.verified:
+            self.analyze(testcase)
+
+        for testcase in self.analyzed:
+            self.construct_report(testcase)
+
+    def go(self):
+        # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
+        touch_watchdog_file(self.cfg)
+        self._check_ppid()
+
+        saw_crash, zzuf = self._fuzz_and_run(quiet_flag)
+        STATE_TIMER.enter_state('checking_results')
+
+        if not saw_crash:
+            # we must have made it through this chunk without a crash
+            # so go to next chunk
+            self.sf.record_tries(tries=1)
+            self.r.record_tries(tries=1)
+            self._log()
+            return
+
+        # we must have seen a crash
+        # get the results
+        zzuf_log = ZzufLog(self.cfg.zzuf_log_file, self.cfg.zzuf_log_out(self.sf.output_dir))
+
+        # Don't generate cases for killed process or out-of-memory
+        # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
+        # report the exit code in its output log.  The exit code is 128 + the signal number.
+        crash_status = zzuf_log.crash_logged(self.cfg.copymode)
+        sr.bookmark_s1()
+        self.s1 = zzuf_log.seed
+
+        # record the fact that we've made it this far
+        try_count = self.s1_delta()
+        self.sf.record_tries(tries=try_count)
+        self.r.record_tries(tries=try_count)
+
+        new_uniq_crash = False
+        if crash_status:
+            logger.info('Generating testcase for %s', zzuf_log.line)
+            # a true crash
+            zzuf_range = zzuf_log.range
+            # create the temp dir for the results
+            self.cfg.create_tmpdir()
+            outfile = self.cfg.get_testcase_outfile(sf.path, sr.s1)
+            logger.debug('Output file is %s', outfile)
+            testcase = zzuf.generate_test_case(sf.path, sr.s1, zzuf_range, outfile)
+
+            # Do internal verification using GDB / Valgrind / Stderr
+            fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
+
+            with BffCrash(self.cfg, sf, fuzzedfile, self.cfg.program, self.cfg.debugger_timeout,
+                          self.cfg.killprocname, self.cfg.backtracelevels,
+                          self.cfg.crashers_dir, sr.s1, r) as c:
+                if c.is_crash:
+                    new_uniq_crash = verify_crasher(c, hashes, self.cfg, seedfile_set)
+
+                # record the zzuf log line for this crash
+                if not c.logger:
+                    c.get_logger()
+                c.logger.debug("zzuflog: %s", zzuf_log.line)
+                c.logger.info('Command: %s', testcase.cmdline)
+
+            self.cfg.clean_tmpdir()
+
+        sr.increment_seed()
+
+#        # cache objects in case of reboot
+#        cache_state(self.cfg.campaign_id, 'seedrange', sr, cfg.cached_seedrange_file)
+#        pickled_seedfile_file = os.path.join(cfg.cached_objects_dir, sf.pkl_file())
+#        cache_state(cfg.campaign_id, sf.cache_key(), sf, pickled_seedfile_file)
+#        cache_state(cfg.campaign_id, 'seedfile_set', seedfile_set, cfg.cached_seedfile_set)
+
+#        if new_uniq_crash:
+#            # we had a hit, so break the inner while() loop
+#            # so we can pick a new range. This is to avoid
+#            # having a crash-rich range run away with the
+#            # probability before other ranges have been tried
+#            break
+
+
+class Campaign(object):
+    def __init__(self, cfg_path=None, scriptpath=None):
+        # Read the cfg file
+        self.cfg_path = cfg_path
+        logger.info('Reading config from %s', cfg_path)
+        self.cfg = cfg_helper.read_config_options(cfg_path)
+        self.scriptpath = scriptpath
+        self.seedfile_set = None
+        self._last_ppid = None
+
+    def __enter__(self):
+        # set up local logging
+        self._setup_logfile(self.cfg.local_dir,
+                            log_basename='bff.log',
+                            level=logging.DEBUG,
+                            max_bytes=1e8,
+                            backup_count=3)
+
+        # set up remote logging
+        self._setup_logfile(self.cfg.output_dir,
+                            log_basename='bff.log',
+                            level=logging.INFO,
+                            max_bytes=1e7,
+                            backup_count=5)
+
+        self._check_for_script()
+        z.setup_dirs_and_files(self.cfg_path, self.cfg)
+        start_process_killer(self.scriptpath, self.cfg)
+        z.set_unbuffered_stdout()
+        self._create_seedfile_set()
+        if self.cfg.watchdogtimeout:
+            self._setup_watchdog()
+
+        # flag to indicate whether this is a fresh script start up or not
+        self.first_chunk = True
+        # remember our parent process id so we can tell if it changes later
+        self._last_ppid = os.getppid()
+
+        return self
+
+    def __exit__(self, etype, value, mytraceback):
+        handled = False
+        if etype is CampaignScriptError:
+            logger.warning("Please configure BFF to fuzz a binary.  Exiting...")
+            handled = True
+
+        return handled
+
+    def _cache_prg(self):
+        sf = self.seedfile_set.next_item()
+        # Run the program once to cache it into memory
+        z.cache_program_once(self.cfg, sf.path)
+        # Give target time to die
+        time.sleep(1)
+
+
+    def _setup_watchdog(self):
+        # set up the watchdog timeout within the VM and restart the daemon
+        watchdog = WatchDog(self.cfg.watchdogfile,
+                            self.cfg.watchdogtimeout)
+        touch_watchdog_file(self.cfg)
+        watchdog.go()
+
+    def _create_seedfile_set(self):
+        logger.info('Building seedfile set')
+        sfs_logfile = os.path.join(self.cfg.seedfile_output_dir, 'seedfile_set.log')
+        with SeedfileSet(campaign_id=self.cfg.campaign_id,
+                         originpath=self.cfg.seedfile_origin_dir,
+                         localpath=self.cfg.seedfile_local_dir,
+                         outputpath=self.cfg.seedfile_output_dir,
+                         logfile=sfs_logfile,
+                         ) as sfset:
+            self.seedfile_set = sfset
+
+
+    def _setup_logfile(self, logdir, log_basename='bff.log', level=logging.DEBUG,
+                      max_bytes=1e8, backup_count=5):
+        '''
+        Creates a log file in <logdir>/<log_basename> at level <level>
+        @param logdir: the directory where the log file should reside
+        @param log_basename: the basename of the logfile (defaults to 'bff_log.txt')
+        @param level: the logging level (defaults to logging.DEBUG)
+        '''
+        filetools.make_directories(logdir)
+        logfile = os.path.join(logdir, log_basename)
+        handler = RotatingFileHandler(logfile, maxBytes=max_bytes, backupCount=backup_count)
+        formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s")
+        add_log_handler(logger, level, handler, formatter)
+        logger.info('Logging %s at %s', logging.getLevelName(level), logfile)
+
+    def _check_for_script(self):
+        if self.cfg.program_is_script():
+            logger.warning("Target application is a shell script.")
+            raise CampaignScriptError()
+            #cfg.disable_verification()
+            #time.sleep(10)
+
+    def _check_ppid(self):
+        # check parent process id
+        _ppid_now = os.getppid()
+        if not _ppid_now == self._last_ppid:
+            logger.warning('Parent process ID changed from %d to %d', self._last_ppid, _ppid_now)
+            self._last_ppid = _ppid_now
+
+    def _do_interval(self, s1, s2):
+        # interval.go
+        logger.debug('Starting interval %d-%d', s1, s2)
+        # wipe the tmp dir clean to try to avoid filling the VM disk
+        TmpReaper().clean_tmp()
+
+        sf = self.seedfile_set.next_item()
+        r = sf.rangefinder.next_item()
+
+        logger.info(STATE_TIMER)
+
+        for s in xrange(s1, s2):
+            with Iteration(seednum=s, seedfile=sf, r=r) as iteration:
+                iteration.go()
+
+    def go(self):
+    # campaign.go
+        cfg = self.cfg
+        seedfile_set = self.seedfile_set
+
+        for (s1, s2) in Intervals(min=cfg.start_seed,
+                                 max=cfg.max_seed,
+                                 interval=cfg.seed_interval):
+            self._do_interval(s1, s2)
+
 
 def main():
-    global START_SEED
+#    global START_SEED
     hashes = []
 
     # give up if we don't have a debugger
@@ -356,206 +649,9 @@ def main():
     local_cfg_file = os.path.expanduser('~/bff.cfg')
     filetools.copy_file(remote_cfg_file, local_cfg_file)
 
-    # Read the cfg file
-    logger.info('Reading config from %s', local_cfg_file)
-    cfg = cfg_helper.read_config_options(local_cfg_file)
+    with Campaign(cfg_path=local_cfg_file) as campaign:
+        campaign.go()
 
-    # set up local logging
-    setup_logfile(cfg.local_dir, log_basename='bff.log', level=logging.DEBUG,
-                  max_bytes=1e8, backup_count=3)
 
-    # set up remote logging
-    setup_logfile(cfg.output_dir, log_basename='bff.log', level=logging.INFO,
-                  max_bytes=1e7, backup_count=5)
-
-    try:
-        check_for_script(cfg)
-    except:
-        logger.warning("Please configure BFF to fuzz a binary.  Exiting...")
-        sys.exit()
-
-    z.setup_dirs_and_files(local_cfg_file, cfg)
-
-    # make sure we cache it for the next run
-#    cache_state(cfg.campaign_id, 'cfg', cfg, cfg.cached_config_file)
-
-    sr = get_cached_state('seedrange', cfg.campaign_id, cfg.cached_seedrange_file)
-    if not sr:
-        sr = SeedRange(cfg.start_seed, cfg.seed_interval, cfg.max_seed)
-
-    # set START_SEED global for timestamping
-    START_SEED = sr.s1
-
-    start_process_killer(scriptpath, cfg)
-
-    z.set_unbuffered_stdout()
-
-    # set up the seedfile set so we can pick seedfiles for everything else...
-    seedfile_set = get_cached_state('seedfile_set', cfg.campaign_id, cfg.cached_seedfile_set)
-    if not seedfile_set:
-        logger.info('Building seedfile set')
-        sfs_logfile = os.path.join(cfg.seedfile_output_dir, 'seedfile_set.log')
-        with SeedfileSet(campaign_id=cfg.campaign_id,
-                         originpath=cfg.seedfile_origin_dir,
-                         localpath=cfg.seedfile_local_dir,
-                         outputpath=cfg.seedfile_output_dir,
-                         logfile=sfs_logfile,
-                         ) as sfset:
-            seedfile_set = sfset
-
-    # set up the watchdog timeout within the VM and restart the daemon
-    if cfg.watchdogtimeout:
-        watchdog = WatchDog(cfg.watchdogfile, cfg.watchdogtimeout)
-        touch_watchdog_file(cfg)
-        watchdog.go()
-
-    cache_state(cfg.campaign_id, 'seedfile_set', seedfile_set, cfg.cached_seedfile_set)
-
-    sf = seedfile_set.next_item()
-
-    # Run the program once to cache it into memory
-    z.cache_program_once(cfg, sf.path)
-
-    # Give target time to die
-    time.sleep(1)
-
-    # flag to indicate whether this is a fresh script start up or not
-    first_chunk = True
-
-    # remember our parent process id so we can tell if it changes later
-    _last_ppid = os.getppid()
-
-    # campaign.go
-    while sr.in_max_range():
-
-        # wipe the tmp dir clean to try to avoid filling the VM disk
-        TmpReaper().clean_tmp()
-
-        sf = seedfile_set.next_item()
-
-        r = sf.rangefinder.next_item()
-        sr.set_s2()
-        logger.info(STATE_TIMER)
-
-        while sr.in_range():
-            # interval.go
-            logger.debug('Starting interval %d-%d', sr.s1, sr.s2)
-
-            # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
-            touch_watchdog_file(cfg)
-
-            # check parent process id
-            _ppid_now = os.getppid()
-            if not _ppid_now == _last_ppid:
-                logger.warning('Parent process ID changed from %d to %d', _last_ppid, _ppid_now)
-                _last_ppid = _ppid_now
-
-            # do the fuzz
-            cmdline = cfg.get_command(sf.path)
-
-            if first_chunk:
-                # disable the --quiet option in zzuf
-                # on the first chunk only
-                quiet_flag = False
-                first_chunk = False
-            else:
-                quiet_flag = True
-
-            STATE_TIMER.enter_state('fuzzing')
-            zzuf = Zzuf(cfg.local_dir,
-                        sr.s1,
-                        sr.s2,
-                        cmdline,
-                        sf.path,
-                        cfg.zzuf_log_file,
-                        cfg.copymode,
-                        r.min,
-                        r.max,
-                        cfg.progtimeout,
-                        quiet_flag,
-                        )
-            saw_crash = zzuf.go()
-            STATE_TIMER.enter_state('checking_results')
-
-            if not saw_crash:
-                # we must have made it through this chunk without a crash
-                # so go to next chunk
-                try_count = sr.s1_s2_delta()
-                sf.record_tries(tries=try_count)
-                r.record_tries(tries=try_count)
-
-                # emit a log entry
-                crashcount = z.get_crashcount(cfg.crashers_dir)
-                rate = get_rate(sr.s1)
-                seed_str = "seeds=%d-%d" % (sr.s1, sr.s2)
-                range_str = "range=%.6f-%.6f" % (r.min, r.max)
-                rate_str = "Rate=(%.2f/s %.1f/m %.0f/h %.0f/d)" % (rate, rate * 60, rate * 3600, rate * 86400)
-                expected_density = seedfile_set.expected_crash_density
-                xd_str = "expected=%.9f" % expected_density
-                xr_str = 'expected_rate=%.6f uniq/day' % (expected_density * rate * 86400)
-                logger.info('Fuzzing %s %s %s %s %s %s crash_count=%d',
-                    sf.path, seed_str, range_str, rate_str, xd_str, xr_str, crashcount)
-
-                # set s1 to s2 so that as soon as we continue we'll break out of the sr.in_range() loop
-                sr.set_s1_to_s2()
-                continue
-
-            # we must have seen a crash
-
-            # get the results
-            zzuf_log = ZzufLog(cfg.zzuf_log_file, cfg.zzuf_log_out(sf.output_dir))
-
-            # Don't generate cases for killed process or out-of-memory
-            # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
-            # report the exit code in its output log.  The exit code is 128 + the signal number.
-            crash_status = zzuf_log.crash_logged(cfg.copymode)
-            sr.bookmark_s1()
-            sr.s1 = zzuf_log.seed
-
-            # record the fact that we've made it this far
-            try_count = sr.s1_delta()
-            sf.record_tries(tries=try_count)
-            r.record_tries(tries=try_count)
-
-            new_uniq_crash = False
-            if crash_status:
-                logger.info('Generating testcase for %s', zzuf_log.line)
-                # a true crash
-                zzuf_range = zzuf_log.range
-                # create the temp dir for the results
-                cfg.create_tmpdir()
-                outfile = cfg.get_testcase_outfile(sf.path, sr.s1)
-                logger.debug('Output file is %s', outfile)
-                testcase = zzuf.generate_test_case(sf.path, sr.s1, zzuf_range, outfile)
-
-                # Do internal verification using GDB / Valgrind / Stderr
-                fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
-
-                with BffCrash(cfg, sf, fuzzedfile, cfg.program, cfg.debugger_timeout,
-                              cfg.killprocname, cfg.backtracelevels,
-                              cfg.crashers_dir, sr.s1, r) as c:
-                    if c.is_crash:
-                        new_uniq_crash = verify_crasher(c, hashes, cfg, seedfile_set)
-
-                    # record the zzuf log line for this crash
-                    if not c.logger:
-                        c.get_logger()
-                    c.logger.debug("zzuflog: %s", zzuf_log.line)
-                    c.logger.info('Command: %s', testcase.cmdline)
-
-                cfg.clean_tmpdir()
-
-            sr.increment_seed()
-
-            # cache objects in case of reboot
-            cache_state(cfg.campaign_id, 'seedrange', sr, cfg.cached_seedrange_file)
-            pickled_seedfile_file = os.path.join(cfg.cached_objects_dir, sf.pkl_file())
-            cache_state(cfg.campaign_id, sf.cache_key(), sf, pickled_seedfile_file)
-            cache_state(cfg.campaign_id, 'seedfile_set', seedfile_set, cfg.cached_seedfile_set)
-
-            if new_uniq_crash:
-                # we had a hit, so break the inner while() loop
-                # so we can pick a new range. This is to avoid
-                # having a crash-rich range run away with the
-                # probability before other ranges have been tried
-                break
+if __name__ == '__main__':
+    main()
