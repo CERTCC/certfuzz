@@ -118,8 +118,6 @@ class Build(object):
             self.svn_url = "%s/%s" % (self.branches, self.branch)
             self.zipfile_template = '%s-%s-r$SVN_REV.zip' % (self.PROJECT, self.branch)
         elif self.buildtype == 'trunk':
-#            # TODO remove the self.export line when 2.6 is merged back to trunk
-#            self.export = self._export_pre_2_6
             self.svn_url = self.trunk
             self.zipfile_template = '%s-trunk-r$SVN_REV.zip' % (self.PROJECT)
         else:
@@ -140,17 +138,6 @@ class Build(object):
         self.prepend_license()
         logger.info('Packaging')
         self.package()
-
-    def _export_pre_2_6(self):
-        '''
-        Exports pre-2.6 code from the repository. When complete, the code will be
-        in the directory specified by self.export_path
-        '''
-        svn_base = "%s/src" % self.svn_url
-        src = svn_base
-        dst = self.export_path
-        svn_export(src, dst)
-        self.svn_rev = svn_rev(svn_base)
 
     def _export(self):
         '''
