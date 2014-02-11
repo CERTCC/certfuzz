@@ -1,2 +1,5 @@
 dev_builds
 .settings
+*.env
+*.egg-info
+src/dist

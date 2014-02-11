@@ -2,7 +2,6 @@
 Created on Jan 31, 2011
 
 @organization: cert.org
-
 '''
 
 import os
@@ -13,10 +12,10 @@ import logging
 import sys
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
 
 LICENSE_PREFIX = '### '
 LICENSE_FILE = 'COPYING'
+
 
 def parse_cmdline_args():
     from optparse import OptionParser
@@ -46,6 +45,7 @@ def parse_cmdline_args():
 
     return options
 
+
 # Adapted from Python Cookbook 2nd Ed. p.88
 def all_files(root, patterns='*', single_level=False, yield_folders=False):
     # Expand patterns from semicolon-separated string to list
@@ -64,11 +64,13 @@ def all_files(root, patterns='*', single_level=False, yield_folders=False):
         if single_level:
             break
 
+
 def write_to_screen(f, lines):
     print '*** WOULD BE WRITTEN TO %s ***' % f
     for l in lines:
         print l.rstrip()
     print '*** END OF FILE %s ***' % f
+
 
 def write_to_file(f, lines, keep_old=True):
     # write the combined output to a tempfile
@@ -82,7 +84,8 @@ def write_to_file(f, lines, keep_old=True):
         shutil.move(f, '%s.old' % f)
     shutil.move(fn, f)
 
-def build_license_lines(license_file, prefix=LICENSE_PREFIX):
+
+def build_license_lines(license_file):
     with open(license_file, 'r') as f:
         license_text = f.readlines()
 
@@ -93,6 +96,7 @@ def build_license_lines(license_file, prefix=LICENSE_PREFIX):
     license_lines.append(LICENSE_PREFIX + 'END LICENSE ###\n')
     license_lines.append('\n')
     return license_lines
+
 
 def find_extra_blank_lines(lines):
     f = lambda (x, y): not str(y).strip()
@@ -114,6 +118,7 @@ def find_extra_blank_lines(lines):
 
     return sorted(lines_safe_to_remove, reverse=True)
 
+
 def remove_excess_blank_lines(lines):
     # remove extra blank lines
     for index in find_extra_blank_lines(lines):
@@ -127,64 +132,68 @@ def remove_excess_blank_lines(lines):
     while lines and not lines[-1].strip():
         lines.pop()
 
+
+def prepend_license_to_file(license_file, remove, add, debug, f, overwrite):
+    logger.debug('Add license to %s', f)
+    if add:
+        license_lines = build_license_lines(license_file)
+
+    with open(f, 'r') as orig_fp:
+        f_lines = [l for l in orig_fp.readlines() if not l.startswith(LICENSE_PREFIX)]
+
+    # don't do anything with empty files
+    if not len(f_lines):
+        logger.info('Skipping empty file: %s', f)
+        return
+
+    lines = []  # check for shebang and keep it at the top if it exists
+    skip_first_line = False
+    if f_lines[0].startswith('#!'):
+        logger.debug('Handling #! at beginning of %s', f)
+        lines.append(f_lines[0])
+        skip_first_line = True
+    if remove:
+        logger.debug('Removing license text')
+    if add:
+        logger.info('Adding license text to %s', f)  # insert license lines
+        lines.extend(license_lines)
+#    logger.debug('Appending the rest of the original file')
+
+    # if we put a shebang at the top of the file, skip it here
+    if skip_first_line:
+        lines.extend(f_lines[1:])
+    else:
+        lines.extend(f_lines)
+    remove_excess_blank_lines(lines)
+    if debug:
+        logger.debug('Output to screen only')
+        write_to_screen(f, lines)
+    else:
+        orig_permissions = os.stat(f).st_mode & 0777
+        keep_old = not overwrite
+        write_to_file(f, lines, keep_old)
+        os.chmod(f, orig_permissions)
+
+
+def main(license_file=None,
+         basedir=None,
+         remove=False,
+         add=False,
+         debug=False,
+         overwrite=False):
+    logger.debug('basedir = %s', basedir)
+    for f in all_files(basedir, '*.py'):
+        prepend_license_to_file(license_file, remove, add, debug, f, overwrite)
+
 if __name__ == '__main__':
     hdlr = logging.StreamHandler()
     logger.addHandler(hdlr)
 
     options = parse_cmdline_args()
 
-    if options.add:
-        license_file = options.license_file
-        license_lines = build_license_lines(license_file, prefix=options.prefix)
-
     if options.debug:
         logger.setLevel(logging.DEBUG)
     elif options.verbose:
         logger.setLevel(logging.INFO)
 
-    for f in all_files(options.basedir, '*.py'):
-
-        orig_fp = open(f, 'r')
-        file_lines = orig_fp.readlines()
-        # skip lines that start with three hashes
-        f_lines = [l for l in file_lines if not l.startswith(options.prefix)]
-        orig_fp.close()
-
-        # don't do anything with empty files
-        if not len(f_lines):
-            logger.info('Skipping empty file: %s', f)
-            continue
-
-        lines = []
-
-        # check for shebang and keep it at the top if it exists
-        skip_first_line = False
-        if f_lines[0].startswith('#!'):
-            logger.debug('Handling #! at beginning of %s', f)
-            lines.append(f_lines[0])
-            skip_first_line = True
-
-        if options.remove:
-            logger.debug('Removing license text')
-        if options.add:
-            logger.info('Adding license text to %s', f)
-            # insert license lines
-            lines.extend(license_lines)
-
-        logger.debug('Appending the rest of the original file')
-        # if we put a shebang at the top of the file, skip it here
-        if skip_first_line:
-            lines.extend(f_lines[1:])
-        else:
-            lines.extend(f_lines)
-
-        remove_excess_blank_lines(lines)
-
-        if options.debug:
-            logger.debug('Output to screen only')
-            write_to_screen(f, lines)
-        else:
-            orig_permissions = os.stat(f).st_mode & 0777
-            keep_old = not options.overwrite
-            write_to_file(f, lines, keep_old)
-            os.chmod(f, orig_permissions)
+    main(options.license_file, options.remove, options.add, options.debug, options.overwrite)

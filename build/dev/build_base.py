@@ -6,8 +6,8 @@ Created on Dec 9, 2013
 import os
 
 import logging
-from dev.misc import copydir, copyfile, onerror
 import shutil
+from dev.misc import copydir, copyfile, onerror
 
 logger = logging.getLogger(__name__)
 
