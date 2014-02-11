@@ -5,17 +5,14 @@ Created on Feb 6, 2014
 '''
 import argparse
 import logging
-from dist.build2 import Build
+from dist.build2 import builder_for
 from dist.build2 import SUPPORTED_PLATFORMS as builders
+from dist.errors import BuildError
 
 logger = logging.getLogger(__name__)
 
 
 def main():
-    logger = logging.getLogger()
-    hdlr = logging.StreamHandler()
-    logger.addHandler(hdlr)
-
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', help='enable debug messages', action="store_true")
     parser.add_argument('-v', '--verbose', help='enable debug messages', action="store_true")
@@ -36,10 +33,20 @@ def main():
         exit(1)
 
     # assume that we're running in a git checkout?
-    with Build(platform=args.platform,
+    try:
+        builder = builder_for(args.platform)
+    except BuildError as e:
+        logger.error('Build Error: %s', e)
+        return
+
+    with builder(platform=args.platform,
                distpath=args.distpath,
                srcpath=args.srcpath) as b:
-        b.build()
+            b.build()
 
 if __name__ == '__main__':
+    logger = logging.getLogger()
+    hdlr = logging.StreamHandler()
+    logger.addHandler(hdlr)
+
     main()
