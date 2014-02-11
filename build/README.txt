@@ -7,7 +7,7 @@ floyd:build adh$ python make_dist2.py --help
 usage: make_dist2.py [-h] [-d] [-v] platform srcpath distpath
 
 positional arguments:
-  platform       One of ['windows', 'osx', 'linux']
+  platform       One of ['windows', 'osx', ‘darwin’]
   srcpath        path/to/bff/src
   distpath       Directory to build into
 
@@ -18,7 +18,7 @@ optional arguments:
 
 
 **NOTE**
-As of 2014-02-11 This only works for "linux". Windows and OSX build capability will
+As of 2014-02-11 This only works for "linux" and “darwin”. Windows build capability will
 follow soon.
 
 
