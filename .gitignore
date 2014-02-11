@@ -3,3 +3,5 @@ dev_builds
 *.env
 *.egg-info
 src/dist
+build/dist/osx/installer/Readme.txt
+build/dist/osx/installer/License.txt
