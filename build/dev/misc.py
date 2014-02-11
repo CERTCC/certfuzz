@@ -8,10 +8,7 @@ import os
 from distutils import dir_util
 import shutil
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-hdlr = logging.StreamHandler()
-logger.addHandler(hdlr)
+logger = logging.getLogger(__name__)
 
 
 def onerror(func, path, exc_info):
