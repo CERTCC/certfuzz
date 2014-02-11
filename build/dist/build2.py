@@ -4,8 +4,10 @@ Created on Feb 10, 2014
 @organization: cert.org
 '''
 import logging
+
 from .linux.linux_build2 import LinuxBuild
 from .osx.darwin_build2 import DarwinBuild
+from .windows.windows_build2 import WindowsBuild
 from .errors import BuildError
 
 
@@ -13,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 SUPPORTED_PLATFORMS = {'linux': LinuxBuild,
-                     'windows': None,
+                     'windows': WindowsBuild,
                      'darwin': DarwinBuild,
                      }
 

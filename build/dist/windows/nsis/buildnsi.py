@@ -1,30 +1,14 @@
+'''
+Created on Feb 10, 2014
+
+@organization: cert.org
+'''
 import sys
 import os
 import string
-#import subprocess
-
-# TODO remove if no longer needed
-#def split_and_strip(line, delim=':'):
-#    '''
-#    Return the second half of the line after the delimiter, stripped of
-#    whitespace
-#    @param line:
-#    @param delim: defaults to ":"
-#    '''
-#    return line.split(delim)[1].strip()
 
 
-# TODO remove if no longer needed
-#def get_svn_rev():
-#    svninfo = subprocess.Popen(['svn', 'info'], stdout=subprocess.PIPE).communicate()[0]
-#    svninfolines = svninfo.splitlines()
-#    for line in svninfolines:
-#        if line.startswith('Revision: '):
-#            svn_revision = split_and_strip(line)
-#
-#    return svn_revision
-
-def main(svn_rev=None, outfile=None, build_dir=None):
+def main(version_string='', outfile=None, build_dir=None):
 
     distpath = ''
 
@@ -47,14 +31,11 @@ def main(svn_rev=None, outfile=None, build_dir=None):
 
     fp.write(toptext)
 
-#    svn_revision = get_svn_rev()
-    svn_revision = svn_rev
-
-    fp.write('!define VERSION "02.01.00.%s"\n' % svn_revision)
+    fp.write('!define VERSION "%s"\n' % version_string)
     fp.write('!define COPYRIGHT "CERT 2013"\n')
-    fp.write('!define DESCRIPTION "FOE 2.1"\n')
+    fp.write('!define DESCRIPTION "FOE %s"\n' % version_string)
     fp.write('!define LICENSE_TXT "%s\COPYING.txt"\n' % distpath)
-    fp.write('!define INSTALLER_NAME "%s\..\..\FOE-2.1-r%s-setup.exe"\n' % (distpath, svn_revision))
+    fp.write('!define INSTALLER_NAME "%s\..\..\FOE-%s-setup.exe"\n' % (distpath, version_string))
 
     headerfile = open("nsis_header.txt", "r")
     headertext = headerfile.read()
