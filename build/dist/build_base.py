@@ -12,6 +12,7 @@ from .errors import BuildError
 from .svn import svn_export, svn_rev
 from .misc import mkdir_p
 import urlparse
+from .prepend_license import main as _prepend_license
 
 logger = logging.getLogger(__name__)
 
@@ -165,16 +166,13 @@ class Build(object):
         '''
         Adds the license text to the code prior to packaging
         '''
-        # TODO refactor this to call prepend_license in a pythonic way
-        # rather than shelling it out
-        args = ['python', '%s/prepend_license.py' % self.PWD,
-                '--add',
-                '--dir', self.export_path,
-                '--license', os.path.join(self.export_path, self.LICENSE_FILE),
-                '--overwrite',
-                '--verbose',
-                ]
-        subprocess.call(args)
+        _prepend_license(license_file=os.path.join(self.export_path, self.LICENSE_FILE),
+                         basedir=self.export_path,
+                         remove=False,
+                         add=True,
+                        debug=False,
+                        overwrite=True,
+                        )
 
     def prune(self):
         '''
