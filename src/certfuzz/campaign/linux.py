@@ -106,22 +106,14 @@ class Campaign(object):
         # Give target time to die
         time.sleep(1)
 
-    def touch_watchdog_file(self):
-        if self.cfg.watchdogtimeout:
-            # this one just checks the permission
-            if os.access(self.cfg.remote_dir, os.W_OK):
-                # equivalent to 'touch cfg.watchdogfile'
-                open(self.cfg.watchdogfile, 'w').close()
-
     def _setup_watchdog(self):
         # set up the watchdog timeout within the VM and restart the daemon
         watchdog = WatchDog(self.cfg.watchdogfile,
                             self.cfg.watchdogtimeout)
-        if self.cfg.watchdogtimeout:
-            # setup our watchdog file toucher
-            TWDF.remote_d = self.cfg.remote_dir
-            TWDF.wdf = self.cfg.watchdogfile
-            TWDF.enable()
+        # setup our watchdog file toucher
+        TWDF.remote_d = self.cfg.remote_dir
+        TWDF.wdf = self.cfg.watchdogfile
+        TWDF.enable()
 
         touch_watchdog_file()
         watchdog.go()
