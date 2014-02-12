@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class IterationBase(object):
+class IterationBase2(object):
     def __init__(self):
         pass
 

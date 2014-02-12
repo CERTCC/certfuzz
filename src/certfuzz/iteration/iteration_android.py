@@ -16,7 +16,7 @@ from ..fuzzers.bytemut import ByteMutFuzzer
 from ..fuzztools.filetools import find_or_create_dir
 from ..runners.android_runner import AndroidRunner
 from ..runners import RunnerError
-from .iteration_base import IterationBase
+from .iteration_base import IterationBase2
 from ..fuzzers import FuzzerExhaustedError
 
 import logging
@@ -75,7 +75,7 @@ def do_iteration(iter_args):
     return True
 
 
-class AndroidIteration(IterationBase):
+class AndroidIteration(IterationBase2):
     def __init__(self, campaign_id=None, db_config=None, num=0, fuzzopts=None,
                  runopts=None, sf=None, emu_handle=None, sf_dir=None, intent=None):
         self.campaign_id = campaign_id
