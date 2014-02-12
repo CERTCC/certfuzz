@@ -54,3 +54,5 @@ class StateTimer(object):
             return self.timers[state]
         else:
             return 0.0
+
+STATE_TIMER = StateTimer()
