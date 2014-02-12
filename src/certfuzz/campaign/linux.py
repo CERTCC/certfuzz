@@ -118,6 +118,7 @@ class Campaign(object):
         watchdog = WatchDog(self.cfg.watchdogfile,
                             self.cfg.watchdogtimeout)
         if self.cfg.watchdogtimeout:
+            # setup our watchdog file toucher
             TWDF.remote_d = self.cfg.remote_dir
             TWDF.wdf = self.cfg.watchdogfile
             TWDF.enable()

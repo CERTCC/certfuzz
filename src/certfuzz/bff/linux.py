@@ -14,9 +14,7 @@ import sys
 
 from ..debuggers import crashwrangler  # @UnusedImport
 from ..debuggers import gdb  # @UnusedImport
-from ..file_handlers.seedfile_set import SeedfileSet
-from ..file_handlers.tmp_reaper import TmpReaper
-from ..fuzztools import bff_helper as z, filetools, performance
+from ..fuzztools import filetools
 from certfuzz.campaign.linux import Campaign
 
 
@@ -44,7 +42,6 @@ def get_uniq_logger(logfile):
         hdlr = logging.FileHandler(logfile)
         l.addHandler(hdlr)
     return l
-
 
 
 def setup_logging_to_console(log_obj, level):
