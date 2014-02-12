@@ -216,7 +216,62 @@ def verify_crasher(c, hashes, cfg, seedfile_set):
     return found_new_crash
 
 
-class Iteration(object):
+class IterBase(object):
+    def _prefuzz(self):
+        pass
+
+    def _fuzz(self):
+        pass
+
+    def _postfuzz(self):
+        pass
+
+    def fuzz(self):
+        self._prefuzz()
+        self._fuzz()
+        self._postfuzz()
+
+    def _prerun(self):
+        pass
+
+    def _run(self):
+        pass
+
+    def _postrun(self):
+        pass
+
+    def run(self):
+        self._prerun()
+        self._run()
+        self._postrun()
+
+    def verify(self, testcase):
+        pass
+
+    def analyze(self, testcase):
+        pass
+
+    def construct_report(self, testcase):
+        pass
+
+    def go(self):
+        self.fuzz()
+        self.run()
+
+        # every test case is a candidate until verified
+        for testcase in self.candidates:
+            self.verify(testcase)
+
+        # analyze each verified crash
+        for testcase in self.verified:
+            self.analyze(testcase)
+
+        # construct output bundle for each analyzed test case
+        for testcase in self.analyzed:
+            self.construct_report(testcase)
+
+
+class Iteration(IterBase):
     def __init__(self, cfg=None, seednum=None, seedfile=None, r=None):
         self.cfg = cfg
         self.seednum = seednum
@@ -280,23 +335,6 @@ class Iteration(object):
         Constructs a report package for the test case
         :param testcase:
         '''
-
-    def _prefuzz(self):
-        pass
-
-    def _fuzz(self):
-        pass
-
-    def _postfuzz(self):
-        pass
-
-    def fuzz(self):
-        self._prefuzz()
-        self._fuzz()
-        self._postfuzz()
-
-    def _prerun(self):
-        pass
 
     def _run(self):
         if self.first_chunk:
@@ -373,45 +411,3 @@ class Iteration(object):
 
         self.candidates.append(crasher)
 
-    def run(self):
-        self._prerun()
-        self._run()
-        self._postrun()
-
-    def go2(self):
-        self.fuzz()
-        self.run()
-
-        # every test case is a candidate until verified
-        for testcase in self.candidates:
-            self.verify(testcase)
-
-        # analyze each verified crash
-        for testcase in self.verified:
-            self.analyze(testcase)
-
-        # construct output bundle for each analyzed test case
-        for testcase in self.analyzed:
-            self.construct_report(testcase)
-
-    def _process_crash(self):
-        pass
-
-    def go(self):
-
-        new_uniq_crash = False
-        # incrementing seed number is the campaign's job, not ours
-#        sr.increment_seed()
-
-#        # cache objects in case of reboot
-#        cache_state(self.cfg.campaign_id, 'seedrange', sr, cfg.cached_seedrange_file)
-#        pickled_seedfile_file = os.path.join(cfg.cached_objects_dir, sf.pkl_file())
-#        cache_state(cfg.campaign_id, sf.cache_key(), sf, pickled_seedfile_file)
-#        cache_state(cfg.campaign_id, 'seedfile_set', seedfile_set, cfg.cached_seedfile_set)
-
-#        if new_uniq_crash:
-#            # we had a hit, so break the inner while() loop
-#            # so we can pick a new range. This is to avoid
-#            # having a crash-rich range run away with the
-#            # probability before other ranges have been tried
-#            break
