@@ -23,6 +23,8 @@ from ..fuzztools.zzuflog import ZzufLog
 from ..minimizer import MinimizerError, UnixMinimizer as Minimizer
 import os
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
+import tempfile
+import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -216,7 +218,18 @@ def verify_crasher(c, hashes, cfg, seedfile_set):
     return found_new_crash
 
 
-class IterBase(object):
+class IterationBase3(object):
+    def __init__(self, workdirbase):
+        self.workdirbase = workdirbase
+        self.workdir = None
+
+    def __enter__(self):
+        self.workdir = tempfile.mkdtemp(prefix='iteration-', dir=self.workdirbase)
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        shutil.rmtree(self.workdir)
+
     def _prefuzz(self):
         pass
 
@@ -271,8 +284,9 @@ class IterBase(object):
             self.construct_report(testcase)
 
 
-class Iteration(IterBase):
+class Iteration(IterationBase3):
     def __init__(self, cfg=None, seednum=None, seedfile=None, r=None):
+        IterationBase3.__init__(self, workdirbase)
         self.cfg = cfg
         self.seednum = seednum
         self.seedfile = seedfile
@@ -283,12 +297,14 @@ class Iteration(IterBase):
         self.s2 = self.s1
         self.sf = self.seedfile
 
-    def __enter__(self):
-        self._check_ppid()
 
+    def __enter__(self):
+        IterationBase3.__enter__(self)
+        self._check_ppid()
         return self
 
     def __exit__(self, etype, value, traceback):
+        IterationBase3.__exit__(self, etype, value, traceback)
         self.cfg.clean_tmpdir()
 
     def _log(self):
@@ -327,7 +343,6 @@ class Iteration(IterBase):
                 c.get_logger()
             c.logger.debug("zzuflog: %s", zzuf_log.line)
             c.logger.info('Command: %s', testcase.cmdline)
-
 
 
     def construct_report(self, testcase):
