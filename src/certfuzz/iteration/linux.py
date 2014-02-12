@@ -16,7 +16,7 @@ from ..analyzers.errors import AnalyzerEmptyOutputError
 from ..crash.bff_crash import BffCrash
 from ..debuggers import crashwrangler  # @UnusedImport
 from ..debuggers import gdb  # @UnusedImport
-from ..fuzztools import bff_helper as z, filetools, performance
+from ..fuzztools import bff_helper as z, filetools
 from ..fuzztools.state_timer import STATE_TIMER
 from ..fuzztools.zzuf import Zzuf
 from ..fuzztools.zzuflog import ZzufLog
@@ -77,7 +77,7 @@ def analyze_crasher(cfg, crash):
             logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', crash.signature, e)
             minimizer = None
 
-    touch_watchdog_file(cfg)
+    touch_watchdog_file()
     # calculate the hamming distances for this crash
     # between the original seedfile and the minimized fuzzed file
     crash.calculate_hamming_distances()
@@ -96,7 +96,7 @@ def analyze_crasher(cfg, crash):
         except MinimizerError, e:
             logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', crash.signature, e)
             min2string = None
-    touch_watchdog_file(cfg)
+    touch_watchdog_file()
 
     STATE_TIMER.enter_state('analyze_testcase')
 
@@ -135,7 +135,7 @@ def analyze_crasher(cfg, crash):
                           ])
 
     for analyzer in analyzers:
-        touch_watchdog_file(cfg)
+        touch_watchdog_file()
 
         analyzer_instance = analyzer(cfg, crash)
         if analyzer_instance:
@@ -229,12 +229,76 @@ class Iteration(object):
         self.sf = self.seedfile
 
     def __enter__(self):
+        self._check_ppid()
+
         return self
 
     def __exit__(self, etype, value, traceback):
+        self.cfg.clean_tmpdir()
+
+    def _log(self):
+#        # emit a log entry
+        crashcount = z.get_crashcount(self.cfg.crashers_dir)
+#        rate = get_rate(self.s1)
+#        seed_str = "seeds=%d-%d" % (self.s1, self.s2)
+#        range_str = "range=%.6f-%.6f" % (self.r.min, self.r.max)
+#        rate_str = "Rate=(%.2f/s %.1f/m %.0f/h %.0f/d)" % (rate, rate * 60, rate * 3600, rate * 86400)
+#        expected_density = self.seedfile_set.expected_crash_density
+#        xd_str = "expected=%.9f" % expected_density
+#        xr_str = 'expected_rate=%.6f uniq/day' % (expected_density * rate * 86400)
+#        logger.info('Fuzzing %s %s %s %s %s %s crash_count=%d',
+#            self.sf.path, seed_str, range_str, rate_str, xd_str, xr_str, crashcount)
+        logger.info('Fuzzing...crash_count=%d', crashcount)
+
+    def analyze(self, testcase):
+        '''
+        Loops through all known analyzers for a given testcase
+        :param testcase:
+        '''
+        for analyzer in self.analyzers:
+            analyzer(testcase)
+
+    def verify(self, testcase):
+        '''
+        Confirms that a test case is interesting enough to pursue further analysis
+        :param testcase:
+        '''
+        with testcase as c:
+            if c.is_crash:
+                new_uniq_crash = verify_crasher(c, hashes, self.cfg, seedfile_set)
+
+            # record the zzuf log line for this crash
+            if not c.logger:
+                c.get_logger()
+            c.logger.debug("zzuflog: %s", zzuf_log.line)
+            c.logger.info('Command: %s', testcase.cmdline)
+
+
+
+    def construct_report(self, testcase):
+        '''
+        Constructs a report package for the test case
+        :param testcase:
+        '''
+
+    def _prefuzz(self):
         pass
 
-    def _fuzz_and_run(self, quiet_flag):
+    def _fuzz(self):
+        pass
+
+    def _postfuzz(self):
+        pass
+
+    def fuzz(self):
+        self._prefuzz()
+        self._fuzz()
+        self._postfuzz()
+
+    def _prerun(self):
+        pass
+
+    def _run(self):
         if self.first_chunk:
             # disable the --quiet option in zzuf
             # on the first chunk only
@@ -257,49 +321,11 @@ class Iteration(object):
             self.r.max,
             self.cfg.progtimeout,
             quiet_flag)
-        saw_crash = zzuf.go()
-        return saw_crash, zzuf
+        self.saw_crash = zzuf.go()
 
-    def _log(self):
-#        # emit a log entry
-        crashcount = z.get_crashcount(self.cfg.crashers_dir)
-#        rate = get_rate(self.s1)
-#        seed_str = "seeds=%d-%d" % (self.s1, self.s2)
-#        range_str = "range=%.6f-%.6f" % (self.r.min, self.r.max)
-#        rate_str = "Rate=(%.2f/s %.1f/m %.0f/h %.0f/d)" % (rate, rate * 60, rate * 3600, rate * 86400)
-#        expected_density = self.seedfile_set.expected_crash_density
-#        xd_str = "expected=%.9f" % expected_density
-#        xr_str = 'expected_rate=%.6f uniq/day' % (expected_density * rate * 86400)
-#        logger.info('Fuzzing %s %s %s %s %s %s crash_count=%d',
-#            self.sf.path, seed_str, range_str, rate_str, xd_str, xr_str, crashcount)
-        logger.info('Fuzzing...crash_count=%d', crashcount)
-
-    def go2(self):
-        self._fuzz()
-        self._run()
-        for testcase in self.candidates:
-            self.verify(testcase)
-
-        for testcase in self.verified:
-            self.analyze(testcase)
-
-        for testcase in self.analyzed:
-            self.construct_report(testcase)
-
-    def _process_crash(self):
-        pass
-
-
-
-    def go(self):
-        sf = self.seedfile
-
-        self._check_ppid()
-
-        saw_crash, zzuf = self._fuzz_and_run(quiet_flag)
+    def _postrun(self):
         STATE_TIMER.enter_state('checking_results')
-
-        if not saw_crash:
+        if not self.saw_crash:
             # we must have made it through this chunk without a crash
             # so go to next chunk
             self.sf.record_tries(tries=1)
@@ -326,34 +352,54 @@ class Iteration(object):
         self.sf.record_tries(tries=try_count)
         self.r.record_tries(tries=try_count)
 
+        if not crash_status:
+            return
+
+        logger.info('Generating testcase for %s', zzuf_log.line)
+        # a true crash
+        zzuf_range = zzuf_log.range
+        # create the temp dir for the results
+        self.cfg.create_tmpdir()
+        outfile = self.cfg.get_testcase_outfile(self.seedfile.path, self.s1)
+        logger.debug('Output file is %s', outfile)
+        testcase = zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
+
+        # Do internal verification using GDB / Valgrind / Stderr
+        fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
+
+        crasher = BffCrash(self.cfg, self.seedfile, fuzzedfile, self.cfg.program, self.cfg.debugger_timeout,
+                      self.cfg.killprocname, self.cfg.backtracelevels,
+                      self.cfg.crashers_dir, self.s1, self.r)
+
+        self.candidates.append(crasher)
+
+    def run(self):
+        self._prerun()
+        self._run()
+        self._postrun()
+
+    def go2(self):
+        self.fuzz()
+        self.run()
+
+        # every test case is a candidate until verified
+        for testcase in self.candidates:
+            self.verify(testcase)
+
+        # analyze each verified crash
+        for testcase in self.verified:
+            self.analyze(testcase)
+
+        # construct output bundle for each analyzed test case
+        for testcase in self.analyzed:
+            self.construct_report(testcase)
+
+    def _process_crash(self):
+        pass
+
+    def go(self):
+
         new_uniq_crash = False
-        if crash_status:
-            logger.info('Generating testcase for %s', zzuf_log.line)
-            # a true crash
-            zzuf_range = zzuf_log.range
-            # create the temp dir for the results
-            self.cfg.create_tmpdir()
-            outfile = self.cfg.get_testcase_outfile(sf.path, self.s1)
-            logger.debug('Output file is %s', outfile)
-            testcase = zzuf.generate_test_case(sf.path, self.s1, zzuf_range, outfile)
-
-            # Do internal verification using GDB / Valgrind / Stderr
-            fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
-
-            with BffCrash(self.cfg, sf, fuzzedfile, self.cfg.program, self.cfg.debugger_timeout,
-                          self.cfg.killprocname, self.cfg.backtracelevels,
-                          self.cfg.crashers_dir, self.s1, self.r) as c:
-                if c.is_crash:
-                    new_uniq_crash = verify_crasher(c, hashes, self.cfg, seedfile_set)
-
-                # record the zzuf log line for this crash
-                if not c.logger:
-                    c.get_logger()
-                c.logger.debug("zzuflog: %s", zzuf_log.line)
-                c.logger.info('Command: %s', testcase.cmdline)
-
-            self.cfg.clean_tmpdir()
-
         # incrementing seed number is the campaign's job, not ours
 #        sr.increment_seed()
 
