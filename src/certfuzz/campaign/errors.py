@@ -12,3 +12,7 @@ class CampaignError(CERTFuzzError):
 
 class AndroidCampaignError(CampaignError):
     pass
+
+
+class CampaignScriptError(CampaignError):
+    pass
