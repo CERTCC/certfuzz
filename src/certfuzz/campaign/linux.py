@@ -201,9 +201,7 @@ class Campaign(object):
             #cfg.disable_verification()
             #time.sleep(10)
 
-    def _do_interval(self):
-        s1 = self.s1
-        s2 = self.s2
+    def _do_interval(self, s1, s2):
         # interval.go
         logger.debug('Starting interval %d-%d', s1, s2)
         # wipe the tmp dir clean to try to avoid filling the VM disk
@@ -225,6 +223,6 @@ class Campaign(object):
         cfg = self.cfg
 
         for s in itertools.count(start=cfg.start_seed, step=cfg.seed_interval):
-            self.s1 = s
-            self.s2 = s + cfg.seed_interval
-            self._do_interval()
+            s1 = s
+            s2 = s + cfg.seed_interval
+            self._do_interval(s1, s2)
