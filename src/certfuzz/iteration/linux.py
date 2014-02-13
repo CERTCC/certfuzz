@@ -193,6 +193,29 @@ class IterationBase3(object):
     def _postrun(self):
         pass
 
+    def _preanalyze(self, testcase):
+        pass
+
+    def _analyze(self, testcase):
+        '''
+        Loops through all known analyzers for a given testcase
+        :param testcase:
+        '''
+        for analyzer in self.analyzers:
+            analyzer(testcase)
+
+    def _postanalyze(self, testcase):
+        pass
+
+    def _preverify(self, testcase):
+        pass
+
+    def _verify(self, testcase):
+        pass
+
+    def _postverify(self, testcase):
+        pass
+
     def fuzz(self):
         self._prefuzz()
         self._fuzz()
