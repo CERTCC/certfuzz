@@ -364,13 +364,14 @@ class Iteration(IterationBase3):
         :param testcase:
         '''
 
-    def _run(self):
+    def _prerun(self):
+        IterationBase3._prerun(self)
         # do the fuzz
         cmdline = self.cfg.get_command(self.sf.path)
 
         STATE_TIMER.enter_state('fuzzing')
-        zzuf = Zzuf(self.cfg.local_dir, self.s1,
-            self.s2,
+        self.zzuf = Zzuf(self.cfg.local_dir, self.s1,
+            self.s1,
             cmdline,
             self.sf.path,
             self.cfg.zzuf_log_file,
@@ -379,15 +380,20 @@ class Iteration(IterationBase3):
             self.r.max,
             self.cfg.progtimeout,
             self.quiet_flag)
-        self.saw_crash = zzuf.go()
+
+    def _run(self):
+        IterationBase3._run(self)
+        self.zzuf.go()
 
     def _postrun(self):
+        IterationBase3._postrun(self)
+
         STATE_TIMER.enter_state('checking_results')
-        if not self.saw_crash:
             # we must have made it through this chunk without a crash
             # so go to next chunk
-            self.sf.record_tries(tries=1)
-            self.r.record_tries(tries=1)
+        self.sf.record_tries(tries=1)
+        self.r.record_tries(tries=1)
+        if not self.zzuf.saw_crash:
             self._log()
             return
 
@@ -400,16 +406,6 @@ class Iteration(IterationBase3):
         # report the exit code in its output log.  The exit code is 128 + the signal number.
         crash_status = zzuf_log.crash_logged(self.cfg.copymode)
 
-        #        sr.bookmark_s1()
-        self.s1_old = self.s1
-
-        self.s1 = zzuf_log.seed
-
-        # record the fact that we've made it this far
-        try_count = self.s1_delta()
-        self.sf.record_tries(tries=try_count)
-        self.r.record_tries(tries=try_count)
-
         if not crash_status:
             return
 
@@ -420,7 +416,7 @@ class Iteration(IterationBase3):
         self.cfg.create_tmpdir()
         outfile = self.cfg.get_testcase_outfile(self.seedfile.path, self.s1)
         logger.debug('Output file is %s', outfile)
-        testcase = zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
+        testcase = self.zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
 
         # Do internal verification using GDB / Valgrind / Stderr
         fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
