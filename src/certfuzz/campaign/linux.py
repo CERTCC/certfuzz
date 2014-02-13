@@ -44,6 +44,7 @@ from certfuzz.fuzztools.filetools import mkdir_p
 from ..fuzztools import subprocess_helper as subp
 import itertools
 from certfuzz.fuzztools.ppid_observer import check_ppid
+import traceback
 
 
 logger = logging.getLogger(__name__)
@@ -59,6 +60,7 @@ class Campaign(object):
         self.seedfile_set = None
         self.hashes = []
         self.working_dir = None
+        self.debug = True
 
     def __enter__(self):
         self._setup_dirs()
@@ -90,6 +92,9 @@ class Campaign(object):
 
     def __exit__(self, etype, value, mytraceback):
         handled = False
+        if etype is KeyboardInterrupt:
+            logger.warning('Keyboard interrupt - exiting')
+            handled = True
         if etype is CampaignScriptError:
             logger.warning("Please configure BFF to fuzz a binary.  Exiting...")
             handled = True
@@ -97,8 +102,33 @@ class Campaign(object):
         # if etype not set or if we handled it
         if not etype or handled:
             shutil.rmtree(self.working_dir)
+        elif etype:
+            logger.debug('Unhandled exception:')
+            logger.debug('  type: %s', etype)
+            logger.debug('  value: %s', value)
+            for l in traceback.format_exception(etype, value, mytraceback):
+                logger.debug(l.rstrip())
+
+        if self.debug and etype and not handled:
+            # leave it behind if we're in debug mode
+            # and there's a problem
+            logger.debug('Skipping cleanup since we are in debug mode.')
+        else:
+            self._cleanup_workdir()
 
         return handled
+
+    def _cleanup_workdir(self):
+        try:
+            shutil.rmtree(self.working_dir)
+        except:
+            pass
+
+        if os.path.exists(self.working_dir):
+            logger.warning("Unable to remove campaign working dir: %s", self.working_dir)
+        else:
+            logger.debug('Removed campaign working dir: %s', self.working_dir)
+
 
     def _setup_dirs(self):
         logger.debug('setup dirs')
