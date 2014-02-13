@@ -21,7 +21,6 @@ logger.setLevel(logging.DEBUG)
 
 UNIQ_LOG = "uniquelog.txt"
 LAST_SEEDFILE = 'lastseed'
-KILL_SCRIPT = "killproc.sh"
 
 MINIMIZED_EXT = "minimal"
 ZZUF_LOG_FILE = 'zzuf_log.txt'
@@ -130,7 +129,6 @@ class ConfigHelper:
         self.crashexitcodesfile = os.path.join(self.local_dir, CRASH_EXIT_CODE_FILE)
         self.zzuf_log_file = os.path.join(self.local_dir, ZZUF_LOG_FILE)
 
-        self.killscript = KILL_SCRIPT
         self.tmpdir = None
 
         self.cached_config_file = os.path.join(self.cached_objects_dir, CACHED_CONFIG_OBJECT_FILE)
@@ -253,10 +251,3 @@ class ConfigHelper:
         new_basename = '%s%s' % (new_root, ext)
         self.create_tmpdir()
         return os.path.join(self.tmpdir, new_basename)
-
-    def get_killscript_path(self, scriptpath):
-        '''
-        @rtype: string
-        @return: the path to the killscript: <scriptpath>/<self.killscript>
-        '''
-        return os.path.join(scriptpath, self.killscript)

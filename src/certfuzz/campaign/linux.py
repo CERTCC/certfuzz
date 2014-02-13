@@ -152,7 +152,7 @@ class Campaign(object):
     def _start_process_killer(self):
         logger.debug('start process killer')
         # set up and spawn the process killer
-        killscript = self.cfg.get_killscript_path(self.scriptpath)
+        killscript = os.path.abspath(os.path.expanduser('~/bff/killproc.sh'))
         ProcessKiller(killscript, self.cfg.killprocname, self.cfg.killproctimeout).go()
         logger.debug("Process killer started: %s %s %d", killscript, self.cfg.killprocname, self.cfg.killproctimeout)
 
