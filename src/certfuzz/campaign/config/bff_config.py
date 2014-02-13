@@ -81,7 +81,6 @@ class ConfigHelper:
         self.copymode = self.cfg.getint('zzuf', 'copymode')
         self.start_seed = self.cfg.getint('zzuf', 'start_seed')
         self.seed_interval = self.cfg.getint('zzuf', 'seed_interval')
-        self.max_seed = self.cfg.getint('zzuf', 'max_seed')
 
         # [verifier]
         self.backtracelevels = self.cfg.getint('verifier', 'backtracelevels')

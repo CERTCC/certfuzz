@@ -42,6 +42,7 @@ import shutil
 import tempfile
 from certfuzz.fuzztools.filetools import mkdir_p
 from ..fuzztools import subprocess_helper as subp
+import itertools
 
 
 logger = logging.getLogger(__name__)
@@ -230,7 +231,7 @@ class Campaign(object):
     # campaign.go
         cfg = self.cfg
 
-        for s in xrange(cfg.start_seed, cfg.max_seed, cfg.seed_interval):
+        for s in itertools.count(start=cfg.start_seed, step=cfg.seed_interval):
             self.s1 = s
             self.s2 = s + cfg.seed_interval
             self._do_interval()
