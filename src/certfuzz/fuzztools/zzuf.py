@@ -16,7 +16,7 @@ class ZzufTestCase:
         '''
         @param seedfile: The original seed file to use
         @param seed: The zzuf seed number to use
-        @param range: 
+        @param range:
         @param outfile:
         '''
         self.seedfile = seedfile
@@ -35,14 +35,14 @@ class ZzufTestCase:
 class Zzuf:
     def __init__(self, dir, s1, s2, cmd, seedfile, file, copymode, ratiomin, ratiomax, timeout, quiet=True):
         '''
-        
+
         @param dir:
         @param s1: The starting seed
         @param s2: The ending seed
         @param cmd: The command to run
         @param file: The zzuf output file
-        @param copymode: 
-        @param ratiomin: 
+        @param copymode:
+        @param ratiomin:
         @param ratiomax:
         @param timeout: A float timeout
         '''
@@ -75,7 +75,7 @@ class Zzuf:
 
     def go(self):
         '''
-        Changes directory to <dir> then starts a zzuf run with the 
+        Changes directory to <dir> then starts a zzuf run with the
         given parameters.
         '''
         command = self._get_go_fuzz_cmdline()
@@ -86,7 +86,7 @@ class Zzuf:
 
     def generate_test_case(self, seedfile, seed, range, outfile):
         '''
-        Generates the test case for the given <seedfile>, <seed>, 
+        Generates the test case for the given <seedfile>, <seed>,
         and <range>, storing the result in <outfile>
         '''
 
@@ -113,12 +113,15 @@ class Zzuf:
         # will be added to the zzuf command line to enable this mode.
         # Some applications do not behave properly with zzuf loaded via LD_PRELOAD.
         # Those applications should be fuzzed in copy mode, which also specifies the option
-        # to look at the process exit code to indicate failures.  This works well for 
+        # to look at the process exit code to indicate failures.  This works well for
         # programs that are launched by a shell script.
         if (self.copymode):
             parts.append("opmode=copy")
 
-        parts.append("seed=%d:%d" % (self.s1, self.s2))
+        if self.s1 == self.s2:
+            parts.append("seed=%d" % self.s1)
+        else:
+            parts.append("seed=%d:%d" % (self.s1, self.s2))
 
         # prefix everything with a "--" then build the string
         return " ".join(["--%s" % p for p in parts])
