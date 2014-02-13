@@ -276,16 +276,25 @@ class IterationBase3(object):
         self.fuzz()
         self.run()
 
+        # short circuit if nothing found
+        if not self.candidates:
+            return
+
         # every test case is a candidate until verified
-        for testcase in self.candidates:
+        # use a while loop so we have the option of adding
+        # candidates during the loop
+        while len(self.candidates) > 0:
+            testcase = self.candidates.pop(0)
             self.verify(testcase)
 
         # analyze each verified crash
-        for testcase in self.verified:
+        while len(self.verified) > 0:
+            testcase = self.verified.pop(0)
             self.analyze(testcase)
 
         # construct output bundle for each analyzed test case
-        for testcase in self.analyzed:
+        while len(self.analyzed) > 0:
+            testcase = self.analyzed.pop(0)
             self.construct_report(testcase)
 
 
