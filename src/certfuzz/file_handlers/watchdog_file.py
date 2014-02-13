@@ -28,4 +28,6 @@ class Twdf(object):
 
 TWDF = Twdf()
 
-touch_watchdog_file = TWDF.func
+
+def touch_watchdog_file():
+    TWDF.func()
