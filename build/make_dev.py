@@ -3,10 +3,12 @@ Created on Jun 29, 2012
 
 @organization: cert.org
 '''
-
+import logging
 from dev.linux.linux_build import LinuxBuild
 from dev.windows.windows_build import WindowsBuild
 #from dev.osx import DarwinBuild
+
+logger = logging.getLogger(__name__)
 
 builders = {
             'linux': LinuxBuild,
@@ -26,6 +28,10 @@ def build(platform):
 
 
 if __name__ == '__main__':
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    hdlr = logging.StreamHandler()
+    logger.addHandler(hdlr)
 
     from optparse import OptionParser
 
