@@ -232,6 +232,9 @@ class ConfigHelper:
         assert os.path.isdir(self.tmpdir)
 
     def clean_tmpdir(self):
+        if self.tmpdir is None:
+            return
+
         if os.path.exists(self.tmpdir):
             shutil.rmtree(self.tmpdir)
             logger.debug("Removed temp dir %s", self.tmpdir)
