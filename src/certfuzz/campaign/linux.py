@@ -62,7 +62,11 @@ class Campaign(object):
         self.working_dir = None
         self.debug = True
 
+        # give up if we don't have a debugger
+        debuggers.verify_supported_platform()
+
     def __enter__(self):
+
         self._setup_dirs()
 
         # setup working dir
