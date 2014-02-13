@@ -30,26 +30,26 @@ from certfuzz.fuzztools.ppid_observer import check_ppid
 logger = logging.getLogger(__name__)
 
 
-def determine_uniqueness(crash, hashes):
-    '''
-    Gets the crash signature, then compares it against known crashes.
-    Sets crash.is_unique = True if it is new
-    '''
-
-    # short-circuit on crashes with no signature
-    if not crash.signature:
-        logger.warning('Crash has no signature, cleaning up')
-        crash.delete_files()
-        return
-
-    if crash.signature in hashes:
-        crash.is_unique = False
-        return
-
-    # fall back to checking if the crash directory exists
-    crash_dir_found = filetools.find_or_create_dir(crash.result_dir)
-
-    crash.is_unique = not crash_dir_found
+#def determine_uniqueness(crash, hashes):
+#    '''
+#    Gets the crash signature, then compares it against known crashes.
+#    Sets crash.is_unique = True if it is new
+#    '''
+#
+#    # short-circuit on crashes with no signature
+#    if not crash.signature:
+#        logger.warning('Crash has no signature, cleaning up')
+#        crash.delete_files()
+#        return
+#
+#    if crash.signature in hashes:
+#        crash.is_unique = False
+#        return
+#
+#    # fall back to checking if the crash directory exists
+#    crash_dir_found = filetools.find_or_create_dir(crash.result_dir)
+#
+#    crash.is_unique = not crash_dir_found
 
 
 def analyze_crasher(cfg, crash):
@@ -158,71 +158,11 @@ def analyze_crasher(cfg, crash):
 
     return other_crashers_found
 
-
-def verify_crasher(c, hashes, cfg, seedfile_set):
-    logger.debug('verifying crash')
-    found_new_crash = False
-
-    crashes = []
-    crashes.append(c)
-
-    for crash in crashes:
-        # loop until we're out of crashes to verify
-        logger.debug('crashes to verify: %d', len(crashes))
-        STATE_TIMER.enter_state('verify_testcase')
-
-        # crashes may be added as a result of minimization
-        crash.is_unique = False
-        determine_uniqueness(crash, hashes)
-        crash.get_logger()
-        if crash.is_unique:
-            hashes.append(crash)
-            # only toggle it once
-            if not found_new_crash:
-                found_new_crash = True
-
-            logger.debug("%s did not exist in cache, crash is unique", crash.signature)
-            more_crashes = analyze_crasher(cfg, crash)
-
-            if cfg.recycle_crashers:
-                logger.debug('Recycling crash as seedfile')
-                iterstring = crash.fuzzedfile.basename.split('-')[1].split('.')[0]
-                crasherseedname = 'sf_' + crash.seedfile.md5 + '-' + iterstring + crash.seedfile.ext
-                crasherseed_path = os.path.join(cfg.seedfile_origin_dir, crasherseedname)
-                filetools.copy_file(crash.fuzzedfile.path, crasherseed_path)
-                seedfile_set.add_file(crasherseed_path)
-            # add new crashes to the queue
-            crashes.extend(more_crashes)
-            crash.copy_files()
-
-            uniqlogger = get_uniq_logger(cfg.uniq_log)
-            uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', crash.seedfile.basename, crash.signature, crash.seednum, crash.range, crash.hd_bits, crash.hd_bytes)
-            logger.info('%s first seen at %d', crash.signature, crash.seednum)
-        else:
-            logger.debug('%s was found, not unique', crash.signature)
-        # always clean up after yourself
-        crash.clean_tmpdir()
-
-        # clean up
-        crash.delete_files()
-        # whether it was unique or not, record some details for posterity
-        # record the details of this crash so we can regenerate it later if needed
-        crash.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', crash.seedfile.basename, crash.seednum, crash.range, crash.fuzzedfile.path)
-        crash.logger.info('PC=%s', crash.pc)
-
-        # score this crash for the seedfile
-        crash.seedfile.record_success(crash.signature, tries=0)
-        if crash.range:
-            # ...and for the range
-            crash.range.record_success(crash.signature, tries=0)
-
-    return found_new_crash
-
-
 class IterationBase3(object):
     def __init__(self, workdirbase):
         self.workdirbase = workdirbase
         self.working_dir = None
+        self.analyzers = None
         self.candidates = []
         self.verified = []
         self.analyzed = []
@@ -264,10 +204,14 @@ class IterationBase3(object):
         self._postrun()
 
     def verify(self, testcase):
-        pass
+        self._preverify(testcase)
+        self._verify(testcase)
+        self._postverify(testcase)
 
     def analyze(self, testcase):
-        pass
+        self._preanalyze(testcase)
+        self._analyze(testcase)
+        self._postanalyze(testcase)
 
     def construct_report(self, testcase):
         pass
@@ -299,13 +243,18 @@ class IterationBase3(object):
 
 
 class Iteration(IterationBase3):
-    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True):
+    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None):
         IterationBase3.__init__(self, workdirbase)
         self.cfg = cfg
         self.seednum = seednum
         self.seedfile = seedfile
         self.r = r
         self.quiet_flag = quiet
+
+        if uniq_func is None:
+            self.uniq_func = lambda _tc_id: True
+        else:
+            self.uniq_func = uniq_func
 
         # convenience aliases
         self.s1 = self.seednum
@@ -335,28 +284,78 @@ class Iteration(IterationBase3):
 #            self.sf.path, seed_str, range_str, rate_str, xd_str, xr_str, crashcount)
         logger.info('Fuzzing...crash_count=%d', crashcount)
 
-    def analyze(self, testcase):
-        '''
-        Loops through all known analyzers for a given testcase
-        :param testcase:
-        '''
-        for analyzer in self.analyzers:
-            analyzer(testcase)
 
-    def verify(self, testcase):
+    def _verify(self, testcase):
         '''
         Confirms that a test case is interesting enough to pursue further analysis
         :param testcase:
         '''
-        with testcase as c:
-            if c.is_crash:
-                new_uniq_crash = verify_crasher(c, hashes, self.cfg, seedfile_set)
+        IterationBase3.verify(self, testcase)
+
+        # if you find more testcases, append them to self.candidates
+        # verified crashes append to self.verified
+
+        logger.debug('verifying crash')
+        with testcase as tc:
+            if tc.is_crash:
+
+                found_new_crash = False
+
+                # loop until we're out of crashes to verify
+                logger.debug('crashes to verify: %d', len(self.candidates))
+                STATE_TIMER.enter_state('verify_testcase')
+
+                tc.is_unique = self.uniq_func(tc.signature)
+
+                tc.get_logger()
+
+                if tc.is_unique:
+                    self.verified.append(tc)
+#                    # only toggle it once
+#                    if not found_new_crash:
+#                        found_new_crash = True
+
+                    more_crashes = analyze_crasher(self.cfg, tc)
+
+                    if self.cfg.recycle_crashers:
+                        logger.debug('Recycling crash as seedfile')
+                        iterstring = tc.fuzzedfile.basename.split('-')[1].split('.')[0]
+                        crasherseedname = 'sf_' + tc.seedfile.md5 + '-' + iterstring + tc.seedfile.ext
+                        crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
+                        filetools.copy_file(tc.fuzzedfile.path, crasherseed_path)
+                        seedfile_set.add_file(crasherseed_path)
+                    # add new crashes to the queue
+                    self.candidates.extend(more_crashes)
+                    tc.copy_files()
+
+                    uniqlogger = get_uniq_logger(self.cfg.uniq_log)
+                    uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', tc.seedfile.basename, tc.signature, tc.seednum, tc.range, tc.hd_bits, tc.hd_bytes)
+                    logger.info('%s first seen at %d', tc.signature, tc.seednum)
+                else:
+                    logger.debug('%s was found, not unique', tc.signature)
+                # always clean up after yourself
+                tc.clean_tmpdir()
+
+                # clean up
+                tc.delete_files()
+                # whether it was unique or not, record some details for posterity
+                # record the details of this crash so we can regenerate it later if needed
+                tc.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', tc.seedfile.basename, tc.seednum, tc.range, tc.fuzzedfile.path)
+                tc.logger.info('PC=%s', tc.pc)
+
+                # score this crash for the seedfile
+                tc.seedfile.record_success(tc.signature, tries=0)
+                if tc.range:
+                    # ...and for the range
+                    tc.range.record_success(tc.signature, tries=0)
+
+                new_uniq_crash = found_new_crash
 
             # record the zzuf log line for this crash
-            if not c.logger:
-                c.get_logger()
-            c.logger.debug("zzuflog: %s", zzuf_log.line)
-            c.logger.info('Command: %s', testcase.cmdline)
+            if not tc.logger:
+                tc.get_logger()
+            tc.logger.debug("zzuflog: %s", zzuf_log.line)
+            tc.logger.info('Command: %s', testcase.cmdline)
 
     def construct_report(self, testcase):
         '''

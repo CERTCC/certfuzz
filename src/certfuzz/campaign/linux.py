@@ -61,6 +61,7 @@ class Campaign(object):
         self.hashes = []
         self.working_dir = None
         self.debug = True
+        self.crashes_seen = set()
 
         # give up if we don't have a debugger
         debuggers.verify_supported_platform()
@@ -235,6 +236,22 @@ class Campaign(object):
             #cfg.disable_verification()
             #time.sleep(10)
 
+    def _crash_is_unique(self, crash_id, exploitability='UNKNOWN'):
+        '''
+        If crash_id represents a new crash, add the crash_id to crashes_seen
+        and return True. Otherwise return False.
+
+        @param crash_id: the crash_id to look up
+        @param exploitability: not used at this time
+        '''
+        if not crash_id in self.crashes_seen:
+            self.crashes_seen.add(crash_id)
+            logger.debug("%s did not exist in cache, crash is unique", crash_id)
+            return True
+
+        logger.debug('%s was found, not unique', crash_id)
+        return False
+
     def _do_interval(self, s1, s2, first_chunk=False):
         # interval.go
         logger.debug('Starting interval %d-%d', s1, s2)
@@ -250,7 +267,9 @@ class Campaign(object):
         for s in xrange(s1, s2):
             # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
             touch_watchdog_file()
-            with Iteration(cfg=self.cfg, seednum=s, seedfile=sf, r=r, workdirbase=self.working_dir, quiet=qf) as iteration:
+            with Iteration(cfg=self.cfg, seednum=s, seedfile=sf, r=r,
+                           workdirbase=self.working_dir, quiet=qf,
+                           uniq_func=self._crash_is_unique,) as iteration:
                 iteration.go()
 
     def go(self):
