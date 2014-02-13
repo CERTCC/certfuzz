@@ -241,11 +241,6 @@ class IterationBase3(object):
     def _postfuzz(self):
         pass
 
-    def fuzz(self):
-        self._prefuzz()
-        self._fuzz()
-        self._postfuzz()
-
     def _prerun(self):
         pass
 
@@ -254,6 +249,11 @@ class IterationBase3(object):
 
     def _postrun(self):
         pass
+
+    def fuzz(self):
+        self._prefuzz()
+        self._fuzz()
+        self._postfuzz()
 
     def run(self):
         self._prerun()
