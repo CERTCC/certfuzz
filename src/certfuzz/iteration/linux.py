@@ -221,14 +221,15 @@ def verify_crasher(c, hashes, cfg, seedfile_set):
 class IterationBase3(object):
     def __init__(self, workdirbase):
         self.workdirbase = workdirbase
-        self.workdir = None
+        self.working_dir = None
 
     def __enter__(self):
-        self.workdir = tempfile.mkdtemp(prefix='iteration-', dir=self.workdirbase)
+        self.working_dir = tempfile.mkdtemp(prefix='iteration-', dir=self.workdirbase)
+        logger.debug('workdir=%s', self.working_dir)
         return self
 
     def __exit__(self, etype, value, traceback):
-        shutil.rmtree(self.workdir)
+        shutil.rmtree(self.working_dir)
 
     def _prefuzz(self):
         pass
@@ -285,7 +286,7 @@ class IterationBase3(object):
 
 
 class Iteration(IterationBase3):
-    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None):
+    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None):
         IterationBase3.__init__(self, workdirbase)
         self.cfg = cfg
         self.seednum = seednum
@@ -296,7 +297,6 @@ class Iteration(IterationBase3):
         self.s1 = self.seednum
         self.s2 = self.s1
         self.sf = self.seedfile
-
 
     def __enter__(self):
         IterationBase3.__enter__(self)
@@ -343,7 +343,6 @@ class Iteration(IterationBase3):
                 c.get_logger()
             c.logger.debug("zzuflog: %s", zzuf_log.line)
             c.logger.info('Command: %s', testcase.cmdline)
-
 
     def construct_report(self, testcase):
         '''

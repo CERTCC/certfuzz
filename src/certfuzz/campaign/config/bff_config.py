@@ -123,18 +123,7 @@ class ConfigHelper:
         self.watchdogfile = os.path.expanduser(self.cfg.get('directories', 'watchdog_file'))
 
         # derived properties
-#        self.program_basename = os.path.basename(self.program)
         self.program_basename = os.path.basename(self.program).replace('"', '')
-#        self.program_basename = string.replace(self.program_basename, '"', '')
-
-        self.dirs_to_create = [self.local_dir,
-                     self.cached_objects_dir,
-                     self.seedfile_local_dir,
-                     self.output_dir,
-                     self.seedfile_output_dir,
-                     self.crashers_dir,
-                     self.testscase_tmp_dir,
-                     ]
 
         self.uniq_log = os.path.join(self.output_dir, UNIQ_LOG)
 
