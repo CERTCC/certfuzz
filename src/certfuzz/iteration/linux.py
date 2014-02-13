@@ -287,12 +287,13 @@ class IterationBase3(object):
 
 
 class Iteration(IterationBase3):
-    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None):
+    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True):
         IterationBase3.__init__(self, workdirbase)
         self.cfg = cfg
         self.seednum = seednum
         self.seedfile = seedfile
         self.r = r
+        self.quiet_flag = quiet
 
         # convenience aliases
         self.s1 = self.seednum
@@ -352,14 +353,6 @@ class Iteration(IterationBase3):
         '''
 
     def _run(self):
-        if self.first_chunk:
-            # disable the --quiet option in zzuf
-            # on the first chunk only
-            quiet_flag = False
-            self.first_chunk = False
-        else:
-            quiet_flag = True
-
         # do the fuzz
         cmdline = self.cfg.get_command(self.sf.path)
 
@@ -373,7 +366,7 @@ class Iteration(IterationBase3):
             self.r.min,
             self.r.max,
             self.cfg.progtimeout,
-            quiet_flag)
+            self.quiet_flag)
         self.saw_crash = zzuf.go()
 
     def _postrun(self):

@@ -201,7 +201,7 @@ class Campaign(object):
             #cfg.disable_verification()
             #time.sleep(10)
 
-    def _do_interval(self, s1, s2):
+    def _do_interval(self, s1, s2, first_chunk=False):
         # interval.go
         logger.debug('Starting interval %d-%d', s1, s2)
         # wipe the tmp dir clean to try to avoid filling the VM disk
@@ -209,20 +209,23 @@ class Campaign(object):
 
         sf = self.seedfile_set.next_item()
         r = sf.rangefinder.next_item()
+        qf = not first_chunk
 
         logger.info(STATE_TIMER)
 
         for s in xrange(s1, s2):
             # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
             touch_watchdog_file()
-            with Iteration(cfg=self.cfg, seednum=s, seedfile=sf, r=r, workdirbase=self.working_dir) as iteration:
+            with Iteration(cfg=self.cfg, seednum=s, seedfile=sf, r=r, workdirbase=self.working_dir, quiet=qf) as iteration:
                 iteration.go()
 
     def go(self):
     # campaign.go
         cfg = self.cfg
 
+        first_chunk = True
         for s in itertools.count(start=cfg.start_seed, step=cfg.seed_interval):
             s1 = s
             s2 = s + cfg.seed_interval
-            self._do_interval(s1, s2)
+            self._do_interval(s1, s2, first_chunk)
+            first_chunk = False
