@@ -50,22 +50,6 @@ def setup_logging_to_console(log_obj, level):
     add_log_handler(log_obj, level, hdlr, formatter)
 
 
-def setup_logfile(logdir, log_basename='bff.log', level=logging.DEBUG,
-                  max_bytes=1e8, backup_count=5):
-    '''
-    Creates a log file in <logdir>/<log_basename> at level <level>
-    @param logdir: the directory where the log file should reside
-    @param log_basename: the basename of the logfile (defaults to 'bff_log.txt')
-    @param level: the logging level (defaults to logging.DEBUG)
-    '''
-    filetools.make_directories(logdir)
-    logfile = os.path.join(logdir, log_basename)
-    handler = RotatingFileHandler(logfile, maxBytes=max_bytes, backupCount=backup_count)
-    formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s")
-    add_log_handler(logger, level, handler, formatter)
-    logger.info('Logging %s at %s', logging.getLevelName(level), logfile)
-
-
 def get_config_file(basedir):
     config_dir = os.path.join(basedir, 'conf.d')
 
@@ -97,7 +81,7 @@ def main():
 #    debuggers.verify_supported_platform()
 
     setup_logging_to_console(logger, logging.INFO)
-    setup_logfile()
+#    setup_logfile()
     logger.info("Welcome to BFF!")
 
     scriptpath = os.path.dirname(sys.argv[0])
@@ -105,6 +89,8 @@ def main():
 
     # parse command line options
     logger.info('Parsing command line options')
+
+    #TODO: replace OptionParser with argparse
     parser = OptionParser()
     parser.add_option('', '--debug', dest='debug', help='Turn on debugging output', action='store_true')
     parser.add_option('-c', '--config', dest='cfg', help='Config file location')
