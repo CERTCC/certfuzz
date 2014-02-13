@@ -43,6 +43,7 @@ import tempfile
 from certfuzz.fuzztools.filetools import mkdir_p
 from ..fuzztools import subprocess_helper as subp
 import itertools
+from certfuzz.fuzztools.ppid_observer import check_ppid
 
 
 logger = logging.getLogger(__name__)
@@ -56,7 +57,6 @@ class Campaign(object):
         self.cfg = cfg_helper.read_config_options(cfg_path)
         self.scriptpath = scriptpath
         self.seedfile_set = None
-        self._last_ppid = None
         self.hashes = []
         self.working_dir = None
 
@@ -83,8 +83,8 @@ class Campaign(object):
 
         # flag to indicate whether this is a fresh script start up or not
         self.first_chunk = True
-        # remember our parent process id so we can tell if it changes later
-        self._last_ppid = os.getppid()
+
+        check_ppid()
 
         return self
 
@@ -200,13 +200,6 @@ class Campaign(object):
             raise CampaignScriptError()
             #cfg.disable_verification()
             #time.sleep(10)
-
-    def _check_ppid(self):
-        # check parent process id
-        _ppid_now = os.getppid()
-        if not _ppid_now == self._last_ppid:
-            logger.warning('Parent process ID changed from %d to %d', self._last_ppid, _ppid_now)
-            self._last_ppid = _ppid_now
 
     def _do_interval(self):
         s1 = self.s1

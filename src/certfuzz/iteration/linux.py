@@ -25,6 +25,7 @@ import os
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 import tempfile
 import shutil
+from certfuzz.fuzztools.ppid_observer import check_ppid
 
 logger = logging.getLogger(__name__)
 
@@ -300,7 +301,7 @@ class Iteration(IterationBase3):
 
     def __enter__(self):
         IterationBase3.__enter__(self)
-        self._check_ppid()
+        check_ppid()
         return self
 
     def __exit__(self, etype, value, traceback):
