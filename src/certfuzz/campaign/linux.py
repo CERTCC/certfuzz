@@ -215,7 +215,7 @@ class Campaign(object):
         for s in xrange(s1, s2):
             # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
             touch_watchdog_file()
-            with Iteration(seednum=s, seedfile=sf, r=r, workdirbase=self.working_dir) as iteration:
+            with Iteration(cfg=self.cfg, seednum=s, seedfile=sf, r=r, workdirbase=self.working_dir) as iteration:
                 iteration.go()
 
     def go(self):
