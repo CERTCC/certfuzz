@@ -223,6 +223,9 @@ class IterationBase3(object):
     def __init__(self, workdirbase):
         self.workdirbase = workdirbase
         self.working_dir = None
+        self.candidates = []
+        self.verified = []
+        self.analyzed = []
 
     def __enter__(self):
         self.working_dir = tempfile.mkdtemp(prefix='iteration-', dir=self.workdirbase)
