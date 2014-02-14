@@ -183,7 +183,13 @@ class Iteration(IterationBase3):
         with testcase as tc:
             if tc.is_crash:
 
-                tc.is_unique = self.uniq_func(tc.signature)
+                is_new_to_campaign = self.uniq_func(tc.signature)
+
+                # fall back to checking if the crash directory exists
+                #
+                crash_dir_found = filetools.find_or_create_dir(tc.result_dir)
+
+                tc.is_unique = is_new_to_campaign and not crash_dir_found
 
                 if tc.is_unique:
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
