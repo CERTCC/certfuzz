@@ -117,6 +117,104 @@ class Iteration(IterationBase3):
         if self.cfg.use_pin_calltrace:
             self.analyzer_classes.append(pin_calltrace.Pin_calltrace)
 
+    def _pre_run(self):
+        IterationBase3._pre_run(self)
+        # do the fuzz
+        cmdline = self.cfg.get_command(self.sf.path)
+
+        STATE_TIMER.enter_state('fuzzing')
+        self.zzuf = Zzuf(self.cfg.local_dir, self.s1,
+            self.s1,
+            cmdline,
+            self.sf.path,
+            self.cfg.zzuf_log_file,
+            self.cfg.copymode,
+            self.r.min,
+            self.r.max,
+            self.cfg.progtimeout,
+            self.quiet_flag)
+
+    def _run(self):
+        IterationBase3._run(self)
+        self.zzuf.go()
+
+    def _post_run(self):
+        IterationBase3._post_run(self)
+
+        STATE_TIMER.enter_state('checking_results')
+            # we must have made it through this chunk without a crash
+            # so go to next chunk
+        self.sf.record_tries(tries=1)
+        self.r.record_tries(tries=1)
+        if not self.zzuf.saw_crash:
+            self._log()
+            return
+
+        # we must have seen a crash
+        # get the results
+        zzuf_log = ZzufLog(self.cfg.zzuf_log_file, self.cfg.zzuf_log_out(self.sf.output_dir))
+
+        # Don't generate cases for killed process or out-of-memory
+        # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
+        # report the exit code in its output log.  The exit code is 128 + the signal number.
+        crash_status = zzuf_log.crash_logged(self.cfg.copymode)
+
+        if not crash_status:
+            return
+
+        logger.info('Generating testcase for %s', zzuf_log.line)
+        # a true crash
+        zzuf_range = zzuf_log.range
+        # create the temp dir for the results
+        self.cfg.create_tmpdir()
+        outfile = self.cfg.get_testcase_outfile(self.seedfile.path, self.s1)
+        logger.debug('Output file is %s', outfile)
+        self.zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
+
+        # Do internal verification using GDB / Valgrind / Stderr
+        fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
+
+        testcase = BffCrash(self.cfg, self.seedfile, fuzzedfile, self.cfg.program, self.cfg.debugger_timeout,
+                      self.cfg.killprocname, self.cfg.backtracelevels,
+                      self.cfg.crashers_dir, self.s1, self.r)
+
+            # record the zzuf log line for this crash
+        if not testcase.logger:
+            testcase.get_logger()
+
+        testcase.logger.debug("zzuflog: %s", zzuf_log.line)
+#        testcase.logger.info('Command: %s', testcase.cmdline)
+
+        self.candidates.append(testcase)
+
+    def _verify(self, testcase):
+        '''
+        Confirms that a test case is interesting enough to pursue further analysis
+        :param testcase:
+        '''
+        IterationBase3._verify(self, testcase)
+
+        # if you find more testcases, append them to self.candidates
+        # verified crashes append to self.verified
+
+        logger.debug('verifying crash')
+        with testcase as tc:
+            if tc.is_crash:
+
+                found_new_crash = False
+
+                logger.debug('crashes to verify: %d', len(self.candidates))
+                STATE_TIMER.enter_state('verify_testcase')
+
+                tc.is_unique = self.uniq_func(tc.signature)
+
+
+                if tc.is_unique:
+                    logger.info('%s first seen at %d', tc.signature, tc.seednum)
+                    self.verified.append(tc)
+                else:
+                    logger.debug('%s was found, not unique', tc.signature)
+
     def _pre_analyze(self, testcase):
         IterationBase3._pre_analyze(self, testcase)
 
@@ -229,110 +327,3 @@ class Iteration(IterationBase3):
         testcase.clean_tmpdir()
         # clean up
         testcase.delete_files()
-
-    def _verify(self, testcase):
-        '''
-        Confirms that a test case is interesting enough to pursue further analysis
-        :param testcase:
-        '''
-        IterationBase3._verify(self, testcase)
-
-        # if you find more testcases, append them to self.candidates
-        # verified crashes append to self.verified
-
-        logger.debug('verifying crash')
-        with testcase as tc:
-            if tc.is_crash:
-
-                found_new_crash = False
-
-                logger.debug('crashes to verify: %d', len(self.candidates))
-                STATE_TIMER.enter_state('verify_testcase')
-
-                tc.is_unique = self.uniq_func(tc.signature)
-
-
-                if tc.is_unique:
-                    logger.info('%s first seen at %d', tc.signature, tc.seednum)
-                    self.verified.append(tc)
-                else:
-                    logger.debug('%s was found, not unique', tc.signature)
-
-
-            # record the zzuf log line for this crash
-            if not tc.logger:
-                tc.get_logger()
-
-    def report(self, testcase):
-        '''
-        Constructs a report package for the test case
-        :param testcase:
-        '''
-
-    def _pre_run(self):
-        IterationBase3._pre_run(self)
-        # do the fuzz
-        cmdline = self.cfg.get_command(self.sf.path)
-
-        STATE_TIMER.enter_state('fuzzing')
-        self.zzuf = Zzuf(self.cfg.local_dir, self.s1,
-            self.s1,
-            cmdline,
-            self.sf.path,
-            self.cfg.zzuf_log_file,
-            self.cfg.copymode,
-            self.r.min,
-            self.r.max,
-            self.cfg.progtimeout,
-            self.quiet_flag)
-
-    def _run(self):
-        IterationBase3._run(self)
-        self.zzuf.go()
-
-    def _post_run(self):
-        IterationBase3._post_run(self)
-
-        STATE_TIMER.enter_state('checking_results')
-            # we must have made it through this chunk without a crash
-            # so go to next chunk
-        self.sf.record_tries(tries=1)
-        self.r.record_tries(tries=1)
-        if not self.zzuf.saw_crash:
-            self._log()
-            return
-
-        # we must have seen a crash
-        # get the results
-        zzuf_log = ZzufLog(self.cfg.zzuf_log_file, self.cfg.zzuf_log_out(self.sf.output_dir))
-
-        # Don't generate cases for killed process or out-of-memory
-        # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
-        # report the exit code in its output log.  The exit code is 128 + the signal number.
-        crash_status = zzuf_log.crash_logged(self.cfg.copymode)
-
-        if not crash_status:
-            return
-
-        logger.info('Generating testcase for %s', zzuf_log.line)
-        # a true crash
-        zzuf_range = zzuf_log.range
-        # create the temp dir for the results
-        self.cfg.create_tmpdir()
-        outfile = self.cfg.get_testcase_outfile(self.seedfile.path, self.s1)
-        logger.debug('Output file is %s', outfile)
-        self.zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
-
-        # Do internal verification using GDB / Valgrind / Stderr
-        fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
-
-        testcase = BffCrash(self.cfg, self.seedfile, fuzzedfile, self.cfg.program, self.cfg.debugger_timeout,
-                      self.cfg.killprocname, self.cfg.backtracelevels,
-                      self.cfg.crashers_dir, self.s1, self.r)
-
-        testcase.get_logger()
-        testcase.logger.debug("zzuflog: %s", zzuf_log.line)
-#        testcase.logger.info('Command: %s', testcase.cmdline)
-
-        self.candidates.append(testcase)
-
