@@ -127,11 +127,6 @@ class IterationBase3(object):
             testcase = self.candidates.pop(0)
             self.verify(testcase)
 
-        # minimize verified testcases
-        while len(self.verified) > 0:
-            testcase = self.verified.pop(0)
-            self.minimize(testcase)
-
         # analyze each verified crash
         while len(self.verified) > 0:
             testcase = self.verified.pop(0)

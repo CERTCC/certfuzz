@@ -52,8 +52,6 @@ logger = logging.getLogger(__name__)
 #
 #    crash.is_unique = not crash_dir_found
 
-
-
 def get_uniq_logger(logfile):
     l = logging.getLogger('uniq_crash')
     if len(l.handlers) == 0:
@@ -192,6 +190,7 @@ class Iteration(IterationBase3):
         Confirms that a test case is interesting enough to pursue further analysis
         :param testcase:
         '''
+        STATE_TIMER.enter_state('verify_testcase')
         IterationBase3._verify(self, testcase)
 
         # if you find more testcases, append them to self.candidates
@@ -201,23 +200,21 @@ class Iteration(IterationBase3):
         with testcase as tc:
             if tc.is_crash:
 
-                found_new_crash = False
-
-                logger.debug('crashes to verify: %d', len(self.candidates))
-                STATE_TIMER.enter_state('verify_testcase')
-
                 tc.is_unique = self.uniq_func(tc.signature)
-
 
                 if tc.is_unique:
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
+                    new_testcases = self._minimize(tc)
+                    # add any new candidates for verification to the candidates list
+                    self.candidates.extend(new_testcases)
+
+                    # we're ready to proceed with this testcase
+                    # so add it to the verified list
                     self.verified.append(tc)
                 else:
                     logger.debug('%s was found, not unique', tc.signature)
 
-    def _pre_analyze(self, testcase):
-        IterationBase3._pre_analyze(self, testcase)
-
+    def _minimize(self, testcase):
         other_crashers_found = []
 
         dbg_out_file_orig = testcase.dbg.file
@@ -259,8 +256,10 @@ class Iteration(IterationBase3):
                 min2string = None
         touch_watchdog_file()
 
-                # add new crashes to the queue
-        self.candidates.extend(other_crashers_found)
+        return other_crashers_found
+
+    def _pre_analyze(self, testcase):
+        IterationBase3._pre_analyze(self, testcase)
 
         STATE_TIMER.enter_state('analyze_testcase')
 
