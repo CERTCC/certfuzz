@@ -180,7 +180,7 @@ class Iteration(IterationBase3):
                             killprocname=self.cfg.killprocname,
                             backtrace_lines=self.cfg.backtracelevels,
                             crashers_dir=self.cfg.crashers_dir,
-                            workdir_base=self.cfg.testscase_tmp_dir,
+                            workdir_base=self.working_dir,
                             seednum=self.s1,
                             range=self.r)
 
@@ -212,6 +212,9 @@ class Iteration(IterationBase3):
 
                 if tc.is_unique:
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
+                    self.dbg_out_file_orig = testcase.dbg.file
+                    logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
+
                     new_testcases = self._minimize(tc)
                     # add any new candidates for verification to the candidates list
                     self.candidates.extend(new_testcases)
@@ -224,9 +227,6 @@ class Iteration(IterationBase3):
 
     def _minimize(self, testcase):
         other_crashers_found = []
-
-        dbg_out_file_orig = testcase.dbg.file
-        logger.debug('Original debugger file: %s', dbg_out_file_orig)
 
         if self.cfg.minimizecrashers:
             STATE_TIMER.enter_state('minimize_testcase')
@@ -281,14 +281,14 @@ class Iteration(IterationBase3):
         logger.info('Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
         testcase.get_debug_output(testcase.fuzzedfile.path)
 
-        if dbg_out_file_orig != testcase.dbg.file:
+        if self.dbg_out_file_orig != testcase.dbg.file:
             # we have a new debugger output
             # remove the old one
-            filetools.delete_files(dbg_out_file_orig)
-            if os.path.exists(dbg_out_file_orig):
-                logger.warning('Failed to remove old debugger file %s', dbg_out_file_orig)
+            filetools.delete_files(self.dbg_out_file_orig)
+            if os.path.exists(self.dbg_out_file_orig):
+                logger.warning('Failed to remove old debugger file %s', self.dbg_out_file_orig)
             else:
-                logger.debug('Removed old debug file %s', dbg_out_file_orig)
+                logger.debug('Removed old debug file %s', self.dbg_out_file_orig)
 
     def _post_analyze(self, testcase):
         IterationBase3._post_analyze(self, testcase)

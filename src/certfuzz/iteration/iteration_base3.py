@@ -22,13 +22,24 @@ class IterationBase3(object):
         self.verified = []
         self.analyzed = []
 
+        self.debug = True
+
     def __enter__(self):
         self.working_dir = tempfile.mkdtemp(prefix='iteration-', dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
         return self
 
     def __exit__(self, etype, value, traceback):
-        shutil.rmtree(self.working_dir)
+        handled = False
+
+        if etype and self.debug:
+            # leave it behind if we're in debug mode
+            # and there's a problem
+            logger.debug('Skipping cleanup since we are in debug mode.')
+        else:
+            shutil.rmtree(self.working_dir)
+
+        return handled
 
     def _pre_fuzz(self):
         pass

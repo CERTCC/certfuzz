@@ -58,7 +58,8 @@ class BffCrash(Crash):
         self.result_dir = None
 
     def __exit__(self, etype, value, traceback):
-        self.clean_tmpdir()
+        pass
+#        self.clean_tmpdir()
 
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_linux():
