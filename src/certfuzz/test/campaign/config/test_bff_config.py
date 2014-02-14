@@ -8,7 +8,6 @@ import os
 import ConfigParser
 from certfuzz.campaign.config.bff_config import ConfigHelper
 from certfuzz.campaign.config.bff_config import MINIMIZED_EXT
-from certfuzz.campaign.config.bff_config import KILL_SCRIPT
 import tempfile
 from certfuzz.campaign.config.bff_config import read_config_options
 
@@ -101,9 +100,6 @@ class Test(unittest.TestCase):
 
     def test_get_minimized_file(self):
         self.assertEqual(self.cfg.get_minimized_file('foo.txt'), 'foo-%s.txt' % MINIMIZED_EXT)
-
-    def test_get_killscript_path(self):
-        self.assertEqual(self.cfg.get_killscript_path('foo'), os.path.join('foo', '%s') % KILL_SCRIPT)
 
     def test_uniquelog(self):
         self.assertEqual(self.cfg.uniq_log, os.path.join('output_dir', 'uniquelog.txt'))

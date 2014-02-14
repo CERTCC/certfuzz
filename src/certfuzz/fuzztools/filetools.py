@@ -42,14 +42,24 @@ def exponential_backoff(F):
 
     return wrapper
 
+
 def mkdir_p(path):
+    '''
+    If directory exists, just return True
+    Otherwise create it and return False
+    :param path:
+    '''
     try:
         os.makedirs(path)
     except OSError as exc:
         # if the dir already exists, just move along
-        if exc.errno == errno.EEXIST:
-            pass
-        else: raise
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            return True
+        else:
+            raise
+    return False
+
+find_or_create_dir = mkdir_p
 
 # file system helpers
 def make_directories(*paths):
@@ -60,15 +70,6 @@ def make_directories(*paths):
     for d in paths:
         if not os.path.exists(d):
             mkdir_p(d)
-
-def find_or_create_dir(dir):
-    if not os.path.exists(dir):
-        make_directories(dir)
-        logger.debug("Created dir %s", dir)
-        dir_found = False
-    else:
-        dir_found = True
-    return dir_found
 
 def delete_files(*files):
     delete_files2(files)

@@ -16,7 +16,7 @@ from ..minimizer import MinimizerError, WindowsMinimizer as Minimizer
 from ..runners.errors import RunnerRegistryError
 from ..campaign.config.foe_config import get_command_args_list
 from .errors import IterationError
-from .iteration_base import IterationBase
+from .iteration_base import IterationBase2
 import glob
 import logging
 import os
@@ -31,7 +31,7 @@ IOERROR_COUNT = 0
 MAX_IOERRORS = 5
 
 
-class Iteration(IterationBase):
+class Iteration(IterationBase2):
     def __init__(self, sf, rng_seed, current_seed, config, fuzzer,
                  runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
                  cmd_template, uniq_func, working_dir_base, outdir, debug):

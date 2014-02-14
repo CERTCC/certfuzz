@@ -21,7 +21,6 @@ logger.setLevel(logging.DEBUG)
 
 UNIQ_LOG = "uniquelog.txt"
 LAST_SEEDFILE = 'lastseed'
-KILL_SCRIPT = "killproc.sh"
 
 MINIMIZED_EXT = "minimal"
 ZZUF_LOG_FILE = 'zzuf_log.txt'
@@ -82,7 +81,6 @@ class ConfigHelper:
         self.copymode = self.cfg.getint('zzuf', 'copymode')
         self.start_seed = self.cfg.getint('zzuf', 'start_seed')
         self.seed_interval = self.cfg.getint('zzuf', 'seed_interval')
-        self.max_seed = self.cfg.getint('zzuf', 'max_seed')
 
         # [verifier]
         self.backtracelevels = self.cfg.getint('verifier', 'backtracelevels')
@@ -123,25 +121,13 @@ class ConfigHelper:
         self.watchdogfile = os.path.expanduser(self.cfg.get('directories', 'watchdog_file'))
 
         # derived properties
-#        self.program_basename = os.path.basename(self.program)
         self.program_basename = os.path.basename(self.program).replace('"', '')
-#        self.program_basename = string.replace(self.program_basename, '"', '')
-
-        self.dirs_to_create = [self.local_dir,
-                     self.cached_objects_dir,
-                     self.seedfile_local_dir,
-                     self.output_dir,
-                     self.seedfile_output_dir,
-                     self.crashers_dir,
-                     self.testscase_tmp_dir,
-                     ]
 
         self.uniq_log = os.path.join(self.output_dir, UNIQ_LOG)
 
         self.crashexitcodesfile = os.path.join(self.local_dir, CRASH_EXIT_CODE_FILE)
         self.zzuf_log_file = os.path.join(self.local_dir, ZZUF_LOG_FILE)
 
-        self.killscript = KILL_SCRIPT
         self.tmpdir = None
 
         self.cached_config_file = os.path.join(self.cached_objects_dir, CACHED_CONFIG_OBJECT_FILE)
@@ -246,6 +232,9 @@ class ConfigHelper:
         assert os.path.isdir(self.tmpdir)
 
     def clean_tmpdir(self):
+        if self.tmpdir is None:
+            return
+
         if os.path.exists(self.tmpdir):
             shutil.rmtree(self.tmpdir)
             logger.debug("Removed temp dir %s", self.tmpdir)
@@ -264,10 +253,3 @@ class ConfigHelper:
         new_basename = '%s%s' % (new_root, ext)
         self.create_tmpdir()
         return os.path.join(self.tmpdir, new_basename)
-
-    def get_killscript_path(self, scriptpath):
-        '''
-        @rtype: string
-        @return: the path to the killscript: <scriptpath>/<self.killscript>
-        '''
-        return os.path.join(scriptpath, self.killscript)
