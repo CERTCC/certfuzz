@@ -172,9 +172,17 @@ class Iteration(IterationBase3):
         # Do internal verification using GDB / Valgrind / Stderr
         fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
 
-        testcase = BffCrash(self.cfg, self.seedfile, fuzzedfile, self.cfg.program, self.cfg.debugger_timeout,
-                      self.cfg.killprocname, self.cfg.backtracelevels,
-                      self.cfg.crashers_dir, self.s1, self.r)
+        testcase = BffCrash(cfg=self.cfg,
+                            seedfile=self.seedfile,
+                            fuzzedfile=fuzzedfile,
+                            program=self.cfg.program,
+                            debugger_timeout=self.cfg.debugger_timeout,
+                            killprocname=self.cfg.killprocname,
+                            backtrace_lines=self.cfg.backtracelevels,
+                            crashers_dir=self.cfg.crashers_dir,
+                            workdir_base=self.cfg.testscase_tmp_dir,
+                            seednum=self.s1,
+                            range=self.r)
 
             # record the zzuf log line for this crash
         if not testcase.logger:

@@ -32,14 +32,13 @@ class BffCrash(Crash):
 
     def __init__(self, cfg, seedfile, fuzzedfile, program,
                  debugger_timeout, killprocname, backtrace_lines,
-                 crashers_dir, seednum=None, range=None, keep_faddr=False):
+                 crashers_dir, workdir_base, seednum=None, range=None, keep_faddr=False):
         '''
         Constructor
         '''
-
-        super(self.__class__, self).__init__(seedfile, fuzzedfile, debugger_timeout)
+        Crash.__init__(self, seedfile, fuzzedfile, debugger_timeout)
         self.cfg = cfg
-        self.workdir_base = self.cfg.testscase_tmp_dir
+        self.workdir_base = workdir_base
         self.program = program
         self.killprocname = killprocname
         self.backtrace_lines = backtrace_lines

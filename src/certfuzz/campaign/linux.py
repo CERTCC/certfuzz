@@ -59,6 +59,7 @@ class Campaign(object):
         self.scriptpath = scriptpath
         self.seedfile_set = None
         self.hashes = []
+        self.workdirbase = self.cfg.testscase_tmp_dir
         self.working_dir = None
         self.debug = True
         self.crashes_seen = set()
@@ -71,7 +72,7 @@ class Campaign(object):
         self._setup_dirs()
 
         # setup working dir
-        self.working_dir = tempfile.mkdtemp(prefix='campaign_', dir=self.cfg.local_dir)
+        self.working_dir = tempfile.mkdtemp(prefix='campaign_', dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
 
         # set up local logging
