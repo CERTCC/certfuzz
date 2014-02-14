@@ -3,11 +3,21 @@ Created on Feb 13, 2014
 
 @author: adh
 '''
+import tempfile
+import logging
+import shutil
+from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
+from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
+
+logger = logging.getLogger(__name__)
+
+
 class IterationBase3(object):
     def __init__(self, workdirbase):
         self.workdirbase = workdirbase
         self.working_dir = None
-        self.analyzers = None
+        self.analyzer_classes = []
+
         self.candidates = []
         self.verified = []
         self.analyzed = []
@@ -20,69 +30,87 @@ class IterationBase3(object):
     def __exit__(self, etype, value, traceback):
         shutil.rmtree(self.working_dir)
 
-    def _prefuzz(self):
+    def _pre_fuzz(self):
         pass
 
     def _fuzz(self):
         pass
 
-    def _postfuzz(self):
+    def _post_fuzz(self):
         pass
 
-    def _prerun(self):
+    def _pre_run(self):
         pass
 
     def _run(self):
         pass
 
-    def _postrun(self):
+    def _post_run(self):
         pass
 
-    def _preanalyze(self, testcase):
+    def _pre_analyze(self, testcase):
         pass
 
     def _analyze(self, testcase):
         '''
-        Loops through all known analyzers for a given testcase
+        Loops through all known analyzer_classes for a given testcase
         :param testcase:
         '''
-        for analyzer in self.analyzers:
-            analyzer(testcase)
+        for analyzer_class in self.analyzer_classes:
+            touch_watchdog_file()
 
-    def _postanalyze(self, testcase):
+            analyzer_instance = analyzer_class(self.cfg, testcase)
+            if analyzer_instance:
+                try:
+                    analyzer_instance.go()
+                except AnalyzerEmptyOutputError:
+                    logger.warning('Unexpected empty output from analyzer_class. Continuing')
+
+    def _post_analyze(self, testcase):
         pass
 
-    def _preverify(self, testcase):
+    def _pre_verify(self, testcase):
         pass
 
     def _verify(self, testcase):
         pass
 
-    def _postverify(self, testcase):
+    def _post_verify(self, testcase):
+        pass
+
+    def _pre_report(self, testcase):
+        pass
+
+    def _report(self, testcase):
+        pass
+
+    def _post_report(self, testcase):
         pass
 
     def fuzz(self):
-        self._prefuzz()
+        self._pre_fuzz()
         self._fuzz()
-        self._postfuzz()
+        self._post_fuzz()
 
     def run(self):
-        self._prerun()
+        self._pre_run()
         self._run()
-        self._postrun()
+        self._post_run()
 
     def verify(self, testcase):
-        self._preverify(testcase)
+        self._pre_verify(testcase)
         self._verify(testcase)
-        self._postverify(testcase)
+        self._post_verify(testcase)
 
     def analyze(self, testcase):
-        self._preanalyze(testcase)
+        self._pre_analyze(testcase)
         self._analyze(testcase)
-        self._postanalyze(testcase)
+        self._post_analyze(testcase)
 
-    def construct_report(self, testcase):
-        pass
+    def report(self, testcase):
+        self._pre_report(testcase)
+        self._report(testcase)
+        self._post_report(testcase)
 
     def go(self):
         self.fuzz()
@@ -99,6 +127,11 @@ class IterationBase3(object):
             testcase = self.candidates.pop(0)
             self.verify(testcase)
 
+        # minimize verified testcases
+        while len(self.verified) > 0:
+            testcase = self.verified.pop(0)
+            self.minimize(testcase)
+
         # analyze each verified crash
         while len(self.verified) > 0:
             testcase = self.verified.pop(0)
@@ -107,6 +140,6 @@ class IterationBase3(object):
         # construct output bundle for each analyzed test case
         while len(self.analyzed) > 0:
             testcase = self.analyzed.pop(0)
-            self.construct_report(testcase)
+            self.report(testcase)
 
 

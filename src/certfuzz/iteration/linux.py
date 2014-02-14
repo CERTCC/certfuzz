@@ -53,111 +53,13 @@ logger = logging.getLogger(__name__)
 #    crash.is_unique = not crash_dir_found
 
 
-def analyze_crasher(cfg, crash):
-    '''
-    Runs multiple analyses and collects data about a crash. Returns a list of other crashes
-    encountered during the process of analyzing the current crash.
-    @param cfg: A BFF config object
-    @param crash: A crash object
-    @return: a list of Crasher objects
-    '''
-    other_crashers_found = []
 
-    dbg_out_file_orig = crash.dbg.file
-    logger.debug('Original debugger file: %s', dbg_out_file_orig)
-
-    if cfg.minimizecrashers:
-        STATE_TIMER.enter_state('minimize_testcase')
-        # try to reduce the Hamming Distance between the crasher file and the known good seedfile
-        # crash.fuzzedfile will be replaced with the minimized result
-        try:
-            with Minimizer(cfg=cfg, crash=crash, bitwise=False,
-                           seedfile_as_target=True, confidence=0.999,
-                           tempdir=cfg.local_dir, maxtime=cfg.minimizertimeout
-                           ) as minimizer:
-                minimizer.go()
-                other_crashers_found.extend(minimizer.other_crashes.values())
-        except MinimizerError, e:
-            logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', crash.signature, e)
-            minimizer = None
-
-    touch_watchdog_file()
-    # calculate the hamming distances for this crash
-    # between the original seedfile and the minimized fuzzed file
-    crash.calculate_hamming_distances()
-
-    if cfg.minimize_to_string:
-        STATE_TIMER.enter_state('minimize_testcase_to_string')
-        # Minimize to a string of 'x's
-        # crash.fuzzedfile will be replaced with the minimized result
-        try:
-            with Minimizer(cfg=cfg, crash=crash, bitwise=False,
-                           seedfile_as_target=False, confidence=0.9,
-                           tempdir=cfg.local_dir, maxtime=cfg.minimizertimeout
-                           ) as min2string:
-                min2string.go()
-                other_crashers_found.extend(min2string.other_crashes.values())
-        except MinimizerError, e:
-            logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', crash.signature, e)
-            min2string = None
-    touch_watchdog_file()
-
-    STATE_TIMER.enter_state('analyze_testcase')
-
-    # get one last debugger output for the newly minimized file
-    if crash.pc_in_function:
-        # change the debugger template
-        crash.set_debugger_template('complete')
-    else:
-        # use a debugger template that specifies fixed offsets from $pc for disassembly
-        crash.set_debugger_template('complete_nofunction')
-    logger.info('Getting complete debugger output for crash: %s', crash.fuzzedfile.path)
-    crash.get_debug_output(crash.fuzzedfile.path)
-
-    if dbg_out_file_orig != crash.dbg.file:
-        # we have a new debugger output
-        # remove the old one
-        filetools.delete_files(dbg_out_file_orig)
-        if os.path.exists(dbg_out_file_orig):
-            logger.warning('Failed to remove old debugger file %s', dbg_out_file_orig)
-        else:
-            logger.debug('Removed old debug file %s', dbg_out_file_orig)
-
-    # use the minimized file for the rest of the analyses
-    analyzers = [
-                 stderr.StdErr,
-                 cw_gmalloc.CrashWranglerGmalloc,
-                 ]
-    if cfg.use_valgrind:
-        analyzers.extend([
-                          valgrind.Valgrind,
-                          callgrind.Callgrind,
-                          ])
-    if cfg.use_pin_calltrace:
-        analyzers.extend([
-                          pin_calltrace.Pin_calltrace,
-                          ])
-
-    for analyzer in analyzers:
-        touch_watchdog_file()
-
-        analyzer_instance = analyzer(cfg, crash)
-        if analyzer_instance:
-            try:
-                analyzer_instance.go()
-            except AnalyzerEmptyOutputError:
-                logger.warning('Unexpected empty output from analyzer. Continuing')
-
-    logger.info('Annotating callgrind output')
-    try:
-        annotate_callgrind(crash)
-        annotate_callgrind_tree(crash)
-    except CallgrindAnnotateEmptyOutputFileError:
-        logger.warning('Unexpected empty output from annotate_callgrind. Continuing')
-    except CallgrindAnnotateMissingInputFileError:
-        logger.warning('Missing callgrind output. Continuing')
-
-    return other_crashers_found
+def get_uniq_logger(logfile):
+    l = logging.getLogger('uniq_crash')
+    if len(l.handlers) == 0:
+        hdlr = logging.FileHandler(logfile)
+        l.addHandler(hdlr)
+    return l
 
 
 class Iteration(IterationBase3):
@@ -173,6 +75,8 @@ class Iteration(IterationBase3):
             self.uniq_func = lambda _tc_id: True
         else:
             self.uniq_func = uniq_func
+
+        self._setup_analyzers()
 
         # convenience aliases
         self.s1 = self.seednum
@@ -202,13 +106,136 @@ class Iteration(IterationBase3):
 #            self.sf.path, seed_str, range_str, rate_str, xd_str, xr_str, crashcount)
         logger.info('Fuzzing...crash_count=%d', crashcount)
 
+    def _setup_analyzers(self):
+        self.analyzer_classes.append(stderr.StdErr)
+        self.analyzer_classes.append(cw_gmalloc.CrashWranglerGmalloc)
+
+        if self.cfg.use_valgrind:
+            self.analyzer_classes.append(valgrind.Valgrind)
+            self.analyzer_classes.append(callgrind.Callgrind)
+
+        if self.cfg.use_pin_calltrace:
+            self.analyzer_classes.append(pin_calltrace.Pin_calltrace)
+
+    def _pre_analyze(self, testcase):
+        IterationBase3._pre_analyze(self, testcase)
+
+        other_crashers_found = []
+
+        dbg_out_file_orig = testcase.dbg.file
+        logger.debug('Original debugger file: %s', dbg_out_file_orig)
+
+        if self.cfg.minimizecrashers:
+            STATE_TIMER.enter_state('minimize_testcase')
+            # try to reduce the Hamming Distance between the crasher file and the known good seedfile
+            # crash.fuzzedfile will be replaced with the minimized result
+            try:
+                with Minimizer(cfg=self.cfg, crash=testcase, bitwise=False,
+                               seedfile_as_target=True, confidence=0.999,
+                               tempdir=self.cfg.local_dir, maxtime=self.cfg.minimizertimeout
+                               ) as minimizer:
+                    minimizer.go()
+                    other_crashers_found.extend(minimizer.other_crashes.values())
+            except MinimizerError, e:
+                logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
+                minimizer = None
+
+        touch_watchdog_file()
+        # calculate the hamming distances for this crash
+        # between the original seedfile and the minimized fuzzed file
+        testcase.calculate_hamming_distances()
+
+        if self.cfg.minimize_to_string:
+            STATE_TIMER.enter_state('minimize_testcase_to_string')
+            # Minimize to a string of 'x's
+            # crash.fuzzedfile will be replaced with the minimized result
+            try:
+                with Minimizer(cfg=self.cfg, crash=testcase, bitwise=False,
+                               seedfile_as_target=False, confidence=0.9,
+                               tempdir=self.cfg.local_dir, maxtime=self.cfg.minimizertimeout
+                               ) as min2string:
+                    min2string.go()
+                    other_crashers_found.extend(min2string.other_crashes.values())
+            except MinimizerError, e:
+                logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
+                min2string = None
+        touch_watchdog_file()
+
+                # add new crashes to the queue
+        self.candidates.extend(other_crashers_found)
+
+        STATE_TIMER.enter_state('analyze_testcase')
+
+        # get one last debugger output for the newly minimized file
+        if testcase.pc_in_function:
+            # change the debugger template
+            testcase.set_debugger_template('complete')
+        else:
+            # use a debugger template that specifies fixed offsets from $pc for disassembly
+            testcase.set_debugger_template('complete_nofunction')
+        logger.info('Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
+        testcase.get_debug_output(testcase.fuzzedfile.path)
+
+        if dbg_out_file_orig != testcase.dbg.file:
+            # we have a new debugger output
+            # remove the old one
+            filetools.delete_files(dbg_out_file_orig)
+            if os.path.exists(dbg_out_file_orig):
+                logger.warning('Failed to remove old debugger file %s', dbg_out_file_orig)
+            else:
+                logger.debug('Removed old debug file %s', dbg_out_file_orig)
+
+    def _post_analyze(self, testcase):
+        IterationBase3._post_analyze(self, testcase)
+
+        logger.info('Annotating callgrind output')
+        try:
+            annotate_callgrind(testcase)
+            annotate_callgrind_tree(testcase)
+        except CallgrindAnnotateEmptyOutputFileError:
+            logger.warning('Unexpected empty output from annotate_callgrind. Continuing')
+        except CallgrindAnnotateMissingInputFileError:
+            logger.warning('Missing callgrind output. Continuing')
+
+        if self.cfg.recycle_crashers:
+            logger.debug('Recycling crash as seedfile')
+            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
+            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
+            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
+            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+            seedfile_set.add_file(crasherseed_path)
+
+        # score this crash for the seedfile
+        testcase.seedfile.record_success(testcase.signature, tries=0)
+        if testcase.range:
+            # ...and for the range
+            testcase.range.record_success(testcase.signature, tries=0)
+
+    def _pre_report(self, testcase):
+        uniqlogger = get_uniq_logger(self.cfg.uniq_log)
+        uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
+        logger.info('%s first seen at %d', testcase.signature, testcase.seednum)
+
+        # whether it was unique or not, record some details for posterity
+        # record the details of this crash so we can regenerate it later if needed
+        testcase.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', testcase.seedfile.basename, testcase.seednum, testcase.range, testcase.fuzzedfile.path)
+        testcase.logger.info('PC=%s', testcase.pc)
+
+    def _report(self, testcase):
+        testcase.copy_files()
+
+    def _post_report(self, testcase):
+        # always clean up after yourself
+        testcase.clean_tmpdir()
+        # clean up
+        testcase.delete_files()
 
     def _verify(self, testcase):
         '''
         Confirms that a test case is interesting enough to pursue further analysis
         :param testcase:
         '''
-        IterationBase3.verify(self, testcase)
+        IterationBase3._verify(self, testcase)
 
         # if you find more testcases, append them to self.candidates
         # verified crashes append to self.verified
@@ -219,70 +246,31 @@ class Iteration(IterationBase3):
 
                 found_new_crash = False
 
-                # loop until we're out of crashes to verify
                 logger.debug('crashes to verify: %d', len(self.candidates))
                 STATE_TIMER.enter_state('verify_testcase')
 
                 tc.is_unique = self.uniq_func(tc.signature)
 
-                tc.get_logger()
 
                 if tc.is_unique:
-                    self.verified.append(tc)
-#                    # only toggle it once
-#                    if not found_new_crash:
-#                        found_new_crash = True
-
-                    more_crashes = analyze_crasher(self.cfg, tc)
-
-                    if self.cfg.recycle_crashers:
-                        logger.debug('Recycling crash as seedfile')
-                        iterstring = tc.fuzzedfile.basename.split('-')[1].split('.')[0]
-                        crasherseedname = 'sf_' + tc.seedfile.md5 + '-' + iterstring + tc.seedfile.ext
-                        crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
-                        filetools.copy_file(tc.fuzzedfile.path, crasherseed_path)
-                        seedfile_set.add_file(crasherseed_path)
-                    # add new crashes to the queue
-                    self.candidates.extend(more_crashes)
-                    tc.copy_files()
-
-                    uniqlogger = get_uniq_logger(self.cfg.uniq_log)
-                    uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', tc.seedfile.basename, tc.signature, tc.seednum, tc.range, tc.hd_bits, tc.hd_bytes)
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
+                    self.verified.append(tc)
                 else:
                     logger.debug('%s was found, not unique', tc.signature)
-                # always clean up after yourself
-                tc.clean_tmpdir()
 
-                # clean up
-                tc.delete_files()
-                # whether it was unique or not, record some details for posterity
-                # record the details of this crash so we can regenerate it later if needed
-                tc.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', tc.seedfile.basename, tc.seednum, tc.range, tc.fuzzedfile.path)
-                tc.logger.info('PC=%s', tc.pc)
-
-                # score this crash for the seedfile
-                tc.seedfile.record_success(tc.signature, tries=0)
-                if tc.range:
-                    # ...and for the range
-                    tc.range.record_success(tc.signature, tries=0)
-
-                new_uniq_crash = found_new_crash
 
             # record the zzuf log line for this crash
             if not tc.logger:
                 tc.get_logger()
-            tc.logger.debug("zzuflog: %s", zzuf_log.line)
-            tc.logger.info('Command: %s', testcase.cmdline)
 
-    def construct_report(self, testcase):
+    def report(self, testcase):
         '''
         Constructs a report package for the test case
         :param testcase:
         '''
 
-    def _prerun(self):
-        IterationBase3._prerun(self)
+    def _pre_run(self):
+        IterationBase3._pre_run(self)
         # do the fuzz
         cmdline = self.cfg.get_command(self.sf.path)
 
@@ -302,8 +290,8 @@ class Iteration(IterationBase3):
         IterationBase3._run(self)
         self.zzuf.go()
 
-    def _postrun(self):
-        IterationBase3._postrun(self)
+    def _post_run(self):
+        IterationBase3._post_run(self)
 
         STATE_TIMER.enter_state('checking_results')
             # we must have made it through this chunk without a crash
@@ -333,14 +321,18 @@ class Iteration(IterationBase3):
         self.cfg.create_tmpdir()
         outfile = self.cfg.get_testcase_outfile(self.seedfile.path, self.s1)
         logger.debug('Output file is %s', outfile)
-        testcase = self.zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
+        self.zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
 
         # Do internal verification using GDB / Valgrind / Stderr
         fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
 
-        crasher = BffCrash(self.cfg, self.seedfile, fuzzedfile, self.cfg.program, self.cfg.debugger_timeout,
+        testcase = BffCrash(self.cfg, self.seedfile, fuzzedfile, self.cfg.program, self.cfg.debugger_timeout,
                       self.cfg.killprocname, self.cfg.backtracelevels,
                       self.cfg.crashers_dir, self.s1, self.r)
 
-        self.candidates.append(crasher)
+        testcase.get_logger()
+        testcase.logger.debug("zzuflog: %s", zzuf_log.line)
+#        testcase.logger.info('Command: %s', testcase.cmdline)
+
+        self.candidates.append(testcase)
 
