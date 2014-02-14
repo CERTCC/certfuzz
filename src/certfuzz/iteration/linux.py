@@ -12,7 +12,6 @@ from ..analyzers.callgrind.annotate import annotate_callgrind
 from ..analyzers.callgrind.annotate import annotate_callgrind_tree
 from ..analyzers.callgrind.errors import CallgrindAnnotateEmptyOutputFileError
 from ..analyzers.callgrind.errors import CallgrindAnnotateMissingInputFileError
-from ..analyzers.errors import AnalyzerEmptyOutputError
 from ..crash.bff_crash import BffCrash
 from ..debuggers import crashwrangler  # @UnusedImport
 from ..debuggers import gdb  # @UnusedImport
@@ -23,34 +22,11 @@ from ..fuzztools.zzuflog import ZzufLog
 from ..minimizer import MinimizerError, UnixMinimizer as Minimizer
 import os
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
-import tempfile
-import shutil
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.iteration_base3 import IterationBase3
 
 logger = logging.getLogger(__name__)
 
-
-#def determine_uniqueness(crash, hashes):
-#    '''
-#    Gets the crash signature, then compares it against known crashes.
-#    Sets crash.is_unique = True if it is new
-#    '''
-#
-#    # short-circuit on crashes with no signature
-#    if not crash.signature:
-#        logger.warning('Crash has no signature, cleaning up')
-#        crash.delete_files()
-#        return
-#
-#    if crash.signature in hashes:
-#        crash.is_unique = False
-#        return
-#
-#    # fall back to checking if the crash directory exists
-#    crash_dir_found = filetools.find_or_create_dir(crash.result_dir)
-#
-#    crash.is_unique = not crash_dir_found
 
 def get_uniq_logger(logfile):
     l = logging.getLogger('uniq_crash')
