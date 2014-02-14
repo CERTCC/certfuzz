@@ -191,9 +191,7 @@ class Iteration(IterationBase3):
                     self.dbg_out_file_orig = testcase.dbg.file
                     logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
 
-                    new_testcases = self._minimize(tc)
-                    # add any new candidates for verification to the candidates list
-                    self.candidates.extend(new_testcases)
+                    self._minimize(tc)
 
                     # we're ready to proceed with this testcase
                     # so add it to the verified list
@@ -202,45 +200,40 @@ class Iteration(IterationBase3):
                     logger.debug('%s was found, not unique', tc.signature)
 
     def _minimize(self, testcase):
-        other_crashers_found = []
-
         if self.cfg.minimizecrashers:
-            STATE_TIMER.enter_state('minimize_testcase')
-            # try to reduce the Hamming Distance between the crasher file and the known good seedfile
-            # crash.fuzzedfile will be replaced with the minimized result
-            try:
-                with Minimizer(cfg=self.cfg, crash=testcase, bitwise=False,
-                               seedfile_as_target=True, confidence=0.999,
-                               tempdir=self.cfg.local_dir, maxtime=self.cfg.minimizertimeout
-                               ) as minimizer:
-                    minimizer.go()
-                    other_crashers_found.extend(minimizer.other_crashes.values())
-            except MinimizerError, e:
-                logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
-                minimizer = None
+            self._mininimize_to_seedfile(testcase)
+        if self.cfg.minimize_to_string:
+            self._minimize_to_string(testcase)
 
-        touch_watchdog_file()
+    def _mininimize_to_seedfile(self, testcase):
+        self._minimize_generic(testcase, sftarget=True, confidence=0.999)
         # calculate the hamming distances for this crash
         # between the original seedfile and the minimized fuzzed file
         testcase.calculate_hamming_distances()
 
-        if self.cfg.minimize_to_string:
-            STATE_TIMER.enter_state('minimize_testcase_to_string')
-            # Minimize to a string of 'x's
-            # crash.fuzzedfile will be replaced with the minimized result
-            try:
-                with Minimizer(cfg=self.cfg, crash=testcase, bitwise=False,
-                               seedfile_as_target=False, confidence=0.9,
-                               tempdir=self.cfg.local_dir, maxtime=self.cfg.minimizertimeout
-                               ) as min2string:
-                    min2string.go()
-                    other_crashers_found.extend(min2string.other_crashes.values())
-            except MinimizerError, e:
-                logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
-                min2string = None
+    def _minimize_to_string(self, testcase):
+        self._minimize_generic(testcase, sftarget=False, confidence=0.9)
+
+    def _minimize_generic(self, testcase, sftarget=True, confidence=0.999):
         touch_watchdog_file()
 
-        return other_crashers_found
+        STATE_TIMER.enter_state('minimize_testcase')
+        # try to reduce the Hamming Distance between the crasher file and the known good seedfile
+        # crash.fuzzedfile will be replaced with the minimized result
+        try:
+            with Minimizer(cfg=self.cfg,
+                           crash=testcase,
+                           bitwise=False,
+                           seedfile_as_target=sftarget,
+                           confidence=confidence,
+                           tempdir=self.cfg.local_dir,
+                           maxtime=self.cfg.minimizertimeout
+                           ) as m:
+                m.go()
+                self.candidates.extend(m.other_crashes.values())
+        except MinimizerError as e:
+            logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
+            m = None
 
     def _pre_analyze(self, testcase):
         IterationBase3._pre_analyze(self, testcase)
