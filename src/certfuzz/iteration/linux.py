@@ -160,9 +160,8 @@ class Iteration(IterationBase3):
                             seednum=self.s1,
                             range=self.r)
 
-            # record the zzuf log line for this crash
-        if not testcase.logger:
-            testcase.get_logger()
+        # record the zzuf log line for this crash
+        testcase.get_logger()
 
         testcase.logger.debug("zzuflog: %s", zzuf_log.line)
 #        testcase.logger.info('Command: %s', testcase.cmdline)
