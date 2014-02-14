@@ -36,12 +36,6 @@ logger.setLevel(0)
 #    return rate
 
 
-def get_uniq_logger(logfile):
-    l = logging.getLogger('uniq_crash')
-    if len(l.handlers) == 0:
-        hdlr = logging.FileHandler(logfile)
-        l.addHandler(hdlr)
-    return l
 
 
 def setup_logging_to_console(log_obj, level):
