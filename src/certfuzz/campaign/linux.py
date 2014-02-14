@@ -97,7 +97,8 @@ class Campaign(object):
         return self
 
     def __exit__(self, etype, value, mytraceback):
-        handled = False
+        handled = not etype
+
         if etype is KeyboardInterrupt:
             logger.warning('Keyboard interrupt - exiting')
             handled = True
@@ -105,22 +106,22 @@ class Campaign(object):
             logger.warning("Please configure BFF to fuzz a binary.  Exiting...")
             handled = True
 
-        # if etype not set or if we handled it
-        if not etype or handled:
-            shutil.rmtree(self.working_dir)
-        elif etype:
+        if handled:
+            self._cleanup_workdir()
+        elif self.debug:
+            # Not handled, debug set
+
+            # leave it behind if we're in debug mode
+            # and there's a problem
+            logger.debug('Skipping cleanup since we are in debug mode.')
+        else:
+            # Not handled, debug not set
+
             logger.debug('Unhandled exception:')
             logger.debug('  type: %s', etype)
             logger.debug('  value: %s', value)
             for l in traceback.format_exception(etype, value, mytraceback):
                 logger.debug(l.rstrip())
-
-        if self.debug and etype and not handled:
-            # leave it behind if we're in debug mode
-            # and there's a problem
-            logger.debug('Skipping cleanup since we are in debug mode.')
-        else:
-            self._cleanup_workdir()
 
         return handled
 
