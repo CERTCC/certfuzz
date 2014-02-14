@@ -18,7 +18,6 @@ except ImportError:
     pass
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 debugger = None
 host_info = hostinfo.HostInfo()
