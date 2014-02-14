@@ -77,6 +77,8 @@ class IterationBase3(object):
                 except AnalyzerEmptyOutputError:
                     logger.warning('Unexpected empty output from analyzer_class. Continuing')
 
+        self.analyzed.append(testcase)
+
     def _post_analyze(self, testcase):
         pass
 
