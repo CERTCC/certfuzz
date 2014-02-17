@@ -162,24 +162,24 @@ class DebuggerFile(object):
                 logger.debug('bt=%s', bt)
                 frame_address = 0
                 bt_frame = None
-                
-                # Get the address of the current backtrace frame                
+
+                # Get the address of the current backtrace frame
                 n = re.match(regex['bt_addr'], bt)
                 if n:
                     # Get the frame address from the backtrace line
                     bt_frame = n.group(1)
                     frame_address = int(bt_frame, 16)
-                    
+
                 elif self.registers_hex.get(self.pc_name) and not self.used_pc:
                     # Backtrace entry #0 doesn't have an address listed, so use EIP instead
                     # But set a flag not to use EIP again, as inline frames behave the same way
                     self.used_pc = True
-                    frame_address = int(self.registers_hex[self.pc_name], 16)  
+                    frame_address = int(self.registers_hex[self.pc_name], 16)
 
                 if self.libc_start_addr < frame_address < self.libc_end_addr:
                     # Don't include any backtrace frames that are in libc
                     continue
-                
+
                 if self.libgcc_start_addr < frame_address < self.libgcc_end_addr:
                     # Don't include any backtrace frames that are in libgcc
                     continue
@@ -188,7 +188,7 @@ class DebuggerFile(object):
                 x = re.match(regex['bt_function'], bt)
                 if x and x.group(1) in blacklist:
                     continue
-                             
+
                 # If debug symbols are available, the backtrace will include the line number
                 m = re.search(regex['bt_at'], bt)
                 if m:
@@ -199,7 +199,7 @@ class DebuggerFile(object):
                     if '/sysdeps/' in bt_frame:
                         logger.debug('Found sysdeps, skipping')
                         continue
-                    
+
                 # Append either the frame address or source code line number
                 if bt_frame:
                     hashable.append(bt_frame)
@@ -250,7 +250,7 @@ class DebuggerFile(object):
     def backtrace_line(self, idx, l):
         m = re.match(regex['bt_line'], l)
         if m:
-            item = m.group(1)  
+            item = m.group(1)
             # sometimes gdb splits across lines
             # so get the next one if it looks like '<anything> at <foo>' or '<anything> from <foo>'
             next_idx = idx + 1
@@ -409,7 +409,7 @@ class DebuggerFile(object):
         if not self.is_crash:
             return
 
-        logger.debug('_look_for_crash')
+#        logger.debug('_look_for_crash')
         if 'SIGKILL' in line:
             self.is_crash = False
         elif 'SIGHUP' in line:
@@ -457,7 +457,7 @@ class DebuggerFile(object):
         if ' at ' in line:
             logger.debug('Debug build = True')
             self.is_debugbuild = True
-            
+
     def _look_for_64bit(self, line):
         '''
         Check for 64-bit process by looking at address of bt frame addresses
@@ -473,7 +473,7 @@ class DebuggerFile(object):
                 logger.debug('Target process is 64-bit')
                 self.pc_name = 'rip'
                 self.registers_sought = list(registers64)
-            
+
     def _look_for_libc_location(self, line):
         '''
         Get start and end address of libc library, for blacklisting purposes
