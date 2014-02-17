@@ -36,7 +36,6 @@ from ..debuggers import gdb  # @UnusedImport
 from ..file_handlers.seedfile_set import SeedfileSet
 from ..file_handlers.tmp_reaper import TmpReaper
 from ..fuzztools import bff_helper as z, filetools, performance
-from ..fuzztools.object_caching import cache_state, get_cached_state
 from ..fuzztools.process_killer import ProcessKiller
 from ..fuzztools.seedrange import SeedRange
 from ..fuzztools.state_timer import StateTimer

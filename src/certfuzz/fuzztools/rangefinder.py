@@ -8,7 +8,6 @@ import math
 
 from certfuzz.fuzztools.errors import RangeFinderError
 from certfuzz.fuzztools.range import Range
-from certfuzz.scoring.scorable_set import ScorableSet2
 from certfuzz.scoring.multiarmed_bandit.bayesian_bandit import BayesianMultiArmedBandit as MultiArmedBandit
 
 range_scale_factor = (math.sqrt(5) + 1.0) / 2.0
