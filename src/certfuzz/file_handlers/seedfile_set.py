@@ -7,18 +7,16 @@ import logging
 import os
 
 from certfuzz.file_handlers.directory import Directory
-from certfuzz.file_handlers.errors import SeedFileError
+from certfuzz.file_handlers.errors import SeedFileError, SeedfileSetError
 from certfuzz.file_handlers.seedfile import SeedFile
 from certfuzz.fuzztools import filetools
-from certfuzz.scoring.errors import EmptySetError
 
 # Using a generic name here so we can easily swap out other MAB implementations if we want to
-from ..scoring.multiarmed_bandit.bayesian_bandit import BayesianMultiArmedBandit as MultiArmedBandit
+from certfuzz.scoring.multiarmed_bandit.bayesian_bandit import BayesianMultiArmedBandit as MultiArmedBandit
 
 logger = logging.getLogger(__name__)
 
 
-class SeedfileSet(ScorableSet3):
 class SeedfileSet(MultiArmedBandit):
     '''
     classdocs
@@ -109,7 +107,7 @@ class SeedfileSet(MultiArmedBandit):
         seedfiles from the set
         '''
         if not len(self.things):
-            raise EmptySetError
+            raise SeedfileSetError
 
         while len(self.things):
             logger.debug('Thing count: %d', len(self.things))

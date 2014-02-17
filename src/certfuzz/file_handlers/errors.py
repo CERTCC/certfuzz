@@ -24,3 +24,7 @@ class SeedFileError(BasicFileError):
 
 class DirectoryError(FileHandlerError):
     pass
+
+
+class SeedfileSetError(FileHandlerError):
+    pass
