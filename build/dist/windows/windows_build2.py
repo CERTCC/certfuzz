@@ -41,5 +41,7 @@ class WindowsBuild(Build):
         if self.build_dir:
             distpath = os.path.join(self.build_dir, distpath)
         
-        exefile = '%s\..\..\FOE-%s-setup.exe' % (distpath, version_string)
+        exename = 'FOE-%s-setup.exe' % version_string
+        exefile = '%s\..\..\%s' % (distpath, exename)
+        self.target = os.path.join(os.path.dirname(self.target), exename)
         self._move_to_target(exefile)
