@@ -30,11 +30,16 @@ class WindowsBuild(Build):
 
         nsifile = os.path.join(self.build_dir, 'foe2.nsi')
 
+        version_string = "02.01.00.99"
         # generate the nsi file
-        buildnsi.main(version_string="02.01.00.99", outfile=nsifile, build_dir=self.build_dir)
+        buildnsi.main(version_string=version_string, outfile=nsifile, build_dir=self.build_dir)
 
         # invoke makensis on the file we just made
         subprocess.call(['makensis', nsifile])
         
-        tmpzip = self._create_zip()
-        self._move_to_target(tmpzip)
+        distpath = 'BFF-windows-export'
+        if self.build_dir:
+            distpath = os.path.join(self.build_dir, distpath)
+        
+        exefile = '%s\..\..\FOE-%s-setup.exe' % (distpath, version_string)
+        self._move_to_target(exefile)
