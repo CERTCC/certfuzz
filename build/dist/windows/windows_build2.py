@@ -35,3 +35,6 @@ class WindowsBuild(Build):
 
         # invoke makensis on the file we just made
         subprocess.call(['makensis', nsifile])
+        
+        tmpzip = self._create_zip()
+        self._move_to_target(tmpzip)
