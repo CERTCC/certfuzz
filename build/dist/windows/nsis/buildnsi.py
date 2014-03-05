@@ -43,8 +43,8 @@ def main(version_string='', outfile=None, build_dir=None):
 
     fp.write(headertext)
 
-    for path, dirs, files in os.walk(distpath):
-        realpath = string.replace(path, distpath, "")
+    for path, dirs, files in os.walk(build_dir):
+        realpath = string.replace(path, build_dir, "")
         fp.write('SetOutPath "$INSTDIR%s"\n' % realpath)
         for bfffile in files:
             filepath = os.path.join(os.path.abspath(path), bfffile)
