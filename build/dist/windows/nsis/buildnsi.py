@@ -10,12 +10,9 @@ import string
 
 def main(version_string='', outfile=None, build_dir=None):
 
-    distpath = ''
-
+    distpath = 'BFF-windows-export'
     if build_dir:
-        distpath = '%s\BFF-windows-export' % build_dir
-    else:
-        distpath = 'BFF-windows-export'
+        distpath = os.path.join(build_dir, distpath)
 
     # either open a file for writing, or just dump to stdout
     if outfile:
@@ -41,6 +38,7 @@ def main(version_string='', outfile=None, build_dir=None):
     headertext = headerfile.read()
     headerfile.close()
 
+    # Write installer section
     fp.write(headertext)
 
     for path, dirs, files in os.walk(build_dir):
@@ -54,11 +52,14 @@ def main(version_string='', outfile=None, build_dir=None):
     midtext = midfile.read()
     midfile.close()
 
+    # End of installer section 
+    
+    # Write uninstaller section
     fp.write(midtext)
 
     dirlist = []
-    for path, dirs, files in os.walk(distpath):
-        realpath = string.replace(path, distpath, "")
+    for path, dirs, files in os.walk(build_dir):
+        realpath = string.replace(path, build_dir, "")
         for bfffile in files:
             fp.write('Delete "$INSTDIR%s\%s"\n' % (realpath, bfffile))
             # Remove .pyc files as well.
