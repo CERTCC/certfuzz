@@ -9,12 +9,11 @@ import os
 from subprocess import Popen
 import logging
 from optparse import OptionParser
+from certfuzz.analyzers.callgrind.annotation_file import AnnotationFile
+from certfuzz.analyzers.callgrind import callgrind
+from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateMissingInputFileError, \
+    CallgrindAnnotateNoOutputFileError, CallgrindAnnotateEmptyOutputFileError
 
-from . import callgrind
-from .errors import CallgrindAnnotateMissingInputFileError
-from .errors import CallgrindAnnotateEmptyOutputFileError
-from .errors import CallgrindAnnotateNoOutputFileError
-from .annotation_file import AnnotationFile
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

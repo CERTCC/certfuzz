@@ -5,11 +5,10 @@ Created on Aug 5, 2011
 '''
 import platform
 import os.path
+from certfuzz.analyzers.analyzer_base import Analyzer
 
 _platforms = ['Darwin']
 _platform_is_supported = platform.system() in _platforms
-
-from . import Analyzer
 
 
 OUTFILE_EXT = "gmalloc"

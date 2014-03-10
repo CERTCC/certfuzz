@@ -5,7 +5,7 @@ Created on Aug 8, 2011
 '''
 
 import unittest
-from certfuzz.analyzers import Analyzer
+from certfuzz.analyzers.analyzer_base import Analyzer
 
 class MockObj(object):
     def __init__(self, **kwargs):

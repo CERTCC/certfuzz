@@ -8,7 +8,7 @@ Provides a wrapper around valgrind.
 
 import logging
 import os
-from . import Analyzer
+from certfuzz.analyzers.analyzer_base import Analyzer
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

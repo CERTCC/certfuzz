@@ -6,8 +6,8 @@ Created on Oct 23, 2012
 import logging
 import os
 
-from ..fuzztools import subprocess_helper as subp
-from .errors import AnalyzerOutputMissingError, AnalyzerEmptyOutputError
+from certfuzz.fuzztools import subprocess_helper as subp
+from certfuzz.analyzers.errors import AnalyzerOutputMissingError, AnalyzerEmptyOutputError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

@@ -6,7 +6,7 @@ Provides a wrapper around gdb.
 @organization: cert.org
 '''
 import logging
-from . import Analyzer
+from certfuzz.analyzers.analyzer_base import Analyzer
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

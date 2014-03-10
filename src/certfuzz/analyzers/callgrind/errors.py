@@ -3,7 +3,7 @@ Created on Oct 23, 2012
 
 @organization: cert.org
 '''
-from ..errors import AnalyzerError
+from certfuzz.analyzers.errors import AnalyzerError
 
 
 class CallgrindAnnotateError(AnalyzerError):

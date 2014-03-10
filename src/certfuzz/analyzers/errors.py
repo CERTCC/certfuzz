@@ -3,7 +3,7 @@ Created on Jan 10, 2014
 
 @author: adh
 '''
-from ..errors import CERTFuzzError
+from certfuzz.errors import CERTFuzzError
 
 
 class AnalyzerError(CERTFuzzError):
