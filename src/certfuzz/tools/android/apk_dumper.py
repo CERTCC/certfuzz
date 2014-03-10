@@ -5,8 +5,8 @@ Created on Feb 28, 2013
 '''
 import logging
 import argparse
-from ...android.api.aapt import Aapt
-from ...android.api.android_manifest import AndroidManifest
+from certfuzz.android.api.aapt import Aapt
+from certfuzz.android.api.android_manifest import AndroidManifest
 import os
 
 

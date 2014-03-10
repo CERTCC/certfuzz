@@ -9,7 +9,7 @@ import os
 import shutil
 import yaml
 import argparse
-from ...android.api.log_helper import log_formatter
+from certfuzz.android.api.log_helper import log_formatter
 
 logger = logging.getLogger()
 hdlr = logging.StreamHandler()

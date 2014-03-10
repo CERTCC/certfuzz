@@ -4,47 +4,32 @@ Created on Feb 12, 2014
 @author: adh
 '''
 
+import itertools
 import logging
 from logging.handlers import RotatingFileHandler
-from optparse import OptionParser
 import os
-import platform
-import sys
-import time
-
-from .. import debuggers, file_handlers
-from ..analyzers import cw_gmalloc, pin_calltrace, stderr, valgrind
-from ..analyzers.callgrind import callgrind
-from ..analyzers.callgrind.annotate import annotate_callgrind
-from ..analyzers.callgrind.annotate import annotate_callgrind_tree
-from ..analyzers.callgrind.errors import CallgrindAnnotateEmptyOutputFileError
-from ..analyzers.callgrind.errors import CallgrindAnnotateMissingInputFileError
-from ..analyzers.errors import AnalyzerEmptyOutputError
-from ..campaign.config import bff_config as cfg_helper
-from ..crash.bff_crash import BffCrash
-from ..debuggers import crashwrangler  # @UnusedImport
-from ..debuggers import gdb  # @UnusedImport
-from ..file_handlers.seedfile_set import SeedfileSet
-from ..file_handlers.tmp_reaper import TmpReaper
-from ..fuzztools import bff_helper as z, filetools, performance
-from ..fuzztools.object_caching import cache_state, get_cached_state
-from ..fuzztools.process_killer import ProcessKiller
-from ..fuzztools.seedrange import SeedRange
-from ..fuzztools.state_timer import STATE_TIMER
-from ..fuzztools.watchdog import WatchDog
-from ..fuzztools.zzuf import Zzuf
-from ..fuzztools.zzuflog import ZzufLog
-from ..minimizer import MinimizerError, UnixMinimizer as Minimizer
-from certfuzz.iteration.linux import Iteration
-from certfuzz.campaign.errors import CampaignScriptError
-from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 import shutil
+import sys
 import tempfile
-from certfuzz.fuzztools.filetools import mkdir_p
-from ..fuzztools import subprocess_helper as subp
-import itertools
-from certfuzz.fuzztools.ppid_observer import check_ppid
+import time
 import traceback
+
+from certfuzz.campaign.config import bff_config as cfg_helper
+from certfuzz.campaign.errors import CampaignScriptError
+from certfuzz.debuggers import crashwrangler  # @UnusedImport
+from certfuzz.debuggers import gdb  # @UnusedImport
+from certfuzz.debuggers.registration import verify_supported_platform
+from certfuzz.file_handlers.seedfile_set import SeedfileSet
+from certfuzz.file_handlers.tmp_reaper import TmpReaper
+from certfuzz.fuzztools import subprocess_helper as subp
+from certfuzz.fuzztools.filetools import mkdir_p, make_directories, copy_file
+from certfuzz.fuzztools.process_killer import ProcessKiller
+from certfuzz.fuzztools.state_timer import STATE_TIMER
+from certfuzz.fuzztools.watchdog import WatchDog
+
+from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
+from certfuzz.fuzztools.ppid_observer import check_ppid
+from certfuzz.iteration.linux import Iteration
 
 
 logger = logging.getLogger(__name__)
@@ -65,7 +50,7 @@ class Campaign(object):
         self.crashes_seen = set()
 
         # give up if we don't have a debugger
-        debuggers.verify_supported_platform()
+        verify_supported_platform()
 
     def __enter__(self):
 
@@ -161,7 +146,7 @@ class Campaign(object):
         @param log_basename: the basename of the logfile (defaults to 'bff_log.txt')
         @param level: the logging level (defaults to logging.DEBUG)
         '''
-        filetools.make_directories(logdir)
+        make_directories(logdir)
         logfile = os.path.join(logdir, log_basename)
         hdlr = RotatingFileHandler(logfile, maxBytes=max_bytes, backupCount=backup_count)
         formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s")
@@ -175,7 +160,7 @@ class Campaign(object):
     def _copy_config(self):
         logger.debug('copy config')
 
-        filetools.copy_file(self.cfg_path, self.cfg.output_dir)
+        copy_file(self.cfg_path, self.cfg.output_dir)
 
     def _set_unbuffered_stdout(self):
         '''
