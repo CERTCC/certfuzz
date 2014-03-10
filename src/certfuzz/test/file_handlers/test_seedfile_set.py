@@ -12,9 +12,6 @@ from pprint import pprint
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.file_handlers.directory import Directory
 from certfuzz.file_handlers.seedfile import SeedFile
-import hashlib
-from certfuzz.scoring.scorable_set import EmptySetError
-#from pprint import pprint
 
 
 class Test(unittest.TestCase):
