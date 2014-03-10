@@ -2,5 +2,5 @@
 The certfuzz package forms the basis of the CERT Failure Observation Engine (FOE)
 and Basic Fuzzing Framework (BFF).
 '''
-from .errors import CERTFuzzError
-from .defaults import __version__
+from certfuzz.errors import CERTFuzzError
+from certfuzz.version import __version__
