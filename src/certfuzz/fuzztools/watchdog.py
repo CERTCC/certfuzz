@@ -15,6 +15,7 @@ supported_systems = ['Linux']
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 class WatchDog:
     def __init__(self, file, timeout):
         self.file = file

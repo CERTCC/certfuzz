@@ -16,23 +16,26 @@ import string
 def on_windows():
     return (platform.system() == "Windows")
 
+
 def on_osx():
     return (platform.system() == "Darwin")
+
 
 def on_linux():
     return (platform.system() == "Linux")
 
 if on_windows():
     import ctypes
-    
+
 if on_linux():
     #gdb can cause SIGTTOU to get sent to python. We don't want python to stop.
     signal.signal(signal.SIGTTOU, signal.SIG_IGN)
 
+
 def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
     '''
-    Runs <command_line>. If it takes longer than <timeout> we'll 
-    kill <command_line> as well as hunt down any processes named 
+    Runs <command_line>. If it takes longer than <timeout> we'll
+    kill <command_line> as well as hunt down any processes named
     <killprocname>. If you want to redirect stdout and/or stderr,
     use stdout=<stdout_file> or stderr=<stderr_file> (or both).
     @return: none
@@ -78,13 +81,15 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
     [fh.close() for fh in (output, errors)]
     return p
 
+
 def run_without_timer(command):
     '''
     Runs command, returns return code
     '''
     return subprocess.call(command, shell=True)
 
-def _kill(p, returncode, killprocname): #@UnusedVariable
+
+def _kill(p, returncode, killprocname):  #@UnusedVariable
     if (on_windows()):
         """_kill function for Win32"""
         kernel32 = ctypes.windll.kernel32
@@ -96,6 +101,7 @@ def _kill(p, returncode, killprocname): #@UnusedVariable
         if(killprocname):
             killall(killprocname, signal.SIGKILL)
     return (0 != ret)
+
 
 def killall(processname, killsignal):
     assert (processname != ''), "Cannot kill a blank process name"

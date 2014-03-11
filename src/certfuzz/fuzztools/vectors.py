@@ -29,8 +29,10 @@ def compare(d1, d2):
 
     return similarity(v1, v2)
 
+
 def similarity(v1, v2):
     return cos(v1, v2)
+
 
 def cos(v1, v2):
     assert len(v1) == len(v2), 'Cannot compare vectors of unequal length'
@@ -42,6 +44,7 @@ def cos(v1, v2):
     assert 0 <= sim <= 1.0, 'Similarity out of range: %f' % sim
 
     return sim
+
 
 def dot(v1, v2):
     '''
@@ -56,11 +59,13 @@ def dot(v1, v2):
     total = sum(products)
     return total
 
+
 def norm(v):
     squares = [float(x) * float(x) for x in v]
     total = sum(squares)
     sqrt = math.sqrt(total)
     return sqrt
+
 
 class Vector(object):
     def __init__(self, v):

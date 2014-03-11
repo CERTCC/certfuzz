@@ -25,6 +25,7 @@ def _pattern(iterables, length):
             pattern = ''.join(pattern_parts)
             return pattern[:length]
 
+
 def metasploit_pattern_orig(length):
     '''
     Returns the standard metasploit non-repeating pattern "Aa0Aa1...Zz9" as
@@ -41,6 +42,7 @@ def metasploit_pattern_orig(length):
                 string.digits]
 
     return _pattern(iterables, length)
+
 
 def metasploit_pattern_extended(length):
     '''
@@ -63,6 +65,7 @@ def metasploit_pattern_extended(length):
 def metasploit_pattern(length):
     return metasploit_pattern_extended(length)
 
+
 def _enumerate_string(content, occurences):
     '''
     Replace each position in content given in occurences with
@@ -84,6 +87,7 @@ def _enumerate_string(content, occurences):
             p = pos + offset
             byte_buffer[p] = substr[offset]
     return byte_buffer
+
 
 def enumerate_string(path=None, str_to_enum=None):
     '''

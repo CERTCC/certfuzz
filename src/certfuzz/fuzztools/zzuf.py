@@ -32,6 +32,7 @@ class ZzufTestCase:
     def generate(self):
         subp.run_without_timer(self.cmdline)
 
+
 class Zzuf:
     def __init__(self, dir, s1, s2, cmd, seedfile, file, copymode, ratiomin, ratiomax, timeout, quiet=True):
         '''

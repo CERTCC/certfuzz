@@ -24,6 +24,7 @@ BACKOFF_FACTOR = 2
 
 logger = logging.getLogger(__name__)
 
+
 def exponential_backoff(F):
     def wrapper(*args, **kwargs):
         naptime = 0.0
@@ -61,6 +62,7 @@ def mkdir_p(path):
 
 find_or_create_dir = mkdir_p
 
+
 # file system helpers
 def make_directories(*paths):
     '''
@@ -71,8 +73,10 @@ def make_directories(*paths):
         if not os.path.exists(d):
             mkdir_p(d)
 
+
 def delete_files(*files):
     delete_files2(files)
+
 
 @exponential_backoff
 def delete_files2(files=[]):
@@ -90,6 +94,7 @@ def delete_files2(files=[]):
             for x in os.listdir(d):
                 logger.debug('... %s', x)
 
+
 def best_effort_copy(src, dst):
     copied = False
     try:
@@ -99,6 +104,7 @@ def best_effort_copy(src, dst):
         logger.warning('Unable to copy file: %s', e)
     return copied
 
+
 def best_effort_delete(target):
     deleted = False
     try:
@@ -107,6 +113,7 @@ def best_effort_delete(target):
     except OSError, e:
         logger.warning('Unable to remove file: %s', e)
     return deleted
+
 
 def best_effort_move(src, dst):
     '''
@@ -130,16 +137,20 @@ def best_effort_move(src, dst):
             deleted = best_effort_delete(src)
     return copied, deleted
 
+
 def move_files(dst, *files):
     '''
     Move each file in files to dst.
     @param dst: file path or dir
     @param files: one or more source paths
     '''
-    if not os.path.isdir(dst): return
+    if not os.path.isdir(dst):
+        return
+
     for src in files:
         if os.path.exists(src):
             move_file(src, dst)
+
 
 def move_file(src, *targets):
     '''
@@ -150,12 +161,15 @@ def move_file(src, *targets):
     '''
     move_file2(src=src, targets=targets)
 
+
 @exponential_backoff
 def move_file2(src=None, targets=[]):
-    if not os.path.exists(src): return
+    if not os.path.exists(src):
+        return
 
     for dst in targets:
         shutil.move(src, dst)
+
 
 def copy_files(dst, *files):
     '''
@@ -163,14 +177,17 @@ def copy_files(dst, *files):
     '''
 
     # short-circuit unless target dir exists
-    if not os.path.isdir(dst): return
+    if not os.path.isdir(dst):
+        return
 
     for src in files:
         if os.path.exists(src):
             copy_file(src, dst)
 
+
 def copy_file(src, *targets):
     copy_file2(src=src, targets=targets)
+
 
 @exponential_backoff
 def copy_file2(src=None, targets=[]):
@@ -179,14 +196,17 @@ def copy_file2(src=None, targets=[]):
     @return: none
     '''
     # short-circuit unless file exists
-    if not os.path.exists(src): return
+    if not os.path.exists(src):
+        return
 
     for dst in targets:
         shutil.copy(src, dst)
 
+
 def mkdtemp(base_dir=None):
     path = tempfile.mkdtemp(prefix='BFF-', dir=base_dir)
     return path
+
 
 def write_oneline_to_file(line, dst, mode):
     '''
@@ -196,6 +216,7 @@ def write_oneline_to_file(line, dst, mode):
     with open(dst, mode) as f:
         f.write("%s\n" % line)
 
+
 def get_file_md5(infile):
     h = hashlib.md5()
 
@@ -204,14 +225,17 @@ def get_file_md5(infile):
 
     return h.hexdigest()
 
+
 @exponential_backoff
 def write_file2(data=None, dst=None):
     logger.debug('Write to %s', dst)
     with open(dst, 'wb') as output_file:
         output_file.write(data)
 
+
 def write_file(data, dst):
     write_file2(data=data, dst=dst)
+
 
 def get_newpath(oldpath, str_to_insert):
     '''
@@ -224,6 +248,7 @@ def get_newpath(oldpath, str_to_insert):
     newpath = ''.join([root, str_to_insert, ext])
     return newpath
 
+
 def all_files_nonzero_length(root, patterns='*', single_level=False, yield_folders=False):
     '''
     Wrapper around all_files to only return files of nonzero length
@@ -235,6 +260,7 @@ def all_files_nonzero_length(root, patterns='*', single_level=False, yield_folde
     for filepath in all_files(root, patterns, single_level, yield_folders):
         if os.path.getsize(filepath):
             yield filepath
+
 
 def delete_files_or_dirs(dirlist, print_via_log=True):
     skipped_items = []
@@ -263,6 +289,7 @@ def delete_files_or_dirs(dirlist, print_via_log=True):
             skipped_items.append((item_path, 'Not a file or dir'))
     return skipped_items
 
+
 def delete_contents_of(dirs, print_via_log=True):
     dirlist = []
     skipped_items = []
@@ -278,6 +305,7 @@ def delete_contents_of(dirs, print_via_log=True):
 
     return skipped_items
 
+
 def check_zip_fh(file_like_content):
     # Make sure that it's not an embedded zip (e.g. a DOC file from Office 2007)
     file_like_content.seek(0)
@@ -289,17 +317,21 @@ def check_zip_fh(file_like_content):
     else:
         return zipfile.is_zipfile(file_like_content)
 
+
 def check_zip_content(content):
     file_like_content = StringIO.StringIO(content)
     return check_zip_fh(file_like_content)
+
 
 def check_zip_file(filepath):
     with open(filepath, 'rb') as filehandle:
         return check_zip_fh(filehandle)
 
+
 def make_writable(filename):
     mode = os.stat(filename).st_mode
     os.chmod(filename, mode | stat.S_IWRITE)
+
 
 # Adapted from Python Cookbook 2nd Ed. p.88
 def all_files(root, patterns='*', single_level=False, yield_folders=False):

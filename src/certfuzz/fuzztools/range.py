@@ -5,6 +5,7 @@ Created on Apr 8, 2011
 '''
 from ..scoring.scorable_thing import ScorableThing
 
+
 class Range(ScorableThing):
     def __init__(self, low, high):
 

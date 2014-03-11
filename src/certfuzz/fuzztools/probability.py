@@ -49,11 +49,13 @@ def weighted_choice(probabilities):
         if x < cumulative_probability:
             return k
 
+
 def lnfactorial(x):
     '''
     Returns ln(x!) as a float.
     '''
     return math.lgamma(x + 1)
+
 
 def shot_size(N, p):
     '''
@@ -67,6 +69,7 @@ def shot_size(N, p):
     '''
     return int(math.floor(p * N))
 
+
 def misses_until_quit(c, p):
     '''
     Returns the number of times you can miss before concluding with confidence c that
@@ -79,6 +82,7 @@ def misses_until_quit(c, p):
 
     return int(math.ceil(x))
 
+
 def p_max_hit(x, c=0.95):
     '''
     Return the maximum probability of getting a hit that is consistent
@@ -87,8 +91,9 @@ def p_max_hit(x, c=0.95):
     @param x: The number of tries
     @param c: The desired confidence level
     '''
-    p_max_hit = 1.0 - pow((1.0 - c), (1.0 / x))
-    return p_max_hit
+    p = 1.0 - pow((1.0 - c), (1.0 / x))
+    return p
+
 
 class FuzzRun:
     '''

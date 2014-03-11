@@ -14,6 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
+
 class ZzufLog:
     def __init__(self, infile, outfile):
         '''

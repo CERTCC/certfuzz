@@ -7,6 +7,7 @@ import time
 import itertools
 import numpy
 
+
 class TimeStamper(object):
     '''
     classdocs
