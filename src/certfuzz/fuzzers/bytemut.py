@@ -1,8 +1,9 @@
-import random
 import logging
+import random
 
-from . import MinimizableFuzzer
-from .fuzzer_base import is_fuzzable as _fuzzable
+from certfuzz.fuzzers import MinimizableFuzzer
+from certfuzz.fuzzers.fuzzer_base import is_fuzzable as _fuzzable
+
 
 logger = logging.getLogger(__name__)
 

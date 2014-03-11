@@ -3,15 +3,15 @@ Created on Feb 3, 2012
 
 @organization: cert.org
 '''
-import os
-import logging
 import StringIO
-import zipfile
 import collections
+import logging
+import os
+import zipfile
 
-from ..fuzztools.filetools import write_file
-from ..fuzztools.filetools import find_or_create_dir
-from ..helpers import log_object
+from certfuzz.fuzztools.filetools import find_or_create_dir, write_file
+from certfuzz.helpers import log_object
+
 
 MAXDEPTH = 3
 SLEEPTIMER = 0.5

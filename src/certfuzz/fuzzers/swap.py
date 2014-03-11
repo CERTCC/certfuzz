@@ -2,8 +2,10 @@
 bytes.
 """
 import logging
-from . import MinimizableFuzzer
-from .errors import FuzzerExhaustedError
+
+from certfuzz.fuzzers import MinimizableFuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+
 
 logger = logging.getLogger(__name__)
 

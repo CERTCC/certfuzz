@@ -1,9 +1,11 @@
 """
 """
-from . import Fuzzer
-from .errors import FuzzerExhaustedError
 import logging
 from random import getrandbits
+
+from certfuzz.fuzzers import Fuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+
 
 logger = logging.getLogger(__name__)
 

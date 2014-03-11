@@ -3,9 +3,11 @@ Created on Jul 12, 2012
 
 @organization: cert.org
 '''
-from . import Fuzzer
-from .errors import FuzzerExhaustedError
 import logging
+
+from certfuzz.fuzzers import Fuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+
 
 logger = logging.getLogger(__name__)
 

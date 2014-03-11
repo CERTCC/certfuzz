@@ -1,2 +1,1 @@
-from .fuzzer_base import Fuzzer
-from .fuzzer_base import MinimizableFuzzer
+from certfuzz.fuzzers.fuzzer_base import Fuzzer, MinimizableFuzzer
