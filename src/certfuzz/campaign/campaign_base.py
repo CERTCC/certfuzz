@@ -10,8 +10,8 @@ import abc
 import sys
 import os
 
-from . import __version__
-from ..fuzztools import filetools
+from certfuzz import __version__
+from certfuzz.fuzztools import filetools
 
 
 def import_module_by_name(name, logger=None):

@@ -9,9 +9,9 @@ import os
 from threading import Timer
 import platform
 
-from .campaign import Campaign
+from certfuzz.campaign.campaign import Campaign
 
-from ..runners.killableprocess import Popen
+from certfuzz.runners.killableprocess import Popen
 
 logger = logging.getLogger(__name__)
 
