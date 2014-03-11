@@ -10,10 +10,10 @@ import os.path
 import platform
 import re
 
-from . import register
-from .output_parsers.cwfile import CWfile
-from . import Debugger
-from ..fuzztools import subprocess_helper as subp
+from certfuzz.debuggers import Debugger, register
+from certfuzz.debuggers.output_parsers.cwfile import CWfile
+from certfuzz.fuzztools import subprocess_helper as subp
+
 
 logger = logging.getLogger(__name__)
 

@@ -4,9 +4,11 @@ Created on Oct 23, 2012
 @organization: cert.org
 '''
 import logging
-from .registration import get_debug_file
-from .registration import result_fields, allowed_exploitability_values
-from .errors import DebuggerError
+
+from certfuzz.debuggers.errors import DebuggerError
+from certfuzz.debuggers.registration import get_debug_file, result_fields, \
+    allowed_exploitability_values
+
 
 logger = logging.getLogger(__name__)
 
