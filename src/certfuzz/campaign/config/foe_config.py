@@ -4,12 +4,13 @@ Created on Feb 9, 2012
 @organization: cert.org
 '''
 import logging
+import shlex
 from string import Template
 
-from . import Config as ConfigBase
-from .errors import ConfigError
-from ...helpers import quoted
-import shlex
+from certfuzz.campaign.config.config_base import Config as ConfigBase
+from certfuzz.campaign.config.errors import ConfigError
+from certfuzz.helpers import quoted
+
 
 logger = logging.getLogger(__name__)
 

@@ -3,9 +3,11 @@ Created on Oct 23, 2012
 
 @organization: cert.org
 '''
-import yaml
-import os.path
 import logging
+import os.path
+
+import yaml
+
 
 logger = logging.getLogger(__name__)
 
