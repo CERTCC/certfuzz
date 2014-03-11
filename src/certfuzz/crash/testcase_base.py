@@ -3,10 +3,12 @@ Created on Apr 12, 2013
 
 @organization: cert.org
 '''
-from certfuzz.fuzztools import hamming
 import logging
-import tempfile
 import shutil
+import tempfile
+
+from certfuzz.fuzztools import hamming
+
 
 logger = logging.getLogger(__name__)
 

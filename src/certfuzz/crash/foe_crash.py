@@ -7,11 +7,12 @@ import hashlib
 import logging
 import os
 
-from .crash_base import Crash
-from ..helpers import random_str
-from ..file_handlers.basicfile import BasicFile
-from ..fuzztools.filetools import best_effort_move
-from ..campaign.config.foe_config import get_command_args_list
+from certfuzz.campaign.config.foe_config import get_command_args_list
+from certfuzz.crash.crash_base import Crash
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.fuzztools.filetools import best_effort_move
+from certfuzz.helpers import random_str
+
 
 logger = logging.getLogger(__name__)
 

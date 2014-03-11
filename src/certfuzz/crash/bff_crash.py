@@ -6,14 +6,15 @@ Created on Jul 19, 2011
 import logging
 import os
 
-from .crash_base import Crash
-from .crash_base import CrashError
-from ..debuggers import registration
-from ..fuzztools import hostinfo
+from certfuzz.crash.crash_base import Crash, CrashError
+from certfuzz.debuggers import registration
+from certfuzz.fuzztools import hostinfo
+
+
 try:
-    from ..analyzers import pin_calltrace
-    from ..analyzers import AnalyzerEmptyOutputError
-    from ..debuggers.output_parsers.calltracefile import Calltracefile
+    from certfuzz.analyzers import pin_calltrace
+    from certfuzz.analyzers import AnalyzerEmptyOutputError
+    from certfuzz.debuggers.output_parsers.calltracefile import Calltracefile
 except ImportError:
     pass
 

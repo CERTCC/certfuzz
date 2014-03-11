@@ -7,10 +7,11 @@ import logging
 import os
 import tempfile
 
-from .testcase_base import TestCaseBase
-from .errors import CrashError
-from ..fuzztools import filetools
-from ..file_handlers.basicfile import BasicFile
+from certfuzz.crash.errors import CrashError
+from certfuzz.crash.testcase_base import TestCaseBase
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.fuzztools import filetools
+
 
 logger = logging.getLogger(__name__)
 
