@@ -12,7 +12,7 @@ from optparse import OptionParser
 import os
 import sys
 
-from ..campaign.campaign_windows import WindowsCampaign
+from certfuzz.campaign.campaign_windows import WindowsCampaign
 
 
 def _setup_logging_to_screen(options, logger, fmt):

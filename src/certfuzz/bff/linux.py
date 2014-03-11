@@ -12,9 +12,10 @@ import os
 import platform
 import sys
 
-from ..debuggers import crashwrangler  # @UnusedImport
-from ..debuggers import gdb  # @UnusedImport
-from ..fuzztools import filetools
+from certfuzz.debuggers import crashwrangler  # @UnusedImport
+from certfuzz.debuggers import gdb  # @UnusedImport
+from certfuzz.fuzztools import filetools
+
 from certfuzz.campaign.linux import Campaign
 
 
@@ -34,8 +35,6 @@ logger.setLevel(0)
 #    seeds = current_seed - START_SEED
 #    rate = seeds / SEED_TS.since_start()
 #    return rate
-
-
 
 
 def setup_logging_to_console(log_obj, level):
