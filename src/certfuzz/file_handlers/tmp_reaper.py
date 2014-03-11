@@ -3,12 +3,14 @@ Created on Apr 21, 2011
 
 @organization: cert.org
 '''
+import logging
 import os
+import platform
 import shutil
 import tempfile
-import logging
-import platform
-from ..fuzztools.filetools import delete_contents_of
+
+from certfuzz.fuzztools.filetools import delete_contents_of
+
 
 logger = logging.getLogger(__name__)
 

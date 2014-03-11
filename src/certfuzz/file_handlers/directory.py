@@ -3,11 +3,14 @@ Created on Mar 18, 2011
 
 @organization: cert.org
 '''
-import os
-from ..fuzztools import filetools
-from .basicfile import BasicFile
 import logging
-from .errors import DirectoryError
+import os
+
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.file_handlers.errors import DirectoryError
+from certfuzz.fuzztools import filetools
+
+
 logger = logging.getLogger(__name__)
 
 
