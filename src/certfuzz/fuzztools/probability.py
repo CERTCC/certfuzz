@@ -8,8 +8,7 @@ looking for is how_many_misses_until_quit().
 '''
 import random
 import math
-# from scipy import stats
-# from scipy.special import gammaln
+
 
 def beta_estimate(m, N, a_prior=1.0, b_prior=1.0):
     numerator = alpha = m + a_prior
@@ -19,22 +18,6 @@ def beta_estimate(m, N, a_prior=1.0, b_prior=1.0):
     p_success = float(numerator) / float(denominator)
     return (alpha, beta, p_success)
 
-# def ucb(tries, hits=0.0, confidence=0.95):
-#    '''
-#    Given a number of attempts, successes, and desired confidence,
-#    return the exact confidence interval (min,mean,max)
-#    @param tries: the number of trials
-#    @param hits: the number of successes (default=0)
-#    @param confidence: the desired confidence level (default=0.95)
-#    '''
-#    # see http://www.math.mcmaster.ca/peter/s743/poissonalpha.html
-#    mean = float(hits) / float(tries)
-#    chisq = 1.0 - confidence
-#    df = 2 * (hits + 1)
-#    delta = (stats.chisqprob(chisq, df) / 2) / tries
-#    low = mean - delta
-#    high = mean + delta
-#    return(low, mean, high)
 
 def weighted_choice(probabilities):
     '''
