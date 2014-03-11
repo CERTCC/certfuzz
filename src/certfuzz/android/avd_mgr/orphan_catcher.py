@@ -3,18 +3,17 @@ Created on Jan 15, 2013
 
 @organization: cert.org
 '''
-import os
 import logging
+import os
 import time
-
 from traceback import format_tb
 
-# from .defaults import POLL_INTERVAL
-from .errors import OrphanedProcessError
+from certfuzz.android.avd_mgr.errors import OrphanedProcessError
 
+
+# from .defaults import POLL_INTERVAL
 # store pid and ppid at start up, we'll check them later
 # to see if we are an orphan
-
 logger = logging.getLogger(__name__)
 
 def _ping_process(pid):

@@ -8,10 +8,9 @@ import logging
 import os
 import atexit
 
-from . import AndroidEmulator
-from . import AvdCloner
-from . import OrphanCatcher
-from . import AndroidEmulatorError
+from certfuzz.android.avd_mgr import AndroidEmulator
+from certfuzz.android.avd_mgr import AvdCloner
+from certfuzz.android.avd_mgr import OrphanCatcher
 
 logger = logging.getLogger(__name__)
 
