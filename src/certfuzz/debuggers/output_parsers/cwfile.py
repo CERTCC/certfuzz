@@ -5,11 +5,12 @@ Provides the cwfile class for analyzing CrashWrangler output.
 
 @organization: cert.org
 '''
-import re
 import hashlib
 import logging
 from optparse import OptionParser
 import os
+import re
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)

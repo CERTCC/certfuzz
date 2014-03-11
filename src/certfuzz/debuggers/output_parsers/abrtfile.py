@@ -5,12 +5,13 @@ Provides the ABRTfile class for analyzing ABRT output.
 
 @organization: cert.org
 '''
-import re
 import logging
-from . import regex as regex_base
-from . import DebuggerFile
-
 from optparse import OptionParser
+import re
+
+from certfuzz.debuggers.output_parsers.debugger_file_base import DebuggerFile, \
+    regex as regex_base
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
@@ -25,6 +26,7 @@ regex.update({
         'libc_location': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+Yes\s.+/libc[-.]'),
         'mapped_frame': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+Yes\s.+(/.+)'),
          })
+
 
 class ABRTfile(DebuggerFile):
     def __init__(self, path, exclude_unmapped_frames=True):
