@@ -5,10 +5,12 @@ Created on Dec 9, 2011
 '''
 # pylint complains about importing string and
 # pylint: disable=w0142,w0402
-import string
 import itertools
 import re
+import string
+
 from certfuzz.fuzztools.filetools import get_newpath
+
 
 def _pattern(iterables, length):
     pattern_parts = []

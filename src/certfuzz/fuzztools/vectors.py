@@ -7,6 +7,7 @@ Created on Feb 22, 2011
 # from numpy.linalg import norm
 import math
 
+
 def compare(d1, d2):
     '''
     Turn two dicts into vectors, then calculate their similarity

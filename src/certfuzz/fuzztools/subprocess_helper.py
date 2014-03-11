@@ -5,13 +5,14 @@ Provides common methods for running and killing subprocesses.
 
 @organization: cert.org
 '''
-import platform
-import subprocess
-from threading import Timer
-import sys
 import os
+import platform
 import signal
 import string
+import subprocess
+import sys
+from threading import Timer
+
 
 def on_windows():
     return (platform.system() == "Windows")

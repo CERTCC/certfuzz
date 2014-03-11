@@ -1,13 +1,15 @@
-import platform
-import logging
-
 '''
 Created on Oct 25, 2010
 
 @organization: cert.org
 '''
 
-from . import subprocess_helper as subp
+import logging
+import platform
+
+from certfuzz.fuzztools import subprocess_helper as subp
+
+
 system = platform.system()
 
 supported_systems = ['Linux']
