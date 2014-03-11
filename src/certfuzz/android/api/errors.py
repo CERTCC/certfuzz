@@ -3,7 +3,7 @@ Created on Jan 15, 2013
 
 @organization: cert.org
 '''
-from .. import AndroidError
+from certfuzz.android import AndroidError
 
 class Android_API_Error(AndroidError):
     pass

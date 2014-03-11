@@ -5,7 +5,7 @@ Created on Jan 14, 2013
 '''
 import os
 from functools import partial
-from .errors import Android_API_Error
+from certfuzz.android.api.errors import Android_API_Error
 
 
 _defaults = {'sdk_home': os.path.abspath(os.path.expanduser('~/android-sdk')),
