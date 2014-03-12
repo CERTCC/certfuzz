@@ -369,6 +369,9 @@ class Campaign(CampaignBase):
                             tries, p)
 
     def go(self):
+        '''
+        Starts campaign
+        '''
         while self._keep_going():
             try:
                 self._do_interval()
