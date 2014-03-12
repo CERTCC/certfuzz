@@ -56,14 +56,6 @@ ignorejit = False
 pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
 
 
-def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-
-
 def check_64bit(reporttext):
     '''
     Check if the debugger and target app are 64-bit
@@ -314,15 +306,14 @@ def fixefaoffset(instructionline, faultaddr):
                 offset = splitaddress[1]
                 offset = offset.replace('h', '')
                 offset = offset.replace(']', '')
-                if is_number(offset):
-                    if '0x' not in offset:
-                        offset = '0x' + offset
-                    if int(offset, 16) > int(faultaddr, 16):
-                        # TODO: fix up negative numbers
-                        return faultaddr
-                    # Subtract offset to get actual interesting pattern
-                    faultaddr = hex(eval(faultaddr) - eval(offset))
-                    faultaddr = formataddr(faultaddr.replace('L', ''))
+                if '0x' not in offset:
+                    offset = '0x' + offset
+                if int(offset, 16) > int(faultaddr, 16):
+                    # TODO: fix up negative numbers
+                    return faultaddr
+                # Subtract offset to get actual interesting pattern
+                faultaddr = hex(eval(faultaddr) - eval(offset))
+                faultaddr = formataddr(faultaddr.replace('L', ''))
     return faultaddr
 
 
