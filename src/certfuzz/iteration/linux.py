@@ -4,26 +4,29 @@ Created on Feb 12, 2014
 @author: adh
 '''
 import logging
-
-from .. import file_handlers
-from ..analyzers import cw_gmalloc, pin_calltrace, stderr, valgrind
-from ..analyzers.callgrind import callgrind
-from ..analyzers.callgrind.annotate import annotate_callgrind
-from ..analyzers.callgrind.annotate import annotate_callgrind_tree
-from ..analyzers.callgrind.errors import CallgrindAnnotateEmptyOutputFileError
-from ..analyzers.callgrind.errors import CallgrindAnnotateMissingInputFileError
-from ..crash.bff_crash import BffCrash
-from ..debuggers import crashwrangler  # @UnusedImport
-from ..debuggers import gdb  # @UnusedImport
-from ..fuzztools import bff_helper as z, filetools
-from ..fuzztools.state_timer import STATE_TIMER
-from ..fuzztools.zzuf import Zzuf
-from ..fuzztools.zzuflog import ZzufLog
-from ..minimizer import MinimizerError, UnixMinimizer as Minimizer
 import os
+
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.analyzers import cw_gmalloc, pin_calltrace, stderr, valgrind
+from certfuzz.analyzers.callgrind import callgrind
+from certfuzz.analyzers.callgrind.annotate import annotate_callgrind, \
+    annotate_callgrind_tree
+from certfuzz.analyzers.callgrind.errors import \
+    CallgrindAnnotateEmptyOutputFileError, CallgrindAnnotateMissingInputFileError
+from certfuzz.crash.bff_crash import BffCrash
+from certfuzz.debuggers import crashwrangler  # @UnusedImport
+from certfuzz.debuggers import gdb  # @UnusedImport
+from certfuzz.file_handlers import seedfile_set
+from certfuzz.fuzztools import bff_helper as z, filetools
+from certfuzz.fuzztools.state_timer import STATE_TIMER
+from certfuzz.fuzztools.zzuf import Zzuf
+from certfuzz.fuzztools.zzuflog import ZzufLog
+from certfuzz.minimizer import MinimizerError, UnixMinimizer as Minimizer
+
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.iteration_base3 import IterationBase3
+
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +166,7 @@ class Iteration(IterationBase3):
         self.zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
 
         # Do internal verification using GDB / Valgrind / Stderr
-        fuzzedfile = file_handlers.basicfile.BasicFile(outfile)
+        fuzzedfile = BasicFile(outfile)
 
         testcase = BffCrash(cfg=self.cfg,
                             seedfile=self.seedfile,

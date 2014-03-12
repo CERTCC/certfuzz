@@ -3,28 +3,29 @@ Created on Feb 7, 2013
 
 @organization: cert.org
 '''
-from ..android.api.activity_manager import ActivityManagerError
-from ..android.api.errors import AdbCmdError
-# from ..android.worker.defaults import TOMBSTONE_TIMEOUT, DBCFG, SF_CACHE_DIR
-from ..android.worker.errors import WorkerError
-from ..crash.android_testcase import AndroidTestCase
-from ..db.couchdb.datatypes import FileDoc
-from ..db.couchdb.db import TestCaseDb, put_file
-from ..file_handlers.fuzzedfile import FuzzedFile
-from ..file_handlers.seedfile import SeedFile
-from ..fuzzers.bytemut import ByteMutFuzzer
-from ..fuzztools.filetools import find_or_create_dir
-from ..runners.android_runner import AndroidRunner
-from ..runners.errors import RunnerError
-from .iteration_base import IterationBase
-from ..fuzzers.errors import FuzzerExhaustedError
-
 import logging
 import os
 import shutil
 import tempfile
 
+from certfuzz.android.api.activity_manager import ActivityManagerError
+from certfuzz.android.api.errors import AdbCmdError
+from certfuzz.android.worker.errors import WorkerError
+from certfuzz.crash.android_testcase import AndroidTestCase
+from certfuzz.db.couchdb.datatypes import FileDoc
+from certfuzz.db.couchdb.db import TestCaseDb, put_file
+from certfuzz.file_handlers.fuzzedfile import FuzzedFile
+from certfuzz.file_handlers.seedfile import SeedFile
+from certfuzz.fuzzers.bytemut import ByteMutFuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+from certfuzz.fuzztools.filetools import find_or_create_dir
+from certfuzz.runners.android_runner import AndroidRunner
+from certfuzz.runners.errors import RunnerError
 
+from certfuzz.iteration.iteration_base import IterationBase2
+
+
+# from ..android.worker.defaults import TOMBSTONE_TIMEOUT, DBCFG, SF_CACHE_DIR
 logger = logging.getLogger(__name__)
 
 
@@ -75,7 +76,7 @@ def do_iteration(iter_args):
     return True
 
 
-class AndroidIteration(IterationBase):
+class AndroidIteration(IterationBase2):
     def __init__(self, campaign_id=None, db_config=None, num=0, fuzzopts=None,
                  runopts=None, sf=None, emu_handle=None, sf_dir=None, intent=None):
         self.campaign_id = campaign_id

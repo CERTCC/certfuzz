@@ -3,11 +3,14 @@ Created on Feb 13, 2014
 
 @author: adh
 '''
-import tempfile
 import logging
 import shutil
-from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
+import tempfile
+
 from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
+
+from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
+
 
 logger = logging.getLogger(__name__)
 
