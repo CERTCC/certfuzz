@@ -1,3 +1,5 @@
+.project
+.pydevproject
 dev_builds
 .settings
 *.env
