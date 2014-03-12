@@ -7,6 +7,7 @@ START_SEED = 0
 SEED_INTERVAL = 500
 MAX_SEED = 1e10
 
+
 class SeedRange():
     def __init__(self, start_seed=START_SEED, interval=SEED_INTERVAL, max_seed=MAX_SEED):
         self.initial_seed = start_seed

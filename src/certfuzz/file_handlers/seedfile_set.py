@@ -6,12 +6,14 @@ Created on Apr 12, 2011
 import logging
 import os
 
-from .directory import Directory
-from ..fuzztools import filetools
-from .seedfile import SeedFile
-from .errors import SeedFileError
-from ..scoring.scorable_set import ScorableSet2
-from ..scoring.errors import EmptySetError
+from certfuzz.file_handlers.directory import Directory
+from certfuzz.file_handlers.errors import SeedFileError
+from certfuzz.file_handlers.seedfile import SeedFile
+from certfuzz.fuzztools import filetools
+from certfuzz.scoring.errors import EmptySetError
+from certfuzz.scoring.scorable_set import ScorableSet2
+
+
 logger = logging.getLogger(__name__)
 
 

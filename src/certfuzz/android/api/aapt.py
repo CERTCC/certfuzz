@@ -3,12 +3,12 @@ Created on Feb 28, 2013
 
 @organization: cert.org
 '''
-import os
-from functools import partial
-from .defaults import sdk_platform_tool
-from .errors import AaptError
 import logging
-from ...fuzztools.command_line_callable import CommandLineCallable
+
+from certfuzz.android.api.defaults import sdk_platform_tool
+from certfuzz.android.api.errors import AaptError
+from certfuzz.fuzztools.command_line_callable import CommandLineCallable
+
 
 logger = logging.getLogger(__name__)
 

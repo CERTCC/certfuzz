@@ -4,7 +4,6 @@ Created on Jul 15, 2011
 @organization: cert.org
 '''
 import platform
-#from .. import debuggers
 
 system = platform.system()
 

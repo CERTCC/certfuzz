@@ -3,7 +3,7 @@ Created on Mar 20, 2013
 
 @organization: cert.org
 '''
-from .config_base import Config as ConfigBase
+from certfuzz.campaign.config.config_base import Config as ConfigBase
 #from ...android.controller.defaults import CONFIG as DEFAULT_CONFIG
 import logging
 

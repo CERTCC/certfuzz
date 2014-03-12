@@ -3,10 +3,6 @@ Created on Jan 10, 2013
 
 @organization: cert.org
 '''
-from ...iteration.iteration_android import emu as iteration_emu
-from ..api import AdbCmd
-from ..api.log_helper import log_formatter
-from ..avd_mgr.main import avd_manager
 import atexit
 import logging
 import os
@@ -14,6 +10,13 @@ import random
 import signal
 import sys
 import time
+
+from certfuzz.android.api import AdbCmd
+from certfuzz.android.api.log_helper import log_formatter
+from certfuzz.android.avd_mgr.main import avd_manager
+
+from certfuzz.iteration.iteration_android import emu as iteration_emu
+
 
 logger = logging.getLogger(__name__)
 

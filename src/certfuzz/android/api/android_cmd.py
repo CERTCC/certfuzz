@@ -4,14 +4,15 @@ Created on Jan 4, 2013
 @organization: cert.org
 '''
 import logging
-from . import sdk_tool
-from .log_helper import pfunc
-from .errors import AndroidCmdError
-from ...fuzztools.command_line_callable import CommandLineCallable
+from certfuzz.android.api.log_helper import pfunc
+from certfuzz.android.api.errors import AndroidCmdError
+from certfuzz.fuzztools.command_line_callable import CommandLineCallable
+from certfuzz.android.api.defaults import sdk_tool
 
 android = sdk_tool('android')
 
 logger = logging.getLogger(__name__)
+
 
 class AndroidCmd(CommandLineCallable):
     @pfunc(logger=logger)

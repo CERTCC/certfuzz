@@ -9,6 +9,7 @@ between objects. P
 import itertools
 import os
 
+
 def vector_compare(v1, v2):
     '''
     Given two sparse vectors (lists of indices whose value is 1), return the distance between them
@@ -29,6 +30,7 @@ def vector_compare(v1, v2):
 
     return distance
 
+
 def bytemap(s1, s2):
     '''
     Given two strings of equal length, return the indices of bytes that differ.
@@ -40,6 +42,7 @@ def bytemap(s1, s2):
             delta.append(idx)
     return delta
 
+
 def bytewise_hd(s1, s2):
     '''
     Compute the byte-wise Hamming Distance between two strings. Returns
@@ -47,6 +50,7 @@ def bytewise_hd(s1, s2):
     '''
     assert len(s1) == len(s2)
     return sum(ch1 != ch2 for ch1, ch2 in itertools.izip(s1, s2))
+
 
 def bytewise_hamming_distance(file1, file2):
     '''
@@ -56,15 +60,16 @@ def bytewise_hamming_distance(file1, file2):
     '''
     return _file_compare(bytewise_hd, file1, file2)
 
+
 def _file_compare(distance_function, file1, file2):
     assert os.path.getsize(file1) == os.path.getsize(file2)
 
-    distance = 0
     with open(file1, 'rb') as f1:
         with open(file2, 'rb') as f2:
             # find the hamming distance for each byte
             distance = distance_function(f1.read(), f2.read())
     return distance
+
 
 def bitwise_hd(x, y):
     '''
@@ -84,6 +89,7 @@ def bitwise_hd(x, y):
             v = v & (v - 1)
             hd += 1
     return hd
+
 
 def bitwise_hamming_distance(file1, file2):
     '''

@@ -3,12 +3,13 @@ Created on Dec 8, 2010
 
 @organization: cert.org
 '''
-import math
 import logging
+import math
 
-from ..scoring.scorable_set import ScorableSet2
-from .range import Range
-from .errors import RangeFinderError
+from certfuzz.fuzztools.errors import RangeFinderError
+from certfuzz.fuzztools.range import Range
+from certfuzz.scoring.scorable_set import ScorableSet2
+
 
 range_scale_factor = (math.sqrt(5) + 1.0) / 2.0
 

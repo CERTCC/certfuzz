@@ -5,7 +5,8 @@ Provides the GDBfile class for analyzing gdb output.
 
 @organization: cert.org
 '''
-from . import DebuggerFile
+from certfuzz.debuggers.output_parsers import DebuggerFile
+
 
 class GDBfile(DebuggerFile):
     pass

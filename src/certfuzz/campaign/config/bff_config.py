@@ -7,14 +7,16 @@ Created on Oct 19, 2010
 This module provides the ConfigHelper class to assist with converting a bff.cfg file into
 a collection of attributes and methods to facilitate a fuzzing run.
 '''
-import shutil
-import os
 import ConfigParser
-import subprocess
+import logging
+import os
 import re
 import shlex
-import logging
-from ...fuzztools import filetools
+import shutil
+import subprocess
+
+from certfuzz.fuzztools import filetools
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

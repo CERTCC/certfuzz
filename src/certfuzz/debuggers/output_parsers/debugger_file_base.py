@@ -3,14 +3,14 @@ Created on Jan 18, 2012
 
 @organization: cert.org
 '''
-import re
 import hashlib
 import logging
 import os
+import re
 
-from .errors import DebuggerError
-from .errors import DebuggerFileError
-from .errors import UnknownDebuggerError
+from certfuzz.debuggers.output_parsers.errors import DebuggerFileError, \
+    UnknownDebuggerError
+
 
 logger = logging.getLogger(__name__)
 

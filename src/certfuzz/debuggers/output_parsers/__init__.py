@@ -1,9 +1,4 @@
-from .errors import DebuggerError
-from .errors import DebuggerFileError
-from .errors import UnknownDebuggerError
-from .debugger_file_base import regex
-from .debugger_file_base import DebuggerFile
-from .debugger_file_base import detect_format
-from .debugger_file_base import check_thread_type
-from .debugger_file_base import registers
-from .debugger_file_base import blacklist
+from certfuzz.debuggers.output_parsers.debugger_file_base import DebuggerFile, \
+    blacklist, check_thread_type, detect_format, regex, registers
+from certfuzz.debuggers.output_parsers.errors import DebuggerError, \
+    DebuggerFileError, UnknownDebuggerError

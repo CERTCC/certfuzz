@@ -3,16 +3,17 @@ Created on Aug 19, 2011
 
 @organization: cert.org
 '''
+import collections
 import logging
 import math
-import collections
-import sys
 import operator
+import sys
 
-from .filetools import all_files_nonzero_length
-from .vectors import compare
-from ..analyzers.callgrind.annotation_file import AnnotationFile
-from .errors import SimilarityMatrixError
+from certfuzz.analyzers.callgrind.annotation_file import AnnotationFile
+from certfuzz.fuzztools.errors import SimilarityMatrixError
+from certfuzz.fuzztools.filetools import all_files_nonzero_length
+from certfuzz.fuzztools.vectors import compare
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

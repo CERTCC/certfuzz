@@ -7,6 +7,7 @@ import time
 import itertools
 import numpy
 
+
 class TimeStamper(object):
     '''
     classdocs
@@ -49,4 +50,4 @@ class TimeStamper(object):
         @param key: the key to collect stats on
         '''
         deltas = self.deltas()
-        return (numpy.mean(deltas), numpy.std(deltas)) #@UndefinedVariable
+        return (numpy.mean(deltas), numpy.std(deltas))  #@UndefinedVariable

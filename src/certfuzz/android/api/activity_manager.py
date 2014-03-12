@@ -3,11 +3,13 @@ Created on Jan 25, 2013
 
 @organization: cert.org
 '''
-from .adb_cmd import AdbCmd
-from .errors import ActivityManagerError
+from certfuzz.android.api.adb_cmd import AdbCmd
+from certfuzz.android.api.errors import ActivityManagerError
+
 
 def am(handle, args):
     ActivityManager(handle).go(args)
+
 
 class ActivityManager(object):
     '''

@@ -5,14 +5,16 @@ Provides support for analyzing zzuf log files.
 
 @organization: cert.org
 '''
-import re
+import logging
 import os
+import re
+
 import filetools
 
-import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
+
 
 class ZzufLog:
     def __init__(self, infile, outfile):

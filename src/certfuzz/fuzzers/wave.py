@@ -1,9 +1,11 @@
 """This fuzzer module iterates through an input file, trying every byte value
 as it goes. E.g. try 0-255 for the first byte, 0-255 for the second byte, etc.
 """
-from . import MinimizableFuzzer
-from .errors import FuzzerExhaustedError
 import logging
+
+from certfuzz.fuzzers import MinimizableFuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+
 
 logger = logging.getLogger(__name__)
 

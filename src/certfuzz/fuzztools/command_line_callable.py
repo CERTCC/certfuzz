@@ -8,6 +8,7 @@ import subprocess
 
 logger = logging.getLogger(__name__)
 
+
 class CommandLineCallable(object):
     '''
     Class intended mainly for binding a python API to an underlying command

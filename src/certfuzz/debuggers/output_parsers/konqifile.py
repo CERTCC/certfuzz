@@ -5,8 +5,8 @@ Created on Jan 18, 2012
 '''
 import re
 import logging
-from . import DebuggerFile
-from . import regex as regex_base
+from certfuzz.debuggers.output_parsers import DebuggerFile
+from certfuzz.debuggers.output_parsers import regex as regex_base
 
 from optparse import OptionParser
 

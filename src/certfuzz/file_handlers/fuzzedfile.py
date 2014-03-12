@@ -3,7 +3,7 @@ Created on Apr 12, 2013
 
 @organization: cert.org
 '''
-from . import BasicFile
+from certfuzz.file_handlers import BasicFile
 
 
 class FuzzedFile(BasicFile):

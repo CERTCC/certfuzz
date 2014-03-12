@@ -5,9 +5,12 @@ Created on Oct 23, 2012
 '''
 import logging
 import os
-import subprocess
 import platform
-from .errors import UndefinedDebuggerError, DebuggerNotFoundError
+import subprocess
+
+from certfuzz.debuggers.errors import UndefinedDebuggerError, \
+    DebuggerNotFoundError
+
 
 logger = logging.getLogger(__name__)
 

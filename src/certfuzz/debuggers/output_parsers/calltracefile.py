@@ -5,11 +5,11 @@ Provides the calltracefile class for analyzing pin calltrace output.
 
 @organization: cert.org
 '''
-import re
 import hashlib
 import logging
 from optparse import OptionParser
-import os
+import re
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
@@ -19,6 +19,7 @@ regex = {
         'ct_lib_function': re.compile(r'^(/.+):\s(.+)'),
         'ct_system_lib': re.compile(r'^/(usr/)?lib.+'),
          }
+
 
 class Calltracefile:
     def __init__(self, f):
@@ -36,12 +37,12 @@ class Calltracefile:
         self.backtrace = []
         self.hashable_backtrace = []
         self.hashable_backtrace_string = ''
-        
+
         # Process lines one-by-one.  File can be huge
         with open(self.file) as pinfile:
             for line in pinfile:
                 self.calltrace_line(line)
-                
+
         self._hashable_backtrace()
 
     def _hashable_backtrace(self):
@@ -80,7 +81,7 @@ class Calltracefile:
         for idx, line in enumerate(self.lines):
 
             self.calltrace_line(idx, line)
-            
+
     def get_crash_signature(self, backtrace_level):
         '''
         Determines if a crash is unique. Depending on <backtrace_level>,

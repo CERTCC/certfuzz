@@ -5,17 +5,17 @@ Provides a wrapper around gdb.
 
 @organization: cert.org
 '''
+import logging
+import os
 from string import Template
 import tempfile
-import os
-import logging
 
-from .registration import register
-from . import DebuggerError
+from certfuzz.debuggers.debugger_base import Debugger
+from certfuzz.debuggers.errors import DebuggerError
+from certfuzz.debuggers.output_parsers.gdbfile import GDBfile
+from certfuzz.debuggers.registration import register
+from certfuzz.fuzztools import subprocess_helper as subp
 
-from .debugger_base import Debugger
-from .output_parsers.gdbfile import GDBfile
-from ..fuzztools import subprocess_helper as subp
 
 logger = logging.getLogger(__name__)
 

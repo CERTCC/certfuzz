@@ -1,18 +1,20 @@
 """This module runs cdb on a process and !exploitable on any exceptions.
 """
 import ctypes
-from pprint import pformat
-from threading import Timer
-from subprocess import Popen
-import os
 import logging
-import wmi
+import os
+from pprint import pformat
+from subprocess import Popen
+from threading import Timer
 import time
 
-from . import Debugger as DebuggerBase
-from .registration import register
-from .output_parsers.msec_file import MsecFile
-from ..helpers import check_os_compatibility
+from certfuzz.debuggers import Debugger as DebuggerBase
+from certfuzz.debuggers.output_parsers.msec_file import MsecFile
+from certfuzz.debuggers.registration import register
+from certfuzz.helpers import check_os_compatibility
+
+import wmi
+
 
 logger = logging.getLogger(__name__)
 

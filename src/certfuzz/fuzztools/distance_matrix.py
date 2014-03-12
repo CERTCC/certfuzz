@@ -8,7 +8,7 @@ import os
 import numpy
 import hcluster
 import logging
-from .errors import DistanceMatrixError
+from certfuzz.fuzztools.errors import DistanceMatrixError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

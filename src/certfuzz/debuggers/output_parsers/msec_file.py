@@ -5,11 +5,12 @@ Created on Mar 14, 2012
 '''
 import logging
 
-from . import DebuggerFile
+from certfuzz.debuggers.output_parsers import DebuggerFile
 
 logger = logging.getLogger(__name__)
 
 required_checks = ['crash_hash', 'exploitability']
+
 
 class MsecFile(DebuggerFile):
     '''

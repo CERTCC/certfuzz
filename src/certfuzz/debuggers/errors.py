@@ -3,9 +3,10 @@ Created on Oct 23, 2012
 
 @organization: cert.org
 '''
+from certfuzz.errors import CERTFuzzError
 
 
-class DebuggerError(Exception):
+class DebuggerError(CERTFuzzError):
     pass
 
 

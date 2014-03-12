@@ -3,12 +3,14 @@ Created on Apr 11, 2013
 
 @organization: cert.org
 '''
-from . import TestCaseBase
-from ..android.api import AdbCmd
-from ..android.api.log_helper import pfunc
-from ..file_handlers.basicfile import BasicFile
 import logging
 import os
+
+from certfuzz.android.api import AdbCmd
+from certfuzz.android.api.log_helper import pfunc
+from certfuzz.crash import TestCaseBase
+from certfuzz.file_handlers.basicfile import BasicFile
+
 
 logger = logging.getLogger(__name__)
 

@@ -5,18 +5,19 @@ Created on Jan 4, 2013
 '''
 import logging
 import os
-import tempfile
 import shutil
+import tempfile
 import uuid
 
-#from certfuzz.helpers import random_str
-
-from ..api.defaults import inifile, avddir
-from .errors import AvdClonerError
 from certfuzz.android.api.android_cmd import AndroidCmd
+from certfuzz.android.api.defaults import inifile, avddir
+from certfuzz.android.avd_mgr.errors import AvdClonerError
 
+
+#from certfuzz.helpers import random_str
 logger = logging.getLogger(__name__)
 clone_name = '{}-clone-{}'.format
+
 
 def clone_avd(src=None, dst=None, remove=False):
     '''
@@ -30,6 +31,7 @@ def clone_avd(src=None, dst=None, remove=False):
     with AvdCloner(src=src, dst=dst, remove=remove) as cloner:
         cloner.clone()
     return cloner.dst
+
 
 class AvdCloner(object):
     '''

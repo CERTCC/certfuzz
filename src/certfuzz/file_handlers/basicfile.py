@@ -5,7 +5,8 @@ Created on Mar 16, 2011
 '''
 import hashlib
 import os
-from ..fuzztools.filetools import check_zip_content
+
+from certfuzz.fuzztools.filetools import check_zip_content
 
 
 class BasicFile(object):

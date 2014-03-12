@@ -1,4 +1,4 @@
-from . import MinimizableFuzzer
+from certfuzz.fuzzers import MinimizableFuzzer
 from random import jumpahead, sample, uniform, seed
 import logging
 

@@ -3,15 +3,16 @@ Created on Feb 27, 2012
 
 @author: adh
 '''
-from . import Debugger
 import logging
+import random
+
+from certfuzz.debuggers import allowed_exploitability_values, register
+from certfuzz.helpers import random_str
+
+from . import Debugger
+
 
 # import things needed to inject randomness
-import random
-from . import allowed_exploitability_values
-from ..helpers import random_str
-from . import register
-
 logger = logging.getLogger(__name__)
 
 

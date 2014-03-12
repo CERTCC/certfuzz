@@ -6,10 +6,13 @@ Provides wrapper facilities for zzuf
 @organization: cert.org
 '''
 import logging
-from . import subprocess_helper as subp
+
+from certfuzz.fuzztools import subprocess_helper as subp
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
 
 class ZzufTestCase:
     def __init__(self, seedfile, seed, range, outfile):
@@ -31,6 +34,7 @@ class ZzufTestCase:
 
     def generate(self):
         subp.run_without_timer(self.cmdline)
+
 
 class Zzuf:
     def __init__(self, dir, s1, s2, cmd, seedfile, file, copymode, ratiomin, ratiomax, timeout, quiet=True):

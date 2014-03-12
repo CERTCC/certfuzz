@@ -3,8 +3,9 @@ Created on Apr 5, 2012
 
 @organization: cert.org
 '''
-from .copy import CopyFuzzer
-from . import FuzzerExhaustedError
+from certfuzz.fuzzers.copy import CopyFuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+
 
 _files_seen = set()
 

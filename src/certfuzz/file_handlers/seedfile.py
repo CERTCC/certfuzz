@@ -3,14 +3,14 @@ Created on Mar 16, 2011
 
 @organization: cert.org
 '''
-import os
 import json
+import os
 
-from .basicfile import BasicFile
-from .errors import SeedFileError
-from ..fuzztools.rangefinder import RangeFinder
-from ..fuzztools import filetools
-from ..scoring.scorable_thing import ScorableThing
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.file_handlers.errors import SeedFileError
+from certfuzz.fuzztools import filetools
+from certfuzz.fuzztools.rangefinder import RangeFinder
+from certfuzz.scoring.scorable_thing import ScorableThing
 
 
 # TODO: replace with a common function in some helper module

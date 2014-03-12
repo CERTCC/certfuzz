@@ -3,11 +3,12 @@ Created on Oct 25, 2010
 
 @organization: cert.org
 '''
-from . import subprocess_helper as subp
+from certfuzz.fuzztools import subprocess_helper as subp
 import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
 
 class ProcessKiller:
     def __init__(self, script, killprocname, killproctimeout):

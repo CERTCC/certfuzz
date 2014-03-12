@@ -3,8 +3,9 @@ Created on Feb 13, 2014
 
 @author: adh
 '''
-import os
 import logging
+import os
+
 
 logger = logging.getLogger(__name__)
 
