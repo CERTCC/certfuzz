@@ -3,8 +3,9 @@ Created on Oct 9, 2012
 
 @organization: cert.org
 '''
-from . import Minimizer as MinimizerBase
+from certfuzz.minimizer import Minimizer as MinimizerBase
 import os
+
 
 class UnixMinimizer(MinimizerBase):
     use_watchdog = True

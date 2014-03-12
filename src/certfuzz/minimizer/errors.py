@@ -3,8 +3,12 @@ Created on Jul 9, 2013
 
 @organization: cert.org
 '''
-class MinimizerError(Exception):
+from certfuzz.errors import CERTFuzzError
+
+
+class MinimizerError(CERTFuzzError):
     pass
+
 
 class WindowsMinimizerError(MinimizerError):
     pass
