@@ -3,6 +3,7 @@ import logging
 import zipfile
 
 from certfuzz.fuzztools.filetools import check_zip_file, write_file
+from certfuzz.fuzztools.filetools import exponential_backoff
 from certfuzz.minimizer import Minimizer as MinimizerBase
 from certfuzz.minimizer.errors import WindowsMinimizerError
 
@@ -15,14 +16,16 @@ class WindowsMinimizer(MinimizerBase):
 
     def __init__(self, cfg=None, crash=None, crash_dst_dir=None,
                  seedfile_as_target=False, bitwise=False, confidence=0.999,
-                 logfile=None, tempdir=None, maxtime=3600, preferx=False, keep_uniq_faddr=False, watchcpu=False):
+                 logfile=None, tempdir=None, maxtime=3600, preferx=False,
+                 keep_uniq_faddr=False, watchcpu=False):
 
         self.saved_arcinfo = None
         self.is_zipfile = check_zip_file(crash.fuzzedfile.path)
 
-        MinimizerBase.__init__(self, cfg, crash, crash_dst_dir, seedfile_as_target,
-                               bitwise, confidence, logfile, tempdir, maxtime,
-                               preferx, keep_uniq_faddr, watchcpu)
+        MinimizerBase.__init__(self, cfg, crash, crash_dst_dir,
+                               seedfile_as_target, bitwise, confidence,
+                               logfile, tempdir, maxtime, preferx,
+                               keep_uniq_faddr, watchcpu)
 
     def get_signature(self, dbg, backtracelevels):
         # get the basic signature
@@ -82,6 +85,11 @@ class WindowsMinimizer(MinimizerBase):
             unzippedbytes += data
         tempzip.close()
         return unzippedbytes
+
+    @exponential_backoff
+    def _safe_createzip(self, filepath):
+        tempzip = zipfile.ZipFile(filepath, 'w')
+        return tempzip
 
     def _writezip(self):
         '''rebuild the zip file and put it in self.fuzzed
