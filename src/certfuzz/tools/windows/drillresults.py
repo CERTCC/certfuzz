@@ -274,6 +274,14 @@ def ratchetscore(crasher, score):
         scoredcrashes[crasher] = score
 
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+
 def fixefaoffset(instructionline, faultaddr):
     '''
     Adjust faulting address for instructions that use offsets
@@ -306,14 +314,15 @@ def fixefaoffset(instructionline, faultaddr):
                 offset = splitaddress[1]
                 offset = offset.replace('h', '')
                 offset = offset.replace(']', '')
-                if '0x' not in offset:
-                    offset = '0x' + offset
-                if int(offset, 16) > int(faultaddr, 16):
-                    # TODO: fix up negative numbers
-                    return faultaddr
-                # Subtract offset to get actual interesting pattern
-                faultaddr = hex(eval(faultaddr) - eval(offset))
-                faultaddr = formataddr(faultaddr.replace('L', ''))
+                if is_number(offset):
+                    if '0x' not in offset:
+                        offset = '0x' + offset
+                    if int(offset, 16) > int(faultaddr, 16):
+                        # TODO: fix up negative numbers
+                        return faultaddr
+                    # Subtract offset to get actual interesting pattern
+                    faultaddr = hex(eval(faultaddr) - eval(offset))
+                    faultaddr = formataddr(faultaddr.replace('L', ''))
     return faultaddr
 
 
@@ -530,10 +539,10 @@ def score_reports():
                         if module == 'unloaded' and not ignorejit:
                             ratchetscore(crasher, 20)
                         elif module.lower() == 'ntdll.dll' or 'msvcr' in module.lower():
-                            #likely heap corruption.  Exploitable, but difficult
+                            # likely heap corruption.  Exploitable, but difficult
                             ratchetscore(crasher, 45)
                         elif '0x00120000' in efa or '0x00130000' in efa or '0x00140000' in efa:
-                            #non-continued potential stack buffer overflow
+                            # non-continued potential stack buffer overflow
                             ratchetscore(crasher, 40)
                         elif results[crasher]['exceptions'][exception]['EIF']:
                             # The faulting address pattern is in the fuzzed file
