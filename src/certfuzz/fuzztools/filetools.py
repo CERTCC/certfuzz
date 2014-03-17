@@ -54,7 +54,7 @@ def mkdir_p(path):
         os.makedirs(path)
     except OSError as exc:
         # if the dir already exists, just move along
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
+        if exc.errno == errno.EEXIST:
             return True
         else:
             raise
