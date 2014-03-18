@@ -22,7 +22,6 @@ from certfuzz.fuzztools import filetools
 from certfuzz.fuzztools.object_caching import dump_obj_to_file
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
-from certfuzz.scoring.errors import EmptySetError
 
 import cPickle as pickle
 from certfuzz.iteration.iteration_windows import Iteration
@@ -373,8 +372,4 @@ class Campaign(CampaignBase):
         Starts campaign
         '''
         while self._keep_going():
-            try:
-                self._do_interval()
-            except EmptySetError:
-                logger.info('Seedfile set is empty. Nothing more to do.')
-                return
+            self._do_interval()
