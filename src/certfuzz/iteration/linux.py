@@ -276,13 +276,14 @@ class Iteration(IterationBase3):
         except CallgrindAnnotateMissingInputFileError:
             logger.warning('Missing callgrind output. Continuing')
 
-        if self.cfg.recycle_crashers:
-            logger.debug('Recycling crash as seedfile')
-            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
-            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
-            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
-            seedfile_set.add_file(crasherseed_path)
+# TODO
+#        if self.cfg.recycle_crashers:
+#            logger.debug('Recycling crash as seedfile')
+#            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
+#            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
+#            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
+#            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+#            seedfile_set.add_file(crasherseed_path)
 
         # score this crash for the seedfile
         testcase.seedfile.record_success(testcase.signature, tries=0)
