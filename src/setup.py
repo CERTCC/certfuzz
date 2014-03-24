@@ -22,6 +22,21 @@ def _bff_for_platform():
 _bff_main = 'bff = {}:main'.format(_bff_for_platform())
 
 
+def get_entry_points():
+    '''
+    Returns a dict containing entry points.
+    '''
+    console_scripts = []
+    console_scripts.append(_bff_main)
+
+    # TODO: add linux scripts here
+    # TODO: add windows scripts here
+    # TODO: add osx scripts here
+
+    eps = {}
+    eps['console_scripts'] = console_scripts
+    return eps
+
 setup(name="CERT_Basic_Fuzzing_Framework",
       version="3.0a",
       description="CERT Basic Fuzzing Framework 3.0",
@@ -43,18 +58,7 @@ setup(name="CERT_Basic_Fuzzing_Framework",
 #            'scripts/reset_bff_android.sh',
 #            'scripts/ubufuzz_first_time_setup.sh',
                ],
-      entry_points={
-                    'console_scripts': [
-#                        # bff for android
-#                        'bff_avd_mgr = certfuzz.android.avd_mgr.main:main',
-#                        'bff_android = certfuzz.android.controller.bff_android:main',
-#                        'bff_avd_cloner = certfuzz.android.celery.avd_mgr.cloner:main',
-#                        'bff_apk_dumper = certfuzz.android.tools.apk_dumper:main',
-#                        'config_init = certfuzz.android.tools.config_tools:main',
-                        # bff for linux, osx, windows,
-                       _bff_main,
-                        ]
-                    },
+      entry_points=get_entry_points(),
       include_package_data=True,
       license='See LICENSE.txt',
       data_files=[
