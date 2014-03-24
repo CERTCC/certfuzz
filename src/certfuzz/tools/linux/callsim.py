@@ -6,9 +6,9 @@ Created on Aug 16, 2011
 import logging
 from optparse import OptionParser
 
-from ...fuzztools.similarity_matrix import SimilarityMatrix
-from ...fuzztools.similarity_matrix import SimilarityMatrixError
-from ...fuzztools.distance_matrix import DistanceMatrixError
+from certfuzz.fuzztools.similarity_matrix import SimilarityMatrix
+from certfuzz.fuzztools.similarity_matrix import SimilarityMatrixError
+from certfuzz.fuzztools.distance_matrix import DistanceMatrixError
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARNING)
