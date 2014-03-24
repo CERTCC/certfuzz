@@ -256,8 +256,11 @@ class Campaign(object):
             touch_watchdog_file()
             with Iteration(cfg=self.cfg, seednum=s, seedfile=sf, r=r,
                            workdirbase=self.working_dir, quiet=qf,
-                           uniq_func=self._crash_is_unique,) as iteration:
+                           uniq_func=self._crash_is_unique,
+                           sf_set=self.seedfile_set,
+                           rf=sf.rangefinder) as iteration:
                 iteration.go()
+
 
     def go(self):
     # campaign.go
