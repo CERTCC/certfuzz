@@ -3,22 +3,23 @@ Created on Oct 11, 2012
 
 @organization: cert.org
 '''
-import logging
-import os
-import tempfile
-import time
-import numpy
-import shutil
-import random
 import hashlib
 import itertools
+import logging
+import numpy
+import os
+import random
+import shutil
+import tempfile
+import time
 
-from .. import debuggers
-from ..fuzztools import hamming, filetools, probability, text
-from ..fuzztools.filetools import delete_files, write_file
-from ..file_handlers.basicfile import BasicFile
-from ..file_handlers.tmp_reaper import TmpReaper
-from .errors import MinimizerError
+from certfuzz import debuggers
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.file_handlers.tmp_reaper import TmpReaper
+from certfuzz.fuzztools import hamming, filetools, probability, text
+from certfuzz.fuzztools.filetools import delete_files, write_file
+from certfuzz.minimizer.errors import MinimizerError
+
 
 try:
     from ..analyzers import pin_calltrace

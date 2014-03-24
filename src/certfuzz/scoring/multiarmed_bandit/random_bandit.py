@@ -3,7 +3,7 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from .multiarmed_bandit_base import MultiArmedBanditBase
+from certfuzz.scoring.multiarmed_bandit.multiarmed_bandit_base import MultiArmedBanditBase
 import random
 
 

@@ -1,10 +1,11 @@
-import logging
-from . import Minimizer as MinimizerBase
-from ..fuzztools.filetools import write_file
-from ..fuzztools.filetools import check_zip_file
-import zipfile
 import collections
-from .errors import WindowsMinimizerError
+import logging
+import zipfile
+
+from certfuzz.fuzztools.filetools import check_zip_file, write_file
+from certfuzz.minimizer import Minimizer as MinimizerBase
+from certfuzz.minimizer.errors import WindowsMinimizerError
+
 
 logger = logging.getLogger(__name__)
 

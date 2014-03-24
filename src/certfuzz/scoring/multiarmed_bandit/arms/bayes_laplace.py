@@ -3,7 +3,7 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from .base import BanditArmBase
+from certfuzz.scoring.multiarmed_bandit.arms.base import BanditArmBase
 
 
 class BanditArmBayesLaplace(BanditArmBase):
