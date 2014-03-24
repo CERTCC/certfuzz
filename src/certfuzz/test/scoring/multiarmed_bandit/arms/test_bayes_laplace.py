@@ -6,6 +6,7 @@ Created on Feb 22, 2013
 import unittest
 from certfuzz.scoring.multiarmed_bandit.arms.bayes_laplace import BanditArmBayesLaplace
 
+
 class Test(unittest.TestCase):
 
     def setUp(self):
@@ -15,6 +16,9 @@ class Test(unittest.TestCase):
         pass
 
     def test_update_p(self):
+        self.assertEqual(0, self.arm.trials)
+        self.assertEqual(0, self.arm.successes)
+        self.assertEqual(1.0 / 2.0, self.arm.probability)
         self.arm.update(1, 1)
         self.assertEqual(2.0 / 3.0, self.arm.probability)
         self.arm.update(1, 1)

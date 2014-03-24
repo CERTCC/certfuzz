@@ -64,6 +64,19 @@ class Test(unittest.TestCase):
             self.assertEqual(0.005, arm.probability)
             self.assertAlmostEqual(1.0 / len(self.arms), scaled[key], 6)
 
+    def test_add_items(self):
+        # check if we have some successes already
+        for arm in self.mab.arms.itervalues():
+            arm.update(successes=1, trials=5)
+
+        self.mab.add_item(key='newarm', obj='this_string')
+        newarm = self.mab.arms['newarm']
+        self.assertEqual(1, newarm.successes)
+        self.assertEqual(5, newarm.trials)
+        # probability is always = 1 in default mabbase
+        self.assertAlmostEqual(2.0 / 7.0, newarm.probability)
+
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

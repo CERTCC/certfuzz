@@ -29,7 +29,18 @@ class MultiArmedBanditBase(object):
         logger.debug('Creating arm %s', key)
         self.things[key] = obj
         # create a new arm of the desired type
-        self.arms[key] = self.arm_type()
+        new_arm = self.arm_type()
+
+        # set the new arm's params based on the results we've already found
+        new_arm.successes = self.successes
+        new_arm.trials = self.trials
+
+        # but don't trust those averages too strongly
+        new_arm.doubt()
+
+
+        # add the new arm to the set
+        self.arms[key] = new_arm
 
     def del_item(self, key=None):
         if key is None:

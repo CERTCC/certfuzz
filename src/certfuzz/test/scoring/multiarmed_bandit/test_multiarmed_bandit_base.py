@@ -29,7 +29,21 @@ class Test(unittest.TestCase):
         self.mab.add_item('foo', 'bar')
         self.assertEqual(len(self.keys) + 1, len(self.mab.things))
         self.assertEqual(len(self.keys) + 1, len(self.mab.arms))
+        foo_arm = self.mab.arms['foo']
+        self.assertEqual(0, foo_arm.trials)
+        self.assertEqual(0, foo_arm.successes)
         self.assertEqual(1.0, self.mab.arms['foo'].probability)
+
+        # check if we have some successes already
+        for arm in self.mab.arms.itervalues():
+            arm.update(successes=1, trials=5)
+
+        self.mab.add_item(key='newarm', obj='this_string')
+        newarm = self.mab.arms['newarm']
+        self.assertEqual(1, newarm.successes)
+        self.assertEqual(5, newarm.trials)
+        # probability is always = 1 in default mabbase
+        self.assertEqual(1.0, newarm.probability)
 
     def test_record_result(self):
         self.assertEqual(0, self.mab.successes)
