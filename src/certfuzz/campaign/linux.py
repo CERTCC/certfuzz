@@ -121,7 +121,6 @@ class Campaign(object):
         else:
             logger.debug('Removed campaign working dir: %s', self.working_dir)
 
-
     def _setup_dirs(self):
         logger.debug('setup dirs')
         paths = [self.cfg.local_dir,
@@ -153,7 +152,10 @@ class Campaign(object):
 
         hdlr.setLevel(level)
         hdlr.setFormatter(formatter)
-        logger.addHandler(hdlr)
+
+        # add the handler to the root logger (not the logger for this module)
+        root_logger = logging.getLogger()
+        root_logger.addHandler(hdlr)
 
         logger.info('Logging %s at %s', logging.getLevelName(level), logfile)
 
