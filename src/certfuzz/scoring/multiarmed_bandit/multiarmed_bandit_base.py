@@ -50,8 +50,14 @@ class MultiArmedBanditBase(object):
     def record_tries(self, key=None, tries=1):
         self.record_result(key, successes=0, trials=tries)
 
+    def _log_arm_p(self):
+        logger.debug('Updated probabilities')
+        for k, v in self.arms.iteritems():
+            logger.debug('key=%s probability=%f', k, v.probability)
+
     def record_success(self, key=None, successes=1):
         self.record_result(key, successes, trials=0)
+        self._log_arm_p()
 
     @property
     def successes(self):
