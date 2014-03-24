@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class IterationBase3(object):
     def __init__(self, workdirbase):
+        logger.debug('init')
         self.workdirbase = workdirbase
         self.working_dir = None
         self.analyzer_classes = []
@@ -101,31 +102,37 @@ class IterationBase3(object):
         pass
 
     def fuzz(self):
+        logger.debug('fuzz')
         self._pre_fuzz()
         self._fuzz()
         self._post_fuzz()
 
     def run(self):
+        logger.debug('run')
         self._pre_run()
         self._run()
         self._post_run()
 
     def verify(self, testcase):
+        logger.debug('verify')
         self._pre_verify(testcase)
         self._verify(testcase)
         self._post_verify(testcase)
 
     def analyze(self, testcase):
+        logger.debug('analyze')
         self._pre_analyze(testcase)
         self._analyze(testcase)
         self._post_analyze(testcase)
 
     def report(self, testcase):
+        logger.debug('report')
         self._pre_report(testcase)
         self._report(testcase)
         self._post_report(testcase)
 
     def go(self):
+        logger.debug('go')
         self.fuzz()
         self.run()
 

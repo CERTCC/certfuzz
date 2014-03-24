@@ -26,6 +26,7 @@ class MultiArmedBanditBase(object):
             raise MultiArmedBanditError('unspecified key for arm')
         if obj is None:
             raise MultiArmedBanditError('unspecified value for arm')
+        logger.debug('Creating arm %s', key)
         self.things[key] = obj
         # create a new arm of the desired type
         self.arms[key] = self.arm_type()
@@ -42,6 +43,7 @@ class MultiArmedBanditBase(object):
                 pass
 
     def record_result(self, key, successes=0, trials=0):
+        logger.debug('Recording result: key=%s successes=%d trials=%d', key, successes, trials)
         arm = self.arms[key]
         arm.update(successes, trials)
 
