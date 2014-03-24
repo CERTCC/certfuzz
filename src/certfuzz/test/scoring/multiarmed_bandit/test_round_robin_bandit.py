@@ -4,13 +4,16 @@ Created on Feb 22, 2013
 @organization: cert.org
 '''
 import unittest
-from certfuzz.scoring.multiarmed_bandit.random_bandit import RandomMultiArmedBandit
+from certfuzz.scoring.multiarmed_bandit.round_robin_bandit import RoundRobinMultiArmedBandit
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.mab = RandomMultiArmedBandit()
+        self.mab = RoundRobinMultiArmedBandit()
+        self.keys = 'abcdefghijklmnopqrstuvwxyz'
+        for arm in self.keys:
+            self.mab.add_item(arm, arm)
 
     def tearDown(self):
         pass
@@ -21,7 +24,7 @@ class Test(unittest.TestCase):
             self.mab.add_item(arm, arm)
 
         i = 1
-        n = 10000
+        n = 1000
         limit = n * len(arms)
         from collections import defaultdict
         seen = defaultdict(int)
@@ -32,9 +35,8 @@ class Test(unittest.TestCase):
             i += 1
 
         for arm in arms:
-            # ensure we saw each arm about n times
-            share = seen[arm] / float(n)
-            self.assertAlmostEqual(1.0, share, 1)
+            # ensure we saw each arm n times
+            self.assertEqual(n, seen[arm])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

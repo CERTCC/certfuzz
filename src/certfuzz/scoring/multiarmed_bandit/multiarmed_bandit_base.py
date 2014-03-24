@@ -3,9 +3,13 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-import itertools
-from .errors import MultiArmedBanditError
-from .arms.base import BanditArmBase
+import logging
+
+from certfuzz.scoring.multiarmed_bandit.errors import MultiArmedBanditError
+from certfuzz.scoring.multiarmed_bandit.arms.base import BanditArmBase
+
+logger = logging.getLogger(__name__)
+
 
 class MultiArmedBanditBase(object):
     '''
@@ -17,18 +21,43 @@ class MultiArmedBanditBase(object):
         self.things = {}
         self.arms = {}
 
-    def add(self, key=None, obj=None):
+    def add_item(self, key=None, obj=None):
         if key is None:
             raise MultiArmedBanditError('unspecified key for arm')
         if obj is None:
             raise MultiArmedBanditError('unspecified value for arm')
+        logger.debug('Creating arm %s', key)
         self.things[key] = obj
         # create a new arm of the desired type
         self.arms[key] = self.arm_type()
 
+    def del_item(self, key=None):
+        if key is None:
+            return
+
+        for d in (self.things, self.arms):
+            try:
+                del(d[key])
+            except KeyError:
+                # if there was a keyerror, our job is already done
+                pass
+
     def record_result(self, key, successes=0, trials=0):
+        logger.debug('Recording result: key=%s successes=%d trials=%d', key, successes, trials)
         arm = self.arms[key]
         arm.update(successes, trials)
+
+    def record_tries(self, key=None, tries=1):
+        self.record_result(key, successes=0, trials=tries)
+
+    def _log_arm_p(self):
+        logger.debug('Updated probabilities')
+        for k, v in self.arms.iteritems():
+            logger.debug('key=%s probability=%f', k, v.probability)
+
+    def record_success(self, key=None, successes=1):
+        self.record_result(key, successes, trials=0)
+        self._log_arm_p()
 
     @property
     def successes(self):
@@ -59,10 +88,7 @@ class MultiArmedBanditBase(object):
         return float(total) / count
 
     def __iter__(self):
-        '''
-        Implements a simple round robin iterator
-        '''
-        return itertools.cycle(self.things.values())
+        return self
 
-class RoundRobinMultiArmedBandit(MultiArmedBanditBase):
-    pass
+    def next(self):
+        raise StopIteration()

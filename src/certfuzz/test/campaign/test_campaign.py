@@ -72,38 +72,38 @@ class Test(unittest.TestCase):
         self.assertEqual('%s.%s' % (campaign.packages['debuggers'], 'debuggermodule'),
                          self.campaign.debugger_module_name)
 
-    def test_getstate(self):
-        self.campaign.seedfile_set = Mock()
-
-        # get_state should return a pickleable result
-        state = self.campaign.__getstate__()
-
-        import pickle
-        try:
-            pickle.dumps(state)
-        except Exception, e:
-            self.fail(e)
+#    def test_getstate(self):
+#        self.campaign.seedfile_set = Mock()
+#
+#        # get_state should return a pickleable result
+#        state = self.campaign.__getstate__()
+#
+#        import pickle
+#        try:
+#            pickle.dumps(state)
+#        except Exception, e:
+#            self.fail(e)
 
     def counter(self, *args):
         self.count += 1
 
-    def test_save_state(self):
-
-        # make sure we can write
-        self.assertFalse(os.path.exists(self.campaign.cached_state_file))
-        self.campaign._save_state()
-        self.assertTrue(os.path.exists(self.campaign.cached_state_file))
-
-    def test_set_state(self):
-        state = {'crashes_seen': [1, 2, 3, 3],
-                 'seedfile_set': {'things': {}},
-                 'id': 2134,
-                 'seed_dir_in': mkdtemp(dir=self.tmpdir),
-                 'seed_dir_local': mkdtemp(dir=self.tmpdir),
-                 'sf_set_out': tempfile.mktemp(dir=self.tmpdir)[1],
-                 }
-        self.campaign.__setstate__(state)
-        self.assertEqual(self.campaign.crashes_seen, set([1, 2, 3]))
+#    def test_save_state(self):
+#
+#        # make sure we can write
+#        self.assertFalse(os.path.exists(self.campaign.cached_state_file))
+#        self.campaign._save_state()
+#        self.assertTrue(os.path.exists(self.campaign.cached_state_file))
+#
+#    def test_set_state(self):
+#        state = {'crashes_seen': [1, 2, 3, 3],
+#                 'seedfile_set': {'things': {}},
+#                 'id': 2134,
+#                 'seed_dir_in': mkdtemp(dir=self.tmpdir),
+#                 'seed_dir_local': mkdtemp(dir=self.tmpdir),
+#                 'sf_set_out': tempfile.mktemp(dir=self.tmpdir)[1],
+#                 }
+#        self.campaign.__setstate__(state)
+#        self.assertEqual(self.campaign.crashes_seen, set([1, 2, 3]))
 
     def test_write_version(self):
         vf = os.path.join(self.campaign.outdir, 'version.txt')

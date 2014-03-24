@@ -5,6 +5,7 @@ Created on Feb 22, 2013
 '''
 from .errors import BanditArmError
 
+
 class BanditArmBase(object):
     '''
     Base class for multi-armed bandit arms. The base class simply counts

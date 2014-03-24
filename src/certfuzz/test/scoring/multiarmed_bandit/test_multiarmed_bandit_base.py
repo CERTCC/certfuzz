@@ -7,25 +7,26 @@ import unittest
 from certfuzz.scoring.multiarmed_bandit.multiarmed_bandit_base import MultiArmedBanditBase
 from certfuzz.scoring.multiarmed_bandit.errors import MultiArmedBanditError
 
+
 class Test(unittest.TestCase):
 
     def setUp(self):
         self.mab = MultiArmedBanditBase()
         self.keys = 'abcdefghijklmnopqrstuvwxyz'
         for arm in self.keys:
-            self.mab.add(arm, arm)
+            self.mab.add_item(arm, arm)
 
     def tearDown(self):
         pass
 
     def test_add(self):
-        self.assertRaises(MultiArmedBanditError, self.mab.add)
-        self.assertRaises(MultiArmedBanditError, self.mab.add, key=None, obj='obj')
-        self.assertRaises(MultiArmedBanditError, self.mab.add, key='key', obj=None)
+        self.assertRaises(MultiArmedBanditError, self.mab.add_item)
+        self.assertRaises(MultiArmedBanditError, self.mab.add_item, key=None, obj='obj')
+        self.assertRaises(MultiArmedBanditError, self.mab.add_item, key='key', obj=None)
 
         self.assertEqual(len(self.keys), len(self.mab.things))
         self.assertEqual(len(self.keys), len(self.mab.arms))
-        self.mab.add('foo', 'bar')
+        self.mab.add_item('foo', 'bar')
         self.assertEqual(len(self.keys) + 1, len(self.mab.things))
         self.assertEqual(len(self.keys) + 1, len(self.mab.arms))
         self.assertEqual(1.0, self.mab.arms['foo'].probability)
@@ -74,24 +75,8 @@ class Test(unittest.TestCase):
         self.assertEqual(total * 0.5, self.mab._total_p)
 
     def test_next(self):
-        arms = 'abcdefghijklmnopqrstuvwxyz'
-        for arm in arms:
-            self.mab.add(arm, arm)
-
-        i = 1
-        n = 1000
-        limit = n * len(arms)
-        from collections import defaultdict
-        seen = defaultdict(int)
-        for arm in self.mab:
-            if i > limit:
-                break
-            seen[arm] += 1
-            i += 1
-
-        for arm in arms:
-            # ensure we saw each arm n times
-            self.assertEqual(n, seen[arm])
+        # empty set raises StopIteration
+        self.assertRaises(StopIteration, self.mab.next)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

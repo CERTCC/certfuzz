@@ -3,9 +3,10 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from certfuzz.fuzztools.probability import weighted_choice
-from . import MultiArmedBanditBase
+from ...fuzztools.probability import weighted_choice
+from .multiarmed_bandit_base import MultiArmedBanditBase
 from .arms.bayes_laplace import BanditArmBayesLaplace
+
 
 class BayesianMultiArmedBandit(MultiArmedBanditBase):
     '''
@@ -14,7 +15,6 @@ class BayesianMultiArmedBandit(MultiArmedBanditBase):
     '''
     arm_type = BanditArmBayesLaplace
 
-    @property
     def _scaled_scores(self):
         scaled_scores = {}
         total = self._total_p
@@ -25,11 +25,12 @@ class BayesianMultiArmedBandit(MultiArmedBanditBase):
         return scaled_scores
 
     def _next_key(self):
-        return weighted_choice(self._scaled_scores)
-
-    def __iter__(self):
-        return self
+        return weighted_choice(self._scaled_scores())
 
     def next(self):
+        # if there aren't any arms, we're done.
+        if not len(self.arms):
+            raise StopIteration
+
         key = self._next_key()
         return self.things[key]

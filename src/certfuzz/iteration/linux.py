@@ -37,13 +37,16 @@ def get_uniq_logger(logfile):
 
 
 class Iteration(IterationBase3):
-    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None):
+    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
+                 sf_set=None, rf=None):
         IterationBase3.__init__(self, workdirbase)
         self.cfg = cfg
         self.seednum = seednum
         self.seedfile = seedfile
         self.r = r
         self.quiet_flag = quiet
+        self.sf_set = sf_set
+        self.rf = rf
 
         if uniq_func is None:
             self.uniq_func = lambda _tc_id: True
@@ -63,8 +66,21 @@ class Iteration(IterationBase3):
         return self
 
     def __exit__(self, etype, value, traceback):
-        IterationBase3.__exit__(self, etype, value, traceback)
+        handled = IterationBase3.__exit__(self, etype, value, traceback)
+
         self.cfg.clean_tmpdir()
+        return handled
+
+    def record_success(self):
+        self.sf_set.record_success(key=self.seedfile.md5)
+        self.rf.record_success(key=self.r.id)
+
+    def record_failure(self):
+        self.record_tries()
+
+    def record_tries(self):
+        self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
+        self.rf.record_tries(key=self.r.id, tries=1)
 
     def _log(self):
 #        # emit a log entry
@@ -118,8 +134,9 @@ class Iteration(IterationBase3):
         STATE_TIMER.enter_state('checking_results')
             # we must have made it through this chunk without a crash
             # so go to next chunk
-        self.sf.record_tries(tries=1)
-        self.r.record_tries(tries=1)
+
+        self.record_tries()
+
         if not self.zzuf.saw_crash:
             self._log()
             return
@@ -276,19 +293,25 @@ class Iteration(IterationBase3):
         except CallgrindAnnotateMissingInputFileError:
             logger.warning('Missing callgrind output. Continuing')
 
-        if self.cfg.recycle_crashers:
-            logger.debug('Recycling crash as seedfile')
-            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
-            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
-            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
-            seedfile_set.add_file(crasherseed_path)
+# TODO
+#        if self.cfg.recycle_crashers:
+#            logger.debug('Recycling crash as seedfile')
+#            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
+#            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
+#            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
+#            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+#            seedfile_set.add_file(crasherseed_path)
 
-        # score this crash for the seedfile
-        testcase.seedfile.record_success(testcase.signature, tries=0)
-        if testcase.range:
-            # ...and for the range
-            testcase.range.record_success(testcase.signature, tries=0)
+#        # score this crash for the seedfile
+#        testcase.seedfile.record_success(testcase.signature, tries=0)
+#        if testcase.range:
+#            # ...and for the range
+#            testcase.range.record_success(testcase.signature, tries=0)
+        # TODO: make sure this is scoring the right thing.
+        # in older code (see above) we kept track of specific crashes seen per seedfile
+        # & range. Should we still do that?
+        self.record_success()
+
 
     def _pre_report(self, testcase):
         uniqlogger = get_uniq_logger(self.cfg.uniq_log)

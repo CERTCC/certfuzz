@@ -26,7 +26,7 @@ class GDB(Debugger):
     _ext = 'gdb'
 
     def __init__(self, program, cmd_args, outfile_base, timeout, killprocname, template=None, exclude_unmapped_frames=True, keep_uniq_faddr=False, **options):
-        super(self.__class__, self).__init__(program, cmd_args, outfile_base, timeout, killprocname, **options)
+        Debugger.__init__(self, program, cmd_args, outfile_base, timeout, killprocname, **options)
         self.template = template
         self.exclude_unmapped_frames = exclude_unmapped_frames
         self.keep_uniq_faddr = keep_uniq_faddr
@@ -72,7 +72,11 @@ class GDB(Debugger):
             logger.warning("Failed to create GDB input file %s", self.input_file)
 
     def _remove_temp_file(self):
-        os.remove(self.input_file)
+        try:
+            os.remove(self.input_file)
+        except OSError as e:
+            logger.warning("Caught OSError attempting to remove %s: %s", self.input_file, e)
+
         if os.path.exists(self.input_file):
             logger.warning("Failed to delete %s", self.input_file)
 
