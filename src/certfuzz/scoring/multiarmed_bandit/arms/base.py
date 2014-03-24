@@ -3,7 +3,7 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from .errors import BanditArmError
+from certfuzz.scoring.multiarmed_bandit.arms.errors import BanditArmError
 
 
 class BanditArmBase(object):
