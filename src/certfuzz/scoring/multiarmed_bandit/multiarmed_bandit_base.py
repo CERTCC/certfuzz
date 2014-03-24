@@ -3,8 +3,12 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from .errors import MultiArmedBanditError
-from .arms.base import BanditArmBase
+import logging
+
+from certfuzz.scoring.multiarmed_bandit.errors import MultiArmedBanditError
+from certfuzz.scoring.multiarmed_bandit.arms.base import BanditArmBase
+
+logger = logging.getLogger(__name__)
 
 
 class MultiArmedBanditBase(object):
