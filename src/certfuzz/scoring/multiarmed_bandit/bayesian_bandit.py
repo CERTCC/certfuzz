@@ -3,9 +3,9 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from ...fuzztools.probability import weighted_choice
-from .multiarmed_bandit_base import MultiArmedBanditBase
-from .arms.bayes_laplace import BanditArmBayesLaplace
+from certfuzz.fuzztools.probability import weighted_choice
+from certfuzz.scoring.multiarmed_bandit.multiarmed_bandit_base import MultiArmedBanditBase
+from certfuzz.scoring.multiarmed_bandit.arms.bayes_laplace import BanditArmBayesLaplace
 
 
 class BayesianMultiArmedBandit(MultiArmedBanditBase):
