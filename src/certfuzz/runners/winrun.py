@@ -1,4 +1,4 @@
-from ..helpers import check_os_compatibility
+from certfuzz.helpers import check_os_compatibility
 
 check_os_compatibility('Windows')
 
@@ -17,10 +17,10 @@ import logging
 import sys
 import wmi
 import time
-from .errors import RunnerArchitectureError, RunnerRegistryError
-from .errors import RunnerError
-from ..campaign.config.foe_config import get_command_args_list
-from ..fuzztools.filetools import find_or_create_dir
+from certfuzz.runners.errors import RunnerArchitectureError, RunnerRegistryError
+from certfuzz.runners.errors import RunnerError
+from certfuzz.campaign.config.foe_config import get_command_args_list
+from certfuzz.fuzztools.filetools import find_or_create_dir
 
 logger = logging.getLogger(__name__)
 

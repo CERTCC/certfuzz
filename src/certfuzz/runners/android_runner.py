@@ -3,11 +3,11 @@ Created on Apr 4, 2013
 
 @organization: cert.org
 '''
-from .runner_base import Runner
-from .errors import AndroidRunnerError
-from ..android.api.adb_cmd import AdbCmd
-from ..android.api.activity_manager import ActivityManager
-from ..android.api.errors import AdbCmdError
+from certfuzz.runners.runner_base import Runner
+from certfuzz.runners.errors import AndroidRunnerError
+from certfuzz.android.api.adb_cmd import AdbCmd
+from certfuzz.android.api.activity_manager import ActivityManager
+from certfuzz.android.api.errors import AdbCmdError
 # from ..db.couchdb.datatypes import TestCaseDoc
 # from ..db.couchdb.db import TestCaseDb
 # from ..helpers.misc import random_str
@@ -20,6 +20,7 @@ import shutil
 import time
 
 logger = logging.getLogger(__name__)
+
 
 class AndroidRunner(Runner):
     '''
@@ -127,7 +128,6 @@ class AndroidRunner(Runner):
             logger.warning('Found crash tombstone')
         else:
             logger.debug('No tombstones found')
-
 
     @property
     def _fuzzed_file_uri(self):
