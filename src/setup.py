@@ -7,18 +7,6 @@ from setuptools import setup, find_packages
 import platform
 
 
-def _bff_for_platform():
-    parts = ['certfuzz', 'bff']
-    _platform = platform.system()
-    if _platform == 'Windows':
-        parts.append('windows')
-    else:
-        # actually covers linux and osx
-        parts.append('linux')
-
-    module = '.'.join(parts)
-    return module
-
 TOOL_NAMES = {'linux': ['bff_stats',
                         'callsim',
                         'create_crasher_script',
@@ -55,18 +43,19 @@ def _platform_scripts(target_platform):
 
     return scripts
 
+
 def get_entry_points():
     '''
     Returns a dict containing entry points.
     '''
+    bff_template = 'bff = certfuzz.bff.{}:main'
 
     _platform = platform.system().lower()
     if _platform == 'darwin':
         _platform = 'linux'
 
     console_scripts = []
-    console_scripts.append('bff = {}:main'.format(_bff_for_platform()))
-
+    console_scripts.append(bff_template.format(_platform))
     console_scripts.extend(_platform_scripts(_platform))
 
     eps = {}
