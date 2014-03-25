@@ -62,6 +62,14 @@ def get_entry_points():
     eps['console_scripts'] = console_scripts
     return eps
 
+def get_scripts():
+    _s = [
+#            'scripts/start_bff_android.sh',
+#            'scripts/reset_bff_android.sh',
+#            'scripts/ubufuzz_first_time_setup.sh',
+               ]
+    return _s
+
 setup(name="CERT_Basic_Fuzzing_Framework",
       version="3.0a",
       description="CERT Basic Fuzzing Framework 3.0",
@@ -78,11 +86,7 @@ setup(name="CERT_Basic_Fuzzing_Framework",
                         'numpy',
                         'matplotlib',
                         ],
-      scripts=[
-#            'scripts/start_bff_android.sh',
-#            'scripts/reset_bff_android.sh',
-#            'scripts/ubufuzz_first_time_setup.sh',
-               ],
+      scripts=get_scripts(),
       entry_points=get_entry_points(),
       include_package_data=True,
       license='See LICENSE.txt',
