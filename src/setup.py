@@ -19,6 +19,42 @@ def _bff_for_platform():
     module = '.'.join(parts)
     return module
 
+TOOL_NAMES = {'linux': ['bff_stats',
+                        'callsim',
+                        'create_crasher_script',
+                        'debugger_file',
+                        'drillresults',
+                        'minimize',
+                        'minimizer_plot',
+                        'mtsp_enum',
+                        'repro',
+                        ],
+             'windows': ['clean_foe',
+                         'copycrashers',
+                         'drillresults',
+                         'minimize',
+                         'mtsp_enum',
+                         'quickstats',
+                         'repro',
+                         'zipdiff',
+                         ],
+             }
+
+
+def _platform_scripts():
+    '''
+    Assumes tool foo will have an entry point certfuzz.tools.<platform>.foo:main
+    :param _platform:
+    '''
+    _platform = platform.system().lower()
+    script_spec_template = '{} = certfuzz.tools.{}.{}:main'
+    scripts = []
+
+    for s in TOOL_NAMES[_platform]:
+        # will turn "callsim" into "callsim = certfuzz.tools.linux.callsim"
+        scripts.append(script_spec_template.format(s, _platform, s))
+
+    return scripts
 
 def get_entry_points():
     '''
@@ -27,26 +63,7 @@ def get_entry_points():
     console_scripts = []
     console_scripts.append('bff = {}:main'.format(_bff_for_platform()))
 
-    # TODO: add linux scripts here
-    # bff_stats
-    # callsim
-    # create_crasher_script
-    # debugger_file
-    # drillresults
-    # minimize
-    # minimizer_plot
-    # mtsp_enum
-    # repro
-
-    # TODO: add windows scripts here
-    #    clean_foe
-    #    copycrashers
-    #    drillresults
-    #    minimize
-    #    mtsp_enum
-    #    quickstats
-    #    repro
-    #    zipdiff
+    console_scripts.extend(_platform_scripts())
 
     eps = {}
     eps['console_scripts'] = console_scripts
