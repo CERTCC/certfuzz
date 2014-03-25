@@ -2,4 +2,6 @@
 
 ENV=bff.env
 
-virtualenv --system-site-packages --distribute $ENV
+virtualenv --verbose --python=python2.7 \
+    --system-site-packages --distribute \
+    --never-download $ENV
