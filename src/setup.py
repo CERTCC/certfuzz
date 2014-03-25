@@ -41,18 +41,17 @@ TOOL_NAMES = {'linux': ['bff_stats',
              }
 
 
-def _platform_scripts():
+def _platform_scripts(target_platform):
     '''
     Assumes tool foo will have an entry point certfuzz.tools.<platform>.foo:main
     :param _platform:
     '''
-    _platform = platform.system().lower()
     script_spec_template = '{} = certfuzz.tools.{}.{}:main'
     scripts = []
 
-    for s in TOOL_NAMES[_platform]:
+    for s in TOOL_NAMES[target_platform]:
         # will turn "callsim" into "callsim = certfuzz.tools.linux.callsim"
-        scripts.append(script_spec_template.format(s, _platform, s))
+        scripts.append(script_spec_template.format(s, target_platform, s))
 
     return scripts
 
@@ -60,10 +59,15 @@ def get_entry_points():
     '''
     Returns a dict containing entry points.
     '''
+
+    _platform = platform.system().lower()
+    if _platform == 'darwin':
+        _platform = 'linux'
+
     console_scripts = []
     console_scripts.append('bff = {}:main'.format(_bff_for_platform()))
 
-    console_scripts.extend(_platform_scripts())
+    console_scripts.extend(_platform_scripts(_platform))
 
     eps = {}
     eps['console_scripts'] = console_scripts
