@@ -19,19 +19,34 @@ def _bff_for_platform():
     module = '.'.join(parts)
     return module
 
-_bff_main = 'bff = {}:main'.format(_bff_for_platform())
-
 
 def get_entry_points():
     '''
     Returns a dict containing entry points.
     '''
     console_scripts = []
-    console_scripts.append(_bff_main)
+    console_scripts.append('bff = {}:main'.format(_bff_for_platform()))
 
     # TODO: add linux scripts here
+    # bff_stats
+    # callsim
+    # create_crasher_script
+    # debugger_file
+    # drillresults
+    # minimize
+    # minimizer_plot
+    # mtsp_enum
+    # repro
+
     # TODO: add windows scripts here
-    # TODO: add osx scripts here
+    #    clean_foe
+    #    copycrashers
+    #    drillresults
+    #    minimize
+    #    mtsp_enum
+    #    quickstats
+    #    repro
+    #    zipdiff
 
     eps = {}
     eps['console_scripts'] = console_scripts
