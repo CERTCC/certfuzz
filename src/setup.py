@@ -29,7 +29,7 @@ TOOL_NAMES = {'linux': ['bff_stats',
              }
 
 
-def _platform_scripts(target_platform):
+def _ep_scripts(target_platform):
     '''
     Assumes tool foo will have an entry point certfuzz.tools.<platform>.foo:main
     :param _platform:
@@ -44,7 +44,7 @@ def _platform_scripts(target_platform):
     return scripts
 
 
-def get_entry_points():
+def _entry_points():
     '''
     Returns a dict containing entry points.
     '''
@@ -56,13 +56,13 @@ def get_entry_points():
 
     console_scripts = []
     console_scripts.append(bff_template.format(_platform))
-    console_scripts.extend(_platform_scripts(_platform))
+    console_scripts.extend(_ep_scripts(_platform))
 
     eps = {}
     eps['console_scripts'] = console_scripts
     return eps
 
-def get_scripts():
+def _scripts():
     _s = [
 #            'scripts/start_bff_android.sh',
 #            'scripts/reset_bff_android.sh',
@@ -86,8 +86,8 @@ setup(name="CERT_Basic_Fuzzing_Framework",
                         'numpy',
                         'matplotlib',
                         ],
-      scripts=get_scripts(),
-      entry_points=get_entry_points(),
+      scripts=_scripts(),
+      entry_points=_entry_points(),
       include_package_data=True,
       license='See LICENSE.txt',
       data_files=[
