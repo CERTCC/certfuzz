@@ -17,14 +17,23 @@ from certfuzz.campaign.campaign_windows import WindowsCampaign
 def _setup_logging_to_screen(options, logger, fmt):
     # logging to screen
     hdlr = logging.StreamHandler()
-    hdlr.setFormatter(fmt)
-    hdlr.setLevel(logging.INFO)
-    # override if debug or quiet
+
     if options.debug:
-        hdlr.setLevel(logging.DEBUG)
-    elif options.quiet and not options.verbose:
-        hdlr.setLevel(logging.WARNING)
-    logger.addHandler(hdlr)
+        level = logging.DEBUG
+    elif options.verbose:
+        level = logging.INFO
+    elif options.quiet:
+        level = logging.WARNING
+    else:
+        level = logging.INFO
+
+    add_log_handler(logger, level, hdlr, fmt)
+
+
+def add_log_handler(log_obj, level, hdlr, formatter):
+    hdlr.setLevel(level)
+    hdlr.setFormatter(formatter)
+    log_obj.addHandler(hdlr)
 
 
 def _setup_logging_to_file(options, logger, fmt):
