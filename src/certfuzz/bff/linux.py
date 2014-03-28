@@ -28,7 +28,22 @@ logger.name = 'bff'
 logger.setLevel(0)
 
 
+def _setup_logging_to_screen(options, logger, fmt):
+    pass
 
+
+def _setup_logging_to_file(options, logger, fmt):
+    pass
+
+
+def setup_logging(options):
+    pass
+
+def parse_options():
+    pass
+
+def setup_debugging(logger):
+    pass
 
 def setup_logging_to_console(log_obj, level):
     hdlr = logging.StreamHandler()
