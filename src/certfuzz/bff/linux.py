@@ -6,7 +6,6 @@ Created on Jan 13, 2014
 from certfuzz.version import __version__
 
 import logging
-from logging.handlers import RotatingFileHandler
 from optparse import OptionParser
 import os
 import platform
