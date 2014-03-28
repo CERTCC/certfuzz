@@ -4,14 +4,13 @@ Created on Jan 13, 2014
 @author: adh
 '''
 
-__version__ = '2.2'
-
 import logging
 from logging.handlers import RotatingFileHandler
 from optparse import OptionParser
 import os
 import sys
 
+from certfuzz.version import __version__
 from certfuzz.campaign.campaign_windows import WindowsCampaign
 
 

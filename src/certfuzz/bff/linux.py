@@ -3,7 +3,7 @@ Created on Jan 13, 2014
 
 @author: adh
 '''
-__version__ = '2.8'
+from certfuzz.version import __version__
 
 import logging
 from logging.handlers import RotatingFileHandler
