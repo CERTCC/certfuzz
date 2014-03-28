@@ -115,6 +115,7 @@ def main():
     if options.configfile:
         remote_cfg_file = options.configfile
     else:
+        # TODO why are we doing this again?
         remote_cfg_file = get_config_file(scriptpath)
 
     # die unless the remote config is present
