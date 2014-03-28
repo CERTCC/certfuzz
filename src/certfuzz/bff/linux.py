@@ -34,7 +34,11 @@ def setup_logging(options):
     pass
 
 def parse_options():
-    pass
+    parser = OptionParser()
+    parser.add_option('', '--debug', dest='debug', help='Turn on debugging output', action='store_true')
+    parser.add_option('-c', '--config', dest='cfg', help='Config file location')
+    return parser.parse_args()  #@UnusedVariable
+
 
 def setup_debugging(logger):
     pass
@@ -74,15 +78,6 @@ def main():
 
     scriptpath = os.path.dirname(sys.argv[0])
     logger.info('Scriptpath is %s', scriptpath)
-
-    # parse command line options
-    logger.info('Parsing command line options')
-
-    #TODO: replace OptionParser with argparse
-    parser = OptionParser()
-    parser.add_option('', '--debug', dest='debug', help='Turn on debugging output', action='store_true')
-    parser.add_option('-c', '--config', dest='cfg', help='Config file location')
-    (options, args) = parser.parse_args()  #@UnusedVariable
 
     # Get the cfg file name
     if options.cfg:
