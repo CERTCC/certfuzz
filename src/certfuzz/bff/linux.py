@@ -18,12 +18,26 @@ from certfuzz.fuzztools import filetools
 from certfuzz.campaign.linux import Campaign
 
 
-
-
-
-
 def _setup_logging_to_screen(options, logger, fmt):
-    pass
+    # logging to screen
+    hdlr = logging.StreamHandler()
+
+    if options.debug:
+        level = logging.DEBUG
+    elif options.verbose:
+        level = logging.INFO
+    elif options.quiet:
+        level = logging.WARNING
+    else:
+        level = logging.INFO
+
+    add_log_handler(logger, level, hdlr, fmt)
+
+
+def add_log_handler(log_obj, level, hdlr, formatter):
+    hdlr.setLevel(level)
+    hdlr.setFormatter(formatter)
+    log_obj.addHandler(hdlr)
 
 
 def _setup_logging_to_file(options, logger, fmt):
@@ -31,7 +45,17 @@ def _setup_logging_to_file(options, logger, fmt):
 
 
 def setup_logging(options):
-    pass
+    logger = logging.getLogger()
+
+    if options.debug:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.INFO)
+
+    fmt = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s')
+    _setup_logging_to_screen(options, logger, fmt)
+    _setup_logging_to_file(options, logger, fmt)
+    return logger
 
 def parse_options():
     parser = OptionParser()
@@ -42,11 +66,6 @@ def parse_options():
 
 def setup_debugging(logger):
     pass
-
-def setup_logging_to_console(log_obj, level):
-    hdlr = logging.StreamHandler()
-    formatter = logging.Formatter('%(name)s %(message)s')
-    add_log_handler(log_obj, level, hdlr, formatter)
 
 
 def get_config_file(basedir):
@@ -66,15 +85,18 @@ def get_config_file(basedir):
     return config_file
 
 
-def add_log_handler(log_obj, level, hdlr, formatter):
-    hdlr.setLevel(level)
-    hdlr.setFormatter(formatter)
-    log_obj.addHandler(hdlr)
-
-
 def main():
-    setup_logging_to_console(logger, logging.INFO)
-    logger.info("Welcome to BFF!")
+    # parse command line
+    options, args = parse_options()
+
+    # start logging
+    logger = setup_logging(options)
+    logger.info('Welcome to %s version %s', sys.argv[0], __version__)
+    for a in args:
+        logger.warning('Ignoring unrecognized argument: %s', a)
+
+    if options.debug:
+        setup_debugging(logger)
 
     scriptpath = os.path.dirname(sys.argv[0])
     logger.info('Scriptpath is %s', scriptpath)
@@ -93,7 +115,10 @@ def main():
     filetools.copy_file(remote_cfg_file, local_cfg_file)
 
     with Campaign(cfg_path=local_cfg_file) as campaign:
+        logger.info('Initiating campaign')
         campaign.go()
+
+    logger.info('Campaign complete')
 
 
 if __name__ == '__main__':
