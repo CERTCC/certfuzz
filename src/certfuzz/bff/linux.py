@@ -23,18 +23,11 @@ DEBUG = True
 
 SEED_INTERVAL = 500
 
-#SEED_TS = performance.TimeStamper()
-#START_SEED = 0
-
 logger = logging.getLogger()
 logger.name = 'bff'
 logger.setLevel(0)
 
 
-#def get_rate(current_seed):
-#    seeds = current_seed - START_SEED
-#    rate = seeds / SEED_TS.since_start()
-#    return rate
 
 
 def setup_logging_to_console(log_obj, level):
@@ -67,14 +60,7 @@ def add_log_handler(log_obj, level, hdlr, formatter):
 
 
 def main():
-#    global START_SEED
-#    hashes = []
-
-#    # give up if we don't have a debugger
-#    debuggers.verify_supported_platform()
-
     setup_logging_to_console(logger, logging.INFO)
-#    setup_logfile()
     logger.info("Welcome to BFF!")
 
     scriptpath = os.path.dirname(sys.argv[0])
