@@ -3,8 +3,6 @@ Created on Jan 13, 2014
 
 @author: adh
 '''
-from certfuzz.version import __version__
-
 import logging
 from optparse import OptionParser
 import os
@@ -16,6 +14,7 @@ from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.fuzztools import filetools
 
 from certfuzz.campaign.linux import Campaign
+from certfuzz.version import __version__
 
 
 def _setup_logging_to_screen(options, logger, fmt):
