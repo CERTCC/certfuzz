@@ -56,11 +56,22 @@ def setup_logging(options):
     _setup_logging_to_file(options, logger, fmt)
     return logger
 
+
 def parse_options():
-    parser = OptionParser()
-    parser.add_option('', '--debug', dest='debug', help='Turn on debugging output', action='store_true')
-    parser.add_option('-c', '--config', dest='cfg', help='Config file location')
-    return parser.parse_args()  #@UnusedVariable
+    u = '%prog [options]'
+    v = ' '.join(['%prog', 'v%s' % __version__])
+    parser = OptionParser(usage=u, version=v)
+    parser.add_option('-d', '--debug', dest='debug', action='store_true',
+                      help='Enable debug messages to screen and log file (overrides --quiet)')
+    parser.add_option('-q', '--quiet', dest='quiet', action='store_true',
+                      help='Silence messages to screen (log file will remain at INFO level')
+    parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
+                      help='Enable verbose logging messages to screen and log file (overrides --quiet)')
+    parser.add_option('-c', '--config', dest='configfile', help='Path to config file', metavar='FILE')
+# TODO enable these options
+#    parser.add_option('-l', '--logfile', dest='logfile', help='Path to log file', metavar='FILE')
+#    parser.add_option('-r', '--result-dir', dest='resultdir', help='Path to result directory (overrides config)', metavar='DIR')
+    return parser.parse_args()
 
 
 def setup_debugging(logger):
@@ -101,8 +112,8 @@ def main():
     logger.info('Scriptpath is %s', scriptpath)
 
     # Get the cfg file name
-    if options.cfg:
-        remote_cfg_file = options.cfg
+    if options.configfile:
+        remote_cfg_file = options.configfile
     else:
         remote_cfg_file = get_config_file(scriptpath)
 
