@@ -19,13 +19,8 @@ from certfuzz.fuzztools import filetools
 from certfuzz.campaign.linux import Campaign
 
 
-DEBUG = True
 
-SEED_INTERVAL = 500
 
-logger = logging.getLogger()
-logger.name = 'bff'
-logger.setLevel(0)
 
 
 def _setup_logging_to_screen(options, logger, fmt):
