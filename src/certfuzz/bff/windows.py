@@ -22,7 +22,7 @@ def _setup_logging_to_file(options, logger, fmt):
     if options.logfile:
         logfile = options.logfile
     else:
-        logfile = os.path.join('log', 'foe2log.txt')
+        logfile = os.path.join('log', 'bff_log.txt')
 
     hdlr = RotatingFileHandler(logfile, mode='w', maxBytes=1e7, backupCount=5)
 
