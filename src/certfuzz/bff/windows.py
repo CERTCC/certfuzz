@@ -12,29 +12,8 @@ import sys
 
 from certfuzz.campaign.campaign_windows import WindowsCampaign
 
+from certfuzz.bff.common import _setup_logging_to_screen, setup_debugging
 from certfuzz.version import __version__
-
-
-def _setup_logging_to_screen(options, logger, fmt):
-    # logging to screen
-    hdlr = logging.StreamHandler()
-
-    if options.debug:
-        level = logging.DEBUG
-    elif options.verbose:
-        level = logging.INFO
-    elif options.quiet:
-        level = logging.WARNING
-    else:
-        level = logging.INFO
-
-    add_log_handler(logger, level, hdlr, fmt)
-
-
-def add_log_handler(log_obj, level, hdlr, formatter):
-    hdlr.setLevel(level)
-    hdlr.setFormatter(formatter)
-    log_obj.addHandler(hdlr)
 
 
 def _setup_logging_to_file(options, logger, fmt):
@@ -66,7 +45,7 @@ def setup_logging(options):
         logger.setLevel(logging.INFO)
 
     fmt = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s')
-    _setup_logging_to_screen(options, logger, fmt)
+    _setup_logging_to_screen(options, fmt)
     _setup_logging_to_file(options, logger, fmt)
     return logger
 
@@ -89,22 +68,6 @@ def parse_options():
     return parser.parse_args()
 
 
-def setup_debugging(logger):
-    logger.debug('Instantiating embedded rpdb2 debugger with password "bff"...')
-    try:
-        import rpdb2
-        rpdb2.start_embedded_debugger("foe", timeout=0.0)
-    except ImportError:
-        logger.debug('Error importing rpdb2. Is Winpdb installed?')
-
-    logger.debug('Enabling heapy remote monitoring...')
-    try:
-        from guppy import hpy  # @UnusedImport
-        import guppy.heapy.RM  # @UnusedImport
-    except ImportError:
-        logger.debug('Error importing heapy. Is Guppy-PE installed?')
-
-
 def main():
     # parse command line
     options, args = parse_options()
@@ -116,7 +79,7 @@ def main():
         logger.warning('Ignoring unrecognized argument: %s', a)
 
     if options.debug:
-        setup_debugging(logger)
+        setup_debugging()
 
     with WindowsCampaign(config_file=options.configfile, result_dir=options.resultdir, debug=options.debug) as campaign:
         logger.info('Initiating campaign')
