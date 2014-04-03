@@ -121,11 +121,7 @@ def main():
     # die unless the remote config is present
     assert os.path.exists(remote_cfg_file), 'Cannot find remote config file: %s, Please create it or use --config option to specify a different location.' % remote_cfg_file
 
-    # copy remote config to local:
-    local_cfg_file = os.path.expanduser('~/bff.cfg')
-    filetools.copy_file(remote_cfg_file, local_cfg_file)
-
-    with Campaign(cfg_path=local_cfg_file) as campaign:
+    with Campaign(cfg_path=options.configfile) as campaign:
         logger.info('Initiating campaign')
         campaign.go()
 
