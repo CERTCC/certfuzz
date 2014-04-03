@@ -78,21 +78,6 @@ def setup_debugging(logger):
     pass
 
 
-def get_config_file(basedir):
-    config_dir = os.path.join(basedir, 'conf.d')
-
-    # check for a platform-specific file
-    platform_cfg = 'bff-%s.cfg' % platform.system()
-
-    fullpath_platform_cfg = os.path.join(config_dir, platform_cfg)
-
-    if os.path.exists(fullpath_platform_cfg):
-        config_file = fullpath_platform_cfg
-    else:
-        # default if nothing else is around
-        config_file = os.path.join(config_dir, "bff.cfg")
-
-    return config_file
 
 
 def main():
@@ -107,19 +92,6 @@ def main():
 
     if options.debug:
         setup_debugging(logger)
-
-    scriptpath = os.path.dirname(sys.argv[0])
-    logger.info('Scriptpath is %s', scriptpath)
-
-    # Get the cfg file name
-    if options.configfile:
-        remote_cfg_file = options.configfile
-    else:
-        # TODO why are we doing this again?
-        remote_cfg_file = get_config_file(scriptpath)
-
-    # die unless the remote config is present
-    assert os.path.exists(remote_cfg_file), 'Cannot find remote config file: %s, Please create it or use --config option to specify a different location.' % remote_cfg_file
 
     with Campaign(cfg_path=options.configfile) as campaign:
         logger.info('Initiating campaign')
