@@ -36,17 +36,17 @@ logger = logging.getLogger(__name__)
 
 
 class Campaign(object):
-    def __init__(self, cfg_path=None, scriptpath=None):
+    def __init__(self, config_file=None, result_dir=None, debug=False):
         # Read the cfg file
-        self.cfg_path = cfg_path
-        logger.info('Reading config from %s', cfg_path)
-        self.cfg = cfg_helper.read_config_options(cfg_path)
-        self.scriptpath = scriptpath
+        self.cfg_path = config_file
+        self.result_dir = result_dir
+        self.debug = debug
+        logger.info('Reading config from %s', config_file)
+        self.cfg = cfg_helper.read_config_options(config_file)
         self.seedfile_set = None
         self.hashes = []
         self.workdirbase = self.cfg.testscase_tmp_dir
         self.working_dir = None
-        self.debug = True
         self.crashes_seen = set()
 
         # give up if we don't have a debugger

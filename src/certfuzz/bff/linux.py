@@ -64,7 +64,7 @@ def main():
     if options.debug:
         setup_debugging()
 
-    with Campaign(cfg_path=options.configfile) as campaign:
+    with Campaign(config_file=options.configfile, result_dir=options.resultdir, debug=options.debug) as campaign:
         logger.info('Initiating campaign')
         campaign.go()
 
