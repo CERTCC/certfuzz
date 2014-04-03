@@ -10,7 +10,7 @@ from optparse import OptionParser
 import os
 import sys
 
-from certfuzz.campaign.campaign_windows import WindowsCampaign
+from certfuzz.campaign.campaign_windows import WindowsCampaign as Campaign
 
 from certfuzz.bff.common import _setup_logging_to_screen, setup_debugging
 from certfuzz.version import __version__
@@ -81,7 +81,7 @@ def main():
     if options.debug:
         setup_debugging()
 
-    with WindowsCampaign(config_file=options.configfile, result_dir=options.resultdir, debug=options.debug) as campaign:
+    with Campaign(config_file=options.configfile, result_dir=options.resultdir, debug=options.debug) as campaign:
         logger.info('Initiating campaign')
         campaign.go()
 
