@@ -4,7 +4,7 @@ Created on Apr 3, 2014
 @author: adh
 '''
 import logging
-from optparse import OptionParser
+from logging.handlers import RotatingFileHandler
 import os
 import sys
 
@@ -12,6 +12,7 @@ from certfuzz.fuzztools.filetools import mkdir_p
 
 from certfuzz.bff.errors import BFFerror
 from certfuzz.version import __version__
+import argparse
 
 
 logger = logging.getLogger(__name__)
@@ -50,12 +51,12 @@ class BFF(object):
         self.log_level = logging.INFO
 
     def __enter__(self):
-        self._parse_options()
-        self._process_options()
+        self._parse_args()
+        self._process_args()
 
         self._setup_logging()
 
-        if self.options.debug:
+        if self.args.debug:
             setup_debugging()
 
         return self
@@ -63,42 +64,37 @@ class BFF(object):
     def __exit__(self, etype, value, traceback):
         pass
 
-    def _parse_options(self):
-        u = '%prog [options]'
-        v = ' '.join(['%prog', 'v%s' % __version__])
-        parser = OptionParser(usage=u, version=v)
-        parser.add_option('-d', '--debug', dest='debug', action='store_true',
-                          help='Enable debug messages to screen and log file (overrides --quiet)')
-        parser.add_option('-q', '--quiet', dest='quiet', action='store_true',
-                          help='Silence messages to screen (log file will remain at INFO level')
-        parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
-                          help='Enable verbose logging messages to screen and log file (overrides --quiet)')
-        parser.add_option('-c', '--config', dest='configfile', help='Path to config file',
+    def _parse_args(self):
+        parser = argparse.ArgumentParser(description='CERT Basic Fuzzing Framework {}'.format(__version__))
+
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument('-d', '--debug', dest='debug', action='store_true',
+                          help='Set logging to DEBUG and enable additional debuggers if available')
+        group.add_argument('-q', '--quiet', dest='quiet', action='store_true',
+                          help='Set logging to WARNING level')
+        group.add_argument('-v', '--verbose', dest='verbose', action='store_true',
+                          help='Set logging to INFO level')
+
+        parser.add_argument('-c', '--config', dest='configfile', type=str, help='Path to config file',
                           default=self.config_path, metavar='FILE')
-        parser.add_option('-l', '--logfile', dest='logfile', default=None,
+        parser.add_argument('-l', '--logfile', dest='logfile', type=str, default=self._logfile,
                           help='Path to log file', metavar='FILE')
-        parser.add_option('-r', '--result-dir', dest='resultdir',
+        parser.add_argument('-r', '--result-dir', dest='resultdir', type=str,
                           default=None,
                           help='Path to result directory (overrides config)', metavar='DIR')
 
-        (self.options, self.args) = parser.parse_args()
+        self.args = parser.parse_args()
 
-    def _process_options(self):
-        for a in self.args:
-            logger.warning('Ignoring unrecognized argument: %s', a)
-
+    def _process_args(self):
         # set logfile destination
-        if self.options.logfile:
-            self.logfile = self.options.logfile
-        else:
-            self.logfile = self._logfile
+        self.logfile = self.args.logfile
 
         # set log level
-        if self.options.debug:
+        if self.args.debug:
             self.log_level = logging.DEBUG
-        elif self.options.verbose:
+        elif self.args.verbose:
             self.log_level = logging.INFO
-        elif self.options.quiet:
+        elif self.args.quiet:
             self.log_level = logging.WARNING
 
     def _setup_logging(self):
@@ -112,10 +108,10 @@ class BFF(object):
 
         handlers = []
         handlers.append(logging.StreamHandler())
-        handlers.append(logging.handlers.RotatingFileHandler(self.logfile,
-                                                             mode='w',
-                                                             maxBytes=1e7,
-                                                             backupCount=5)
+        handlers.append(RotatingFileHandler(self.logfile,
+                        mode='w',
+                        maxBytes=1e7,
+                        backupCount=5)
                         )
 
         for handler in handlers:
@@ -128,9 +124,9 @@ class BFF(object):
             raise BFFerror('Campaign class is undefined')
 
         logger.info('Creating campaign')
-        with self.campaign_class(config_file=self.options.configfile,
-                      result_dir=self.options.resultdir,
-                      debug=self.options.debug) as campaign:
+        with self.campaign_class(config_file=self.args.configfile,
+                      result_dir=self.args.resultdir,
+                      debug=self.args.debug) as campaign:
             logger.info('Starting campaign')
             campaign.go()
 
