@@ -38,7 +38,7 @@ class BanditArmBase(object):
         if self.probability is None:
             raise BanditArmError('probability not set')
         elif not (0.0 <= self.probability <= 1.0):
-            raise BanditArmError('probability must be between 0.0 and 1.0')
+            raise BanditArmError('probability must be between 0.0 <= {:f} <= 1.0'.format(self.probability))
 
     def _update_p(self, *_unused_args):
         '''
