@@ -5,7 +5,10 @@ Created on Apr 3, 2014
 '''
 import logging
 from optparse import OptionParser
+import os
 import sys
+
+from certfuzz.fuzztools.filetools import mkdir_p
 
 from certfuzz.bff.errors import BFFerror
 from certfuzz.version import __version__
@@ -41,9 +44,17 @@ class BFF(object):
         self.config_path = config_path
         self.campaign_class = campaign_class
 
+        self._logdir = 'log'
+        self._logfile = os.path.abspath(os.path.join(self._logdir, 'bff.log'))
+        self.logfile = None
+        self.log_level = logging.INFO
+
     def __enter__(self):
         self._parse_options()
+        self._process_options()
+
         self._setup_logging()
+
         if self.options.debug:
             setup_debugging()
 
@@ -72,58 +83,43 @@ class BFF(object):
 
         (self.options, self.args) = parser.parse_args()
 
+    def _process_options(self):
         for a in self.args:
             logger.warning('Ignoring unrecognized argument: %s', a)
 
-    def _setup_logging_to_screen(self, options, fmt):
-        # logging to screen
-        hdlr = logging.StreamHandler()
-
-        if self.options.debug:
-            level = logging.DEBUG
-        elif self.options.verbose:
-            level = logging.INFO
-        elif self.options.quiet:
-            level = logging.WARNING
+        # set logfile destination
+        if self.options.logfile:
+            self.logfile = self.options.logfile
         else:
-            level = logging.INFO
+            self.logfile = self._logfile
 
-        root_logger = logging.getLogger()
-
-        add_log_handler(root_logger, level, hdlr, fmt)
-
-    def _setup_logging_to_file(self, options, logger_, fmt):
-        pass
-        # TODO make this work
-        # logging to file
-        # override if option specified
-    #    if options.logfile:
-    #        logfile = options.logfile
-    #    else:
-    #        logfile = os.path.join('log', 'bff_log.txt')
-    #
-    #    hdlr = RotatingFileHandler(logfile, mode='w', maxBytes=1e7, backupCount=5)
-    #
-    #    hdlr.setFormatter(fmt)
-    #    hdlr.setLevel(logging.WARNING)
-    #    # override if debug
-    #    if options.debug:
-    #        hdlr.setLevel(logging.DEBUG)
-    #    elif options.verbose:
-    #        hdlr.setLevel(logging.INFO)
-    #    logger.addHandler(hdlr)
+        # set log level
+        if self.options.debug:
+            self.log_level = logging.DEBUG
+        elif self.options.verbose:
+            self.log_level = logging.INFO
+        elif self.options.quiet:
+            self.log_level = logging.WARNING
 
     def _setup_logging(self):
-        root_logger = logging.getLogger()
+        logdir = os.path.abspath(os.path.dirname(self.logfile))
+        mkdir_p(logdir)
 
-        if self.options.debug:
-            root_logger.setLevel(logging.DEBUG)
-        else:
-            root_logger.setLevel(logging.INFO)
+        root_logger = logging.getLogger()
+        root_logger.setLevel(self.log_level)
 
         fmt = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s')
-        self._setup_logging_to_screen(self.options, fmt)
-        self._setup_logging_to_file(self.options, logger, fmt)
+
+        handlers = []
+        handlers.append(logging.StreamHandler())
+        handlers.append(logging.handlers.RotatingFileHandler(self.logfile,
+                                                             mode='w',
+                                                             maxBytes=1e7,
+                                                             backupCount=5)
+                        )
+
+        for handler in handlers:
+            add_log_handler(root_logger, self.log_level, handler, fmt)
 
     def go(self):
         logger.info('Welcome to %s version %s', sys.argv[0], __version__)
@@ -131,11 +127,11 @@ class BFF(object):
         if self.campaign_class is None:
             raise BFFerror('Campaign class is undefined')
 
+        logger.info('Creating campaign')
         with self.campaign_class(config_file=self.options.configfile,
                       result_dir=self.options.resultdir,
                       debug=self.options.debug) as campaign:
-            logger.info('Initiating campaign')
+            logger.info('Starting campaign')
             campaign.go()
 
         logger.info('Campaign complete')
-
