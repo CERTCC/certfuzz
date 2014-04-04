@@ -36,11 +36,11 @@ def setup_debugging():
         import rpdb2
         rpdb2.start_embedded_debugger("foe", timeout=0.0)
     except ImportError:
-        logger.debug('Error importing rpdb2. Is Winpdb installed?')
+        logger.debug('Skipping import of rpdb2. Is Winpdb installed?')
 
     logger.debug('Enabling heapy remote monitoring...')
     try:
         from guppy import hpy  # @UnusedImport
         import guppy.heapy.RM  # @UnusedImport
     except ImportError:
-        logger.debug('Error importing heapy. Is Guppy-PE installed?')
+        logger.debug('Skipping import of heapy. Is Guppy-PE installed?')
