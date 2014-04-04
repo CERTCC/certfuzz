@@ -17,6 +17,24 @@ from certfuzz.version import __version__
 
 def _setup_logging_to_file(options, logger, fmt):
     pass
+    # TODO make this work
+    # logging to file
+    # override if option specified
+#    if options.logfile:
+#        logfile = options.logfile
+#    else:
+#        logfile = os.path.join('log', 'bff_log.txt')
+#
+#    hdlr = RotatingFileHandler(logfile, mode='w', maxBytes=1e7, backupCount=5)
+#
+#    hdlr.setFormatter(fmt)
+#    hdlr.setLevel(logging.WARNING)
+#    # override if debug
+#    if options.debug:
+#        hdlr.setLevel(logging.DEBUG)
+#    elif options.verbose:
+#        hdlr.setLevel(logging.INFO)
+#    logger.addHandler(hdlr)
 
 
 def setup_logging(options):
@@ -50,7 +68,7 @@ def parse_options():
     parser.add_option('-r', '--result-dir', dest='resultdir',
                       default=None,
                       help='Path to result directory (overrides config)', metavar='DIR')
-    
+
     return parser.parse_args()
 
 
