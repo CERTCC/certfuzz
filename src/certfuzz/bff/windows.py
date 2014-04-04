@@ -62,8 +62,11 @@ def parse_options():
                       help='Enable verbose logging messages to screen and log file (overrides --quiet)')
     parser.add_option('-c', '--config', dest='configfile', help='Path to config file',
                       default='configs/foe.yaml', metavar='FILE')
-    parser.add_option('-l', '--logfile', dest='logfile', help='Path to log file', metavar='FILE')
-    parser.add_option('-r', '--result-dir', dest='resultdir', help='Path to result directory (overrides config)', metavar='DIR')
+    parser.add_option('-l', '--logfile', dest='logfile', default=None,
+                      help='Path to log file', metavar='FILE')
+    parser.add_option('-r', '--result-dir', dest='resultdir',
+                      default=None,
+                      help='Path to result directory (overrides config)', metavar='DIR')
 
     return parser.parse_args()
 
