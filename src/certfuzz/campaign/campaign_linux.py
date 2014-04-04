@@ -34,7 +34,7 @@ from certfuzz.iteration.linux import Iteration
 logger = logging.getLogger(__name__)
 
 
-class Campaign(object):
+class LinuxCampaign(object):
     def __init__(self, config_file=None, result_dir=None, debug=False):
         # Read the cfg file
         self.cfg_path = config_file

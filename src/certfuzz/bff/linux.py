@@ -10,7 +10,7 @@ from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 
 from certfuzz.bff.common import BFF
-from certfuzz.campaign.linux import Campaign
+from certfuzz.campaign.campaign_linux import LinuxCampaign
 
 
 logger = logging.getLogger(__name__)
@@ -19,5 +19,5 @@ logger = logging.getLogger(__name__)
 def main():
     cfg = os.path.abspath(os.path.join(os.getcwd(), 'conf.d', 'bff.cfg'))
 
-    with BFF(config_path=cfg, campaign_class=Campaign) as bff:
+    with BFF(config_path=cfg, campaign_class=LinuxCampaign) as bff:
         bff.go()
