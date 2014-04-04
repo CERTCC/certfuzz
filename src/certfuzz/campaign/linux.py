@@ -6,7 +6,6 @@ Created on Feb 12, 2014
 
 import itertools
 import logging
-from logging.handlers import RotatingFileHandler
 import os
 import shutil
 import sys
@@ -22,7 +21,7 @@ from certfuzz.debuggers.registration import verify_supported_platform
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzztools import subprocess_helper as subp
-from certfuzz.fuzztools.filetools import mkdir_p, make_directories, copy_file
+from certfuzz.fuzztools.filetools import mkdir_p, copy_file
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.watchdog import WatchDog
@@ -59,12 +58,6 @@ class Campaign(object):
         # setup working dir
         self.working_dir = tempfile.mkdtemp(prefix='campaign_', dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
-
-        # set up local logging
-        self._setup_logfile(logdir=self.cfg.local_dir, backup_count=3)
-
-        # set up remote logging
-        self._setup_logfile(logdir=self.cfg.output_dir, level=logging.INFO, max_bytes=1e7)
 
         self._check_for_script()
         self._copy_config()
@@ -136,28 +129,6 @@ class Campaign(object):
             if not os.path.exists(d):
                 logger.debug('Creating dir %s', d)
                 mkdir_p(d)
-
-    def _setup_logfile(self, logdir, log_basename='bff.log', level=logging.DEBUG,
-                      max_bytes=1e8, backup_count=5):
-        '''
-        Creates a log file in <logdir>/<log_basename> at level <level>
-        @param logdir: the directory where the log file should reside
-        @param log_basename: the basename of the logfile (defaults to 'bff_log.txt')
-        @param level: the logging level (defaults to logging.DEBUG)
-        '''
-        make_directories(logdir)
-        logfile = os.path.join(logdir, log_basename)
-        hdlr = RotatingFileHandler(logfile, maxBytes=max_bytes, backupCount=backup_count)
-        formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s")
-
-        hdlr.setLevel(level)
-        hdlr.setFormatter(formatter)
-
-        # add the handler to the root logger (not the logger for this module)
-        root_logger = logging.getLogger()
-        root_logger.addHandler(hdlr)
-
-        logger.info('Logging %s at %s', logging.getLevelName(level), logfile)
 
     def _copy_config(self):
         logger.debug('copy config')
