@@ -10,7 +10,7 @@ import abc
 import sys
 import os
 
-from certfuzz import __version__
+from certfuzz.version import __version__
 from certfuzz.fuzztools import filetools
 
 
