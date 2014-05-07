@@ -7,3 +7,6 @@ dev_builds
 src/dist
 build/dist/osx/installer/Readme.txt
 build/dist/osx/installer/License.txt
+doc/fontconfig
+doc/html
+doc/pdf
