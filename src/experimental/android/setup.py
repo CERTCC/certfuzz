@@ -89,6 +89,7 @@ setup(name="CERT_Basic_Fuzzing_Framework",
       scripts=_scripts(),
       entry_points=_entry_points(),
       include_package_data=True,
+      test_suite='certfuzz.test',
       license='See LICENSE.txt',
       data_files=[
                     ('', ['LICENSE.txt'])
