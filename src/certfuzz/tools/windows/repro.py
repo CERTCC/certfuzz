@@ -14,7 +14,7 @@ try:
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.runners.runner_base import get_command_args_list
-    from certfuzz.campaign.config.foe_config import Config
+    from certfuzz.campaign.config.config_windows import Config
     from certfuzz.debuggers import msec  # @UnusedImport
 except ImportError:
     # if we got here, we probably don't have .. in our PYTHONPATH
@@ -26,7 +26,7 @@ except ImportError:
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.runners.runner_base import get_command_args_list
-    from certfuzz.campaign.config.foe_config import Config
+    from certfuzz.campaign.config.config_windows import Config
     from certfuzz.debuggers import msec  # @UnusedImport
 
 logger = logging.getLogger()
@@ -36,7 +36,7 @@ logger.setLevel(logging.WARNING)
 def parseiterpath(commandline):
     # Return the path to the iteration's fuzzed file
     for part in commandline.split():
-        if 'foe-crash-' in part:
+        if 'bff-crash-' in part:
             return part
 
 
@@ -63,7 +63,7 @@ def main():
                       help='Enable debug messages (overrides --verbose)')
     parser.add_option('', '--verbose', dest='verbose', action='store_true',
                       help='Enable verbose messages')
-    parser.add_option('-c', '--config', default='configs/foe.yaml',
+    parser.add_option('-c', '--config', default='configs/bff.yaml',
                       dest='config',
                       help='path to the configuration file to use')
     parser.add_option('-w', '--windbg', dest='use_windbg',

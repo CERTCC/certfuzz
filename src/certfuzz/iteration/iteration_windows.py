@@ -11,8 +11,8 @@ import string
 import tempfile
 
 from certfuzz import debuggers
-from certfuzz.campaign.config.foe_config import get_command_args_list
-from certfuzz.crash.foe_crash import FoeCrash
+from certfuzz.campaign.config.config_windows import get_command_args_list
+from certfuzz.crash.crash_windows import WindowsCrash
 from certfuzz.debuggers.output_parsers import DebuggerFileError
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
@@ -271,7 +271,7 @@ class Iteration(IterationBase2):
 
     def _build_crash(self, fuzzer, cmdlist, dbg_opts, fuzzed_file):
         logger.debug('Building crash object')
-        with FoeCrash(self.cmd_template, self.sf, fuzzed_file, cmdlist, fuzzer, self.debugger_class,
+        with WindowsCrash(self.cmd_template, self.sf, fuzzed_file, cmdlist, fuzzer, self.debugger_class,
                    dbg_opts, self.working_dir, self.config['runoptions']['keep_unique_faddr'],
                    self.config['target']['program'], heisenbug_retries=self.retries,
                    copy_fuzzedfile=fuzzer.fuzzed_changes_input) as crash:

@@ -13,7 +13,7 @@ import tempfile
 import traceback
 
 from certfuzz.campaign import CampaignBase, __version__, import_module_by_name
-from certfuzz.campaign.config.foe_config import Config
+from certfuzz.campaign.config.config_windows import Config
 from certfuzz.campaign.errors import CampaignError
 from certfuzz.debuggers import registration
 from certfuzz.file_handlers.seedfile_set import SeedfileSet

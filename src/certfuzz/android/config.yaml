@@ -45,7 +45,7 @@ directories:
 #                 until the fuzzer runs out of things to do.
 # minimize: Create a file that is minimally-different than the seed 
 #           file, yet crashes with the same hash
-# minimizer_timeout: The maximum amount of time that FOE will spend on
+# minimizer_timeout: The maximum amount of time that BFF will spend on
 #                    a minimization run before giving up
 # keep_unique_faddr: Consider the Exception Faulting Address value as
 #                    part of the crash hash

@@ -15,16 +15,6 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_api(self):
-        module = certfuzz.crash
-        api_list = ['Crash',
-                    'CrashError',
-                    'BffCrash',
-                    'FoeCrash',
-                    ]
-        (is_fail, msg) = misc.check_for_apis(module, api_list)
-        self.assertFalse(is_fail, msg)
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

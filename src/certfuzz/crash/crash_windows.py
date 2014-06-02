@@ -7,7 +7,7 @@ import hashlib
 import logging
 import os
 
-from certfuzz.campaign.config.foe_config import get_command_args_list
+from certfuzz.campaign.config.config_windows import get_command_args_list
 from certfuzz.crash.crash_base import Crash
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
@@ -37,8 +37,8 @@ exp_rank = {
             }
 
 
-class FoeCrash(Crash):
-    tmpdir_pfx = 'foe-crash-'
+class WindowsCrash(Crash):
+    tmpdir_pfx = 'bff-crash-'
 
     # TODO: do we still need fuzzer as an arg?
     def __init__(self, cmd_template, seedfile, fuzzedfile, cmdlist, fuzzer,

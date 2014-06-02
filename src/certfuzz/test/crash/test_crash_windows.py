@@ -4,7 +4,7 @@ Created on Apr 10, 2012
 @organization: cert.org
 '''
 import unittest
-#import certfuzz.crash.foe_crash
+#import certfuzz.crash.crash_windows
 
 class Test(unittest.TestCase):
 

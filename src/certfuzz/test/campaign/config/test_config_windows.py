@@ -4,7 +4,7 @@ Created on Apr 2, 2012
 @organization: cert.org
 '''
 import unittest
-from certfuzz.campaign.config.foe_config import Config
+from certfuzz.campaign.config.config_windows import Config
 import os
 import yaml
 import tempfile

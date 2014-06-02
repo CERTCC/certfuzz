@@ -9,7 +9,7 @@ import time
 import tempfile
 import pprint
 
-defaults = {'config': 'configs/foe.yaml',
+defaults = {'config': 'configs/bff.yaml',
             'remove_results': False,
             'pretend': False,
             'retry': 3,
@@ -19,6 +19,7 @@ defaults = {'config': 'configs/foe.yaml',
 
 SLEEPTIMER = 0.5
 BACKOFF_FACTOR = 2
+
 
 def main():
     import optparse
@@ -34,7 +35,7 @@ def main():
         from certfuzz.fuzztools.filetools import delete_contents_of
         from certfuzz.campaign.config import Config
         if not os.path.exists(defaults['config']):
-            defaults['config'] = '../configs/foe.yaml'
+            defaults['config'] = '../configs/bff.yaml'
 
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest='configfile', default=defaults['config'], metavar='FILE')
@@ -43,7 +44,7 @@ def main():
     parser.add_option('', '--remove-results', dest='remove_results', action='store_true', default=defaults['remove_results'], help='Removes results dir contents')
     parser.add_option('', '--all', dest='nuke', action='store_true', default=defaults['nuke'], help='Equivalent to --remove-results')
     parser.add_option('', '--debug', dest='debug', action='store_true', default=defaults['debug'])
-    options, args = parser.parse_args()
+    options, _args = parser.parse_args()
 
     cfgobj = Config(options.configfile)
     c = cfgobj.config

@@ -60,7 +60,7 @@ class MsecDebugger(DebuggerBase):
         return [self.debugger_app(), '-version']
 
     def _get_cmdline(self, outfile):
-        cdb_command = '$$Found_with_CERT_FOE_2.1;r;!exploitable -v;q'
+        cdb_command = '$$Found_with_CERT_BFF_2.8;r;!exploitable -v;q'
         args = []
         args.append(self.debugger_app())
         args.append('-amsec.dll')
