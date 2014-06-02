@@ -212,6 +212,12 @@ class LinuxCampaign(CampaignMeta):
         logger.debug('%s was found, not unique', crash_id)
         return False
 
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self):
+        pass
+
     def _do_interval(self, s1, s2, first_chunk=False):
         # interval.go
         logger.debug('Starting interval %d-%d', s1, s2)
@@ -233,6 +239,15 @@ class LinuxCampaign(CampaignMeta):
                            sf_set=self.seedfile_set,
                            rf=sf.rangefinder) as iteration:
                 iteration.go()
+
+    def _do_iteration(self):
+        pass
+
+    def _keep_going(self):
+        pass
+
+    def _write_version(self):
+        pass
 
     def go(self):
     # campaign.go
