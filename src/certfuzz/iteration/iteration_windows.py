@@ -11,7 +11,7 @@ import string
 import tempfile
 
 from certfuzz import debuggers
-from certfuzz.campaign.config.foe_config import get_command_args_list
+from certfuzz.campaign.config.config_windows import get_command_args_list
 from certfuzz.crash.foe_crash import FoeCrash
 from certfuzz.debuggers.output_parsers import DebuggerFileError
 from certfuzz.file_handlers.basicfile import BasicFile

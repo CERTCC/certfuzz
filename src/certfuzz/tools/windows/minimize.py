@@ -14,7 +14,7 @@ try:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.campaign.config.foe_config import Config, get_command_args_list
+    from certfuzz.campaign.config.config_windows import Config, get_command_args_list
     from certfuzz.crash import FoeCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 except ImportError:
@@ -27,7 +27,7 @@ except ImportError:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.campaign.config.foe_config import Config, get_command_args_list
+    from certfuzz.campaign.config.config_windows import Config, get_command_args_list
     from certfuzz.crash import FoeCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 

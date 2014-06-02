@@ -7,7 +7,7 @@ import hashlib
 import logging
 import os
 
-from certfuzz.campaign.config.foe_config import get_command_args_list
+from certfuzz.campaign.config.config_windows import get_command_args_list
 from certfuzz.crash.crash_base import Crash
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move

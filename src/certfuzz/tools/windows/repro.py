@@ -14,7 +14,7 @@ try:
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.runners.runner_base import get_command_args_list
-    from certfuzz.campaign.config.foe_config import Config
+    from certfuzz.campaign.config.config_windows import Config
     from certfuzz.debuggers import msec  # @UnusedImport
 except ImportError:
     # if we got here, we probably don't have .. in our PYTHONPATH
@@ -26,7 +26,7 @@ except ImportError:
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.runners.runner_base import get_command_args_list
-    from certfuzz.campaign.config.foe_config import Config
+    from certfuzz.campaign.config.config_windows import Config
     from certfuzz.debuggers import msec  # @UnusedImport
 
 logger = logging.getLogger()
