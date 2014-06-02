@@ -38,7 +38,7 @@ exp_rank = {
 
 
 class WindowsCrash(Crash):
-    tmpdir_pfx = 'foe-crash-'
+    tmpdir_pfx = 'bff-crash-'
 
     # TODO: do we still need fuzzer as an arg?
     def __init__(self, cmd_template, seedfile, fuzzedfile, cmdlist, fuzzer,

@@ -83,7 +83,7 @@ def main():
                       help='The desired confidence level (default: 0.999)')
     parser.add_option('-g', '--target-size-guess', dest='initial_target_size',
                       help='A guess at the minimal value (int)')
-    parser.add_option('', '--config', default='configs/foe.yaml',
+    parser.add_option('', '--config', default='configs/bff.yaml',
                       dest='config', help='path to the configuration file to use')
     parser.add_option('', '--timeout', dest='timeout',
                       metavar='N', type='int', default=0,

@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
         api_list = ['Crash',
                     'CrashError',
                     'BffCrash',
-                    'FoeCrash',
+                    'WindowsCrash',
                     ]
         (is_fail, msg) = misc.check_for_apis(module, api_list)
         self.assertFalse(is_fail, msg)

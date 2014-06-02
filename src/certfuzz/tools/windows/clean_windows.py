@@ -9,7 +9,7 @@ import time
 import tempfile
 import pprint
 
-defaults = {'config': 'configs/foe.yaml',
+defaults = {'config': 'configs/bff.yaml',
             'remove_results': False,
             'pretend': False,
             'retry': 3,
@@ -35,7 +35,7 @@ def main():
         from certfuzz.fuzztools.filetools import delete_contents_of
         from certfuzz.campaign.config import Config
         if not os.path.exists(defaults['config']):
-            defaults['config'] = '../configs/foe.yaml'
+            defaults['config'] = '../configs/bff.yaml'
 
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest='configfile', default=defaults['config'], metavar='FILE')
