@@ -20,6 +20,7 @@ defaults = {'config': 'configs/foe.yaml',
 SLEEPTIMER = 0.5
 BACKOFF_FACTOR = 2
 
+
 def main():
     import optparse
     try:
@@ -43,7 +44,7 @@ def main():
     parser.add_option('', '--remove-results', dest='remove_results', action='store_true', default=defaults['remove_results'], help='Removes results dir contents')
     parser.add_option('', '--all', dest='nuke', action='store_true', default=defaults['nuke'], help='Equivalent to --remove-results')
     parser.add_option('', '--debug', dest='debug', action='store_true', default=defaults['debug'])
-    options, args = parser.parse_args()
+    options, _args = parser.parse_args()
 
     cfgobj = Config(options.configfile)
     c = cfgobj.config
