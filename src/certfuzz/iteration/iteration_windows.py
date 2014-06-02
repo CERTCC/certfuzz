@@ -12,7 +12,7 @@ import tempfile
 
 from certfuzz import debuggers
 from certfuzz.campaign.config.config_windows import get_command_args_list
-from certfuzz.crash.foe_crash import FoeCrash
+from certfuzz.crash.crash_windows import FoeCrash
 from certfuzz.debuggers.output_parsers import DebuggerFileError
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
