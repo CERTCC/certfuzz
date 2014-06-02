@@ -37,7 +37,7 @@ exp_rank = {
             }
 
 
-class FoeCrash(Crash):
+class WindowsCrash(Crash):
     tmpdir_pfx = 'foe-crash-'
 
     # TODO: do we still need fuzzer as an arg?

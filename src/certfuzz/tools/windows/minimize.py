@@ -15,7 +15,7 @@ try:
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
     from certfuzz.campaign.config.config_windows import Config, get_command_args_list
-    from certfuzz.crash import FoeCrash
+    from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 except ImportError:
     # if we got here, we probably don't have .. in our PYTHONPATH
@@ -28,7 +28,7 @@ except ImportError:
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
     from certfuzz.campaign.config.config_windows import Config, get_command_args_list
-    from certfuzz.crash import FoeCrash
+    from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 
 logger = logging.getLogger()
@@ -159,7 +159,7 @@ def main():
     debugger_class = msec.MsecDebugger
     template = string.Template(config['target']['cmdline_template'])
     cmd_as_args = get_command_args_list(template, fuzzed_file.path)[1]
-    with FoeCrash(template, seedfile, fuzzed_file, cmd_as_args, None, debugger_class,
+    with WindowsCrash(template, seedfile, fuzzed_file, cmd_as_args, None, debugger_class,
                config['debugger'], outdir, options.keep_uniq_faddr, config['target']['program'],
                retries) as crash:
         filetools.make_directories(crash.tempdir)
