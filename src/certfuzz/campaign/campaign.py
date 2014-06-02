@@ -12,7 +12,8 @@ import shutil
 import tempfile
 import traceback
 
-from certfuzz.campaign import CampaignBase, __version__, import_module_by_name
+from certfuzz.campaign.campaign_meta import CampaignMeta, import_module_by_name
+from certfuzz.version import __version__
 from certfuzz.campaign.config.config_windows import Config
 from certfuzz.campaign.errors import CampaignError
 from certfuzz.debuggers import registration
@@ -35,7 +36,7 @@ packages = {'fuzzers': 'certfuzz.fuzzers',
             }
 
 
-class Campaign(CampaignBase):
+class Campaign(CampaignMeta):
     '''
     Provides a fuzzing campaign object.
     '''
@@ -196,7 +197,7 @@ class Campaign(CampaignBase):
         self.dbg_class = registration.debug_class
 
     def _write_version(self):
-        CampaignBase._write_version(self)
+        CampaignMeta._write_version(self)
 
     def _setup_output(self):
         # construct run output directory

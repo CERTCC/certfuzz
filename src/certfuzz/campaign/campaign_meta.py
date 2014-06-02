@@ -22,7 +22,7 @@ def import_module_by_name(name, logger=None):
     return module
 
 
-class CampaignBase(object):
+class CampaignMeta(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
