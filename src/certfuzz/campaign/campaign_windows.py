@@ -9,16 +9,16 @@ import os
 from threading import Timer
 import platform
 
-from certfuzz.campaign.campaign import Campaign
+from certfuzz.campaign.campaign_base import CampaignBase
 
 from certfuzz.runners.killableprocess import Popen
 
 logger = logging.getLogger(__name__)
 
 
-class WindowsCampaign(Campaign):
+class WindowsCampaign(CampaignBase):
     '''
-    Extends Campaign to add windows-specific features like ButtonClicker
+    Extends CampaignBase to add windows-specific features like ButtonClicker
     '''
     def __enter__(self):
         if sys.platform == 'win32':
@@ -28,14 +28,14 @@ class WindowsCampaign(Campaign):
             if hook_incompat and self.runner_module_name == 'certfuzz.runners.winrun':
                 logger.debug('winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
                 self.runner_module_name = None
-        self = Campaign.__enter__(self)
+        self = CampaignBase.__enter__(self)
         self._start_buttonclicker()
         self._cache_app()
         return self
 
     def __exit__(self, etype, value, mytraceback):
         self._stop_buttonclicker()
-        return Campaign.__exit__(self, etype, value, mytraceback)
+        return CampaignBase.__exit__(self, etype, value, mytraceback)
 
     def _cache_app(self):
         logger.debug('Caching application %s and determining if we need to watch the CPU...', self.prog)

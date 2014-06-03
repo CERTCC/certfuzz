@@ -36,7 +36,7 @@ packages = {'fuzzers': 'certfuzz.fuzzers',
             }
 
 
-class Campaign(CampaignMeta):
+class CampaignBase(CampaignMeta):
     '''
     Provides a fuzzing campaign object.
     '''
@@ -45,7 +45,7 @@ class Campaign(CampaignMeta):
         '''
         Typically one would invoke a campaign as follows:
 
-        with Campaign(params) as campaign:
+        with CampaignBase(params) as campaign:
             campaign.go()
 
         This will ensure that the runtime context is established properly, and
