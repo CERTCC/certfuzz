@@ -210,10 +210,10 @@ class LinuxCampaign(CampaignMeta):
         return False
 
     def __getstate__(self):
-        pass
+        CampaignMeta.__getstate__(self)
 
     def __setstate__(self):
-        pass
+        CampaignMeta.__setstate__(self)
 
     def _do_interval(self, s1, s2, first_chunk=False):
         # interval.go
@@ -238,13 +238,13 @@ class LinuxCampaign(CampaignMeta):
                 iteration.go()
 
     def _do_iteration(self):
-        pass
+        CampaignMeta._do_iteration(self)
 
     def _keep_going(self):
-        pass
+        CampaignMeta._keep_going(self)
 
     def _write_version(self):
-        pass
+        CampaignMeta._write_version(self)
 
     def go(self):
     # campaign.go
