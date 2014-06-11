@@ -10,3 +10,4 @@ build/dist/osx/installer/License.txt
 doc/fontconfig
 doc/html
 doc/pdf
+*.bak
