@@ -11,3 +11,4 @@ doc/fontconfig
 doc/html
 doc/pdf
 *.bak
+*.pyc
