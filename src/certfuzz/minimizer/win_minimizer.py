@@ -104,7 +104,7 @@ class WindowsMinimizer(MinimizerBase):
         filepath = self.tempfile
 
         logger.debug('Creating zip with mutated contents.')
-        tempzip = zipfile.ZipFile(filepath, 'w')
+        tempzip = self._safe_createzip(filepath, 'w')
 
         '''
         reconstruct archived files, using the same compression scheme as
