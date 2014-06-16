@@ -22,6 +22,9 @@ def _zipdir(path, zip_):
     for root, _dirs, files in os.walk('.'):
         for f in files:
             zip_.write(os.path.join(root, f))
+        if not files and not _dirs:
+            # Include empty directories as well
+            zip_.write(root, compress_type=zipfile.ZIP_STORED)
     os.chdir(cwd)
 
 
@@ -93,10 +96,10 @@ class Build(object):
 
     def refine(self):
         logger.info('Refining')
-        logger.info('Clean up build tmp_dir')
-        self._clean_up(self.build_dir, remove_blacklist=False)
         logger.info('Set up results dir')
         self._create_results_dir()
+        logger.info('Clean up build tmp_dir')
+        self._clean_up(self.build_dir, remove_blacklist=False)
 
     def prepend_license(self):
         '''
