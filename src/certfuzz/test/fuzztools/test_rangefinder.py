@@ -45,9 +45,12 @@ class Test(unittest.TestCase):
         # so we should only see two ranges
         r = RangeFinder(0.375, 0.999, self.tmpfile)
         self.assertEqual(len(r.things), 2)
-        ranges = [v for (dummy, v) in sorted(r.things.items())]
-        self.assertAlmostEqual(ranges[0].min, 0.375)
-        self.assertAlmostEqual(ranges[1].max, 0.999)
+        mins = sorted([thing.min for thing in r.things.itervalues()])
+        maxs = sorted([thing.max for thing in r.things.itervalues()])
+        self.assertEqual(0.375, mins[0])
+        self.assertAlmostEqual(0.61, mins[1], places=2)
+        self.assertAlmostEqual(0.61, maxs[0], places=2)
+        self.assertEqual(0.999, maxs[1])
 
     def _ranges(self):
         minkeys = sorted([(v.min, k) for (k, v) in self.r.things.iteritems()])
