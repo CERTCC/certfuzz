@@ -8,6 +8,7 @@ import shutil
 import tempfile
 import logging
 import zipfile
+import datetime
 
 from dev.misc import copydir, copyfile, onerror
 
@@ -22,6 +23,11 @@ def _zipdir(path, zip_):
     for root, _dirs, files in os.walk('.'):
         for f in files:
             zip_.write(os.path.join(root, f))
+        if not files and not _dirs:
+            # Include empty top-level directories as well
+            zipinfo = zipfile.ZipInfo(os.path.basename(root))
+            zipinfo.external_attr = 16
+            zip_.writestr(zipinfo, '')
     os.chdir(cwd)
 
 
