@@ -93,11 +93,10 @@ class Build(object):
 
     def refine(self):
         logger.info('Refining')
-        logger.info('Set up results dir')
-        self._create_results_dir()
-
         logger.info('Clean up build tmp_dir')
         self._clean_up(self.build_dir, remove_blacklist=False)
+        logger.info('Set up results dir')
+        self._create_results_dir()
 
     def prepend_license(self):
         '''
