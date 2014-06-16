@@ -8,7 +8,6 @@ import shutil
 import tempfile
 import logging
 import zipfile
-import datetime
 
 from dev.misc import copydir, copyfile, onerror
 
@@ -24,10 +23,8 @@ def _zipdir(path, zip_):
         for f in files:
             zip_.write(os.path.join(root, f))
         if not files and not _dirs:
-            # Include empty top-level directories as well
-            zipinfo = zipfile.ZipInfo(os.path.basename(root))
-            zipinfo.external_attr = 16
-            zip_.writestr(zipinfo, '')
+            # Include empty directories as well
+            zip_.write(root, compress_type=zipfile.ZIP_STORED)
     os.chdir(cwd)
 
 
@@ -99,10 +96,10 @@ class Build(object):
 
     def refine(self):
         logger.info('Refining')
-        logger.info('Clean up build tmp_dir')
-        self._clean_up(self.build_dir, remove_blacklist=False)
         logger.info('Set up results dir')
         self._create_results_dir()
+        logger.info('Clean up build tmp_dir')
+        self._clean_up(self.build_dir, remove_blacklist=False)
 
     def prepend_license(self):
         '''
