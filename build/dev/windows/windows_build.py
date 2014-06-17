@@ -7,5 +7,5 @@ from .. import Build
 
 
 class WindowsBuild(Build):
-    _name = 'FOE'
+    _name = 'BFF'
     _platform = 'windows'

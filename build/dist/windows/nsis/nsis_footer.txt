@@ -1,4 +1,4 @@
-Delete "$INSTDIR\configs\foe.yaml"
+Delete "$INSTDIR\configs\bff.yaml"
 Delete "$INSTDIR\uninstall.exe"
 !ifdef WEB_SITE
 Delete "$INSTDIR\CERT website.url"
@@ -26,12 +26,12 @@ RmDir "$SMPROGRAMS\$SM_Folder"
 !endif
 
 !ifndef REG_START_MENU
-Delete "$SMPROGRAMS\FOE2\${APP_NAME}.lnk"
-Delete "$SMPROGRAMS\FOE2\README.lnk"
+Delete "$SMPROGRAMS\BFF\${APP_NAME}.lnk"
+Delete "$SMPROGRAMS\BFF\README.lnk"
 !ifdef WEB_SITE
-Delete "$SMPROGRAMS\FOE2\CERT Website.lnk"
+Delete "$SMPROGRAMS\BFF\CERT Website.lnk"
 !endif
-RmDir "$SMPROGRAMS\FOE2"
+RmDir "$SMPROGRAMS\BFF"
 !endif
 
 #DeleteRegKey ${REG_ROOT} "${REG_APP_PATH}"

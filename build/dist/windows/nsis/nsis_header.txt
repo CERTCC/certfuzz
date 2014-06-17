@@ -48,7 +48,7 @@ OutFile "${INSTALLER_NAME}"
 BrandingText "${APP_NAME}"
 XPStyle on
 InstallDirRegKey "${REG_ROOT}" "${REG_APP_PATH}" ""
-InstallDir "C:\FOE2"
+InstallDir "C:\BFF"
 !define MUI_ICON "cert.ico"
 
 ######################################################################
@@ -72,7 +72,7 @@ InstallDir "C:\FOE2"
 
 !ifdef REG_START_MENU
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "FOE2"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "BFF"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${REG_ROOT}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${UNINSTALL_PATH}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${REG_START_MENU}"
@@ -82,7 +82,7 @@ InstallDir "C:\FOE2"
 !insertmacro MUI_PAGE_INSTFILES
 
 !define MUI_FINISHPAGE_RUN
-!define MUI_FINISHPAGE_RUN_FUNCTION "LaunchFOE"
+!define MUI_FINISHPAGE_RUN_FUNCTION "LaunchBFF"
 !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
 !insertmacro MUI_PAGE_FINISH
 
@@ -118,15 +118,15 @@ Function .onInit
     ${EndIf}
 FunctionEnd
 
-Function LaunchFOE
+Function LaunchBFF
     ${If} $FUZZ_IMAGEMAGICK == "Y"
       CopyFiles "$INSTDIR\seedfiles\examples\*.*" "$INSTDIR\seedfiles"
       ExecShell "open" "results\convert v5.5.7\"
       sleep 2000
       BringToFront
-        Exec '"cmd.exe" /k @echo off & set PATH=%PATH%;$DEBUGDIR& @echo on & cd $INSTDIR & foe2.py'
+        Exec '"cmd.exe" /k @echo off & set PATH=%PATH%;$DEBUGDIR& @echo on & cd $INSTDIR & bff.py'
     ${Else}
-        Exec '"cmd.exe" /k @echo off & set PATH=%PATH%;$DEBUGDIR& @echo on & cd $INSTDIR & echo Edit configs\foe.yaml and run foe2.py to start fuzzing & echo See readme.txt for documentation & foe2.py -h'
+        Exec '"cmd.exe" /k @echo off & set PATH=%PATH%;$DEBUGDIR& @echo on & cd $INSTDIR & echo Edit configs\bff.yaml and run bff.py to start fuzzing & echo See readme.txt for documentation & bff.py -h'
     ${EndIf}
 FunctionEnd
 

@@ -32,7 +32,7 @@ class WindowsBuild(Build):
             logger.debug('Copy %s -> %s', src, self.build_dir)
             shutil.copy(src, self.build_dir)
 
-        nsifile = os.path.join(self.build_dir, 'foe2.nsi')
+        nsifile = os.path.join(self.build_dir, 'bff.nsi')
         logger.debug('nsi file is %s', nsifile)
 
         version_string = "02.01.00.99"
@@ -42,12 +42,12 @@ class WindowsBuild(Build):
         # invoke makensis on the file we just made
         logger.debug('invoking makensis on %s', nsifile)
         subprocess.call(['makensis', nsifile])
-        
+
         distpath = 'BFF-windows-export'
         if self.build_dir:
             distpath = os.path.join(self.build_dir, distpath)
-        
-        exename = 'FOE-%s-setup.exe' % version_string
+
+        exename = 'BFF-%s-setup.exe' % version_string
         exefile = '%s\..\..\%s' % (distpath, exename)
         self.target = os.path.join(os.path.dirname(self.target), exename)
         self._move_to_target(exefile)

@@ -30,9 +30,9 @@ def main(version_string='', outfile=None, build_dir=None):
 
     fp.write('!define VERSION "%s"\n' % version_string)
     fp.write('!define COPYRIGHT "CERT 2013"\n')
-    fp.write('!define DESCRIPTION "FOE %s"\n' % version_string)
+    fp.write('!define DESCRIPTION "BFF %s"\n' % version_string)
     fp.write('!define LICENSE_TXT "%s\..\COPYING.txt"\n' % distpath)
-    fp.write('!define INSTALLER_NAME "%s\..\..\FOE-%s-setup.exe"\n' % (distpath, version_string))
+    fp.write('!define INSTALLER_NAME "%s\..\..\BFF-%s-setup.exe"\n' % (distpath, version_string))
 
     headerfile = open("nsis_header.txt", "r")
     headertext = headerfile.read()
@@ -52,8 +52,8 @@ def main(version_string='', outfile=None, build_dir=None):
     midtext = midfile.read()
     midfile.close()
 
-    # End of installer section 
-    
+    # End of installer section
+
     # Write uninstaller section
     fp.write(midtext)
 

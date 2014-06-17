@@ -303,9 +303,9 @@ VCRInstalled:
 
 #msecInstalled:
 
-IfFileExists "$INSTDIR\configs\foe.yaml" configCopied
+IfFileExists "$INSTDIR\configs\bff.yaml" configCopied
 
-CopyFiles "$INSTDIR\configs\examples\foe.yaml" "$INSTDIR\configs\foe.yaml"
+CopyFiles "$INSTDIR\configs\examples\bff.yaml" "$INSTDIR\configs\bff.yaml"
 
 StrCpy $FUZZ_IMAGEMAGICK "Y"
 
@@ -340,7 +340,7 @@ WriteUninstaller "$INSTDIR\uninstall.exe"
 !ifdef REG_START_MENU
 !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 CreateDirectory "$SMPROGRAMS\$SM_Folder"
-CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME}.lnk" "${MAIN_APP_EXE}" " /k echo Edit configs\foe.yaml and run foe2.py to start fuzzing & echo See readme.txt for documentation & foe2.py -h"
+CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME}.lnk" "${MAIN_APP_EXE}" " /k echo Edit configs\bff.yaml and run bff.py to start fuzzing & echo See readme.txt for documentation & bff.py -h"
 CreateShortCut "$SMPROGRAMS\$SM_Folder\README.lnk" "$INSTDIR\readme.txt"
 !ifdef WEB_SITE
 WriteIniStr "$INSTDIR\CERT website.url" "InternetShortcut" "URL" "${WEB_SITE}"
@@ -350,12 +350,12 @@ CreateShortCut "$SMPROGRAMS\$SM_Folder\CERT Website.lnk" "$INSTDIR\CERT website.
 !endif
 
 !ifndef REG_START_MENU
-CreateDirectory "$SMPROGRAMS\FOE"
-CreateShortCut "$SMPROGRAMS\FOE\${APP_NAME}.lnk" "${MAIN_APP_EXE}  /k echo Edit configs\foe.yaml and run foe2.py to start fuzzing & echo See readme.txt for documentation & foe2.py -h"
-CreateShortCut "$SMPROGRAMS\FOE\README.lnk" "$INSTDIR\readme.txt"
+CreateDirectory "$SMPROGRAMS\BFF"
+CreateShortCut "$SMPROGRAMS\BFF\${APP_NAME}.lnk" "${MAIN_APP_EXE}  /k echo Edit configs\bff.yaml and run bff.py to start fuzzing & echo See readme.txt for documentation & bff.py -h"
+CreateShortCut "$SMPROGRAMS\BFF\README.lnk" "$INSTDIR\readme.txt"
 !ifdef WEB_SITE
 WriteIniStr "$INSTDIR\CERT website.url" "InternetShortcut" "URL" "${WEB_SITE}"
-CreateShortCut "$SMPROGRAMS\FOE\CERT Website.lnk" "$INSTDIR\CERT website.url"
+CreateShortCut "$SMPROGRAMS\BFF\CERT Website.lnk" "$INSTDIR\CERT website.url"
 !endif
 !endif
 
