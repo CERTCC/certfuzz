@@ -293,7 +293,8 @@ class Campaign(CampaignBase):
     def _save_state(self, cachefile=None):
         if not cachefile:
             cachefile = self.cached_state_file
-        dump_obj_to_file(cachefile, self)
+        # FIXME
+        # dump_obj_to_file(cachefile, self)
 
     def _crash_is_unique(self, crash_id, exploitability='UNKNOWN'):
         '''
@@ -352,20 +353,23 @@ class Campaign(CampaignBase):
         # newly created Iteration()
         with Iteration(*iter_args) as iteration:
             try:
-                iteration.go(self.seedfile_set)
+                iteration.go()
             except FuzzerExhaustedError:
                 # Some fuzzers run out of things to do. They should
                 # raise a FuzzerExhaustedError when that happens.
                 logger.info('Done with %s, removing from set', sf.basename)
-                self.seedfile_set.del_item(sf.md5)
+                # FIXME
+                # self.seedfile_set.del_item(sf.md5)
         if not seednum % self.status_interval:
             logger.info('Iteration: %d Crashes found: %d', self.current_seed,
                         len(self.crashes_seen))
-            self.seedfile_set.update_csv()
+            # FIXME
+            # self.seedfile_set.update_csv()
             logger.info('Seedfile Set Status:')
-            for k, score, successes, tries, p in self.seedfile_set.status():
-                logger.info('%s %0.6f %d %d %0.6f', k, score, successes,
-                            tries, p)
+            logger.info('FIXME')
+            # for k, score, successes, tries, p in self.seedfile_set.status():
+            #    logger.info('%s %0.6f %d %d %0.6f', k, score, successes,
+            #                tries, p)
 
     def go(self):
         '''

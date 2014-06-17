@@ -51,7 +51,7 @@ target:
 # results_dir: Location of fuzzing results (relative to foe2.py)
 #####################################################################
 directories:
-    seedfile_dir: seedfiles
+    seedfile_dir: seedfiles\examples
     working_dir:  C:\FOE2\fuzzdir
     results_dir:  results
 

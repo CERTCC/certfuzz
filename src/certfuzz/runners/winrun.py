@@ -60,7 +60,7 @@ def kill(p):
 
 class WinRunner(RunnerBase):
     def __init__(self, options, cmd_template, fuzzed_file, workingdir_base):
-        RunnerBase.__init__(self, options, cmd_template, fuzzed_file, workingdir_base)
+        RunnerBase.__init__(self, options, workingdir_base)
 
         logger.debug('Initialize Runner')
         self.runtimeout = None

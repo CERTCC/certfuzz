@@ -232,13 +232,19 @@ class Iteration(IterationBase2):
             # ranges should only get scored on the first crash
             # found in this iteration. Others found via minimization
             # don't count for this r
-            self.r.record_success(crash.signature)
-        self.sf.record_success(crash.signature)
+            # FIXME
+            pass
+            # self.r.record_success(crash.signature)
+        # FIXME
+        # self.sf.record_success(crash.signature)
 
     def record_failure(self):
         if self.r:
-            self.r.record_failure()
-        self.sf.record_failure()
+            # FIXME
+            pass
+            # self.r.record_failure()
+        # FIXME
+        # self.sf.record_failure()
 
     def _process_crash(self, crash):
         '''
