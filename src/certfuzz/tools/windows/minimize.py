@@ -133,9 +133,7 @@ def main():
     if options.outdir:
         outdir = options.outdir
     else:
-        mydir = os.path.dirname(os.path.abspath(__file__))
-        parentdir = os.path.abspath(os.path.join(mydir, '..', '..', '..'))
-        outdir = os.path.abspath(os.path.join(parentdir, 'minimizer_out'))
+        outdir = './minimizer_out'
 
     filetools.make_directories(outdir)
 

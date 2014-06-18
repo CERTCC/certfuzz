@@ -19,11 +19,11 @@ campaign:
 # the target
 #####################################################################
 target:
-    program: C:\FOE2\imagemagick\convert.exe
+    program: C:\BFF\imagemagick\convert.exe
     cmdline_template: $PROGRAM $SEEDFILE NUL
     # With the default ImageMagick fuzz run, the above target options
     # will result in the following invocation of ImageMagick:
-    # C:\FOE2\imagemagick\convert.exe <SEEDFILE> NUL
+    # C:\BFF\imagemagick\convert.exe <SEEDFILE> NUL
     # This exercises ImageMagick's image decoding, while also outputting 
     # to the Windows NUL device, minimizing I/O.
     # When choosing a fuzzing target, modify the cmdline_template line to 
@@ -34,7 +34,7 @@ target:
     # file name, you will probably just use:
     # cmdline_template: $PROGRAM $SEEDFILE
     #
-    # NOTE: FOE uses python's shlex.split() method to parse the command
+    # NOTE: BFF uses python's shlex.split() method to parse the command
     # line template after substituting in the program and seedfile values.
     # For this reason, it is required that if any other items in the 
     # cmdline_template involve windows paths, you need either use
@@ -43,16 +43,16 @@ target:
     # cmdline_template: $PROGRAM -in $SEEDFILE -out "c:\some path\to file"
 
 #####################################################################
-# Directories used by FOE
+# Directories used by BFF
 #
-# seedfile_dir: Location of seed files (relative to foe2.py)
-# working_dir: Temporary directory used by FOE. Use a ramdisk to
+# seedfile_dir: Location of seed files (relative to bff.py)
+# working_dir: Temporary directory used by BFF. Use a ramdisk to
 # reduce disk activity
-# results_dir: Location of fuzzing results (relative to foe2.py)
+# results_dir: Location of fuzzing results (relative to bff.py)
 #####################################################################
 directories:
     seedfile_dir: seedfiles\examples
-    working_dir:  C:\FOE2\fuzzdir
+    working_dir:  C:\BFF\fuzzdir
     results_dir:  results
 
 #####################################################################
@@ -68,7 +68,7 @@ directories:
 #                if not present.
 # minimize: Create a file that is minimally-different than the seed 
 #           file, yet crashes with the same hash
-# minimizer_timeout: The maximum amount of time that FOE will spend on
+# minimizer_timeout: The maximum amount of time that BFF will spend on
 #                    a minimization run before giving up
 # keep_unique_faddr: Consider the Exception Faulting Address value as
 #                    part of the crash hash
