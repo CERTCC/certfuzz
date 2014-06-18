@@ -9,25 +9,12 @@ import string
 import re
 from subprocess import Popen
 
-try:
-    from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
-    from certfuzz import debuggers
-    from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.runners.runner_base import get_command_args_list
-    from certfuzz.campaign.config.config_windows import Config
-    from certfuzz.debuggers import msec  # @UnusedImport
-except ImportError:
-    # if we got here, we probably don't have .. in our PYTHONPATH
-    import sys
-    mydir = os.path.dirname(os.path.abspath(__file__))
-    parentdir = os.path.abspath(os.path.join(mydir, '..'))
-    sys.path.append(parentdir)
-    from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
-    from certfuzz import debuggers
-    from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.runners.runner_base import get_command_args_list
-    from certfuzz.campaign.config.config_windows import Config
-    from certfuzz.debuggers import msec  # @UnusedImport
+from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
+from certfuzz import debuggers
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.campaign.config.config_windows import Config, get_command_args_list
+from certfuzz.debuggers import msec  # @UnusedImport
+
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARNING)
