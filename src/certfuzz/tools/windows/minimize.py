@@ -133,9 +133,7 @@ def main():
     if options.outdir:
         outdir = options.outdir
     else:
-        mydir = os.path.dirname(os.path.abspath(__file__))
-        parentdir = os.path.abspath(os.path.join(mydir, '..'))
-        outdir = os.path.abspath(os.path.join(parentdir, 'minimizer_out'))
+        outdir = "./minimizer_out"
 
     filetools.make_directories(outdir)
 
@@ -181,11 +179,11 @@ def main():
             logger.debug('x character substitution')
             length = len(minimize.fuzzed)
             if options.prefer_x_target:
-                #We minimized to 'x', so we attempt to get metasploit as a freebie
+                # We minimized to 'x', so we attempt to get metasploit as a freebie
                 targetstring = list(text.metasploit_pattern_orig(length))
                 filename_modifier = '-mtsp'
             else:
-                #We minimized to metasploit, so we attempt to get 'x' as a freebie
+                # We minimized to metasploit, so we attempt to get 'x' as a freebie
                 targetstring = list('x' * length)
                 filename_modifier = '-x'
 

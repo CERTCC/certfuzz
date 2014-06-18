@@ -120,7 +120,7 @@ FunctionEnd
 
 Function LaunchBFF
     ${If} $FUZZ_IMAGEMAGICK == "Y"
-      CopyFiles "$INSTDIR\seedfiles\examples\*.*" "$INSTDIR\seedfiles"
+      #CopyFiles "$INSTDIR\seedfiles\examples\*.*" "$INSTDIR\seedfiles"
       ExecShell "open" "results\convert v5.5.7\"
       sleep 2000
       BringToFront
