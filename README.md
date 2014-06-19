@@ -26,6 +26,10 @@ Furthermore, the build scripts modify some files and move things around to put t
 
 If all that seems more like a challenge than a warning, go for it.
 
+## Experimental ##
+
+See `src/experimental/README.md` for some dead ends that might be marginally useful.
+
 # About BFF and FOE #
 
 The CERT Basic Fuzzing Framework (BFF) is a software testing tool that finds defects in applications that run on the Linux and Mac OS X platforms. The CERT Failure Observation Engine (FOE) does the same on Windows.
