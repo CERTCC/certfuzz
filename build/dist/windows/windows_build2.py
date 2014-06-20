@@ -26,13 +26,14 @@ class WindowsBuild(Build):
         logger.debug('Import buildnsi')
         from .nsis import buildnsi
 
+        nsidir = os.path.join(self.build_dir, '..')
         # Copy files required by nsis
         for f in ['cert.ico', 'EnvVarUpdate.nsh', 'vmwarning.txt']:
             src = os.path.join(basedir, 'nsis', f)
-            logger.debug('Copy %s -> %s', src, self.build_dir)
-            shutil.copy(src, self.build_dir)
+            logger.debug('Copy %s -> %s', src, nsidir)
+            shutil.copy(src, nsidir)
 
-        nsifile = os.path.join(self.build_dir, 'bff.nsi')
+        nsifile = os.path.join(nsidir, 'bff.nsi')
         logger.debug('nsi file is %s', nsifile)
 
         version_string = "02.01.00.99"
