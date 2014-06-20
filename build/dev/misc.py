@@ -39,3 +39,22 @@ def copydir(src, dst):
 def copyfile(src, dst):
     logger.info('Copy file %s -> %s', src, dst)
     shutil.copy(src, dst)
+
+
+def stripmarkdown(markdown):
+    replacements = {'&copy;': '(C)', '&reg;': '(R)'}
+    for k, v in replacements.iteritems():
+        markdown = markdown.replace(k, v)
+    return markdown
+
+
+def mdtotextfile(markdownfile, plaintextfile):
+    logger.info('Converting markdown file %s to plain text %s' %
+                (markdownfile, plaintextfile))
+    f = open(markdownfile, 'r')
+    markdown = f.read()
+    f.close
+    plaintext = stripmarkdown(markdown)
+    f = open(plaintextfile, 'w')
+    f.write(plaintext)
+    f.close
