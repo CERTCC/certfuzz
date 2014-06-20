@@ -53,6 +53,8 @@ class Build(object):
         self._filename_pfx = 'BFF-{}'.format(self.platform)
         self.zipfile = '{}.zip'.format(self._filename_pfx)
         self.target = os.path.join(self.base_path, self.zipfile)
+        self.license_md_path = os.path.join(self.src_path, '..', 'LICENSE.md')
+        self.license_txt_path = os.path.join(self.platform_path, self._license_file)
 
     def __enter__(self):
         logger.debug('Entering Build context')
@@ -83,8 +85,7 @@ class Build(object):
         self.package()
 
     def _convert_md_files(self):
-        licensemd = os.path.join('..', 'LICENSE.md')
-        mdtotextfile(licensemd, os.path.join(self.platform_path, self._license_file))
+        mdtotextfile(self.license_md_path, self.license_txt_path)
 
     def export(self):
         logger.info('Exporting')
