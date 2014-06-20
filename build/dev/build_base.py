@@ -7,7 +7,7 @@ import os
 
 import logging
 import shutil
-from dev.misc import copydir, copyfile, onerror
+from dev.misc import copydir, copyfile, onerror, mdtotextfile
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,8 @@ class Build(object):
         self.dev_builds_path = os.path.abspath(os.path.join(self.src_path, '..', 'dev_builds'))
         self.target_path = os.path.abspath(os.path.join(self.dev_builds_path, self.name))
         self.platform_path = os.path.join(self.src_path, self.platform)
+        self.license_md_path = os.path.join(self.src_path, '..', 'LICENSE.md')
+        self.license_txt_path = os.path.join(self.target_path, 'COPYING.txt')
 
     def __enter__(self):
         return self
@@ -48,6 +50,9 @@ class Build(object):
         logger.info('Set up build dir')
         self._create_target_path()
 
+        logger.info('Converting markdown files')
+        self._convert_md_files()
+
         logger.info('Copy platform-specific files to build dir')
         self._copy_platform()
 
@@ -59,6 +64,9 @@ class Build(object):
 
         logger.info('Clean up build dir')
         self._clean_up(self.target_path, remove_blacklist=False)
+
+    def _convert_md_files(self):
+        mdtotextfile(self.license_md_path, self.license_txt_path)
 
     def _create_target_path(self):
         # create base build path if it doesn't already exist

@@ -11,6 +11,7 @@ parentdir = os.path.abspath(os.path.join(mydir, '..'))
 sys.path.append(parentdir)
 from dev.misc import copyfile
 
+
 class WindowsBuild(Build):
     _name = 'BFF'
     _platform = 'windows'
