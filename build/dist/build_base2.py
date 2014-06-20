@@ -149,6 +149,8 @@ class Build(object):
             logger.info('No platform-specific info found at %s', self.platform_path)
             platform_path = os.path.join(self.src_path, 'linux')
             logger.info('Defaulting to %s', platform_path)
+            # Set license text path since we're overriding it above
+            self.license_txt_path = os.path.join(platform_path, self._license_file)
 
         logger.info('Converting markdown files')
         self._convert_md_files()
