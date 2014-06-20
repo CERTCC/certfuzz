@@ -8,6 +8,7 @@ import shutil
 import tempfile
 import logging
 import zipfile
+from git import git_rev, git_hash
 
 from dev.misc import copydir, copyfile, onerror, mdtotextfile
 
@@ -94,6 +95,11 @@ class Build(object):
 
         logger.info('Copy common files to tmp_dir')
         self._copy_common_dirs()
+
+        logger.info('Getting git revision')
+        self.git_rev = git_rev()
+        self.git_hash = git_hash()
+        logger.info('%s : %s' % (self.git_rev, self.git_hash))
 
     def prune(self):
         logger.info('Pruning')
