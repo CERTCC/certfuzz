@@ -36,9 +36,10 @@ class WindowsBuild(Build):
         nsifile = os.path.join(nsidir, 'bff.nsi')
         logger.debug('nsi file is %s', nsifile)
 
-        version_string = "02.01.00.99"
+        version_string = "2.8.0.%s" % self.git_rev
+        git_hash = self.git_hash
         # generate the nsi file
-        buildnsi.main(version_string=version_string, outfile=nsifile, build_dir=self.build_dir)
+        buildnsi.main(version_string=version_string, git_hash=git_hash, outfile=nsifile, build_dir=self.build_dir)
 
         # invoke makensis on the file we just made
         logger.debug('invoking makensis on %s', nsifile)
@@ -48,7 +49,7 @@ class WindowsBuild(Build):
         if self.build_dir:
             distpath = os.path.join(self.build_dir, distpath)
 
-        exename = 'BFF-%s-setup.exe' % version_string
+        exename = 'BFF-%s-%s-setup.exe' % (version_string, git_hash)
         exefile = '%s\..\..\%s' % (distpath, exename)
         self.target = os.path.join(os.path.dirname(self.target), exename)
         self._move_to_target(exefile)

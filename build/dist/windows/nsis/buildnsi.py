@@ -8,7 +8,7 @@ import os
 import string
 
 
-def main(version_string='', outfile=None, build_dir=None):
+def main(version_string='', git_hash='', outfile=None, build_dir=None):
 
     distpath = 'BFF-windows-export'
     if build_dir:
@@ -32,7 +32,7 @@ def main(version_string='', outfile=None, build_dir=None):
     fp.write('!define COPYRIGHT "CERT 2014"\n')
     fp.write('!define DESCRIPTION "BFF %s"\n' % version_string)
     fp.write('!define LICENSE_TXT "%s\..\COPYING.txt"\n' % distpath)
-    fp.write('!define INSTALLER_NAME "%s\..\..\BFF-%s-setup.exe"\n' % (distpath, version_string))
+    fp.write('!define INSTALLER_NAME "%s\..\..\BFF-%s-%s-setup.exe"\n' % (distpath, version_string, git_hash))
 
     headerfile = open("nsis_header.txt", "r")
     headertext = headerfile.read()
