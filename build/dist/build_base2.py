@@ -9,7 +9,7 @@ import tempfile
 import logging
 import zipfile
 
-from dev.misc import copydir, copyfile, onerror
+from dev.misc import copydir, copyfile, onerror, mdtotextfile
 
 from .prepend_license import main as _prepend_license
 
@@ -82,6 +82,10 @@ class Build(object):
         self.prepend_license()
         self.package()
 
+    def _convert_md_files(self):
+        licensemd = os.path.join('..', 'LICENSE.md')
+        mdtotextfile(licensemd, os.path.join(self.platform_path, self._license_file))
+
     def export(self):
         logger.info('Exporting')
         logger.info('Copy platform-specific files to tmp_dir')
@@ -145,6 +149,9 @@ class Build(object):
             platform_path = os.path.join(self.src_path, 'linux')
             logger.info('Defaulting to %s', platform_path)
 
+        logger.info('Converting markdown files')
+        self._convert_md_files()
+
         # copy platform-specific content
         for f in os.listdir(platform_path):
             f_src = os.path.join(platform_path, f)
@@ -162,6 +169,7 @@ class Build(object):
                 copyfile(f_src, f_dst)
             else:
                 logger.warning("Not sure what to do with %s", f_src)
+
 
     def _copy_common_dirs(self):
         # copy other dirs
