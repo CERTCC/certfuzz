@@ -6,7 +6,7 @@ Created on Dec 9, 2013
 import os
 import shutil
 import subprocess
-#import string
+# import string
 import re
 
 import logging
@@ -114,36 +114,36 @@ class DarwinBuild(Build):
         os.chdir(oldcwd)
 
     def _build_sparseimage(self):
-        #${SPARSE_DMG}: clean_sparseimage convert_template mount_sparseimage package copy_pkg unmount_sparseimage
+        # ${SPARSE_DMG}: clean_sparseimage convert_template mount_sparseimage package copy_pkg unmount_sparseimage
 
-        #DMG_TEMPLATE=${INSTALLER_BASE}/BFF-template.dmg
+        # DMG_TEMPLATE=${INSTALLER_BASE}/BFF-template.dmg
         self.dmg_template = os.path.join(self.INSTALLER_BASE, 'BFF-template.dmg')
 
-        #SPARSE_DMG=${base_path}/BFF-sparse.sparseimage
+        # SPARSE_DMG=${base_path}/BFF-sparse.sparseimage
         self.sparse_image = os.path.join(self.base_path, 'BFF-sparse.sparseimage')
 
-        #clean_sparseimage:
+        # clean_sparseimage:
         if os.path.exists(self.sparse_image):
             #    ${RM} ${SPARSE_DMG}
             logger.debug('Deleting old sparseimage', self.sparse_image)
             os.remove(self.sparse_image)
 
-        #convert_template:
+        # convert_template:
         #    hdiutil convert ${DMG_TEMPLATE} -format UDSP -o ${SPARSE_DMG}
         hdiutil('convert', self.dmg_template, '-format', 'UDSP', '-o', self.sparse_image)
 
-        #unmount_old_dmg:
+        # unmount_old_dmg:
         #    ls -1d /Volumes/CERT\ BFF* | tr '\n' '\0' |  xargs -0 -n1 -Ixxx hdiutil detach "xxx"
         for d in os.listdir('/Volumes'):
             if d.startswith('CERT BFF'):
                 volume_to_detach = os.path.join('/Volumes', d)
                 hdiutil('detach', volume_to_detach)
 
-        #mount_sparseimage: unmount_old_dmg
+        # mount_sparseimage: unmount_old_dmg
         #    hdiutil mount ${SPARSE_DMG}
         hdiutil('mount', self.sparse_image)
 
-        #package:
+        # package:
         #    cd ${INSTALLER_BASE} && /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker \
         #        -d BFF_installer.pmdoc -v -o "/Volumes/CERT BFF/Install CERT BFF.pkg"
         packagemaker(self.INSTALLER_BASE,
@@ -152,7 +152,7 @@ class DarwinBuild(Build):
                      '-o', '/Volumes/CERT BFF/Install CERT BFF.pkg'
                      )
 
-        #copy_pkg:
+        # copy_pkg:
         #    cp -a ${INSTALLER_BASE}/build/pkgs/* /Volumes/CERT\ BFF/pkgs/
         srcdir = os.path.join(self.INSTALLER_BASE, 'build', 'pkgs')
         dstdir = '/Volumes/CERT BFF/pkgs'
@@ -163,26 +163,26 @@ class DarwinBuild(Build):
         logger.debug('Copy %s -> %s', srcdir, dstdir)
         subprocess.call('cp -a %s %s' % (os.path.join(srcdir, '*'), re.escape(dstdir)), shell=True)
 
-        #unmount_sparseimage:
+        # unmount_sparseimage:
         #    hdiutil detach "/Volumes/CERT BFF"
         hdiutil('detach', '/Volumes/CERT BFF')
 
     def _convert_sparseimage_to_dmg(self):
-        #FINAL_DMG=${base_path}/BFF.dmg
+        # FINAL_DMG=${base_path}/BFF.dmg
         self.final_dmg = os.path.join(self.base_path, 'BFF.dmg')
 
-        #clean_dmg:
+        # clean_dmg:
         #    ${RM} ${FINAL_DMG}
         if os.path.exists(self.final_dmg):
             logger.debug('Deleting old dmg %s', self.final_dmg)
             os.remove(self.final_dmg)
 
-        #${FINAL_DMG}: clean_dmg ${SPARSE_DMG}
+        # ${FINAL_DMG}: clean_dmg ${SPARSE_DMG}
         #    hdiutil convert ${SPARSE_DMG} -format UDBZ -o ${FINAL_DMG}
 
         hdiutil('convert', self.sparse_image, '-format', 'UDBZ', '-o', self.final_dmg)
 
-        #rename_dmg: ${FINAL_DMG}
+        # rename_dmg: ${FINAL_DMG}
         #    SVN_REV=`cd ${LINUX_DIST_BASE} && ${SVN} info | grep Revision | cut -d' ' -f2`; \
         #    VERSION=`cd ${BUILD_BASE} && grep __version__ bff.py | cut -d'=' -f2 | sed -e "s/ //g" -e "s/\'//g"`; \
         if self.dmg_file:
@@ -197,7 +197,6 @@ class DarwinBuild(Build):
 
     def _sync_dependencies(self):
         # Retrieve binary dependecies for building OSX installer
-        # rsync -EaxSv /Volumes/xcat/build/bff/osx/ installer/
         # TODO: What if rsync fails?
         subprocess.call(['rsync', '-EaxSv', self.SHARED_DEPS, self.LOCAL_DEPS])
         subprocess.call(['rsync', '-EaxSv', self.LOCAL_DEPS, self.INSTALLER_BASE])
