@@ -4,9 +4,9 @@ Created on Jun 29, 2012
 @organization: cert.org
 '''
 import logging
-from dev.linux.linux_build import LinuxBuild
-from dev.windows.windows_build import WindowsBuild
-#from dev.osx import DarwinBuild
+from devmods.linux.linux_build import LinuxBuild
+from devmods.windows.windows_build import WindowsBuild
+# from dev.osx import DarwinBuild
 
 logger = logging.getLogger(__name__)
 

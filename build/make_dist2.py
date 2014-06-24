@@ -5,9 +5,9 @@ Created on Feb 6, 2014
 '''
 import argparse
 import logging
-from dist.build2 import builder_for
-from dist.build2 import SUPPORTED_PLATFORMS as builders
-from dist.errors import BuildError
+from distmods.build2 import builder_for
+from distmods.build2 import SUPPORTED_PLATFORMS as builders
+from distmods.errors import BuildError
 
 logger = logging.getLogger(__name__)
 

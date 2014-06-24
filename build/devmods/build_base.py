@@ -7,7 +7,7 @@ import os
 
 import logging
 import shutil
-from dev.misc import copydir, copyfile, onerror, mdtotextfile
+from devmods.misc import copydir, copyfile, onerror, mdtotextfile
 
 logger = logging.getLogger(__name__)
 

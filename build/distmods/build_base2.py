@@ -10,7 +10,7 @@ import logging
 import zipfile
 from git import git_rev, git_hash
 
-from dev.misc import copydir, copyfile, onerror, mdtotextfile
+from devmods.misc import copydir, copyfile, onerror, mdtotextfile
 
 from .prepend_license import main as _prepend_license
 
