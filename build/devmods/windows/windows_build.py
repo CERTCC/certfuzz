@@ -9,7 +9,7 @@ import sys
 mydir = os.path.dirname(os.path.abspath(__file__))
 parentdir = os.path.abspath(os.path.join(mydir, '..'))
 sys.path.append(parentdir)
-from dev.misc import copyfile
+from devmods.misc import copyfile
 
 
 class WindowsBuild(Build):
