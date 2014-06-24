@@ -12,9 +12,12 @@ doc/html
 doc/pdf
 *.bak
 *.pyc
-build
 CERT_Basic_Fuzzing_Framework.egg-info
-dev_builds
+dist_builds
 doc
 setup_env/bff.env
-src/dist
+src/linux/COPYING.txt
+src/windows/COPYING.txt
+build/distmods/osx/installer/bff/
+build/distmods/osx/installer/*.txt
+*.stackdump
