@@ -13,6 +13,7 @@ import tempfile
 import time
 import traceback
 
+from certfuzz.campaign.campaign_meta import CampaignMeta
 from certfuzz.campaign.config import bff_config as cfg_helper
 from certfuzz.campaign.errors import CampaignScriptError
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
@@ -25,7 +26,6 @@ from certfuzz.fuzztools.filetools import mkdir_p, copy_file
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.watchdog import WatchDog
-
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.linux import Iteration
@@ -34,7 +34,7 @@ from certfuzz.iteration.linux import Iteration
 logger = logging.getLogger(__name__)
 
 
-class LinuxCampaign(object):
+class LinuxCampaign(CampaignMeta):
     def __init__(self, config_file=None, result_dir=None, debug=False):
         # Read the cfg file
         self.cfg_path = config_file
@@ -212,6 +212,12 @@ class LinuxCampaign(object):
         logger.debug('%s was found, not unique', crash_id)
         return False
 
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self):
+        pass
+
     def _do_interval(self, s1, s2, first_chunk=False):
         # interval.go
         logger.debug('Starting interval %d-%d', s1, s2)
@@ -234,6 +240,14 @@ class LinuxCampaign(object):
                            rf=sf.rangefinder) as iteration:
                 iteration.go()
 
+    def _do_iteration(self):
+        pass
+
+    def _keep_going(self):
+        pass
+
+    def _write_version(self):
+        pass
 
     def go(self):
     # campaign.go

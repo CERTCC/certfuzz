@@ -1,16 +1,13 @@
 '''
-Created on Feb 14, 2014
+Created on Oct 24, 2012
 
 @organization: cert.org
 '''
 import unittest
-from certfuzz.campaign.campaign_linux import LinuxCampaign
-
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-#        self.campaign = LinuxCampaign()
         pass
 
     def tearDown(self):

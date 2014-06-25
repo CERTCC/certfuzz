@@ -10,7 +10,8 @@ import os.path
 import platform
 import re
 
-from certfuzz.debuggers import Debugger, register
+from certfuzz.debuggers.debugger_base import Debugger
+from certfuzz.debuggers.registration import register
 from certfuzz.debuggers.output_parsers.cwfile import CWfile
 from certfuzz.fuzztools import subprocess_helper as subp
 
