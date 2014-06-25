@@ -134,8 +134,6 @@ class CampaignBase(CampaignMeta):
         self._set_debugger()
         self._setup_output()
         self._create_seedfile_set()
-        # buttonclicker is os-specific, moved to subclass
-#        self._start_buttonclicker()
         return self
 
     def __exit__(self, etype, value, mytraceback):
