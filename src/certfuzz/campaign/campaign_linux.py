@@ -13,7 +13,7 @@ import tempfile
 import time
 import traceback
 
-from certfuzz.campaign.campaign_meta import CampaignMeta
+from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.campaign.config import bff_config as cfg_helper
 from certfuzz.campaign.errors import CampaignScriptError
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
@@ -34,7 +34,7 @@ from certfuzz.iteration.linux import Iteration
 logger = logging.getLogger(__name__)
 
 
-class LinuxCampaign(CampaignMeta):
+class LinuxCampaign(CampaignBase):
     def __init__(self, config_file=None, result_dir=None, debug=False):
         # Read the cfg file
         self.cfg_path = config_file
@@ -42,6 +42,11 @@ class LinuxCampaign(CampaignMeta):
         self.debug = debug
         logger.info('Reading config from %s', config_file)
         self.cfg = cfg_helper.read_config_options(config_file)
+
+        self.current_seed = self.cfg.start_seed
+        self.seed_interval = self.cfg.seed_interval
+        self.first_chunk = True
+
         self.seedfile_set = None
         self.hashes = []
         self.workdirbase = self.cfg.testscase_tmp_dir
@@ -189,7 +194,7 @@ class LinuxCampaign(CampaignMeta):
         pass
 
     def _write_version(self):
-        CampaignMeta._write_version(self)
+        CampaignBase._write_version(self)
 
     def _setup_output(self):
         pass
@@ -220,13 +225,13 @@ class LinuxCampaign(CampaignMeta):
             self.seedfile_set = sfset
 
     def __setstate__(self):
-        CampaignMeta.__setstate__(self)
+        pass
 
     def _read_state(self):
         pass
 
     def __getstate__(self):
-        CampaignMeta.__getstate__(self)
+        pass
 
     def _save_state(self):
         pass
@@ -248,40 +253,44 @@ class LinuxCampaign(CampaignMeta):
         return False
 
     def _keep_going(self):
-        CampaignMeta._keep_going(self)
+        if self.stop_seed:
+            return self.current_seed < self.stop_seed
+        else:
+            return True
 
-    def _do_interval(self, s1, s2, first_chunk=False):
-        # interval.go
-        logger.debug('Starting interval %d-%d', s1, s2)
+    def _do_interval(self):
         # wipe the tmp dir clean to try to avoid filling the VM disk
         TmpReaper().clean_tmp()
 
+        # choose seedfile
         sf = self.seedfile_set.next_item()
+        logger.info('Selected seedfile: %s', sf.basename)
+
         r = sf.rangefinder.next_item()
-        qf = not first_chunk
+        qf = not self.first_chunk
 
         logger.info(STATE_TIMER)
 
-        for s in xrange(s1, s2):
-            # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
-            touch_watchdog_file()
-            with Iteration(cfg=self.cfg, seednum=s, seedfile=sf, r=r,
-                           workdirbase=self.working_dir, quiet=qf,
-                           uniq_func=self._crash_is_unique,
-                           sf_set=self.seedfile_set,
-                           rf=sf.rangefinder) as iteration:
-                iteration.go()
+        interval_limit = self.current_seed + self.seed_interval
+        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
+        for seednum in xrange(self.current_seed, interval_limit):
+            self._do_iteration(sf, r, qf, seednum)
 
-    def _do_iteration(self):
-        CampaignMeta._do_iteration(self)
+        self.current_seed = interval_limit
+        self.first_chunk = False
+
+    def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
+        # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
+        touch_watchdog_file()
+        with Iteration(cfg=self.cfg, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
+            uniq_func=self._crash_is_unique,
+            sf_set=self.seedfile_set,
+            rf=seedfile.rangefinder) as iteration:
+            iteration.go()
 
     def go(self):
-    # campaign.go
-        cfg = self.cfg
-
-        first_chunk = True
-        for s in itertools.count(start=cfg.start_seed, step=cfg.seed_interval):
-            s1 = s
-            s2 = s + cfg.seed_interval
-            self._do_interval(s1, s2, first_chunk)
-            first_chunk = False
+        '''
+        Starts campaign
+        '''
+        while self._keep_going():
+            self._do_interval()
