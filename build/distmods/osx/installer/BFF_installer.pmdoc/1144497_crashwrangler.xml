@@ -1,13 +1,13 @@
 <pkgref spec="1.12" uuid="BC48D375-A313-456D-956F-E68762AAD0DB">
   <config>
     <identifier>
-    com.cert.cc.certBff.52894_crashwrangler.pkg</identifier>
+    com.cert.cc.certBff.52854_crashwrangler.pkg</identifier>
     <version>1.0</version>
     <description></description>
     <post-install type="none" />
     <requireAuthorization />
     <installFrom relative="true" mod="true">
-    52894_crashwrangler.zip</installFrom>
+    52854_crashwrangler.zip</installFrom>
     <installTo mod="true">
     /Applications/BFF.app/Contents/Resources/packages</installTo>
     <flags>
