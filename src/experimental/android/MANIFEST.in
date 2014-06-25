@@ -1,3 +1,0 @@
-include *.txt
-recursive-include certfuzz *.py *.yaml
-recursive-include examples *.txt *.py *.yaml
