@@ -10,7 +10,7 @@ from certfuzz.campaign.campaign_linux import LinuxCampaign
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.campaign = LinuxCampaign()
+#        self.campaign = LinuxCampaign()
         pass
 
     def tearDown(self):

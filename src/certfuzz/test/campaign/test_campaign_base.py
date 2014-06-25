@@ -5,7 +5,7 @@ Created on Mar 23, 2012
 '''
 
 import unittest
-from certfuzz.campaign import campaign
+import certfuzz.campaign.campaign_base
 from tempfile import mkstemp, mkdtemp
 import yaml
 import shutil
@@ -54,7 +54,7 @@ class Test(unittest.TestCase):
         self.tmpdir = mkdtemp()
         self.program = mkstemp(dir=self.tmpdir)[1]
         self._dump_test_config()
-        self.campaign = campaign.Campaign(self.cfg_file)
+        self.campaign = certfuzz.campaign.campaign_base.CampaignBase(self.cfg_file)
 
         fd, f = tempfile.mkstemp()
         os.close(fd)
@@ -65,11 +65,11 @@ class Test(unittest.TestCase):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_init(self):
-        self.assertEqual('%s.%s' % (campaign.packages['fuzzers'], 'fuzzermodule'),
+        self.assertEqual('%s.%s' % (certfuzz.campaign.campaign_base.packages['fuzzers'], 'fuzzermodule'),
                          self.campaign.fuzzer_module_name)
-        self.assertEqual('%s.%s' % (campaign.packages['runners'], 'runnermodule'),
+        self.assertEqual('%s.%s' % (certfuzz.campaign.campaign_base.packages['runners'], 'runnermodule'),
                          self.campaign.runner_module_name)
-        self.assertEqual('%s.%s' % (campaign.packages['debuggers'], 'debuggermodule'),
+        self.assertEqual('%s.%s' % (certfuzz.campaign.campaign_base.packages['debuggers'], 'debuggermodule'),
                          self.campaign.debugger_module_name)
 
 #    def test_getstate(self):

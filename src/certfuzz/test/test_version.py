@@ -4,7 +4,7 @@ Created on Feb 22, 2013
 @organization: cert.org
 '''
 import unittest
-from certfuzz import version
+import certfuzz.version as version
 
 
 class Test(unittest.TestCase):
