@@ -307,7 +307,9 @@ class CampaignBase(CampaignMeta):
         '''
         if not crash_id in self.crashes_seen:
             self.crashes_seen.add(crash_id)
+            logger.debug("%s did not exist in cache, crash is unique", crash_id)
             return True
+        logger.debug('%s was found, not unique', crash_id)
         return False
 
     def _keep_going(self):
