@@ -70,25 +70,6 @@ class DarwinBuild(Build):
             except:
                 print "Failed to remove %s" % self.sparse_image
 
-#    def process_args(self):
-#        '''
-#        Process the other arguments passed to the build object
-#        '''
-#        super(self.__class__, self).process_args()
-#
-#        if self.buildtype == 'tag':
-#            self.dmg_file = '%s-%s.dmg' % (self.PROJECT, self.tag)
-#        elif self.buildtype == 'branch':
-#            self.dmg_file_template = '%s-%s-r$SVN_REV.dmg' % (self.PROJECT, self.branch)
-#        elif self.buildtype == 'trunk':
-#            self.dmg_file_template = '%s-trunk-r$SVN_REV.dmg' % (self.PROJECT)
-#        else:
-#            raise BuildError('Unknown buildtype: %s' % self.buildtype)
-
-#    def export(self):
-#        # export the linux code
-#        super(self.__class__, self).export()
-
     def refine(self):
         Build.refine(self)
 
@@ -198,7 +179,7 @@ class DarwinBuild(Build):
     def _sync_dependencies(self):
         # Retrieve binary dependecies for building OSX installer
         # TODO: What if rsync fails?
-        subprocess.call(['rsync', '-EaxSv', self.SHARED_DEPS, self.LOCAL_DEPS])
+        subprocess.call(['rsync', '-EaxSv', '--delete', self.SHARED_DEPS, self.LOCAL_DEPS])
         subprocess.call(['rsync', '-EaxSv', self.LOCAL_DEPS, self.INSTALLER_BASE])
 
     def package(self):
