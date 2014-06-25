@@ -54,16 +54,20 @@ class LinuxCampaign(CampaignMeta):
     def __enter__(self):
 
         self._setup_dirs()
-
-        # setup working dir
-        self.working_dir = tempfile.mkdtemp(prefix='campaign_', dir=self.workdirbase)
-        logger.debug('workdir=%s', self.working_dir)
-
         self._check_for_script()
         self._copy_config()
         self._start_process_killer()
         self._set_unbuffered_stdout()
+
+        # stuff that is handled in CampaignBase
+        self._setup_workdir()
+        self._set_fuzzer()
+        self._set_runner()
+        self._set_debugger()
+        self._setup_output()
         self._create_seedfile_set()
+
+
         if self.cfg.watchdogtimeout:
             self._setup_watchdog()
 
@@ -102,17 +106,6 @@ class LinuxCampaign(CampaignMeta):
                 logger.debug(l.rstrip())
 
         return handled
-
-    def _cleanup_workdir(self):
-        try:
-            shutil.rmtree(self.working_dir)
-        except:
-            pass
-
-        if os.path.exists(self.working_dir):
-            logger.warning("Unable to remove campaign working dir: %s", self.working_dir)
-        else:
-            logger.debug('Removed campaign working dir: %s', self.working_dir)
 
     def _setup_dirs(self):
         logger.debug('setup dirs')
@@ -174,6 +167,47 @@ class LinuxCampaign(CampaignMeta):
         with WatchDog(self.cfg.watchdogfile, self.cfg.watchdogtimeout) as watchdog:
             watchdog.go()
 
+
+    def _check_for_script(self):
+        logger.debug('check for script')
+        if self.cfg.program_is_script():
+            logger.warning("Target application is a shell script.")
+            raise CampaignScriptError()
+            #cfg.disable_verification()
+            #time.sleep(10)
+
+    def _check_prog(self):
+        pass
+
+    def _set_fuzzer(self):
+        pass
+
+    def _set_runner(self):
+        pass
+
+    def _set_debugger(self):
+        pass
+
+    def _write_version(self):
+        CampaignMeta._write_version(self)
+
+    def _setup_output(self):
+        pass
+
+    def _setup_workdir(self):
+        pass
+
+    def _cleanup_workdir(self):
+        try:
+            shutil.rmtree(self.working_dir)
+        except:
+            pass
+
+        if os.path.exists(self.working_dir):
+            logger.warning("Unable to remove campaign working dir: %s", self.working_dir)
+        else:
+            logger.debug('Removed campaign working dir: %s', self.working_dir)
+
     def _create_seedfile_set(self):
         logger.info('Building seedfile set')
         sfs_logfile = os.path.join(self.cfg.seedfile_output_dir, 'seedfile_set.log')
@@ -185,13 +219,17 @@ class LinuxCampaign(CampaignMeta):
                          ) as sfset:
             self.seedfile_set = sfset
 
-    def _check_for_script(self):
-        logger.debug('check for script')
-        if self.cfg.program_is_script():
-            logger.warning("Target application is a shell script.")
-            raise CampaignScriptError()
-            #cfg.disable_verification()
-            #time.sleep(10)
+    def __setstate__(self):
+        CampaignMeta.__setstate__(self)
+
+    def _read_state(self):
+        pass
+
+    def __getstate__(self):
+        CampaignMeta.__getstate__(self)
+
+    def _save_state(self):
+        pass
 
     def _crash_is_unique(self, crash_id, exploitability='UNKNOWN'):
         '''
@@ -209,11 +247,8 @@ class LinuxCampaign(CampaignMeta):
         logger.debug('%s was found, not unique', crash_id)
         return False
 
-    def __getstate__(self):
-        CampaignMeta.__getstate__(self)
-
-    def __setstate__(self):
-        CampaignMeta.__setstate__(self)
+    def _keep_going(self):
+        CampaignMeta._keep_going(self)
 
     def _do_interval(self, s1, s2, first_chunk=False):
         # interval.go
@@ -239,12 +274,6 @@ class LinuxCampaign(CampaignMeta):
 
     def _do_iteration(self):
         CampaignMeta._do_iteration(self)
-
-    def _keep_going(self):
-        CampaignMeta._keep_going(self)
-
-    def _write_version(self):
-        CampaignMeta._write_version(self)
 
     def go(self):
     # campaign.go
