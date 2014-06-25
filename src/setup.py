@@ -62,13 +62,10 @@ def _entry_points():
     eps['console_scripts'] = console_scripts
     return eps
 
-def _scripts():
-    _s = [
-#            'scripts/start_bff_android.sh',
-#            'scripts/reset_bff_android.sh',
-#            'scripts/ubufuzz_first_time_setup.sh',
-               ]
-    return _s
+#def _scripts():
+#    _s = [
+#               ]
+#    return _s
 
 setup(name="CERT_Basic_Fuzzing_Framework",
       version="3.0a",
@@ -86,7 +83,7 @@ setup(name="CERT_Basic_Fuzzing_Framework",
                         'numpy',
 #                        'matplotlib',
                         ],
-      scripts=_scripts(),
+#      scripts=_scripts(),
       entry_points=_entry_points(),
       include_package_data=True,
       test_suite='certfuzz.test',

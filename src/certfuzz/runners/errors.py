@@ -21,6 +21,3 @@ class RunnerPlatformVersionError(RunnerError):
 class RunnerRegistryError(RunnerError):
     pass
 
-
-class AndroidRunnerError(RunnerError):
-    pass
