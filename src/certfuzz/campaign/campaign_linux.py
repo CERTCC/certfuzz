@@ -62,12 +62,13 @@ def check_program_file_type(string, program):
 class LinuxCampaign(CampaignBase):
     def __init__(self, config_file=None, result_dir=None, debug=False):
         # Read the cfg file
-        self.cfg_path = config_file
+        self.config_file = config_file
         self.result_dir = result_dir
         self.debug = debug
-        logger.info('Reading config from %s', config_file)
-        self.cfg = cfg_helper.read_config_options(config_file)
+        logger.info('Reading config from %s', self.config_file)
+        self.cfg = cfg_helper.read_config_options(self.config_file)
 
+        self.outdir = self.cfg.output_dir
         self.current_seed = self.cfg.start_seed
         self.seed_interval = self.cfg.seed_interval
         self.first_chunk = True
@@ -82,9 +83,7 @@ class LinuxCampaign(CampaignBase):
         verify_supported_platform()
 
     def __enter__(self):
-
         self._setup_dirs()
-        self._copy_config()
         self._start_process_killer()
         self._set_unbuffered_stdout()
 
@@ -134,7 +133,6 @@ class LinuxCampaign(CampaignBase):
         paths = [self.cfg.local_dir,
                  self.cfg.cached_objects_dir,
                  self.cfg.seedfile_local_dir,
-                 self.cfg.output_dir,
                  self.cfg.seedfile_output_dir,
                  self.cfg.crashers_dir,
                  self.cfg.testscase_tmp_dir,
@@ -144,11 +142,6 @@ class LinuxCampaign(CampaignBase):
             if not os.path.exists(d):
                 logger.debug('Creating dir %s', d)
                 mkdir_p(d)
-
-    def _copy_config(self):
-        logger.debug('copy config')
-
-        copy_file(self.cfg_path, self.cfg.output_dir)
 
     def _set_unbuffered_stdout(self):
         '''
@@ -215,12 +208,6 @@ class LinuxCampaign(CampaignBase):
         pass
 
     def _set_debugger(self):
-        '''
-        Overrides parent class
-        '''
-        pass
-
-    def _setup_output(self):
         '''
         Overrides parent class
         '''
