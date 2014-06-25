@@ -29,9 +29,34 @@ from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.linux import Iteration
+import subprocess
 
 
 logger = logging.getLogger(__name__)
+
+
+def check_program_file_type(string, program):
+    '''
+    @rtype: boolean
+    Runs the system "file" command on self.program
+    @return: True if <string> appears in the output.
+    '''
+    file_loc = subprocess.Popen("which %s" % program, stdout=subprocess.PIPE, shell=True).stdout.read().strip()
+    # maybe it's not on the path, but it still exists
+    if not file_loc:
+        if os.path.exists(program):
+            file_loc = program
+
+    # we still can't find it, so give give up
+    if not os.path.exists(file_loc):
+        return False
+
+    # get the 'file' results
+    ftype = subprocess.Popen("file -b -L %s" % file_loc, stdout=subprocess.PIPE, shell=True).stdout.read()
+    if string in ftype:
+        return True
+    else:
+        return False
 
 
 class LinuxCampaign(CampaignBase):
@@ -59,19 +84,11 @@ class LinuxCampaign(CampaignBase):
     def __enter__(self):
 
         self._setup_dirs()
-        self._check_for_script()
         self._copy_config()
         self._start_process_killer()
         self._set_unbuffered_stdout()
 
-        # stuff that is handled in CampaignBase
-        self._setup_workdir()
-        self._set_fuzzer()
-        self._set_runner()
-        self._set_debugger()
-        self._setup_output()
-        self._create_seedfile_set()
-
+        CampaignBase.__enter__(self)
 
         if self.cfg.watchdogtimeout:
             self._setup_watchdog()
@@ -172,46 +189,48 @@ class LinuxCampaign(CampaignBase):
         with WatchDog(self.cfg.watchdogfile, self.cfg.watchdogtimeout) as watchdog:
             watchdog.go()
 
-
     def _check_for_script(self):
         logger.debug('check for script')
-        if self.cfg.program_is_script():
+        if check_program_file_type('text', self.cfg.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
             #cfg.disable_verification()
             #time.sleep(10)
 
     def _check_prog(self):
-        pass
+        self._check_for_script()
+        # TODO: we could also use the parent class to check if the prog is present
+#        CampaignBase._check_prog(self)
 
     def _set_fuzzer(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
     def _set_runner(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
     def _set_debugger(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
-    def _write_version(self):
-        CampaignBase._write_version(self)
-
     def _setup_output(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
     def _setup_workdir(self):
+        '''
+        Overrides parent class
+        '''
         pass
-
-    def _cleanup_workdir(self):
-        try:
-            shutil.rmtree(self.working_dir)
-        except:
-            pass
-
-        if os.path.exists(self.working_dir):
-            logger.warning("Unable to remove campaign working dir: %s", self.working_dir)
-        else:
-            logger.debug('Removed campaign working dir: %s', self.working_dir)
 
     def _create_seedfile_set(self):
         logger.info('Building seedfile set')
@@ -225,38 +244,28 @@ class LinuxCampaign(CampaignBase):
             self.seedfile_set = sfset
 
     def __setstate__(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
     def _read_state(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
     def __getstate__(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
     def _save_state(self):
+        '''
+        Overrides parent class
+        '''
         pass
-
-    def _crash_is_unique(self, crash_id, exploitability='UNKNOWN'):
-        '''
-        If crash_id represents a new crash, add the crash_id to crashes_seen
-        and return True. Otherwise return False.
-
-        @param crash_id: the crash_id to look up
-        @param exploitability: not used at this time
-        '''
-        if not crash_id in self.crashes_seen:
-            self.crashes_seen.add(crash_id)
-            logger.debug("%s did not exist in cache, crash is unique", crash_id)
-            return True
-
-        logger.debug('%s was found, not unique', crash_id)
-        return False
-
-    def _keep_going(self):
-        if self.stop_seed:
-            return self.current_seed < self.stop_seed
-        else:
-            return True
 
     def _do_interval(self):
         # wipe the tmp dir clean to try to avoid filling the VM disk
@@ -287,10 +296,3 @@ class LinuxCampaign(CampaignBase):
             sf_set=self.seedfile_set,
             rf=seedfile.rangefinder) as iteration:
             iteration.go()
-
-    def go(self):
-        '''
-        Starts campaign
-        '''
-        while self._keep_going():
-            self._do_interval()

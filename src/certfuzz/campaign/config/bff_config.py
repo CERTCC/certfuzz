@@ -13,7 +13,6 @@ import os
 import re
 import shlex
 import shutil
-import subprocess
 
 from certfuzz.fuzztools import filetools
 
@@ -167,36 +166,6 @@ class ConfigHelper:
         @param seedfile:
         '''
         return os.path.join(self.full_path_local_fuzz_dir(seedfile), seedfile)
-
-    def program_is_script(self):
-        '''
-        @rtype: boolean
-        @return: True if self.program is a file type of "text" as determined by check_program_file_type().
-        '''
-        return self.check_program_file_type('text')
-
-    def check_program_file_type(self, string):
-        '''
-        @rtype: boolean
-        Runs the system "file" command on self.program
-        @return: True if <string> appears in the output.
-        '''
-        file_loc = subprocess.Popen("which %s" % self.program, stdout=subprocess.PIPE, shell=True).stdout.read().strip()
-        # maybe it's not on the path, but it still exists
-        if not file_loc:
-            if os.path.exists(self.program):
-                file_loc = self.program
-
-        # we still can't find it, so give give up
-        if not os.path.exists(file_loc):
-            return False
-
-        # get the 'file' results
-        ftype = subprocess.Popen("file -b -L %s" % file_loc, stdout=subprocess.PIPE, shell=True).stdout.read()
-        if string in ftype:
-            return True
-        else:
-            return False
 
     def get_minimized_file(self, outfile):
         '''
