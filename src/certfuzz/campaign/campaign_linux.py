@@ -71,6 +71,8 @@ class LinuxCampaign(CampaignBase):
         self.outdir = self.cfg.output_dir
         self.current_seed = self.cfg.start_seed
         self.seed_interval = self.cfg.seed_interval
+
+        # flag to indicate whether this is a fresh script start up or not
         self.first_chunk = True
 
         self.seedfile_set = None
@@ -91,9 +93,6 @@ class LinuxCampaign(CampaignBase):
 
         if self.cfg.watchdogtimeout:
             self._setup_watchdog()
-
-        # flag to indicate whether this is a fresh script start up or not
-        self.first_chunk = True
 
         check_ppid()
 
