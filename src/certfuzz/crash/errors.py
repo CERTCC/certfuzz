@@ -13,6 +13,3 @@ class TestCaseError(CERTFuzzError):
 class CrashError(TestCaseError):
     pass
 
-
-class AndroidTestCaseError(TestCaseError):
-    pass
