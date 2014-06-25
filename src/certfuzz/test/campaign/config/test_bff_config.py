@@ -10,6 +10,7 @@ from certfuzz.campaign.config.bff_config import ConfigHelper
 from certfuzz.campaign.config.bff_config import MINIMIZED_EXT
 import tempfile
 from certfuzz.campaign.config.bff_config import read_config_options
+import shutil
 
 
 class Test(unittest.TestCase):
@@ -18,6 +19,7 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(f))
 
     def setUp(self):
+        self.tmpdir = tempfile.mkdtemp()
         # build a config
         self.config = ConfigParser.RawConfigParser()
 
@@ -71,7 +73,7 @@ class Test(unittest.TestCase):
         self.cfg = ConfigHelper(self.config)
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.tmpdir)
 
     def test_init(self):
         self.assertEqual(self.cfg.killprocname, 'killprocname')
@@ -91,11 +93,10 @@ class Test(unittest.TestCase):
         pass
 
     def test_check_program_file_type(self):
-        f = os.path.abspath(__file__)
-        if f.endswith('pyc'):
-            # trim the last char ('c')
-            f = f[:-1]
-        self.cfg.program = f
+        fd, fname = tempfile.mkstemp(dir=self.tmpdir, text=True)
+        os.write(fd, 'sometext')
+        os.close(fd)
+        self.cfg.program = fname
         self.assertTrue(self.cfg.program_is_script())
 
     def test_get_minimized_file(self):
