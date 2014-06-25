@@ -78,7 +78,6 @@ directories:
 #####################################################################
 runoptions:
     first_iteration: 0
-    last_iteration: 0
     seed_interval: 1
     minimize: True
     minimizer_timeout: 3600

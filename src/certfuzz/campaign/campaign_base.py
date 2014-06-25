@@ -78,9 +78,6 @@ class CampaignBase(CampaignMeta):
         if not self.current_seed:
             # default to zero
             self.current_seed = 0
-        # if stop_seed is zero or None, we'll keep going forever
-        # see self._keep_going()
-        self.stop_seed = self.config['runoptions'].get('last_iteration')
 
         self.seed_interval = self.config['runoptions'].get('seed_interval')
         if not self.seed_interval:
@@ -313,10 +310,7 @@ class CampaignBase(CampaignMeta):
         return False
 
     def _keep_going(self):
-        if self.stop_seed:
-            return self.current_seed < self.stop_seed
-        else:
-            return True
+        return CampaignMeta._keep_going(self)
 
     def _do_interval(self):
         # choose seedfile
@@ -329,10 +323,7 @@ class CampaignBase(CampaignMeta):
             # cache our current state
             self._save_state()
 
-        # don't overshoot stop_seed
         interval_limit = self.current_seed + self.seed_interval
-        if self.stop_seed:
-            interval_limit = min(interval_limit, self.stop_seed)
 
         # start an iteration interval
         # note that range does not include interval_limit
