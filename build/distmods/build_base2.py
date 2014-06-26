@@ -13,6 +13,7 @@ from git import git_rev, git_hash
 from devmods.misc import copydir, copyfile, onerror, mdtotextfile
 
 from .prepend_license import main as _prepend_license
+from subprocess import CalledProcessError
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +69,8 @@ class Build(object):
 
     def __exit__(self, etype, value, traceback):
         handled = False
+        if etype is CalledProcessError:
+            logger.debug('Error returned from called processs: %s' % value)
         logger.debug('Removing temp dir %s', self.tmp_dir)
         shutil.rmtree(self.tmp_dir)
         self._in_runtime_context = False

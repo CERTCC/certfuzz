@@ -22,7 +22,7 @@ def hdiutil(command, *parameters):
     args = ['hdiutil', command]
     args.extend(parameters)
     logger.debug(args)
-    subprocess.call(args)
+    subprocess.check_call(args)
 
 
 # mac-specific
@@ -34,7 +34,7 @@ def packagemaker(working_dir='.', *parameters):
     os.chdir(working_dir)
 
     logger.debug('cd %s && %s', working_dir, args)
-    subprocess.call(args)
+    subprocess.check_call(args)
 
     # popd
     os.chdir(oldcwd)
