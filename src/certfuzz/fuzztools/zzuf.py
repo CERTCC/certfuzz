@@ -34,7 +34,8 @@ class ZzufTestCase:
         self.cmdline = 'cat %s | zzuf -s%s -r%s > %s' % (self.seedfile, self.seed, self.range, self.outfile)
 
     def generate(self):
-        subprocess.call(self.cmdline, shell=True)
+        subprocess.check_call(self.cmdline, shell=True)
+
 
 class Zzuf:
     def __init__(self, dir, s1, s2, cmd, seedfile, file, copymode, ratiomin, ratiomax, timeout, quiet=True):
