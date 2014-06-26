@@ -8,7 +8,7 @@ import os
 
 from certfuzz.crash.crash_base import Crash, CrashError
 from certfuzz.debuggers import registration
-from certfuzz.fuzztools import hostinfo
+from certfuzz.fuzztools import hostinfo, filetools
 
 
 try:
@@ -159,8 +159,10 @@ class BffCrash(Crash):
         return self.signature
 
     def _verify_crash_base_dir(self):
-        if not self.crash_base_dir or not os.path.exists(self.crash_base_dir):
-            raise CrashError('Crash has no base dir')
+        if not self.crash_base_dir:
+            raise CrashError('crash_base_dir not set')
+        if not os.path.exists(self.crash_base_dir):
+            filetools.make_directories(self.crash_base_dir)
 
     def get_result_dir(self):
         assert self.crash_base_dir

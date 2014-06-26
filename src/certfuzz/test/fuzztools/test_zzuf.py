@@ -1,13 +1,14 @@
-from certfuzz.fuzztools.zzuf import Zzuf
-from certfuzz.fuzztools.zzuf import ZzufTestCase
-import re
 '''
 Created on Apr 8, 2011
 
 @organization: cert.org
 '''
-
 import unittest
+import re
+
+from certfuzz.fuzztools.zzuf import Zzuf
+from certfuzz.fuzztools.zzuf import ZzufTestCase
+
 
 class Test(unittest.TestCase):
 
@@ -24,8 +25,15 @@ class Test(unittest.TestCase):
         pass
 
     def test_testcase_set_cmdline(self):
-        expected = "cat a | zzuf -sb -rc > d"
-        testcase = ZzufTestCase('a', 'b', 'c', 'd')
+        expected = "cat a | zzuf -sb -rc > x"
+
+        class MockSf(object):
+            path = 'a'
+        sf = MockSf()
+
+        testcase = ZzufTestCase(sf, 'b', 'c', 'd')
+        testcase.outfile = 'x'
+        testcase._set_cmdline()
         self.assertEqual(testcase.cmdline, expected)
 
     def test_generate_test_case(self):

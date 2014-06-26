@@ -7,9 +7,9 @@ Provides wrapper facilities for zzuf
 '''
 import logging
 
-from certfuzz.fuzztools import subprocess_helper as subp
 import subprocess
 from subprocess import CalledProcessError
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ logger.setLevel(logging.DEBUG)
 
 
 class ZzufTestCase:
-    def __init__(self, seedfile, seed, range, outfile):
+    def __init__(self, seedfile, seed, range, working_dir):
         '''
         @param seedfile: The original seed file to use
         @param seed: The zzuf seed number to use
@@ -27,12 +27,27 @@ class ZzufTestCase:
         self.seedfile = seedfile
         self.seed = seed
         self.range = range
-        self.outfile = outfile
+        self.working_dir = working_dir
+        self.outfile = None
 
+    def __enter__(self):
+        self._set_outfile()
         self._set_cmdline()
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        return
+
+    def _set_outfile(self):
+        # generate the test case file name
+        (root, ext) = os.path.splitext(self.seedfile.basename)
+        new_root = '{}-{}'.format(root, self.seed)
+        new_basename = new_root + ext
+        self.outfile = os.path.join(self.working_dir, new_basename)
+        logger.debug('Output file is %s', self.outfile)
 
     def _set_cmdline(self):
-        self.cmdline = 'cat %s | zzuf -s%s -r%s > %s' % (self.seedfile, self.seed, self.range, self.outfile)
+        self.cmdline = 'cat %s | zzuf -s%s -r%s > %s' % (self.seedfile.path, self.seed, self.range, self.outfile)
 
     def generate(self):
         subprocess.check_call(self.cmdline, shell=True)
@@ -92,16 +107,6 @@ class Zzuf:
             self.saw_crash = True
 
         return self.saw_crash
-
-    def generate_test_case(self, seedfile, seed, range, outfile):
-        '''
-        Generates the test case for the given <seedfile>, <seed>,
-        and <range>, storing the result in <outfile>
-        '''
-
-        testcase = ZzufTestCase(seedfile, seed, range, outfile)
-        testcase.generate()
-        return testcase
 
     def _get_zzuf_args(self):
         '''

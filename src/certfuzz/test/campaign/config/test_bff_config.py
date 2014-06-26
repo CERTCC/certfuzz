@@ -81,7 +81,6 @@ class Test(unittest.TestCase):
         self.assertEqual(self.cfg.watchdogtimeout, 2)
         self.assertEqual(self.cfg.copymode, 1)
         self.assertEqual(self.cfg.progtimeout, 3.4)
-        self.assertEqual(self.cfg.seedfile_local_dir, 'seedfile_local_dir')
         self.assertEqual(self.cfg.output_dir, 'output_dir')
         self.assertEqual(self.cfg.local_dir, 'local_dir')
         self.assertEqual(self.cfg.debugger_timeout, 4)
@@ -91,13 +90,6 @@ class Test(unittest.TestCase):
 
     def test_program_is_script(self):
         pass
-
-    def test_check_program_file_type(self):
-        fd, fname = tempfile.mkstemp(dir=self.tmpdir, text=True)
-        os.write(fd, 'sometext')
-        os.close(fd)
-        self.cfg.program = fname
-        self.assertTrue(self.cfg.program_is_script())
 
     def test_get_minimized_file(self):
         self.assertEqual(self.cfg.get_minimized_file('foo.txt'), 'foo-%s.txt' % MINIMIZED_EXT)
@@ -128,7 +120,6 @@ class Test(unittest.TestCase):
         self.assertEqual(cfg.watchdogtimeout, 2)
         self.assertEqual(cfg.copymode, 1)
         self.assertEqual(cfg.progtimeout, 3.4)
-        self.assertEqual(cfg.seedfile_local_dir, 'seedfile_local_dir')
         self.assertEqual(cfg.output_dir, 'output_dir')
         self.assertEqual(cfg.local_dir, 'local_dir')
         self.assertEqual(cfg.debugger_timeout, 4)

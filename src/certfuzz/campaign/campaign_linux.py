@@ -4,71 +4,102 @@ Created on Feb 12, 2014
 @author: adh
 '''
 
-import itertools
 import logging
 import os
-import shutil
 import sys
-import tempfile
 import time
 import traceback
+import subprocess
 
-from certfuzz.campaign.campaign_meta import CampaignMeta
+from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.campaign.config import bff_config as cfg_helper
 from certfuzz.campaign.errors import CampaignScriptError
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.debuggers.registration import verify_supported_platform
-from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzztools import subprocess_helper as subp
-from certfuzz.fuzztools.filetools import mkdir_p, copy_file
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.iteration.linux import Iteration
+from certfuzz.iteration.iteration_linux import Iteration
 
 
 logger = logging.getLogger(__name__)
 
 
-class LinuxCampaign(CampaignMeta):
+def check_program_file_type(string, program):
+    '''
+    @rtype: boolean
+    Runs the system "file" command on self.program
+    @return: True if <string> appears in the output.
+    '''
+    file_loc = subprocess.Popen("which %s" % program, stdout=subprocess.PIPE, shell=True).stdout.read().strip()
+    # maybe it's not on the path, but it still exists
+    if not file_loc:
+        if os.path.exists(program):
+            file_loc = program
+
+    # we still can't find it, so give give up
+    if not os.path.exists(file_loc):
+        return False
+
+    # get the 'file' results
+    ftype = subprocess.Popen("file -b -L %s" % file_loc, stdout=subprocess.PIPE, shell=True).stdout.read()
+    if string in ftype:
+        return True
+    else:
+        return False
+
+
+class LinuxCampaign(CampaignBase):
     def __init__(self, config_file=None, result_dir=None, debug=False):
         # Read the cfg file
-        self.cfg_path = config_file
+        self.config_file = config_file
         self.result_dir = result_dir
         self.debug = debug
-        logger.info('Reading config from %s', config_file)
-        self.cfg = cfg_helper.read_config_options(config_file)
+        logger.info('Reading config from %s', self.config_file)
+        self.cfg = cfg_helper.read_config_options(self.config_file)
+
+        self.campaign_id = self.cfg.campaign_id
+        self.current_seed = self.cfg.start_seed
+        self.seed_interval = self.cfg.seed_interval
+
+        self.seed_dir_in = self.cfg.seedfile_origin_dir
+
+        self.outdir_base = os.path.abspath(self.cfg.output_dir)
+
+        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
+        logger.debug('outdir=%s', self.outdir)
+        self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
+
+        self.work_dir_base = self.cfg.local_dir
+
+        self.program = self.cfg.program
+
+        # flag to indicate whether this is a fresh script start up or not
+        self.first_chunk = True
+
         self.seedfile_set = None
+
         self.hashes = []
-        self.workdirbase = self.cfg.testscase_tmp_dir
         self.working_dir = None
+        self.seed_dir_local = None
         self.crashes_seen = set()
 
         # give up if we don't have a debugger
         verify_supported_platform()
 
     def __enter__(self):
-
-        self._setup_dirs()
-
-        # setup working dir
-        self.working_dir = tempfile.mkdtemp(prefix='campaign_', dir=self.workdirbase)
-        logger.debug('workdir=%s', self.working_dir)
-
-        self._check_for_script()
-        self._copy_config()
         self._start_process_killer()
         self._set_unbuffered_stdout()
-        self._create_seedfile_set()
+
+        CampaignBase.__enter__(self)
+
         if self.cfg.watchdogtimeout:
             self._setup_watchdog()
-
-        # flag to indicate whether this is a fresh script start up or not
-        self.first_chunk = True
 
         check_ppid()
 
@@ -102,38 +133,6 @@ class LinuxCampaign(CampaignMeta):
                 logger.debug(l.rstrip())
 
         return handled
-
-    def _cleanup_workdir(self):
-        try:
-            shutil.rmtree(self.working_dir)
-        except:
-            pass
-
-        if os.path.exists(self.working_dir):
-            logger.warning("Unable to remove campaign working dir: %s", self.working_dir)
-        else:
-            logger.debug('Removed campaign working dir: %s', self.working_dir)
-
-    def _setup_dirs(self):
-        logger.debug('setup dirs')
-        paths = [self.cfg.local_dir,
-                 self.cfg.cached_objects_dir,
-                 self.cfg.seedfile_local_dir,
-                 self.cfg.output_dir,
-                 self.cfg.seedfile_output_dir,
-                 self.cfg.crashers_dir,
-                 self.cfg.testscase_tmp_dir,
-                 ]
-
-        for d in paths:
-            if not os.path.exists(d):
-                logger.debug('Creating dir %s', d)
-                mkdir_p(d)
-
-    def _copy_config(self):
-        logger.debug('copy config')
-
-        copy_file(self.cfg_path, self.cfg.output_dir)
 
     def _set_unbuffered_stdout(self):
         '''
@@ -174,85 +173,85 @@ class LinuxCampaign(CampaignMeta):
         with WatchDog(self.cfg.watchdogfile, self.cfg.watchdogtimeout) as watchdog:
             watchdog.go()
 
-    def _create_seedfile_set(self):
-        logger.info('Building seedfile set')
-        sfs_logfile = os.path.join(self.cfg.seedfile_output_dir, 'seedfile_set.log')
-        with SeedfileSet(campaign_id=self.cfg.campaign_id,
-                         originpath=self.cfg.seedfile_origin_dir,
-                         localpath=self.cfg.seedfile_local_dir,
-                         outputpath=self.cfg.seedfile_output_dir,
-                         logfile=sfs_logfile,
-                         ) as sfset:
-            self.seedfile_set = sfset
-
     def _check_for_script(self):
         logger.debug('check for script')
-        if self.cfg.program_is_script():
+        if check_program_file_type('text', self.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
-            #cfg.disable_verification()
-            #time.sleep(10)
 
-    def _crash_is_unique(self, crash_id, exploitability='UNKNOWN'):
+    def _check_prog(self):
+        self._check_for_script()
+        CampaignBase._check_prog(self)
+
+    def _set_fuzzer(self):
         '''
-        If crash_id represents a new crash, add the crash_id to crashes_seen
-        and return True. Otherwise return False.
-
-        @param crash_id: the crash_id to look up
-        @param exploitability: not used at this time
+        Overrides parent class
         '''
-        if not crash_id in self.crashes_seen:
-            self.crashes_seen.add(crash_id)
-            logger.debug("%s did not exist in cache, crash is unique", crash_id)
-            return True
+        pass
 
-        logger.debug('%s was found, not unique', crash_id)
-        return False
+    def _set_runner(self):
+        '''
+        Overrides parent class
+        '''
+        pass
 
-    def __getstate__(self):
+    def _set_debugger(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
     def __setstate__(self):
+        '''
+        Overrides parent class
+        '''
         pass
 
-    def _do_interval(self, s1, s2, first_chunk=False):
-        # interval.go
-        logger.debug('Starting interval %d-%d', s1, s2)
+    def _read_state(self):
+        '''
+        Overrides parent class
+        '''
+        pass
+
+    def __getstate__(self):
+        '''
+        Overrides parent class
+        '''
+        pass
+
+    def _save_state(self):
+        '''
+        Overrides parent class
+        '''
+        pass
+
+    def _do_interval(self):
         # wipe the tmp dir clean to try to avoid filling the VM disk
         TmpReaper().clean_tmp()
 
+        # choose seedfile
         sf = self.seedfile_set.next_item()
+        logger.info('Selected seedfile: %s', sf.basename)
+
         r = sf.rangefinder.next_item()
-        qf = not first_chunk
+        qf = not self.first_chunk
 
         logger.info(STATE_TIMER)
 
-        for s in xrange(s1, s2):
-            # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
-            touch_watchdog_file()
-            with Iteration(cfg=self.cfg, seednum=s, seedfile=sf, r=r,
-                           workdirbase=self.working_dir, quiet=qf,
-                           uniq_func=self._crash_is_unique,
-                           sf_set=self.seedfile_set,
-                           rf=sf.rangefinder) as iteration:
-                iteration.go()
+        interval_limit = self.current_seed + self.seed_interval
+        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
+        for seednum in xrange(self.current_seed, interval_limit):
+            self._do_iteration(sf, r, qf, seednum)
 
-    def _do_iteration(self):
-        pass
+        self.current_seed = interval_limit
+        self.first_chunk = False
 
-    def _keep_going(self):
-        pass
-
-    def _write_version(self):
-        pass
-
-    def go(self):
-    # campaign.go
-        cfg = self.cfg
-
-        first_chunk = True
-        for s in itertools.count(start=cfg.start_seed, step=cfg.seed_interval):
-            s1 = s
-            s2 = s + cfg.seed_interval
-            self._do_interval(s1, s2, first_chunk)
-            first_chunk = False
+    def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
+        # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
+        touch_watchdog_file()
+        with Iteration(cfg=self.cfg, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
+            uniq_func=self._crash_is_unique,
+            sf_set=self.seedfile_set,
+            rf=seedfile.rangefinder,
+            outdir=self.outdir) as iteration:
+            iteration.go()

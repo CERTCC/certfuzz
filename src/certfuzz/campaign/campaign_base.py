@@ -69,7 +69,9 @@ class CampaignBase(CampaignMeta):
         self.config = cfgobj.config
         self.configdate = cfgobj.configdate
 
-        self.id = self.config['campaign']['id']
+        self.campaign_id = self.config['campaign']['id']
+
+        # TODO: buttonclicker should move to campaign_windows
         self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker')
         if not self.use_buttonclicker:
             self.use_buttonclicker = False
@@ -78,9 +80,6 @@ class CampaignBase(CampaignMeta):
         if not self.current_seed:
             # default to zero
             self.current_seed = 0
-        # if stop_seed is zero or None, we'll keep going forever
-        # see self._keep_going()
-        self.stop_seed = self.config['runoptions'].get('last_iteration')
 
         self.seed_interval = self.config['runoptions'].get('seed_interval')
         if not self.seed_interval:
@@ -91,14 +90,14 @@ class CampaignBase(CampaignMeta):
         else:
             self.outdir_base = os.path.abspath(self.config['directories']['results_dir'])
 
-        self.outdir = os.path.join(self.outdir_base, self.id)
+        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
         logger.debug('outdir=%s', self.outdir)
         self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
 
         self.work_dir_base = os.path.abspath(self.config['directories']['working_dir'])
 
         if not self.cached_state_file:
-            cachefile = 'campaign_%s.pkl' % re.sub('\W', '_', self.id)
+            cachefile = 'campaign_%s.pkl' % re.sub('\W', '_', self.campaign_id)
             self.cached_state_file = os.path.join(self.work_dir_base, cachefile)
 
         self.seed_dir_in = self.config['directories']['seedfile_dir']
@@ -110,7 +109,7 @@ class CampaignBase(CampaignMeta):
         # TODO: consider making this configurable
         self.status_interval = 100
 
-        self.prog = self.config['target']['program']
+        self.program = self.config['target']['program']
         self.cmd_template = self.config['target']['cmdline_template']
         self.crashes_seen = set()
 
@@ -137,8 +136,6 @@ class CampaignBase(CampaignMeta):
         self._set_debugger()
         self._setup_output()
         self._create_seedfile_set()
-        # buttonclicker is os-specific, moved to subclass
-#        self._start_buttonclicker()
         return self
 
     def __exit__(self, etype, value, mytraceback):
@@ -175,8 +172,8 @@ class CampaignBase(CampaignMeta):
         return handled
 
     def _check_prog(self):
-        if not os.path.exists(self.prog):
-            msg = 'Cannot find program "%s" (resolves to "%s")' % (self.prog, os.path.abspath(self.prog))
+        if not os.path.exists(self.program):
+            msg = 'Cannot find program "%s" (resolves to "%s")' % (self.program, os.path.abspath(self.program))
             raise CampaignError(msg)
 
     def _set_fuzzer(self):
@@ -226,9 +223,12 @@ class CampaignBase(CampaignMeta):
             logger.debug('Removed campaign working dir: %s', self.working_dir)
 
     def _create_seedfile_set(self):
+        logger.info('Building seedfile set')
         if self.seedfile_set is None:
-            with SeedfileSet(self.id, self.seed_dir_in, self.seed_dir_local,
-                             self.sf_set_out) as sfset:
+            with SeedfileSet(campaign_id=self.campaign_id,
+                             originpath=self.seed_dir_in,
+                             localpath=self.seed_dir_local,
+                             outputpath=self.sf_set_out) as sfset:
                 self.seedfile_set = sfset
 
     def __setstate__(self, state):
@@ -236,7 +236,7 @@ class CampaignBase(CampaignMeta):
         state['crashes_seen'] = set(state['crashes_seen'])
 
         # reconstitute the seedfile set
-        with SeedfileSet(state['id'], state['seed_dir_in'], state['seed_dir_local'],
+        with SeedfileSet(state['campaign_id'], state['seed_dir_in'], state['seed_dir_local'],
                          state['sf_set_out']) as sfset:
             new_sfset = sfset
 
@@ -307,14 +307,13 @@ class CampaignBase(CampaignMeta):
         '''
         if not crash_id in self.crashes_seen:
             self.crashes_seen.add(crash_id)
+            logger.debug("%s did not exist in cache, crash is unique", crash_id)
             return True
+        logger.debug('%s was found, not unique', crash_id)
         return False
 
     def _keep_going(self):
-        if self.stop_seed:
-            return self.current_seed < self.stop_seed
-        else:
-            return True
+        return CampaignMeta._keep_going(self)
 
     def _do_interval(self):
         # choose seedfile
@@ -327,10 +326,7 @@ class CampaignBase(CampaignMeta):
             # cache our current state
             self._save_state()
 
-        # don't overshoot stop_seed
         interval_limit = self.current_seed + self.seed_interval
-        if self.stop_seed:
-            interval_limit = min(interval_limit, self.stop_seed)
 
         # start an iteration interval
         # note that range does not include interval_limit
@@ -344,15 +340,14 @@ class CampaignBase(CampaignMeta):
         self.current_seed = interval_limit
 
     def _do_iteration(self, sf, rng_seed, seednum):
-        iter_args = (sf, rng_seed, seednum, self.config, self.fuzzer,
-                     self.runner, self.debugger_module, self.dbg_class,
-                     self.keep_heisenbugs, self.keep_duplicates,
-                     self.cmd_template, self._crash_is_unique,
-                     self.working_dir, self.outdir, self.debug)
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
         # newly created Iteration()
-        with Iteration(*iter_args) as iteration:
+        with Iteration(sf, rng_seed, seednum, self.config, self.fuzzer,
+                     self.runner, self.debugger_module, self.dbg_class,
+                     self.keep_heisenbugs, self.keep_duplicates,
+                     self.cmd_template, self._crash_is_unique,
+                     self.working_dir, self.outdir, self.debug) as iteration:
             try:
                 iteration.go()
             except FuzzerExhaustedError:

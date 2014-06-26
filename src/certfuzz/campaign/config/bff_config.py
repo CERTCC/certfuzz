@@ -13,7 +13,6 @@ import os
 import re
 import shlex
 import shutil
-import subprocess
 
 from certfuzz.fuzztools import filetools
 
@@ -114,12 +113,8 @@ class ConfigHelper:
         self.seedfile_origin_dir = os.path.expanduser(self.cfg.get('directories', 'seedfile_origin_dir'))
         self.debugger_template_dir = os.path.expanduser(self.cfg.get('directories', 'debugger_template_dir'))
         self.local_dir = os.path.expanduser(self.cfg.get('directories', 'local_dir'))
-        self.cached_objects_dir = os.path.expanduser(self.cfg.get('directories', 'cached_objects_dir'))
-        self.seedfile_local_dir = os.path.expanduser(self.cfg.get('directories', 'seedfile_local_dir'))
         self.output_dir = os.path.expanduser(self.cfg.get('directories', 'output_dir'))
-        self.seedfile_output_dir = os.path.expanduser(self.cfg.get('directories', 'seedfile_output_dir'))
-        self.crashers_dir = os.path.expanduser(self.cfg.get('directories', 'crashers_dir'))
-        self.testscase_tmp_dir = os.path.expanduser(self.cfg.get('directories', 'temp_working_dir'))
+
         self.watchdogfile = os.path.expanduser(self.cfg.get('directories', 'watchdog_file'))
 
         # derived properties
@@ -132,10 +127,11 @@ class ConfigHelper:
 
         self.tmpdir = None
 
-        self.cached_config_file = os.path.join(self.cached_objects_dir, CACHED_CONFIG_OBJECT_FILE)
-        self.cached_seedrange_file = os.path.join(self.cached_objects_dir, CACHED_SEEDRANGE_OBJECT_FILE)
-        self.cached_rangefinder_file = os.path.join(self.cached_objects_dir, CACHED_RANGEFINDER_OBJECT_FILE)
-        self.cached_seedfile_set = os.path.join(self.cached_objects_dir, CACHED_SEEDFILESET_OBJECT_FILE)
+        # derived cached paths
+#        self.cached_config_file = os.path.join(self.local_dir, CACHED_CONFIG_OBJECT_FILE)
+#        self.cached_seedrange_file = os.path.join(self.local_dir, CACHED_SEEDRANGE_OBJECT_FILE)
+#        self.cached_rangefinder_file = os.path.join(self.local_dir, CACHED_RANGEFINDER_OBJECT_FILE)
+#        self.cached_seedfile_set = os.path.join(self.local_dir, CACHED_SEEDFILESET_OBJECT_FILE)
 
     def get_command(self, filepath):
         return ' '.join(self.get_command_list(filepath))
@@ -168,36 +164,6 @@ class ConfigHelper:
         '''
         return os.path.join(self.full_path_local_fuzz_dir(seedfile), seedfile)
 
-    def program_is_script(self):
-        '''
-        @rtype: boolean
-        @return: True if self.program is a file type of "text" as determined by check_program_file_type().
-        '''
-        return self.check_program_file_type('text')
-
-    def check_program_file_type(self, string):
-        '''
-        @rtype: boolean
-        Runs the system "file" command on self.program
-        @return: True if <string> appears in the output.
-        '''
-        file_loc = subprocess.Popen("which %s" % self.program, stdout=subprocess.PIPE, shell=True).stdout.read().strip()
-        # maybe it's not on the path, but it still exists
-        if not file_loc:
-            if os.path.exists(self.program):
-                file_loc = self.program
-
-        # we still can't find it, so give give up
-        if not os.path.exists(file_loc):
-            return False
-
-        # get the 'file' results
-        ftype = subprocess.Popen("file -b -L %s" % file_loc, stdout=subprocess.PIPE, shell=True).stdout.read()
-        if string in ftype:
-            return True
-        else:
-            return False
-
     def get_minimized_file(self, outfile):
         '''
         @rtype: string
@@ -227,13 +193,16 @@ class ConfigHelper:
 
         return files
 
+
     def create_tmpdir(self):
+        # TODO: this should become part of campaign object
         if not self.tmpdir:
             self.tmpdir = filetools.mkdtemp(self.testscase_tmp_dir)
             logger.debug("Created temp dir %s", self.tmpdir)
         assert os.path.isdir(self.tmpdir)
 
     def clean_tmpdir(self):
+        # TODO: this should become part of campaign object
         if self.tmpdir is None:
             return
 
@@ -245,6 +214,7 @@ class ConfigHelper:
         self.create_tmpdir()
 
     def get_testcase_outfile(self, seedfile, s1):
+        # TODO: this should become part of campaign object
         '''
         @rtype: string
         @return: the path to the output file for this seed: <self.fullpathoriginal>.<s1>

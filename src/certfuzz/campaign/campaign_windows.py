@@ -38,11 +38,11 @@ class WindowsCampaign(CampaignBase):
         return CampaignBase.__exit__(self, etype, value, mytraceback)
 
     def _cache_app(self):
-        logger.debug('Caching application %s and determining if we need to watch the CPU...', self.prog)
-        targetdir = os.path.dirname(self.prog)
+        logger.debug('Caching application %s and determining if we need to watch the CPU...', self.program)
+        targetdir = os.path.dirname(self.program)
         # Use overriden Popen that uses a job object to make sure that
         # child processes are killed
-        p = Popen(self.prog, cwd=targetdir)
+        p = Popen(self.program, cwd=targetdir)
         runtimeout = self.config['runner']['runtimeout']
         logger.debug('...Timer: %f', runtimeout)
         t = Timer(runtimeout, self.kill, args=[p])
