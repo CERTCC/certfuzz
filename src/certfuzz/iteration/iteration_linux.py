@@ -19,7 +19,7 @@ from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.file_handlers import seedfile_set
 from certfuzz.fuzztools import bff_helper as z, filetools
 from certfuzz.fuzztools.state_timer import STATE_TIMER
-from certfuzz.fuzztools.zzuf import Zzuf
+from certfuzz.fuzztools.zzuf import Zzuf, ZzufTestCase
 from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.minimizer import MinimizerError, UnixMinimizer as Minimizer
 
@@ -145,14 +145,14 @@ class Iteration(IterationBase3):
         logger.info('Generating testcase for %s', zzuf_log.line)
         # a true crash
         zzuf_range = zzuf_log.range
-        # create the temp dir for the results
-        self.cfg.create_tmpdir()
-        outfile = self.cfg.get_testcase_outfile(self.seedfile.path, self.s1)
-        logger.debug('Output file is %s', outfile)
-        self.zzuf.generate_test_case(self.seedfile.path, self.s1, zzuf_range, outfile)
+
+        with ZzufTestCase(seedfile=self.seedfile, seed=self.s1,
+                           range=zzuf_range,
+                           working_dir=self.working_dir) as testcase:
+            testcase.generate()
 
         # Do internal verification using GDB / Valgrind / Stderr
-        fuzzedfile = BasicFile(outfile)
+        fuzzedfile = BasicFile(testcase.outfile)
 
         testcase = BffCrash(cfg=self.cfg,
                             seedfile=self.seedfile,
