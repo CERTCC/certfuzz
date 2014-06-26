@@ -147,10 +147,8 @@ class LinuxCampaign(CampaignMeta):
 
     def _start_process_killer(self):
         logger.debug('start process killer')
-        # set up and spawn the process killer
-        killscript = os.path.abspath(os.path.expanduser('~/bff/killproc.sh'))
-        ProcessKiller(killscript, self.cfg.killprocname, self.cfg.killproctimeout).go()
-        logger.debug("Process killer started: %s %s %d", killscript, self.cfg.killprocname, self.cfg.killproctimeout)
+        with ProcessKiller(self.cfg.killprocname, self.cfg.killproctimeout) as pk:
+            pk.go()
 
     def _cache_prg(self):
         logger.debug('cache program')
