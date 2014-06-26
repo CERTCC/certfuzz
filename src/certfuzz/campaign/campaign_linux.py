@@ -24,7 +24,7 @@ from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.iteration.linux import Iteration
+from certfuzz.iteration.iteration_linux import Iteration
 
 
 logger = logging.getLogger(__name__)
