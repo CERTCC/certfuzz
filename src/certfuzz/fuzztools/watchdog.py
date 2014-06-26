@@ -7,7 +7,7 @@ Created on Oct 25, 2010
 import logging
 import platform
 
-from certfuzz.fuzztools import subprocess_helper as subp
+import subprocess
 
 
 system = platform.system()
@@ -41,4 +41,4 @@ class WatchDog:
             logger.warning('WatchDog does not support %s', system)
             return
 
-        subp.run_without_timer(self.cmdline)
+        subprocess.call(self.cmdline, shell=True)

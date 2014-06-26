@@ -3,8 +3,8 @@ Created on Oct 25, 2010
 
 @organization: cert.org
 '''
-from certfuzz.fuzztools import subprocess_helper as subp
 import logging
+import subprocess
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -28,4 +28,4 @@ class ProcessKiller:
         '''
         command = self._get_cmdline()
         logger.debug('Running [%s]', command)
-        subp.run_without_timer(command)
+        subprocess.call(command, shell=True)
