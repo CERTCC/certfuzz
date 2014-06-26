@@ -4,14 +4,12 @@ Created on Feb 12, 2014
 @author: adh
 '''
 
-import itertools
 import logging
 import os
-import shutil
 import sys
-import tempfile
 import time
 import traceback
+import subprocess
 
 from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.campaign.config import bff_config as cfg_helper
@@ -19,17 +17,14 @@ from certfuzz.campaign.errors import CampaignScriptError
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.debuggers.registration import verify_supported_platform
-from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
-from certfuzz.fuzztools import subprocess_helper as subp, filetools
-from certfuzz.fuzztools.filetools import mkdir_p, copy_file
+from certfuzz.fuzztools import subprocess_helper as subp
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.linux import Iteration
-import subprocess
 
 
 logger = logging.getLogger(__name__)
