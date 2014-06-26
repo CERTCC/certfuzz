@@ -85,20 +85,6 @@ class Iteration(IterationBase3):
         self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
         self.rf.record_tries(key=self.r.id, tries=1)
 
-    def _log(self):
-#        # emit a log entry
-        crashcount = z.get_crashcount(self.cfg.crashers_dir)
-#        rate = get_rate(self.s1)
-#        seed_str = "seeds=%d-%d" % (self.s1, self.s2)
-#        range_str = "range=%.6f-%.6f" % (self.r.min, self.r.max)
-#        rate_str = "Rate=(%.2f/s %.1f/m %.0f/h %.0f/d)" % (rate, rate * 60, rate * 3600, rate * 86400)
-#        expected_density = self.seedfile_set.expected_crash_density
-#        xd_str = "expected=%.9f" % expected_density
-#        xr_str = 'expected_rate=%.6f uniq/day' % (expected_density * rate * 86400)
-#        logger.info('Fuzzing %s %s %s %s %s %s crash_count=%d',
-#            self.sf.path, seed_str, range_str, rate_str, xd_str, xr_str, crashcount)
-        logger.info('Fuzzing...crash_count=%d', crashcount)
-
     def _setup_analyzers(self):
         self.analyzer_classes.append(stderr.StdErr)
         self.analyzer_classes.append(cw_gmalloc.CrashWranglerGmalloc)
@@ -141,7 +127,7 @@ class Iteration(IterationBase3):
         self.record_tries()
 
         if not self.zzuf.saw_crash:
-            self._log()
+            logger.debug('No crash seen')
             return
 
         # we must have seen a crash
