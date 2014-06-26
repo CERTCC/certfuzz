@@ -252,5 +252,6 @@ class LinuxCampaign(CampaignBase):
         with Iteration(cfg=self.cfg, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
             uniq_func=self._crash_is_unique,
             sf_set=self.seedfile_set,
-            rf=seedfile.rangefinder) as iteration:
+            rf=seedfile.rangefinder,
+            outdir=self.outdir) as iteration:
             iteration.go()

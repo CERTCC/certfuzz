@@ -41,7 +41,7 @@ def get_uniq_logger(logfile):
 
 class Iteration(IterationBase3):
     def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
-                 sf_set=None, rf=None):
+                 sf_set=None, rf=None, outdir=None):
         IterationBase3.__init__(self, workdirbase)
         self.cfg = cfg
         self.seednum = seednum
@@ -50,6 +50,9 @@ class Iteration(IterationBase3):
         self.quiet_flag = quiet
         self.sf_set = sf_set
         self.rf = rf
+        self.outdir = outdir
+
+        self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
         if uniq_func is None:
             self.uniq_func = lambda _tc_id: True
@@ -161,7 +164,7 @@ class Iteration(IterationBase3):
                             debugger_timeout=self.cfg.debugger_timeout,
                             killprocname=self.cfg.killprocname,
                             backtrace_lines=self.cfg.backtracelevels,
-                            crashers_dir=self.cfg.crashers_dir,
+                            crashers_dir=self.testcase_base_dir,
                             workdir_base=self.working_dir,
                             seednum=self.s1,
                             range=self.r)
