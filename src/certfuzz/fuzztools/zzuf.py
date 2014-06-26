@@ -9,6 +9,7 @@ import logging
 
 from certfuzz.fuzztools import subprocess_helper as subp
 import subprocess
+from subprocess import CalledProcessError
 
 
 logger = logging.getLogger(__name__)
@@ -84,9 +85,12 @@ class Zzuf:
         given parameters.
         '''
         command = self._get_go_fuzz_cmdline()
-        retcode = subprocess.call(command, shell=True)
-        if retcode:
+
+        try:
+            subprocess.check_call(command, shell=True)
+        except CalledProcessError:
             self.saw_crash = True
+
         return self.saw_crash
 
     def generate_test_case(self, seedfile, seed, range, outfile):
