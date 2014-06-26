@@ -44,7 +44,7 @@
 <pkgref id="com.cert.cc.certBff.libcaca.tar.pkg" />
 </choice>
 <choice title="CrashWrangler" id="choice67" description="CrashWrangler is the Apple utility used to identify crashes." starts_selected="true" starts_enabled="true" starts_hidden="false">
-<pkgref id="com.cert.cc.certBff.44947_crashwrangler.pkg" />
+<pkgref id="com.cert.cc.certBff.52854_crashwrangler.pkg" />
 <pkgref id="com.cert.cc.certBff.exc_handler_mavericks.pkg" />
 <pkgref id="com.cert.cc.certBff.exc_handler_mountain_lion.pkg" />
 <pkgref id="com.cert.cc.certBff.exc_handler_lion.pkg" />
@@ -91,7 +91,7 @@
 <item type="file">08hcluster.xml</item>
 <item type="file">09zzuf.xml</item>
 <item type="file">10libcaca.xml</item>
-<item type="file">1144497_crashwrangler.xml</item>
+<item type="file">1152854_crashwrangler.xml</item>
 <item type="file">12exc.xml</item>
 <item type="file">13exc.xml</item>
 <item type="file">14exc.xml</item>
