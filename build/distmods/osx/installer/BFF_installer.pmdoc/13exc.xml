@@ -1,20 +1,18 @@
 <pkgref spec="1.12" uuid="8BFF21A7-9FB7-43A5-889B-CF07DAF2D51E">
-  <config>
-    <identifier>
-    com.cert.cc.certBff.exc_handler_lion.pkg</identifier>
-    <version>1.0</version>
-    <description></description>
-    <post-install type="none" />
-    <requireAuthorization />
-    <installFrom relative="true">
-    crashwrangler/binaries/exc_handler_lion</installFrom>
-    <installTo mod="true">/usr/local/bin</installTo>
-    <flags>
-      <followSymbolicLinks />
-    </flags>
-    <packageStore type="internal"></packageStore>
-    <mod>parent</mod>
-    <mod>installFrom.isRelativeType</mod>
-    <mod>installTo</mod>
-  </config>
+<config>
+<identifier>com.cert.cc.certBff.exc_handler_lion.pkg</identifier>
+<version>1.0</version>
+<description></description>
+<post-install type="none" />
+<requireAuthorization />
+<installFrom relative="true">crashwrangler/binaries/exc_handler_lion</installFrom>
+<installTo mod="true">/usr/local/bin</installTo>
+<flags>
+<followSymbolicLinks />
+</flags>
+<packageStore type="internal"></packageStore>
+<mod>parent</mod>
+<mod>installFrom.isRelativeType</mod>
+<mod>installTo</mod>
+</config>
 </pkgref>

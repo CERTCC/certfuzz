@@ -43,7 +43,7 @@ class WindowsBuild(Build):
 
         # invoke makensis on the file we just made
         logger.debug('invoking makensis on %s', nsifile)
-        subprocess.call(['makensis', nsifile])
+        subprocess.check_call(['makensis', nsifile])
 
         distpath = 'BFF-windows-export'
         if self.build_dir:
