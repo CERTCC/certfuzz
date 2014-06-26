@@ -1,31 +1,28 @@
 <pkgref spec="1.12" uuid="BC48D375-A313-456D-956F-E68762AAD0DB">
-  <config>
-    <identifier>
-    com.cert.cc.certBff.52854_crashwrangler.pkg</identifier>
-    <version>1.0</version>
-    <description></description>
-    <post-install type="none" />
-    <requireAuthorization />
-    <installFrom relative="true" mod="true">
-    52854_crashwrangler.zip</installFrom>
-    <installTo mod="true">
-    /Applications/BFF.app/Contents/Resources/packages</installTo>
-    <flags>
-      <followSymbolicLinks />
-    </flags>
-    <packageStore type="internal"></packageStore>
-    <mod>installTo.path</mod>
-    <mod>installFrom.isRelativeType</mod>
-    <mod>installFrom.path</mod>
-    <mod>parent</mod>
-    <mod>installTo</mod>
-  </config>
-  <contents>
-    <file-list>1144497_crashwrangler-contents.xml</file-list>
-    <filter>/CVS$</filter>
-    <filter>/\.svn$</filter>
-    <filter>/\.cvsignore$</filter>
-    <filter>/\.cvspass$</filter>
-    <filter>/\.DS_Store$</filter>
-  </contents>
+<config>
+<identifier>com.cert.cc.certBff.44497_crashwrangler.pkg</identifier>
+<version>1.0</version>
+<description></description>
+<post-install type="none" />
+<requireAuthorization />
+<installFrom relative="true" mod="true">52854_crashwrangler.zip</installFrom>
+<installTo mod="true">/Applications/BFF.app/Contents/Resources/packages</installTo>
+<flags>
+<followSymbolicLinks />
+</flags>
+<packageStore type="internal"></packageStore>
+<mod>installTo.path</mod>
+<mod>installFrom.isRelativeType</mod>
+<mod>installFrom.path</mod>
+<mod>parent</mod>
+<mod>installTo</mod>
+</config>
+<contents>
+<file-list>1144497_crashwrangler-contents.xml</file-list>
+<filter>/CVS$</filter>
+<filter>/\.svn$</filter>
+<filter>/\.cvsignore$</filter>
+<filter>/\.cvspass$</filter>
+<filter>/\.DS_Store$</filter>
+</contents>
 </pkgref>
