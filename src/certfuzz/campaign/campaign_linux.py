@@ -21,7 +21,7 @@ from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.debuggers.registration import verify_supported_platform
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
-from certfuzz.fuzztools import subprocess_helper as subp
+from certfuzz.fuzztools import subprocess_helper as subp, filetools
 from certfuzz.fuzztools.filetools import mkdir_p, copy_file
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.state_timer import STATE_TIMER
@@ -68,24 +68,36 @@ class LinuxCampaign(CampaignBase):
         logger.info('Reading config from %s', self.config_file)
         self.cfg = cfg_helper.read_config_options(self.config_file)
 
-        self.outdir = self.cfg.output_dir
+        self.campaign_id = self.cfg.campaign_id
         self.current_seed = self.cfg.start_seed
         self.seed_interval = self.cfg.seed_interval
+
+        self.seed_dir_in = self.cfg.seedfile_origin_dir
+
+        self.outdir_base = os.path.abspath(self.cfg.output_dir)
+
+        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
+        logger.debug('outdir=%s', self.outdir)
+        self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
+
+        self.work_dir_base = self.cfg.local_dir
+
+        self.program = self.cfg.program
 
         # flag to indicate whether this is a fresh script start up or not
         self.first_chunk = True
 
         self.seedfile_set = None
+
         self.hashes = []
-        self.workdirbase = self.cfg.testscase_tmp_dir
         self.working_dir = None
+        self.seed_dir_local = None
         self.crashes_seen = set()
 
         # give up if we don't have a debugger
         verify_supported_platform()
 
     def __enter__(self):
-        self._setup_dirs()
         self._start_process_killer()
         self._set_unbuffered_stdout()
 
@@ -126,21 +138,6 @@ class LinuxCampaign(CampaignBase):
                 logger.debug(l.rstrip())
 
         return handled
-
-    def _setup_dirs(self):
-        logger.debug('setup dirs')
-        paths = [self.cfg.local_dir,
-                 self.cfg.cached_objects_dir,
-                 self.cfg.seedfile_local_dir,
-                 self.cfg.seedfile_output_dir,
-                 self.cfg.crashers_dir,
-                 self.cfg.testscase_tmp_dir,
-                 ]
-
-        for d in paths:
-            if not os.path.exists(d):
-                logger.debug('Creating dir %s', d)
-                mkdir_p(d)
 
     def _set_unbuffered_stdout(self):
         '''
@@ -183,14 +180,13 @@ class LinuxCampaign(CampaignBase):
 
     def _check_for_script(self):
         logger.debug('check for script')
-        if check_program_file_type('text', self.cfg.program):
+        if check_program_file_type('text', self.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
 
     def _check_prog(self):
         self._check_for_script()
-        # TODO: we could also use the parent class to check if the prog is present
-#        CampaignBase._check_prog(self)
+        CampaignBase._check_prog(self)
 
     def _set_fuzzer(self):
         '''
@@ -209,23 +205,6 @@ class LinuxCampaign(CampaignBase):
         Overrides parent class
         '''
         pass
-
-    def _setup_workdir(self):
-        '''
-        Overrides parent class
-        '''
-        pass
-
-    def _create_seedfile_set(self):
-        logger.info('Building seedfile set')
-        sfs_logfile = os.path.join(self.cfg.seedfile_output_dir, 'seedfile_set.log')
-        with SeedfileSet(campaign_id=self.cfg.campaign_id,
-                         originpath=self.cfg.seedfile_origin_dir,
-                         localpath=self.cfg.seedfile_local_dir,
-                         outputpath=self.cfg.seedfile_output_dir,
-                         logfile=sfs_logfile,
-                         ) as sfset:
-            self.seedfile_set = sfset
 
     def __setstate__(self):
         '''
