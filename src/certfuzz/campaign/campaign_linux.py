@@ -186,8 +186,6 @@ class LinuxCampaign(CampaignBase):
         if check_program_file_type('text', self.cfg.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
-            #cfg.disable_verification()
-            #time.sleep(10)
 
     def _check_prog(self):
         self._check_for_script()
