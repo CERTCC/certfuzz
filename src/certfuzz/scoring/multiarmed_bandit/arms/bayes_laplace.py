@@ -14,6 +14,11 @@ class BanditArmBayesLaplace(BanditArmBase):
     Uses Laplace's Law of Succession
     '''
 
-    def _update_p(self, successes=0, trials=0):
+    def _update_p(self, *_unused_args):
+        # sometimes successes can get ahead of trials before catching up
+        # later in the same iteration. This line ensures that we never try
+        # to calculate a number that will end up >1.0 (fixes BFF-521)
+        trials = max(self.trials, self.successes)
+
         # see Laplace's Law of Succession
-        self.probability = (self.successes + 1.0) / (self.trials + 2.0)
+        self.probability = (self.successes + 1.0) / (trials + 2.0)
