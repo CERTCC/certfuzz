@@ -225,7 +225,7 @@ class CampaignBase(CampaignMeta):
     def _create_seedfile_set(self):
         logger.info('Building seedfile set')
         if self.seedfile_set is None:
-            with SeedfileSet(campiagn_id=self.campaign_id,
+            with SeedfileSet(campaign_id=self.campaign_id,
                              originpath=self.seed_dir_in,
                              localpath=self.seed_dir_local,
                              outputpath=self.sf_set_out) as sfset:
