@@ -35,7 +35,7 @@ class ProcessKiller:
             handled = True
         elif etype is None:
             logger.debug("Process killer started: %s %s %d", self.script,
-                         self.cfg.killprocname, self.cfg.killproctimeout)
+                         self.killprocname, self.killproctimeout)
 
         return handled
 
