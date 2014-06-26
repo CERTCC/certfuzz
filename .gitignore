@@ -21,3 +21,5 @@ src/windows/COPYING.txt
 build/distmods/osx/installer/bff/
 build/distmods/osx/installer/*.txt
 *.stackdump
+.teeproject
+.externalToolBuilders

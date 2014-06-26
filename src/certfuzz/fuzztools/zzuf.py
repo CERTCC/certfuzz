@@ -8,6 +8,8 @@ Provides wrapper facilities for zzuf
 import logging
 
 from certfuzz.fuzztools import subprocess_helper as subp
+import subprocess
+from subprocess import CalledProcessError
 
 
 logger = logging.getLogger(__name__)
@@ -33,7 +35,7 @@ class ZzufTestCase:
         self.cmdline = 'cat %s | zzuf -s%s -r%s > %s' % (self.seedfile, self.seed, self.range, self.outfile)
 
     def generate(self):
-        subp.run_without_timer(self.cmdline)
+        subprocess.check_call(self.cmdline, shell=True)
 
 
 class Zzuf:
@@ -83,9 +85,12 @@ class Zzuf:
         given parameters.
         '''
         command = self._get_go_fuzz_cmdline()
-        retcode = subp.run_without_timer(command)
-        if retcode:
+
+        try:
+            subprocess.check_call(command, shell=True)
+        except CalledProcessError:
             self.saw_crash = True
+
         return self.saw_crash
 
     def generate_test_case(self, seedfile, seed, range, outfile):

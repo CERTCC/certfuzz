@@ -83,13 +83,6 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
     return p
 
 
-def run_without_timer(command):
-    '''
-    Runs command, returns return code
-    '''
-    return subprocess.call(command, shell=True)
-
-
 def _kill(p, returncode, killprocname):  #@UnusedVariable
     if (on_windows()):
         """_kill function for Win32"""
