@@ -340,15 +340,14 @@ class CampaignBase(CampaignMeta):
         self.current_seed = interval_limit
 
     def _do_iteration(self, sf, rng_seed, seednum):
-        iter_args = (sf, rng_seed, seednum, self.config, self.fuzzer,
-                     self.runner, self.debugger_module, self.dbg_class,
-                     self.keep_heisenbugs, self.keep_duplicates,
-                     self.cmd_template, self._crash_is_unique,
-                     self.working_dir, self.outdir, self.debug)
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
         # newly created Iteration()
-        with Iteration(*iter_args) as iteration:
+        with Iteration(sf, rng_seed, seednum, self.config, self.fuzzer,
+                     self.runner, self.debugger_module, self.dbg_class,
+                     self.keep_heisenbugs, self.keep_duplicates,
+                     self.cmd_template, self._crash_is_unique,
+                     self.working_dir, self.outdir, self.debug) as iteration:
             try:
                 iteration.go()
             except FuzzerExhaustedError:
