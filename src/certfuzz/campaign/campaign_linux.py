@@ -164,16 +164,15 @@ class LinuxCampaign(CampaignMeta):
 
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
-        # set up the watchdog timeout within the VM and restart the daemon
-        watchdog = WatchDog(self.cfg.watchdogfile,
-                            self.cfg.watchdogtimeout)
         # setup our watchdog file toucher
         TWDF.remote_d = self.cfg.remote_dir
         TWDF.wdf = self.cfg.watchdogfile
         TWDF.enable()
-
         touch_watchdog_file()
-        watchdog.go()
+
+        # set up the watchdog timeout within the VM and restart the daemon
+        with WatchDog(self.cfg.watchdogfile, self.cfg.watchdogtimeout) as watchdog:
+            watchdog.go()
 
     def _create_seedfile_set(self):
         logger.info('Building seedfile set')
