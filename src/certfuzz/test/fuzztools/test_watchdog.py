@@ -1,11 +1,11 @@
-from certfuzz.fuzztools.watchdog import WatchDog
-
 '''
 Created on Apr 8, 2011
 
 @organization: cert.org
 '''
 import unittest
+from certfuzz.fuzztools.watchdog import WatchDog
+
 
 class Test(unittest.TestCase):
 
@@ -17,7 +17,8 @@ class Test(unittest.TestCase):
 
     def test_get_watchdog_timeout_cmdline(self):
         expected = 'sudo sh -c "echo file=/tmp/foo > /etc/watchdog.conf && echo change=1234567890 >> /etc/watchdog.conf && /etc/init.d/watchdog restart"'
-        self.assertEqual(self.w._get_cmdline(), expected)
+        self.w._set_cmdline()
+        self.assertEqual(self.w.cmdline, expected)
 
     def test_go(self):
         # cannot test directly, see test_get_watchdog_timeout_cmdline()
