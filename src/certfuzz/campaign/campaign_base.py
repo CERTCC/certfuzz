@@ -88,7 +88,12 @@ class CampaignBase(object):
         # TODO: consider making this configurable
         self.status_interval = 100
 
+        self.seed_interval = None
+        self.current_seed = None
+
         self.outdir_base = None
+        self.outdir = None
+        self.sf_set_out = None
         if result_dir:
             self.outdir_base = os.path.abspath(result_dir)
 
@@ -249,10 +254,13 @@ class CampaignBase(object):
         # now we have some class
         self.dbg_class = registration.debug_class
 
+    @property
+    def _version_file(self):
+        return os.path.join(self.outdir, 'version.txt')
+
     def _write_version(self):
-        version_file = os.path.join(self.outdir, 'version.txt')
         version_string = 'Results produced by %s v%s' % (__name__, __version__)
-        filetools.write_file(version_string, version_file)
+        filetools.write_file(version_string, self._version_file)
 
     def _setup_output(self):
         # construct run output directory
