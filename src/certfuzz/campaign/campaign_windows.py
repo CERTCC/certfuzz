@@ -8,22 +8,74 @@ import sys
 import os
 from threading import Timer
 import platform
+import gc
 
 from certfuzz.campaign.campaign_base import CampaignBase
-
+from certfuzz.campaign.config.config_windows import Config
 from certfuzz.runners.killableprocess import Popen
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.iteration.iteration_windows import Iteration
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
-import gc
 
 logger = logging.getLogger(__name__)
+
+packages = {'fuzzers': 'certfuzz.fuzzers',
+            'runners': 'certfuzz.runners',
+            'debuggers': 'certfuzz.debuggers',
+            }
 
 
 class WindowsCampaign(CampaignBase):
     '''
     Extends CampaignBase to add windows-specific features like ButtonClicker
     '''
+    def __init__(self, config_file, result_dir=None, debug=False):
+        CampaignBase.__init__(self, config_file, result_dir, debug)
+
+        self.gui_app = False
+
+        #read configs
+        logger.info('Reading config from %s', self.config_file)
+        cfgobj = Config(self.config_file)
+        self.config = cfgobj.config
+        self.configdate = cfgobj.configdate
+
+        # pull stuff out of configs
+        self.campaign_id = self.config['campaign']['id']
+
+        self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker')
+        if not self.use_buttonclicker:
+            self.use_buttonclicker = False
+
+        self.current_seed = self.config['runoptions'].get('first_iteration')
+        self.seed_interval = self.config['runoptions'].get('seed_interval')
+
+        if self.outdir_base is None:
+            # it wasn't spec'ed on the command line so use the config
+            self.outdir_base = os.path.abspath(self.config['directories']['results_dir'])
+
+        self.work_dir_base = os.path.abspath(self.config['directories']['working_dir'])
+
+        self.seed_dir_in = self.config['directories']['seedfile_dir']
+
+        self.keep_duplicates = self.config['runoptions']['keep_all_duplicates']
+        self.keep_heisenbugs = self.config['campaign']['keep_heisenbugs']
+        self.should_keep_u_faddr = self.config['runoptions']['keep_unique_faddr']
+
+        self.program = self.config['target']['program']
+        self.cmd_template = self.config['target']['cmdline_template']
+
+        self.fuzzer_module_name = '%s.%s' % (packages['fuzzers'], self.config['fuzzer']['fuzzer'])
+        if self.config['runner']['runner']:
+            self.runner_module_name = '%s.%s' % (packages['runners'], self.config['runner']['runner'])
+        self.debugger_module_name = '%s.%s' % (packages['debuggers'], self.config['debugger']['debugger'])
+
+
+        # must occur after work_dir_base, outdir_base, and campaign_id are set
+        self._common_init()
+
+
+
     def __getstate__(self):
         state = self.__dict__.copy()
 
@@ -161,6 +213,7 @@ class WindowsCampaign(CampaignBase):
         gc.collect()
 
         self.current_seed = interval_limit
+        self.first_chunk = False
 
     def _do_iteration(self, sf, rng_seed, seednum):
         # use a with...as to ensure we always hit

@@ -6,35 +6,34 @@ Created on Feb 9, 2012
 
 import logging
 import os
-import re
 import shutil
 import tempfile
 import traceback
 
 from certfuzz.version import __version__
-from certfuzz.campaign.config.config_windows import Config
 from certfuzz.campaign.errors import CampaignError
 from certfuzz.debuggers import registration
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzztools import filetools
-from certfuzz.fuzztools.object_caching import dump_obj_to_file
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
 
 import cPickle as pickle
 import abc
 import sys
+import re
 
 
 logger = logging.getLogger(__name__)
 
-packages = {'fuzzers': 'certfuzz.fuzzers',
-            'runners': 'certfuzz.runners',
-            'debuggers': 'certfuzz.debuggers',
-            }
-
 
 def import_module_by_name(name, logger=None):
+    '''
+    Imports a module at runtime given the pythonic name of the module
+    e.g., certfuzz.fuzzers.bytemut
+    :param name:
+    :param logger:
+    '''
     if logger:
         logger.debug('Importing module %s', name)
     __import__(name)
@@ -48,8 +47,8 @@ class CampaignBase(object):
     '''
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, config_file, result_dir=None, campaign_cache=None,
-                 debug=False):
+    @abc.abstractmethod
+    def __init__(self, config_file, result_dir=None, debug=False):
         '''
         Typically one would invoke a campaign as follows:
 
@@ -67,58 +66,12 @@ class CampaignBase(object):
         @param debug: boolean indicating whether we are in debug mode
         '''
         logger.debug('initialize %s', self.__class__.__name__)
+        # Read the cfg file
         self.config_file = config_file
-        self.cached_state_file = campaign_cache
+        self.cached_state_file = None
         self.debug = debug
         self._version = __version__
-        self.gui_app = False
 
-        cfgobj = Config(self.config_file)
-        self.config = cfgobj.config
-        self.configdate = cfgobj.configdate
-
-        self.campaign_id = self.config['campaign']['id']
-
-        # TODO: buttonclicker should move to campaign_windows
-        self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker')
-        if not self.use_buttonclicker:
-            self.use_buttonclicker = False
-
-        self.current_seed = self.config['runoptions'].get('first_iteration')
-        if not self.current_seed:
-            # default to zero
-            self.current_seed = 0
-
-        self.seed_interval = self.config['runoptions'].get('seed_interval')
-        if not self.seed_interval:
-            self.seed_interval = 1
-
-        if result_dir:
-            self.outdir_base = os.path.abspath(result_dir)
-        else:
-            self.outdir_base = os.path.abspath(self.config['directories']['results_dir'])
-
-        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
-        logger.debug('outdir=%s', self.outdir)
-        self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
-
-        self.work_dir_base = os.path.abspath(self.config['directories']['working_dir'])
-
-        if not self.cached_state_file:
-            cachefile = 'campaign_%s.pkl' % re.sub('\W', '_', self.campaign_id)
-            self.cached_state_file = os.path.join(self.work_dir_base, cachefile)
-
-        self.seed_dir_in = self.config['directories']['seedfile_dir']
-
-        self.keep_duplicates = self.config['runoptions']['keep_all_duplicates']
-        self.keep_heisenbugs = self.config['campaign']['keep_heisenbugs']
-        self.should_keep_u_faddr = self.config['runoptions']['keep_unique_faddr']
-
-        # TODO: consider making this configurable
-        self.status_interval = 100
-
-        self.program = self.config['target']['program']
-        self.cmd_template = self.config['target']['cmdline_template']
         self.crashes_seen = set()
 
         self.runner_module_name = None
@@ -126,11 +79,34 @@ class CampaignBase(object):
         self.runner = None
 
         self.seedfile_set = None
+        self.working_dir = None
+        self.seed_dir_local = None
 
-        self.fuzzer_module_name = '%s.%s' % (packages['fuzzers'], self.config['fuzzer']['fuzzer'])
-        if self.config['runner']['runner']:
-            self.runner_module_name = '%s.%s' % (packages['runners'], self.config['runner']['runner'])
-        self.debugger_module_name = '%s.%s' % (packages['debuggers'], self.config['debugger']['debugger'])
+        # flag to indicate whether this is a fresh script start up or not
+        self.first_chunk = True
+
+        # TODO: consider making this configurable
+        self.status_interval = 100
+
+        self.outdir_base = None
+        if result_dir:
+            self.outdir_base = os.path.abspath(result_dir)
+
+    def _common_init(self):
+        '''
+        Initializes some additional properties common to all platforms
+        '''
+        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
+        logger.debug('outdir=%s', self.outdir)
+
+        self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
+        if not self.cached_state_file:
+            cachefile = 'campaign_%s.pkl' % re.sub('\W', '_', self.campaign_id)
+            self.cached_state_file = os.path.join(self.work_dir_base, cachefile)
+        if not self.seed_interval:
+            self.seed_interval = 1
+        if not self.current_seed:
+            self.current_seed = 0
 
     @abc.abstractmethod
     def _pre_enter(self):
