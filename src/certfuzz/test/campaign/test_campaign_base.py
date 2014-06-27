@@ -34,12 +34,6 @@ class ImplementedCampaign(CampaignBase):
     def _do_iteration(self):
         pass
 
-    def _handle_errors(self):
-        pass
-
-    def _keep_going(self):
-        return CampaignBase._keep_going(self)
-
     def _post_enter(self):
         pass
 

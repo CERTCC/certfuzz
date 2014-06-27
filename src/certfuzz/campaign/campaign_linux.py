@@ -96,6 +96,9 @@ class LinuxCampaign(CampaignBase):
         check_ppid()
         self._cache_app()
 
+    def _pre_exit(self):
+        pass
+
     def _set_unbuffered_stdout(self):
         '''
         Reopens stdout with a buffersize of 0 (unbuffered)

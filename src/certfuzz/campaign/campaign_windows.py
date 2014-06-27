@@ -38,6 +38,8 @@ class WindowsCampaign(CampaignBase):
         logger.info('Reading config from %s', self.config_file)
         cfgobj = Config(self.config_file)
         self.config = cfgobj.config
+        if self.config is None:
+            raise WindowsCampaignError('Config load failed, exiting')
         self.configdate = cfgobj.configdate
 
         # pull stuff out of configs
@@ -70,11 +72,8 @@ class WindowsCampaign(CampaignBase):
             self.runner_module_name = '%s.%s' % (packages['runners'], self.config['runner']['runner'])
         self.debugger_module_name = '%s.%s' % (packages['debuggers'], self.config['debugger']['debugger'])
 
-
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
-
-
 
     def __getstate__(self):
         state = self.__dict__.copy()

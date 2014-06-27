@@ -176,7 +176,6 @@ class CampaignBase(object):
             handled = True
         return handled
 
-    @abc.abstractmethod
     def _handle_errors(self, etype, value, mytraceback):
         '''
         Callback to handle class-specific errors. If used, it should be
@@ -353,7 +352,6 @@ class CampaignBase(object):
         logger.debug('%s was found, not unique', crash_id)
         return False
 
-    @abc.abstractmethod
     def _keep_going(self):
         '''
         Returns True if a campaign should proceed. False otherwise.
