@@ -92,46 +92,21 @@ class LinuxCampaign(CampaignBase):
         # give up if we don't have a debugger
         verify_supported_platform()
 
-    def __enter__(self):
+    def _pre_enter(self):
         self._start_process_killer()
         self._set_unbuffered_stdout()
 
-        CampaignBase.__enter__(self)
-
+    def _post_enter(self):
         if self.cfg.watchdogtimeout:
             self._setup_watchdog()
-
         check_ppid()
+        self._cache_app()
 
-        return self
-
-    def __exit__(self, etype, value, mytraceback):
-        handled = not etype
-
-        if etype is KeyboardInterrupt:
-            logger.warning('Keyboard interrupt - exiting')
-            handled = True
+    def _handle_errors(self, etype, value, mytraceback):
+        handled = False
         if etype is CampaignScriptError:
             logger.warning("Please configure BFF to fuzz a binary.  Exiting...")
             handled = True
-
-        if handled:
-            self._cleanup_workdir()
-        elif self.debug:
-            # Not handled, debug set
-
-            # leave it behind if we're in debug mode
-            # and there's a problem
-            logger.debug('Skipping cleanup since we are in debug mode.')
-        else:
-            # Not handled, debug not set
-
-            logger.debug('Unhandled exception:')
-            logger.debug('  type: %s', etype)
-            logger.debug('  value: %s', value)
-            for l in traceback.format_exception(etype, value, mytraceback):
-                logger.debug(l.rstrip())
-
         return handled
 
     def _set_unbuffered_stdout(self):
@@ -149,7 +124,7 @@ class LinuxCampaign(CampaignBase):
         with ProcessKiller(self.cfg.killprocname, self.cfg.killproctimeout) as pk:
             pk.go()
 
-    def _cache_prg(self):
+    def _cache_app(self):
         logger.debug('cache program')
         sf = self.seedfile_set.next_item()
 

@@ -41,6 +41,10 @@ class CampaignMeta(object):
         pass
 
     @abc.abstractmethod
+    def _handle_errors(self, etype, value, mytraceback):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def __getstate__(self):
         raise NotImplementedError
 

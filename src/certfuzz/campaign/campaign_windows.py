@@ -20,22 +20,21 @@ class WindowsCampaign(CampaignBase):
     '''
     Extends CampaignBase to add windows-specific features like ButtonClicker
     '''
-    def __enter__(self):
+    def _pre_enter(self):
         if sys.platform == 'win32':
             winver = sys.getwindowsversion().major
             machine = platform.machine()
-            hook_incompat = (winver > 5) or (machine == 'AMD64')
+            hook_incompat = winver > 5 or machine == 'AMD64'
             if hook_incompat and self.runner_module_name == 'certfuzz.runners.winrun':
                 logger.debug('winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
                 self.runner_module_name = None
-        self = CampaignBase.__enter__(self)
+
+    def _post_enter(self):
         self._start_buttonclicker()
         self._cache_app()
-        return self
 
-    def __exit__(self, etype, value, mytraceback):
+    def _pre_exit(self):
         self._stop_buttonclicker()
-        return CampaignBase.__exit__(self, etype, value, mytraceback)
 
     def _cache_app(self):
         logger.debug('Caching application %s and determining if we need to watch the CPU...', self.program)

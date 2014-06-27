@@ -124,10 +124,32 @@ class CampaignBase(CampaignMeta):
             self.runner_module_name = '%s.%s' % (packages['runners'], self.config['runner']['runner'])
         self.debugger_module_name = '%s.%s' % (packages['debuggers'], self.config['debugger']['debugger'])
 
+    def _pre_enter(self):
+        '''
+        Callback for class-specific tasks that happen before
+        CampaignBase.__enter__() does its work.  If self is modified it must
+        return self, otherwise no return value is needed.
+
+        @return: None or self
+        '''
+
+    def _post_enter(self):
+        '''
+        Callback for class-specific tasks that happen after
+        CampaignBase.__enter__() does its work. If self is modified it must
+        return self, otherwise no return value is needed.
+
+        @return: None or self
+        '''
+
     def __enter__(self):
         '''
         Creates a runtime context for the campaign.
         '''
+        _result = self._pre_enter()
+        if _result is not None:
+            self = _result
+
         self._read_state()
         self._check_prog()
         self._setup_workdir()
@@ -136,37 +158,80 @@ class CampaignBase(CampaignMeta):
         self._set_debugger()
         self._setup_output()
         self._create_seedfile_set()
+
+        _result = self._post_enter()
+        if _result is not None:
+            self = _result
+
         return self
+
+    def _handle_common_errors(self, etype, value, mytraceback):
+        '''
+        Handles errors common to this class and all its subclasses
+        :param etype:
+        :param value:
+        '''
+        handled = False
+    #        self._stop_buttonclicker()
+        if etype is KeyboardInterrupt:
+            logger.warning('Keyboard interrupt - exiting')
+            handled = True
+        elif etype is RunnerArchitectureError:
+            logger.error('Unsupported architecture: %s', value)
+            logger.error('Set "verify_architecture=false" in the runner         section of your config to override this check')
+            handled = True
+        elif etype is RunnerPlatformVersionError:
+            logger.error('Unsupported platform: %s', value)
+            handled = True
+        return handled
+
+    def _handle_errors(self, etype, value, mytraceback):
+        '''
+        Callback to handle class-specific errors. If used, it should be
+        overridden by subclasses. Will be called after _handle_common_errors
+
+        :param etype:
+        :param value:
+        :param mytraceback:
+        '''
+
+    def _log_unhandled_exception(self, etype, value, mytraceback):
+        logger.debug('Unhandled exception:')
+        logger.debug('  type: %s', etype)
+        logger.debug('  value: %s', value)
+        for l in traceback.format_exception(etype, value, mytraceback):
+            logger.debug(l.rstrip())
+
+    def _pre_exit(self):
+        '''
+        Implements methods to be completed prior to handling errors in the
+        __exit__ method. No return value.
+        '''
 
     def __exit__(self, etype, value, mytraceback):
         '''
         Handles known exceptions gracefully, attempts to clean up temp files
         before exiting.
         '''
-        handled = False
-#        self._stop_buttonclicker()
-        if etype is KeyboardInterrupt:
-            logger.warning('Keyboard interrupt - exiting')
-            handled = True
-        elif etype is RunnerArchitectureError:
-            logger.error('Unsupported architecture: %s', value)
-            logger.error('Set "verify_architecture=false" in the runner \
-                section of your config to override this check')
-            handled = True
-        elif etype is RunnerPlatformVersionError:
-            logger.error('Unsupported platform: %s', value)
-            handled = True
-        elif etype:
-            logger.debug('Unhandled exception:')
-            logger.debug('  type: %s', etype)
-            logger.debug('  value: %s', value)
-            for l in traceback.format_exception(etype, value, mytraceback):
-                logger.debug(l.rstrip())
-        if self.debug and etype and not handled:
-            # leave it behind if we're in debug mode
-            # and there's a problem
-            logger.debug('Skipping cleanup since we are in debug mode.')
-        else:
+        self._pre_exit()
+
+        # handle common errors
+        handled = self._handle_common_errors(etype, value, mytraceback)
+
+        if etype and not handled:
+            # call the class-specific error handler
+            handled = self._handle_errors(etype, value, mytraceback)
+
+        cleanup = True
+        if etype and not handled:
+            # if you got here, nothing has handled the error
+            # so log it and keep going
+            self._log_unhandled_exception(etype, value, mytraceback)
+            if self.debug:
+                cleanup = False
+                logger.debug('Skipping cleanup since we are in debug mode.')
+
+        if cleanup:
             self._cleanup_workdir()
 
         return handled
