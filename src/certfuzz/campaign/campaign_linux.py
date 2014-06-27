@@ -92,22 +92,18 @@ class LinuxCampaign(CampaignBase):
         # give up if we don't have a debugger
         verify_supported_platform()
 
+        self._check_for_script()
+
     def _pre_enter(self):
         self._start_process_killer()
         self._set_unbuffered_stdout()
+        self._check_for_script()
 
     def _post_enter(self):
         if self.cfg.watchdogtimeout:
             self._setup_watchdog()
         check_ppid()
         self._cache_app()
-
-    def _handle_errors(self, etype, value, mytraceback):
-        handled = False
-        if etype is CampaignScriptError:
-            logger.warning("Please configure BFF to fuzz a binary.  Exiting...")
-            handled = True
-        return handled
 
     def _set_unbuffered_stdout(self):
         '''
@@ -153,10 +149,6 @@ class LinuxCampaign(CampaignBase):
         if check_program_file_type('text', self.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
-
-    def _check_prog(self):
-        self._check_for_script()
-        CampaignBase._check_prog(self)
 
     def _set_fuzzer(self):
         '''
@@ -214,6 +206,9 @@ class LinuxCampaign(CampaignBase):
         logger.info(STATE_TIMER)
 
         interval_limit = self.current_seed + self.seed_interval
+
+        # start an iteration interval
+        # note that range does not include interval_limit
         logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
         for seednum in xrange(self.current_seed, interval_limit):
             self._do_iteration(sf, r, qf, seednum)

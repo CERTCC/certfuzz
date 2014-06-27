@@ -12,6 +12,10 @@ import platform
 from certfuzz.campaign.campaign_base import CampaignBase
 
 from certfuzz.runners.killableprocess import Popen
+from certfuzz.file_handlers.seedfile_set import SeedfileSet
+from certfuzz.iteration.iteration_windows import Iteration
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+import gc
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +24,39 @@ class WindowsCampaign(CampaignBase):
     '''
     Extends CampaignBase to add windows-specific features like ButtonClicker
     '''
+    def __getstate__(self):
+        state = self.__dict__.copy()
+
+        state['crashes_seen'] = list(state['crashes_seen'])
+        if state['seedfile_set']:
+            state['seedfile_set'] = state['seedfile_set'].__getstate__()
+
+        # for attributes that are modules,
+        # we can safely delete them as they will be
+        # reconstituted when we __enter__ a context
+        for key in ['fuzzer_module', 'fuzzer',
+                    'runner_module', 'runner',
+                    'debugger_module', 'dbg_class'
+                    ]:
+            if key in state:
+                del state[key]
+        return state
+
+    def __setstate__(self, state):
+        # turn the list into a set
+        state['crashes_seen'] = set(state['crashes_seen'])
+
+        # reconstitute the seedfile set
+        with SeedfileSet(state['campaign_id'], state['seed_dir_in'], state['seed_dir_local'],
+                         state['sf_set_out']) as sfset:
+            new_sfset = sfset
+
+        new_sfset.__setstate__(state['seedfile_set'])
+        state['seedfile_set'] = new_sfset
+
+        # update yourself
+        self.__dict__.update(state)
+
     def _pre_enter(self):
         if sys.platform == 'win32':
             winver = sys.getwindowsversion().major
@@ -99,3 +136,65 @@ class WindowsCampaign(CampaignBase):
     def _stop_buttonclicker(self):
         if self.use_buttonclicker:
             os.system('taskkill /im buttonclicker.exe')
+
+    def _do_interval(self):
+        # choose seedfile
+        sf = self.seedfile_set.next_item()
+
+        logger.info('Selected seedfile: %s', sf.basename)
+        rng_seed = int(sf.md5, 16)
+
+        if self.current_seed % self.status_interval == 0:
+            # cache our current state
+            self._save_state()
+
+        interval_limit = self.current_seed + self.seed_interval
+
+        # start an iteration interval
+        # note that range does not include interval_limit
+        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
+        for seednum in xrange(self.current_seed, interval_limit):
+            self._do_iteration(sf, rng_seed, seednum)
+
+        del sf
+        # manually collect garbage
+        gc.collect()
+
+        self.current_seed = interval_limit
+
+    def _do_iteration(self, sf, rng_seed, seednum):
+        # use a with...as to ensure we always hit
+        # the __enter__ and __exit__ methods of the
+        # newly created Iteration()
+        with Iteration(sf, rng_seed, seednum, self.config, self.fuzzer,
+                     self.runner, self.debugger_module, self.dbg_class,
+                     self.keep_heisenbugs, self.keep_duplicates,
+                     self.cmd_template, self._crash_is_unique,
+                     self.working_dir, self.outdir, self.debug) as iteration:
+            try:
+                iteration.go()
+            except FuzzerExhaustedError:
+                # Some fuzzers run out of things to do. They should
+                # raise a FuzzerExhaustedError when that happens.
+                logger.info('Done with %s, removing from set', sf.basename)
+                # FIXME
+                # self.seedfile_set.del_item(sf.md5)
+        if not seednum % self.status_interval:
+            logger.info('Iteration: %d Crashes found: %d', self.current_seed,
+                        len(self.crashes_seen))
+            # FIXME
+            # self.seedfile_set.update_csv()
+            logger.info('Seedfile Set Status:')
+            logger.info('FIXME')
+            # for k, score, successes, tries, p in self.seedfile_set.status():
+            #    logger.info('%s %0.6f %d %d %0.6f', k, score, successes,
+            #                tries, p)
+
+    def _set_fuzzer(self):
+        CampaignBase._set_fuzzer(self)
+
+    def _set_runner(self):
+        CampaignBase._set_runner(self)
+
+    def _set_debugger(self):
+        CampaignBase._set_debugger(self)
