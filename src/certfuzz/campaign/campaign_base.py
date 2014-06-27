@@ -27,7 +27,7 @@ import re
 logger = logging.getLogger(__name__)
 
 
-def import_module_by_name(name, logger=None):
+def import_module_by_name(name):
     '''
     Imports a module at runtime given the pythonic name of the module
     e.g., certfuzz.fuzzers.bytemut
@@ -235,19 +235,19 @@ class CampaignBase(object):
 
     @abc.abstractmethod
     def _set_fuzzer(self):
-        self.fuzzer_module = import_module_by_name(self.fuzzer_module_name, logger)
+        self.fuzzer_module = import_module_by_name(self.fuzzer_module_name)
         self.fuzzer = self.fuzzer_module._fuzzer_class
 
     @abc.abstractmethod
     def _set_runner(self):
         if self.runner_module_name:
-            self.runner_module = import_module_by_name(self.runner_module_name, logger)
+            self.runner_module = import_module_by_name(self.runner_module_name)
             self.runner = self.runner_module._runner_class
 
     @abc.abstractmethod
     def _set_debugger(self):
         # this will import the module which registers the debugger
-        self.debugger_module = import_module_by_name(self.debugger_module_name, logger)
+        self.debugger_module = import_module_by_name(self.debugger_module_name)
         # confirm that the registered debugger is compatible
         registration.verify_supported_platform()
         # now we have some class
