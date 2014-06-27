@@ -7,6 +7,7 @@ import logging
 import os.path
 
 import yaml
+from certfuzz.campaign.config.errors import ConfigError
 
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ class Config(object):
         self.configdate = None
 
         self.load()
+        self._verify_load()
         self._set_derived_options()
 
         self.validations = []
@@ -43,6 +45,10 @@ class Config(object):
 
         if self.config:
             self.__dict__.update(self.config)
+
+    def _verify_load(self):
+        if self.config is None:
+            raise ConfigError('Config load failed for {}'.format(self.file))
 
     def validate(self):
         for validation in self.validations:

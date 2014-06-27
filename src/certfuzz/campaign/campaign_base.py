@@ -4,44 +4,51 @@ Created on Feb 9, 2012
 @organization: cert.org
 '''
 
-import gc
 import logging
 import os
-import re
 import shutil
 import tempfile
 import traceback
 
-from certfuzz.campaign.campaign_meta import CampaignMeta, import_module_by_name
 from certfuzz.version import __version__
-from certfuzz.campaign.config.config_windows import Config
 from certfuzz.campaign.errors import CampaignError
 from certfuzz.debuggers import registration
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
-from certfuzz.fuzzers.errors import FuzzerExhaustedError
 from certfuzz.fuzztools import filetools
-from certfuzz.fuzztools.object_caching import dump_obj_to_file
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
 
 import cPickle as pickle
-from certfuzz.iteration.iteration_windows import Iteration
+import abc
+import sys
+import re
 
 
 logger = logging.getLogger(__name__)
 
-packages = {'fuzzers': 'certfuzz.fuzzers',
-            'runners': 'certfuzz.runners',
-            'debuggers': 'certfuzz.debuggers',
-            }
+
+def import_module_by_name(name, logger=None):
+    '''
+    Imports a module at runtime given the pythonic name of the module
+    e.g., certfuzz.fuzzers.bytemut
+    :param name:
+    :param logger:
+    '''
+    if logger:
+        logger.debug('Importing module %s', name)
+    __import__(name)
+    module = sys.modules[name]
+    return module
 
 
-class CampaignBase(CampaignMeta):
+class CampaignBase(object):
     '''
     Provides a fuzzing campaign object.
     '''
-    def __init__(self, config_file, result_dir=None, campaign_cache=None,
-                 debug=False):
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def __init__(self, config_file, result_dir=None, debug=False):
         '''
         Typically one would invoke a campaign as follows:
 
@@ -59,58 +66,12 @@ class CampaignBase(CampaignMeta):
         @param debug: boolean indicating whether we are in debug mode
         '''
         logger.debug('initialize %s', self.__class__.__name__)
+        # Read the cfg file
         self.config_file = config_file
-        self.cached_state_file = campaign_cache
+        self.cached_state_file = None
         self.debug = debug
         self._version = __version__
-        self.gui_app = False
 
-        cfgobj = Config(self.config_file)
-        self.config = cfgobj.config
-        self.configdate = cfgobj.configdate
-
-        self.campaign_id = self.config['campaign']['id']
-
-        # TODO: buttonclicker should move to campaign_windows
-        self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker')
-        if not self.use_buttonclicker:
-            self.use_buttonclicker = False
-
-        self.current_seed = self.config['runoptions'].get('first_iteration')
-        if not self.current_seed:
-            # default to zero
-            self.current_seed = 0
-
-        self.seed_interval = self.config['runoptions'].get('seed_interval')
-        if not self.seed_interval:
-            self.seed_interval = 1
-
-        if result_dir:
-            self.outdir_base = os.path.abspath(result_dir)
-        else:
-            self.outdir_base = os.path.abspath(self.config['directories']['results_dir'])
-
-        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
-        logger.debug('outdir=%s', self.outdir)
-        self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
-
-        self.work_dir_base = os.path.abspath(self.config['directories']['working_dir'])
-
-        if not self.cached_state_file:
-            cachefile = 'campaign_%s.pkl' % re.sub('\W', '_', self.campaign_id)
-            self.cached_state_file = os.path.join(self.work_dir_base, cachefile)
-
-        self.seed_dir_in = self.config['directories']['seedfile_dir']
-
-        self.keep_duplicates = self.config['runoptions']['keep_all_duplicates']
-        self.keep_heisenbugs = self.config['campaign']['keep_heisenbugs']
-        self.should_keep_u_faddr = self.config['runoptions']['keep_unique_faddr']
-
-        # TODO: consider making this configurable
-        self.status_interval = 100
-
-        self.program = self.config['target']['program']
-        self.cmd_template = self.config['target']['cmdline_template']
         self.crashes_seen = set()
 
         self.runner_module_name = None
@@ -118,16 +79,68 @@ class CampaignBase(CampaignMeta):
         self.runner = None
 
         self.seedfile_set = None
+        self.working_dir = None
+        self.seed_dir_local = None
 
-        self.fuzzer_module_name = '%s.%s' % (packages['fuzzers'], self.config['fuzzer']['fuzzer'])
-        if self.config['runner']['runner']:
-            self.runner_module_name = '%s.%s' % (packages['runners'], self.config['runner']['runner'])
-        self.debugger_module_name = '%s.%s' % (packages['debuggers'], self.config['debugger']['debugger'])
+        # flag to indicate whether this is a fresh script start up or not
+        self.first_chunk = True
+
+        # TODO: consider making this configurable
+        self.status_interval = 100
+
+        self.seed_interval = None
+        self.current_seed = None
+
+        self.outdir_base = None
+        self.outdir = None
+        self.sf_set_out = None
+        if result_dir:
+            self.outdir_base = os.path.abspath(result_dir)
+
+    def _common_init(self):
+        '''
+        Initializes some additional properties common to all platforms
+        '''
+        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
+        logger.debug('outdir=%s', self.outdir)
+
+        self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
+        if not self.cached_state_file:
+            cachefile = 'campaign_%s.pkl' % re.sub('\W', '_', self.campaign_id)
+            self.cached_state_file = os.path.join(self.work_dir_base, cachefile)
+        if not self.seed_interval:
+            self.seed_interval = 1
+        if not self.current_seed:
+            self.current_seed = 0
+
+    @abc.abstractmethod
+    def _pre_enter(self):
+        '''
+        Callback for class-specific tasks that happen before
+        CampaignBase.__enter__() does its work.  If self is modified it must
+        return self, otherwise no return value is needed.
+
+        @return: None or self
+        '''
+
+    @abc.abstractmethod
+    def _post_enter(self):
+        '''
+        Callback for class-specific tasks that happen after
+        CampaignBase.__enter__() does its work. If self is modified it must
+        return self, otherwise no return value is needed.
+
+        @return: None or self
+        '''
 
     def __enter__(self):
         '''
         Creates a runtime context for the campaign.
         '''
+        _result = self._pre_enter()
+        if _result is not None:
+            self = _result
+
         self._read_state()
         self._check_prog()
         self._setup_workdir()
@@ -136,37 +149,81 @@ class CampaignBase(CampaignMeta):
         self._set_debugger()
         self._setup_output()
         self._create_seedfile_set()
+
+        _result = self._post_enter()
+        if _result is not None:
+            self = _result
+
         return self
+
+    def _handle_common_errors(self, etype, value, mytraceback):
+        '''
+        Handles errors common to this class and all its subclasses
+        :param etype:
+        :param value:
+        '''
+        handled = False
+    #        self._stop_buttonclicker()
+        if etype is KeyboardInterrupt:
+            logger.warning('Keyboard interrupt - exiting')
+            handled = True
+        elif etype is RunnerArchitectureError:
+            logger.error('Unsupported architecture: %s', value)
+            logger.error('Set "verify_architecture=false" in the runner         section of your config to override this check')
+            handled = True
+        elif etype is RunnerPlatformVersionError:
+            logger.error('Unsupported platform: %s', value)
+            handled = True
+        return handled
+
+    def _handle_errors(self, etype, value, mytraceback):
+        '''
+        Callback to handle class-specific errors. If used, it should be
+        overridden by subclasses. Will be called after _handle_common_errors
+
+        :param etype:
+        :param value:
+        :param mytraceback:
+        '''
+
+    def _log_unhandled_exception(self, etype, value, mytraceback):
+        logger.debug('Unhandled exception:')
+        logger.debug('  type: %s', etype)
+        logger.debug('  value: %s', value)
+        for l in traceback.format_exception(etype, value, mytraceback):
+            logger.debug(l.rstrip())
+
+    @abc.abstractmethod
+    def _pre_exit(self):
+        '''
+        Implements methods to be completed prior to handling errors in the
+        __exit__ method. No return value.
+        '''
 
     def __exit__(self, etype, value, mytraceback):
         '''
         Handles known exceptions gracefully, attempts to clean up temp files
         before exiting.
         '''
-        handled = False
-#        self._stop_buttonclicker()
-        if etype is KeyboardInterrupt:
-            logger.warning('Keyboard interrupt - exiting')
-            handled = True
-        elif etype is RunnerArchitectureError:
-            logger.error('Unsupported architecture: %s', value)
-            logger.error('Set "verify_architecture=false" in the runner \
-                section of your config to override this check')
-            handled = True
-        elif etype is RunnerPlatformVersionError:
-            logger.error('Unsupported platform: %s', value)
-            handled = True
-        elif etype:
-            logger.debug('Unhandled exception:')
-            logger.debug('  type: %s', etype)
-            logger.debug('  value: %s', value)
-            for l in traceback.format_exception(etype, value, mytraceback):
-                logger.debug(l.rstrip())
-        if self.debug and etype and not handled:
-            # leave it behind if we're in debug mode
-            # and there's a problem
-            logger.debug('Skipping cleanup since we are in debug mode.')
-        else:
+        self._pre_exit()
+
+        # handle common errors
+        handled = self._handle_common_errors(etype, value, mytraceback)
+
+        if etype and not handled:
+            # call the class-specific error handler
+            handled = self._handle_errors(etype, value, mytraceback)
+
+        cleanup = True
+        if etype and not handled:
+            # if you got here, nothing has handled the error
+            # so log it and keep going
+            self._log_unhandled_exception(etype, value, mytraceback)
+            if self.debug:
+                cleanup = False
+                logger.debug('Skipping cleanup since we are in debug mode.')
+
+        if cleanup:
             self._cleanup_workdir()
 
         return handled
@@ -176,15 +233,18 @@ class CampaignBase(CampaignMeta):
             msg = 'Cannot find program "%s" (resolves to "%s")' % (self.program, os.path.abspath(self.program))
             raise CampaignError(msg)
 
+    @abc.abstractmethod
     def _set_fuzzer(self):
         self.fuzzer_module = import_module_by_name(self.fuzzer_module_name, logger)
         self.fuzzer = self.fuzzer_module._fuzzer_class
 
+    @abc.abstractmethod
     def _set_runner(self):
         if self.runner_module_name:
             self.runner_module = import_module_by_name(self.runner_module_name, logger)
             self.runner = self.runner_module._runner_class
 
+    @abc.abstractmethod
     def _set_debugger(self):
         # this will import the module which registers the debugger
         self.debugger_module = import_module_by_name(self.debugger_module_name, logger)
@@ -193,8 +253,13 @@ class CampaignBase(CampaignMeta):
         # now we have some class
         self.dbg_class = registration.debug_class
 
+    @property
+    def _version_file(self):
+        return os.path.join(self.outdir, 'version.txt')
+
     def _write_version(self):
-        CampaignMeta._write_version(self)
+        version_string = 'Results produced by %s v%s' % (__name__, __version__)
+        filetools.write_file(version_string, self._version_file)
 
     def _setup_output(self):
         # construct run output directory
@@ -231,20 +296,13 @@ class CampaignBase(CampaignMeta):
                              outputpath=self.sf_set_out) as sfset:
                 self.seedfile_set = sfset
 
-    def __setstate__(self, state):
-        # turn the list into a set
-        state['crashes_seen'] = set(state['crashes_seen'])
+    @abc.abstractmethod
+    def __getstate__(self):
+        raise NotImplementedError
 
-        # reconstitute the seedfile set
-        with SeedfileSet(state['campaign_id'], state['seed_dir_in'], state['seed_dir_local'],
-                         state['sf_set_out']) as sfset:
-            new_sfset = sfset
-
-        new_sfset.__setstate__(state['seedfile_set'])
-        state['seedfile_set'] = new_sfset
-
-        # update yourself
-        self.__dict__.update(state)
+    @abc.abstractmethod
+    def __setstate__(self):
+        raise NotImplementedError
 
     def _read_state(self, cache_file=None):
         if not cache_file:
@@ -273,24 +331,6 @@ class CampaignBase(CampaignMeta):
         else:
             logger.warning('Unable to reload campaign from %s, will use new campaign instead', cache_file)
 
-    def __getstate__(self):
-        state = self.__dict__.copy()
-
-        state['crashes_seen'] = list(state['crashes_seen'])
-        if state['seedfile_set']:
-            state['seedfile_set'] = state['seedfile_set'].__getstate__()
-
-        # for attributes that are modules,
-        # we can safely delete them as they will be
-        # reconstituted when we __enter__ a context
-        for key in ['fuzzer_module', 'fuzzer',
-                    'runner_module', 'runner',
-                    'debugger_module', 'dbg_class'
-                    ]:
-            if key in state:
-                del state[key]
-        return state
-
     def _save_state(self, cachefile=None):
         if not cachefile:
             cachefile = self.cached_state_file
@@ -313,59 +353,22 @@ class CampaignBase(CampaignMeta):
         return False
 
     def _keep_going(self):
-        return CampaignMeta._keep_going(self)
+        '''
+        Returns True if a campaign should proceed. False otherwise.
+        '''
+        return True
 
+    @abc.abstractmethod
     def _do_interval(self):
-        # choose seedfile
-        sf = self.seedfile_set.next_item()
+        '''
+        Implements a loop over a set of iterations
+        '''
 
-        logger.info('Selected seedfile: %s', sf.basename)
-        rng_seed = int(sf.md5, 16)
-
-        if self.current_seed % self.status_interval == 0:
-            # cache our current state
-            self._save_state()
-
-        interval_limit = self.current_seed + self.seed_interval
-
-        # start an iteration interval
-        # note that range does not include interval_limit
-        for seednum in xrange(self.current_seed, interval_limit):
-            self._do_iteration(sf, rng_seed, seednum)
-
-        del sf
-        # manually collect garbage
-        gc.collect()
-
-        self.current_seed = interval_limit
-
-    def _do_iteration(self, sf, rng_seed, seednum):
-        # use a with...as to ensure we always hit
-        # the __enter__ and __exit__ methods of the
-        # newly created Iteration()
-        with Iteration(sf, rng_seed, seednum, self.config, self.fuzzer,
-                     self.runner, self.debugger_module, self.dbg_class,
-                     self.keep_heisenbugs, self.keep_duplicates,
-                     self.cmd_template, self._crash_is_unique,
-                     self.working_dir, self.outdir, self.debug) as iteration:
-            try:
-                iteration.go()
-            except FuzzerExhaustedError:
-                # Some fuzzers run out of things to do. They should
-                # raise a FuzzerExhaustedError when that happens.
-                logger.info('Done with %s, removing from set', sf.basename)
-                # FIXME
-                # self.seedfile_set.del_item(sf.md5)
-        if not seednum % self.status_interval:
-            logger.info('Iteration: %d Crashes found: %d', self.current_seed,
-                        len(self.crashes_seen))
-            # FIXME
-            # self.seedfile_set.update_csv()
-            logger.info('Seedfile Set Status:')
-            logger.info('FIXME')
-            # for k, score, successes, tries, p in self.seedfile_set.status():
-            #    logger.info('%s %0.6f %d %d %0.6f', k, score, successes,
-            #                tries, p)
+    @abc.abstractmethod
+    def _do_iteration(self):
+        '''
+        Implements a single iteration of the fuzzing process.
+        '''
 
     def go(self):
         '''

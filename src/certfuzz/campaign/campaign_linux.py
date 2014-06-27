@@ -8,7 +8,6 @@ import logging
 import os
 import sys
 import time
-import traceback
 import subprocess
 
 from certfuzz.campaign.campaign_base import CampaignBase
@@ -55,84 +54,50 @@ def check_program_file_type(string, program):
 
 
 class LinuxCampaign(CampaignBase):
+    '''
+    Extends CampaignBase to add linux-specific features.
+    '''
     def __init__(self, config_file=None, result_dir=None, debug=False):
-        # Read the cfg file
-        self.config_file = config_file
-        self.result_dir = result_dir
-        self.debug = debug
+        CampaignBase.__init__(self, config_file, result_dir, debug)
+
+        # read configs
         logger.info('Reading config from %s', self.config_file)
-        self.cfg = cfg_helper.read_config_options(self.config_file)
+        self.config = cfg_helper.read_config_options(self.config_file)
 
-        self.campaign_id = self.cfg.campaign_id
-        self.current_seed = self.cfg.start_seed
-        self.seed_interval = self.cfg.seed_interval
+        # pull stuff out of configs
+        self.campaign_id = self.config.campaign_id
+        self.current_seed = self.config.start_seed
+        self.seed_interval = self.config.seed_interval
+        self.seed_dir_in = self.config.seedfile_origin_dir
 
-        self.seed_dir_in = self.cfg.seedfile_origin_dir
+        if self.outdir_base is None:
+            # it wasn't spec'ed on the command line so use the config
+            self.outdir_base = os.path.abspath(self.config.output_dir)
 
-        self.outdir_base = os.path.abspath(self.cfg.output_dir)
+        self.work_dir_base = self.config.local_dir
+        self.program = self.config.program
 
-        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
-        logger.debug('outdir=%s', self.outdir)
-        self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
-
-        self.work_dir_base = self.cfg.local_dir
-
-        self.program = self.cfg.program
-
-        # flag to indicate whether this is a fresh script start up or not
-        self.first_chunk = True
-
-        self.seedfile_set = None
-
-        self.hashes = []
-        self.working_dir = None
-        self.seed_dir_local = None
-        self.crashes_seen = set()
+        # must occur after work_dir_base, outdir_base, and campaign_id are set
+        self._common_init()
 
         # give up if we don't have a debugger
         verify_supported_platform()
+        # give up if prog is a script
+        self._check_for_script()
 
-    def __enter__(self):
+    def _pre_enter(self):
         self._start_process_killer()
         self._set_unbuffered_stdout()
+        self._check_for_script()
 
-        CampaignBase.__enter__(self)
-
-        if self.cfg.watchdogtimeout:
+    def _post_enter(self):
+        if self.config.watchdogtimeout:
             self._setup_watchdog()
-
         check_ppid()
+        self._cache_app()
 
-        return self
-
-    def __exit__(self, etype, value, mytraceback):
-        handled = not etype
-
-        if etype is KeyboardInterrupt:
-            logger.warning('Keyboard interrupt - exiting')
-            handled = True
-        if etype is CampaignScriptError:
-            logger.warning("Please configure BFF to fuzz a binary.  Exiting...")
-            handled = True
-
-        if handled:
-            self._cleanup_workdir()
-        elif self.debug:
-            # Not handled, debug set
-
-            # leave it behind if we're in debug mode
-            # and there's a problem
-            logger.debug('Skipping cleanup since we are in debug mode.')
-        else:
-            # Not handled, debug not set
-
-            logger.debug('Unhandled exception:')
-            logger.debug('  type: %s', etype)
-            logger.debug('  value: %s', value)
-            for l in traceback.format_exception(etype, value, mytraceback):
-                logger.debug(l.rstrip())
-
-        return handled
+    def _pre_exit(self):
+        pass
 
     def _set_unbuffered_stdout(self):
         '''
@@ -146,17 +111,17 @@ class LinuxCampaign(CampaignBase):
 
     def _start_process_killer(self):
         logger.debug('start process killer')
-        with ProcessKiller(self.cfg.killprocname, self.cfg.killproctimeout) as pk:
+        with ProcessKiller(self.config.killprocname, self.config.killproctimeout) as pk:
             pk.go()
 
-    def _cache_prg(self):
+    def _cache_app(self):
         logger.debug('cache program')
         sf = self.seedfile_set.next_item()
 
         # Run the program once to cache it into memory
-        fullpathorig = self.cfg.full_path_original(sf.path)
-        cmdargs = self.cfg.get_command_list(fullpathorig)
-        subp.run_with_timer(cmdargs, self.cfg.progtimeout * 8, self.cfg.killprocname, use_shell=True)
+        fullpathorig = self.config.full_path_original(sf.path)
+        cmdargs = self.config.get_command_list(fullpathorig)
+        subp.run_with_timer(cmdargs, self.config.progtimeout * 8, self.config.killprocname, use_shell=True)
 
         # Give target time to die
         time.sleep(1)
@@ -164,13 +129,13 @@ class LinuxCampaign(CampaignBase):
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
         # setup our watchdog file toucher
-        TWDF.remote_d = self.cfg.remote_dir
-        TWDF.wdf = self.cfg.watchdogfile
+        TWDF.remote_d = self.config.remote_dir
+        TWDF.wdf = self.config.watchdogfile
         TWDF.enable()
         touch_watchdog_file()
 
         # set up the watchdog timeout within the VM and restart the daemon
-        with WatchDog(self.cfg.watchdogfile, self.cfg.watchdogtimeout) as watchdog:
+        with WatchDog(self.config.watchdogfile, self.config.watchdogtimeout) as watchdog:
             watchdog.go()
 
     def _check_for_script(self):
@@ -178,10 +143,6 @@ class LinuxCampaign(CampaignBase):
         if check_program_file_type('text', self.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
-
-    def _check_prog(self):
-        self._check_for_script()
-        CampaignBase._check_prog(self)
 
     def _set_fuzzer(self):
         '''
@@ -239,6 +200,9 @@ class LinuxCampaign(CampaignBase):
         logger.info(STATE_TIMER)
 
         interval_limit = self.current_seed + self.seed_interval
+
+        # start an iteration interval
+        # note that range does not include interval_limit
         logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
         for seednum in xrange(self.current_seed, interval_limit):
             self._do_iteration(sf, r, qf, seednum)
@@ -249,7 +213,7 @@ class LinuxCampaign(CampaignBase):
     def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
         # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
         touch_watchdog_file()
-        with Iteration(cfg=self.cfg, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
+        with Iteration(cfg=self.config, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
             uniq_func=self._crash_is_unique,
             sf_set=self.seedfile_set,
             rf=seedfile.rangefinder,
