@@ -38,8 +38,6 @@ class WindowsCampaign(CampaignBase):
         logger.info('Reading config from %s', self.config_file)
         cfgobj = Config(self.config_file)
         self.config = cfgobj.config
-        if self.config is None:
-            raise WindowsCampaignError('Config load failed, exiting')
         self.configdate = cfgobj.configdate
 
         # pull stuff out of configs
