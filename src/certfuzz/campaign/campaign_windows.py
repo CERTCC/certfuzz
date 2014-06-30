@@ -3,26 +3,22 @@ Created on Jan 10, 2014
 
 @author: adh
 '''
-import logging
-import sys
-import os
-from threading import Timer
-import platform
 import gc
+import logging
+import os
+import platform
+import sys
+from threading import Timer
 
 from certfuzz.campaign.campaign_base import CampaignBase
-from certfuzz.campaign.config.config_windows import Config
-from certfuzz.runners.killableprocess import Popen
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
-from certfuzz.iteration.iteration_windows import Iteration
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
+from certfuzz.runners.killableprocess import Popen
+from certfuzz.campaign.config.config_windows import Config
+from certfuzz.iteration.iteration_windows import Iteration
+
 
 logger = logging.getLogger(__name__)
-
-packages = {'fuzzers': 'certfuzz.fuzzers',
-            'runners': 'certfuzz.runners',
-            'debuggers': 'certfuzz.debuggers',
-            }
 
 
 class WindowsCampaign(CampaignBase):
@@ -38,8 +34,6 @@ class WindowsCampaign(CampaignBase):
         logger.info('Reading config from %s', self.config_file)
         cfgobj = Config(self.config_file)
         self.config = cfgobj.config
-        if self.config is None:
-            raise WindowsCampaignError('Config load failed, exiting')
         self.configdate = cfgobj.configdate
 
         # pull stuff out of configs
@@ -67,10 +61,10 @@ class WindowsCampaign(CampaignBase):
         self.program = self.config['target']['program']
         self.cmd_template = self.config['target']['cmdline_template']
 
-        self.fuzzer_module_name = '%s.%s' % (packages['fuzzers'], self.config['fuzzer']['fuzzer'])
+        self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(self.config['fuzzer']['fuzzer'])
         if self.config['runner']['runner']:
-            self.runner_module_name = '%s.%s' % (packages['runners'], self.config['runner']['runner'])
-        self.debugger_module_name = '%s.%s' % (packages['debuggers'], self.config['debugger']['debugger'])
+            self.runner_module_name = 'certfuzz.runners.{}'.format(self.config['runner']['runner'])
+        self.debugger_module_name = 'certfuzz.debuggers.{}'.format(self.config['debugger']['debugger'])
 
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
@@ -241,12 +235,3 @@ class WindowsCampaign(CampaignBase):
             # for k, score, successes, tries, p in self.seedfile_set.status():
             #    logger.info('%s %0.6f %d %d %0.6f', k, score, successes,
             #                tries, p)
-
-    def _set_fuzzer(self):
-        CampaignBase._set_fuzzer(self)
-
-    def _set_runner(self):
-        CampaignBase._set_runner(self)
-
-    def _set_debugger(self):
-        CampaignBase._set_debugger(self)
