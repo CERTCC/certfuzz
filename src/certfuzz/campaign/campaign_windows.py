@@ -3,19 +3,20 @@ Created on Jan 10, 2014
 
 @author: adh
 '''
-import logging
-import sys
-import os
-from threading import Timer
-import platform
 import gc
+import logging
+import os
+import platform
+import sys
+from threading import Timer
 
 from certfuzz.campaign.campaign_base import CampaignBase
-from certfuzz.campaign.config.config_windows import Config
-from certfuzz.runners.killableprocess import Popen
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
-from certfuzz.iteration.iteration_windows import Iteration
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
+from certfuzz.runners.killableprocess import Popen
+from certfuzz.campaign.config.config_windows import Config
+from certfuzz.iteration.iteration_windows import Iteration
+
 
 logger = logging.getLogger(__name__)
 

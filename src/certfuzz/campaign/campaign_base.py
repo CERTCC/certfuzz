@@ -4,24 +4,23 @@ Created on Feb 9, 2012
 @organization: cert.org
 '''
 
+import abc
 import logging
 import os
+import re
 import shutil
+import sys
 import tempfile
 import traceback
+import cPickle as pickle
 
-from certfuzz.version import __version__
 from certfuzz.campaign.errors import CampaignError
 from certfuzz.debuggers import registration
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzztools import filetools
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
-
-import cPickle as pickle
-import abc
-import sys
-import re
+from certfuzz.version import __version__
 
 
 logger = logging.getLogger(__name__)
