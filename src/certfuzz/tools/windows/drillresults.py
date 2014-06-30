@@ -24,8 +24,6 @@ regex = {
         'mapped_address': re.compile('^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)'),
         'mapped_address64': re.compile('^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
         'syswow64': re.compile('ModLoad:.*syswow64.*', re.IGNORECASE),
-        'dbg_prompt': re.compile('^[0-9]:[0-9][0-9][0-9]> (.*)'),
-        'wow64_dbg_prompt': re.compile('^[0-9]:[0-9][0-9][0-9]:x86> (.*)'),
         }
 
 
@@ -42,21 +40,14 @@ really_exploitable = [
 re_set = set(really_exploitable)
 
 results = {}
-cached_results = {}
 scoredcrashes = {}
 regdict = {}
-mseclist = []
-_64bit_debugger = False
-wow64_app = False
-ignorejit = False
 
 
 def check_64bit(reporttext):
     '''
     Check if the debugger and target app are 64-bit
     '''
-    global _64bit_debugger
-    global wow64_app
     for line in reporttext.splitlines():
         n = re.match(regex['64bit_debugger'], line)
         if n:
@@ -65,14 +56,13 @@ def check_64bit(reporttext):
             n = re.match(regex['syswow64'], line)
             if n:
                 wow64_app = True
+    return (_64bit_debugger, wow64_app)
 
 
-def pc_in_mapped_address(reporttext, instraddr):
+def pc_in_mapped_address(reporttext, instraddr, _64bit_debugger):
     '''
     Check if the instruction pointer is in a loaded module
     '''
-    global _64bit_debugger
-    global wow64_app
     ma_regex = 'mapped_address'
     mapped_module = 'unloaded'
     if _64bit_debugger:
@@ -146,25 +136,24 @@ def readbinfile(inputfile):
     return filebytes
 
 
-def getexnum(reporttext):
+def getexnum(reporttext, wow64_app):
     '''
     Get the exception number by counting the number of continues
     '''
-    global wow64_app
-
     if wow64_app:
-        dbg_prompt = 'wow64_dbg_prompt'
+        pattern = re.compile('^[0-9]:[0-9][0-9][0-9]:x86> (.*)')
     else:
-        dbg_prompt = 'dbg_prompt'
+        pattern = re.compile('^[0-9]:[0-9][0-9][0-9]> (.*)')
+
     exception = 0
+
     for line in reporttext.splitlines():
-        n = re.match(regex[dbg_prompt], line)
+        n = re.match(pattern, line)
         if n:
             cdbcmd = n.group(1)
             cmds = cdbcmd.split(';')
-            for cmd in cmds:
-                if cmd == 'g':
-                    exception = exception + 1
+            exception += cmds.count('g')
+
     return exception
 
 
@@ -192,36 +181,32 @@ def getinstr(reporttext, instraddr):
             return line
 
 
-def formataddr(faultaddr):
+def formataddr(faultaddr, _64bit_debugger, wow64_app):
     '''
     Format a 64- or 32-bit memory address to a fixed width
     '''
-    global _64bit_debugger
-    global wow64_app
-
     if not faultaddr:
         return
-    else:
-        faultaddr = faultaddr.strip()
-    faultaddr = faultaddr.replace('0x', '')
+
+    faultaddr = faultaddr.strip().replace('0x', '')
 
     if _64bit_debugger and not wow64_app:
         # Due to a bug in !exploitable, the Exception Faulting Address is
         # often wrong with 64-bit targets
         if len(faultaddr) < 10:
             # pad faultaddr
-            faultaddr = faultaddr.zfill(16)
-    else:
-        if len(faultaddr) > 10:  # 0x12345678 = 10 chars
-            faultaddr = faultaddr[-8:]
-        elif len(faultaddr) < 10:
-            # pad faultaddr
-            faultaddr = faultaddr.zfill(8)
+            return faultaddr.zfill(16)
 
-    return faultaddr
+    if len(faultaddr) > 10:
+        # 0x12345678 = 10 chars
+        return faultaddr[-8:]
+
+    if len(faultaddr) < 10:
+        # pad faultaddr
+        return faultaddr.zfill(8)
 
 
-def fixefaoffset(instructionline, faultaddr):
+def fixefaoffset(instructionline, faultaddr, _64bit_debugger, wow64_app):
     '''
     Adjust faulting address for instructions that use offsets
     Currently only works for instructions like CALL [reg + offset]
@@ -264,14 +249,10 @@ def fixefaoffset(instructionline, faultaddr):
     return faultaddr
 
 
-def checkreport(reportfile, crasherfile, crash_hash):
+def checkreport(reportfile, crasherfile, crash_hash, cached_results):
     '''
     Parse the msec file
     '''
-    global _64bit_debugger
-    global wow64_app
-    global cached_results
-
     if cached_results:
         if cached_results.get(crash_hash):
             results[crash_hash] = cached_results[crash_hash]
@@ -287,7 +268,7 @@ def checkreport(reportfile, crasherfile, crash_hash):
     reporttext = readfile(reportfile)
     getregs(reporttext)
     current_dir = os.path.dirname(reportfile)
-    exceptionnum = getexnum(reporttext)
+    exceptionnum = getexnum(reporttext, wow64_app)
     classification = carve(reporttext, "Exploitability Classification: ", "\n")
     try:
         if classification:
@@ -340,11 +321,11 @@ def checkreport(reportfile, crasherfile, crash_hash):
     # Set the "fuzzedfile" property for the crash ID
     crashid['fuzzedfile'] = crasherfile
     # See if we're dealing with 64-bit debugger or target app
-    check_64bit(reporttext)
+    (_64bit_debugger, wow64_app) = check_64bit(reporttext)
     faultaddr = carve2(reporttext)
     instraddr = carve(reporttext, "Instruction Address:", "\n")
-    faultaddr = formataddr(faultaddr)
-    instraddr = formataddr(instraddr)
+    faultaddr = formataddr(faultaddr, _64bit_debugger, wow64_app)
+    instraddr = formataddr(instraddr, _64bit_debugger, wow64_app)
 
     # No faulting address means no crash.
     if not faultaddr or not instraddr:
@@ -356,15 +337,14 @@ def checkreport(reportfile, crasherfile, crash_hash):
         if shortdesc != 'DEPViolation':
             faultaddr = fixefabug(reporttext, instraddr, faultaddr)
 
-
 #    pc_module = pc_in_mapped_address(reporttext, instraddr)
-    crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr)
+    crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr, _64bit_debugger)
 
     # Get the cdb line that contains the crashing instruction
     instructionline = getinstr(reporttext, instraddr)
     crashid['exceptions'][exceptionnum]['instructionline'] = instructionline
     if instructionline:
-        faultaddr = fixefaoffset(instructionline, faultaddr)
+        faultaddr = fixefaoffset(instructionline, faultaddr, _64bit_debugger, wow64_app)
 
     # Fix faulting pattern endian
     faultaddr = faultaddr.replace('0x', '')
@@ -394,7 +374,8 @@ def checkreport(reportfile, crasherfile, crash_hash):
         crashid['exceptions'][exceptionnum]['EIF'] = False
 
 
-def findmsecs(tld):
+def find_dbg_output(tld):
+    dbg_out_list = []
     # Walk the results directory
     for root, dirs, files in os.walk(tld):
         crash_hash = os.path.basename(root)
@@ -418,26 +399,16 @@ def findmsecs(tld):
             for current_file in files:
                 # Go through all of the .msec files and parse them
                 if regex['msec_report'].match(current_file):
-                    msecdict = {}
                     msecfile = os.path.join(root, current_file)
                     if crasherfile and root not in crasherfile:
                         crasherfile = os.path.join(root, crasherfile)
-                    msecdict['msecfile'] = msecfile
-                    msecdict['crasherfile'] = crasherfile
-                    msecdict['crash_hash'] = crash_hash
-                    mseclist.append(msecdict)
-    return mseclist
-
-
-def parsemsecs(mseclist):
-    for msec in mseclist:
-        checkreport(msec['msecfile'], msec['crasherfile'], msec['crash_hash'])
+                    dbg_tuple = (msecfile, crasherfile, crash_hash)
+                    dbg_out_list.append(dbg_tuple)
+    return dbg_out_list
 
 
 def main():
     # If user doesn't specify a directory to crawl, use "results"
-    global ignorejit
-    global cached_results
     pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
 
     usage = "usage: %prog [options]"
@@ -447,7 +418,8 @@ def main():
                       dest='resultsdir', default='../results')
     parser.add_option('-j', '--ignorejit', dest='ignorejit',
                       action='store_true',
-                      help='Ignore PC in unmapped module (JIT)')
+                      help='Ignore PC in unmapped module (JIT)',
+                      default=False)
     parser.add_option('-f', '--force', dest='force',
                       action='store_true',
                       help='Force recalculation of results')
@@ -459,10 +431,11 @@ def main():
     if not os.path.isdir(tld):
         # Probably using FOE 1.0, which defaults to "crashers" for output
         tld = 'crashers'
-    mseclist = findmsecs(tld)
+    dbg_out = find_dbg_output(tld)
     if not options.force:
         cached_results = loadcached(pickle_file)
-    parsemsecs(mseclist)
+    for dbg_file, crash_file, crash_hash in dbg_out:
+        checkreport(dbg_file, crash_file, crash_hash, cached_results)
     score_reports(results, scoredcrashes, ignorejit, re_set)
     printreport(results, scoredcrashes, ignorejit)
     cache_results(pickle_file)
