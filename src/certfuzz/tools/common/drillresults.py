@@ -48,7 +48,7 @@ def is_number(s):
         return False
 
 
-def score_crasher(crasher, details, ignorejit=False):
+def score_crasher(crasher, details, ignorejit, re_set):
     scores = [100]
     if details['reallyexploitable'] == True:
     # The crash summary is a very interesting one
@@ -106,7 +106,7 @@ def score_crasher(crasher, details, ignorejit=False):
                     scores.append(50)
     return min(scores)
 
-def score_reports(results, crashscores, ignorejit):
+def score_reports(results, crashscores, ignorejit, re_set):
     # Assign a ranking to each crash report.  The lower the rank, the higher
     # the exploitability
     if results:
@@ -114,7 +114,7 @@ def score_reports(results, crashscores, ignorejit):
         # For each of the crash ids in the results dictionary, apply ranking
         for crasher in results:
             try:
-                crashscores[crasher] = score_crasher(crasher, results[crasher], ignorejit)
+                crashscores[crasher] = score_crasher(crasher, results[crasher], ignorejit, re_set)
             except KeyError:
                 print "Error scoring crash %s" % crasher
                 continue

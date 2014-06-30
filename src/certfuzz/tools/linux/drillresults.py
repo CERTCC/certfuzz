@@ -426,7 +426,7 @@ def main():
         tld = 'crashers'
     gdblist = findgdbs(tld)
     parsegdbs(gdblist)
-    score_reports(results, scoredcrashes, ignorejit)
+    score_reports(results, scoredcrashes, ignorejit, re_set)
     printreport()
 
 if __name__ == '__main__':
