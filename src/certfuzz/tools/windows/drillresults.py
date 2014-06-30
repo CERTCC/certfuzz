@@ -514,7 +514,7 @@ def main():
     if not options.force:
         cached_results = loadcached(pickle_file)
     parsemsecs(mseclist)
-    score_reports(results, scoredcrashes, ignorejit)
+    score_reports(results, scoredcrashes, ignorejit, re_set)
     printreport()
     cache_results(pickle_file)
 
