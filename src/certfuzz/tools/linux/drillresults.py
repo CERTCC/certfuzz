@@ -9,7 +9,7 @@ import re
 from optparse import OptionParser
 
 from certfuzz.tools.common.drillresults import readfile, carve, carve2, \
-    score_reports, reg_set, printreport
+    score_reports, reg_set, printreport, loadcached, cache_results
 
 
 regex = {
@@ -374,6 +374,9 @@ def parsegdbs(gdblist):
 def main():
     # If user doesn't specify a directory to crawl, use "results"
     global ignorejit
+    global cached_results
+    pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
+
     usage = "usage: %prog [options]"
     parser = OptionParser(usage=usage)
     parser.add_option('-d', '--dir',
@@ -382,6 +385,9 @@ def main():
     parser.add_option('-j', '--ignorejit', dest='ignorejit',
                       action='store_true',
                       help='Ignore PC in unmapped module (JIT)')
+    parser.add_option('-f', '--force', dest='force',
+                      action='store_true',
+                      help='Force recalculation of results')
     (options, args) = parser.parse_args()
     ignorejit = options.ignorejit
     tld = options.resultsdir
@@ -390,10 +396,14 @@ def main():
     if not os.path.isdir(tld):
         # Probably using FOE 1.0, which defaults to "crashers" for output
         tld = 'crashers'
+
     gdblist = findgdbs(tld)
+    if not options.force:
+        cached_results = loadcached(pickle_file)
     parsegdbs(gdblist)
     score_reports(results, scoredcrashes, ignorejit, re_set)
     printreport(results, scoredcrashes, ignorejit)
+    cache_results(pickle_file)
 
 if __name__ == '__main__':
     main()

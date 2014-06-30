@@ -3,6 +3,8 @@ Created on Jun 30, 2014
 
 @organization: cert.org
 '''
+import os
+import cPickle as pickle
 
 registers = ('eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi',
              'edi', 'eip')
@@ -159,6 +161,23 @@ def printreport(scoredcrashes, results, ignorejit):
         score = crashes[1]
         details = results[crasher]
         print_crash_report(crasher, score, details)
+
+
+def loadcached(pkl_filename):
+    try:
+        with open(pkl_filename, 'rb') as pkl_file:
+            return pickle.load(pkl_file)
+    except IOError:
+        # No cached results
+        pass
+
+
+def cache_results(pkl_filename, results):
+    pkldir = os.path.dirname(pkl_filename)
+    if not os.path.exists(pkldir):
+        os.makedirs(pkldir)
+    with open(pkl_filename, 'wb') as pkl_file:
+        pickle.dump(results, pkl_file, -1)
 
 
 def main():

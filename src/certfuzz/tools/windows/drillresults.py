@@ -9,10 +9,10 @@ import re
 from optparse import OptionParser
 import StringIO
 import zipfile
-import cPickle as pickle
 
 from certfuzz.tools.common.drillresults import readfile, carve, carve2, \
-    score_reports, is_number, reg_set, reg64_set, printreport
+    score_reports, is_number, reg_set, reg64_set, printreport, loadcached, \
+    cache_results
 
 regex = {
         'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]'),
@@ -49,7 +49,6 @@ mseclist = []
 _64bit_debugger = False
 wow64_app = False
 ignorejit = False
-pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
 
 
 def check_64bit(reporttext):
@@ -435,28 +434,12 @@ def parsemsecs(mseclist):
         checkreport(msec['msecfile'], msec['crasherfile'], msec['crash_hash'])
 
 
-
-def loadcached(pkl_filename):
-    try:
-        with open(pkl_filename, 'rb') as pkl_file:
-            return pickle.load(pkl_file)
-    except IOError:
-        # No cached results
-        pass
-
-
-def cache_results(pkl_filename):
-    pkldir = os.path.dirname(pkl_filename)
-    if not os.path.exists(pkldir):
-        os.makedirs(pkldir)
-    with open(pkl_filename, 'wb') as pkl_file:
-        pickle.dump(results, pkl_file, -1)
-
-
 def main():
     # If user doesn't specify a directory to crawl, use "results"
     global ignorejit
     global cached_results
+    pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
+
     usage = "usage: %prog [options]"
     parser = OptionParser(usage=usage)
     parser.add_option('-d', '--dir',
