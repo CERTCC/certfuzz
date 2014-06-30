@@ -9,7 +9,7 @@ import re
 from optparse import OptionParser
 
 from certfuzz.tools.common.drillresults import readfile, carve, carve2, \
-    score_reports
+    score_reports, reg_set
 
 regex = {
         'gdb_report': re.compile(r'.+.gdb$'),
@@ -28,12 +28,6 @@ regex = {
         'dbg_prompt': re.compile(r'^[0-9]:[0-9][0-9][0-9]> (.*)'),
         }
 
-registers = ('eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi',
-             'edi', 'eip')
-
-registers64 = ('rax', 'rcx', 'rdx', 'rbx', 'rsp', 'rbp', 'rsi',
-               'rdi', 'rip', 'r8', 'r9', 'r10', 'r11', 'r12', 'r13',
-               'r14', 'r15')
 
 # These !exploitable short descriptions indicate a very interesting crash
 really_exploitable = [
@@ -43,8 +37,6 @@ really_exploitable = [
                       'BadInstruction',
                       'ReturnAv',
                       ]
-reg_set = set(registers)
-reg64_set = set(registers64)
 re_set = set(really_exploitable)
 
 results = {}
@@ -214,8 +206,6 @@ def fixefaoffset(instructionline, faultaddr):
     Adjust faulting address for instructions that use offsets
     Currently only works for instructions like CALL [reg + offset]
     '''
-    global reg_set
-
     if '0x' not in faultaddr:
         faultaddr = '0x' + faultaddr
     instructionpieces = instructionline.split()
