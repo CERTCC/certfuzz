@@ -131,6 +131,36 @@ def score_reports(results, crashscores, ignorejit, re_set):
                 continue
 
 
+def print_crash_report(crasher, score, details, ignorejit):
+    print '\n%s - Exploitability rank: %s' % (crasher, score)
+    print 'Fuzzed file: %s' % details['fuzzedfile']
+    for exception in details['exceptions']:
+        shortdesc = details['exceptions'][exception]['shortdesc']
+        eiftext = ''
+        efa = '0x' + details['exceptions'][exception]['efa']
+        if details['exceptions'][exception]['EIF']:
+            eiftext = " *** Byte pattern is in fuzzed file! ***"
+        print 'exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext)
+        if details['exceptions'][exception]['instructionline']:
+            print details['exceptions'][exception]['instructionline']
+        module = details['exceptions'][exception]['pcmodule']
+        if module == 'unloaded':
+            if not ignorejit:
+                print 'Instruction pointer is not in a loaded module!'
+        else:
+            print 'Code executing in: %s' % module
+
+
+def printreport(scoredcrashes, results, ignorejit):
+    sorted_crashes = sorted(scoredcrashes.iteritems(), key=lambda(k, v): (v, k))
+
+    for crashes in sorted_crashes:
+        crasher = crashes[0]
+        score = crashes[1]
+        details = results[crasher]
+        print_crash_report(crasher, score, details)
+
+
 def main():
     pass
 

@@ -9,11 +9,12 @@ import re
 from optparse import OptionParser
 
 from certfuzz.tools.common.drillresults import readfile, carve, carve2, \
-    score_reports, reg_set
+    score_reports, reg_set, printreport
+
 
 regex = {
         'gdb_report': re.compile(r'.+.gdb$'),
-        'current_instr': re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)'),
+#        'current_instr': re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)'),
         'frame0': re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+'),
         'regs1': re.compile(r'^eax=.+'),
         'regs2': re.compile(r'^eip=.+'),
@@ -167,8 +168,9 @@ def getinstr(reporttext, instraddr):
     '''
     Find the disassembly line for the current (crashing) instruction
     '''
+    regex = re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)')
     for line in reporttext.splitlines():
-        n = re.match(regex['current_instr'], line)
+        n = regex.match(line)
         if n:
             return n.group(3)
     return ''
@@ -314,7 +316,6 @@ def checkreport(reportfile, crasherfile, crash_hash):
     if _64bit_debugger:
         # 64-bit target app
         faultaddr = faultaddr.zfill(16)
-        #print 'faultaddr: %s' % faultaddr
         efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
         efapattern = hex(efaptr[0]).replace('0x', '')
         efapattern = efapattern.replace('L', '')
@@ -370,31 +371,6 @@ def parsegdbs(gdblist):
         checkreport(gdb['gdbfile'], gdb['crasherfile'], gdb['crash_hash'])
 
 
-def printreport():
-    sorted_crashes = sorted(scoredcrashes.iteritems(), key=lambda(k, v): (v, k))
-
-    for crashes in sorted_crashes:
-        crasher = crashes[0]
-        score = crashes[1]
-        print '\n%s - Exploitability rank: %s' % (crasher, score)
-        print 'Fuzzed file: %s' % results[crasher]['fuzzedfile']
-        for exception in results[crasher]['exceptions']:
-            shortdesc = results[crasher]['exceptions'][exception]['shortdesc']
-            eiftext = ''
-            efa = '0x' + results[crasher]['exceptions'][exception]['efa']
-            if results[crasher]['exceptions'][exception]['EIF']:
-                eiftext = " *** Byte pattern is in fuzzed file! ***"
-            print 'exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext)
-            if results[crasher]['exceptions'][exception]['instructionline']:
-                print results[crasher]['exceptions'][exception]['instructionline']
-            module = results[crasher]['exceptions'][exception]['pcmodule']
-            if module == 'unloaded':
-                if not ignorejit:
-                    print 'Instruction pointer is not in a loaded module!'
-            else:
-                print 'Code executing in: %s' % module
-
-
 def main():
     # If user doesn't specify a directory to crawl, use "results"
     global ignorejit
@@ -417,7 +393,7 @@ def main():
     gdblist = findgdbs(tld)
     parsegdbs(gdblist)
     score_reports(results, scoredcrashes, ignorejit, re_set)
-    printreport()
+    printreport(results, scoredcrashes, ignorejit)
 
 if __name__ == '__main__':
     main()
