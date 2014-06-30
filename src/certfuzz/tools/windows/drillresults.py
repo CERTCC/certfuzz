@@ -12,7 +12,7 @@ import zipfile
 import cPickle as pickle
 
 from certfuzz.tools.common.drillresults import readfile, carve, carve2, \
-    score_reports, is_number
+    score_reports, is_number, reg_set, reg64_set
 
 regex = {
         'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]'),
@@ -28,12 +28,6 @@ regex = {
         'wow64_dbg_prompt': re.compile('^[0-9]:[0-9][0-9][0-9]:x86> (.*)'),
         }
 
-registers = ('eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi',
-             'edi', 'eip')
-
-registers64 = ('rax', 'rcx', 'rdx', 'rbx', 'rsp', 'rbp', 'rsi',
-               'rdi', 'rip', 'r8', 'r9', 'r10', 'r11', 'r12', 'r13',
-               'r14', 'r15')
 
 # These !exploitable short descriptions indicate a very interesting crash
 really_exploitable = [
@@ -44,8 +38,7 @@ really_exploitable = [
                       'IllegalInstruction',
                       'PrivilegedInstruction',
                       ]
-reg_set = set(registers)
-reg64_set = set(registers64)
+
 re_set = set(really_exploitable)
 
 results = {}
@@ -233,7 +226,6 @@ def fixefaoffset(instructionline, faultaddr):
     Adjust faulting address for instructions that use offsets
     Currently only works for instructions like CALL [reg + offset]
     '''
-    global reg_set
     if _64bit_debugger and not wow64_app:
         reg_set = reg64_set
 

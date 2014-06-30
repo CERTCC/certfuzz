@@ -4,6 +4,16 @@ Created on Jun 30, 2014
 @organization: cert.org
 '''
 
+registers = ('eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi',
+             'edi', 'eip')
+
+registers64 = ('rax', 'rcx', 'rdx', 'rbx', 'rsp', 'rbp', 'rsi',
+               'rdi', 'rip', 'r8', 'r9', 'r10', 'r11', 'r12', 'r13',
+               'r14', 'r15')
+
+reg_set = set(registers)
+reg64_set = set(registers64)
+
 
 def readfile(textfile):
     '''
@@ -106,6 +116,7 @@ def score_crasher(crasher, details, ignorejit, re_set):
                     scores.append(50)
     return min(scores)
 
+
 def score_reports(results, crashscores, ignorejit, re_set):
     # Assign a ranking to each crash report.  The lower the rank, the higher
     # the exploitability
@@ -118,6 +129,7 @@ def score_reports(results, crashscores, ignorejit, re_set):
             except KeyError:
                 print "Error scoring crash %s" % crasher
                 continue
+
 
 def main():
     pass
