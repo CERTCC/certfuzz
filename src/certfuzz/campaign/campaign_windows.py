@@ -20,11 +20,6 @@ from certfuzz.iteration.iteration_windows import Iteration
 
 logger = logging.getLogger(__name__)
 
-packages = {'fuzzers': 'certfuzz.fuzzers',
-            'runners': 'certfuzz.runners',
-            'debuggers': 'certfuzz.debuggers',
-            }
-
 
 class WindowsCampaign(CampaignBase):
     '''
@@ -66,10 +61,10 @@ class WindowsCampaign(CampaignBase):
         self.program = self.config['target']['program']
         self.cmd_template = self.config['target']['cmdline_template']
 
-        self.fuzzer_module_name = '%s.%s' % (packages['fuzzers'], self.config['fuzzer']['fuzzer'])
+        self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(self.config['fuzzer']['fuzzer'])
         if self.config['runner']['runner']:
-            self.runner_module_name = '%s.%s' % (packages['runners'], self.config['runner']['runner'])
-        self.debugger_module_name = '%s.%s' % (packages['debuggers'], self.config['debugger']['debugger'])
+            self.runner_module_name = 'certfuzz.runners.{}'.format(self.config['runner']['runner'])
+        self.debugger_module_name = 'certfuzz.debuggers.{}'.format(self.config['debugger']['debugger'])
 
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
