@@ -253,6 +253,14 @@ class ResultDriller(object):
         for dbg_file, crash_file, crash_hash in self.dbg_out:
             self.check_report(dbg_file, crash_file, crash_hash, self.cached_results)
 
+    def cache_results(self):
+        pkldir = os.path.dirname(self.pkl_filename)
+        if not os.path.exists(pkldir):
+            os.makedirs(pkldir)
+        with open(self.pkl_filename, 'wb') as pkl_file:
+            pickle.dump(self.results, pkl_file, -1)
+
+
     def drill_results(self):
         self._check_dirs()
 
