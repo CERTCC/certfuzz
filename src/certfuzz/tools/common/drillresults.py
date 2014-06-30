@@ -264,6 +264,3 @@ class ResultDriller(object):
         self.score_reports()
         self.print_reports()
         self.cache_results()
-
-if __name__ == '__main__':
-    main()
