@@ -8,8 +8,9 @@ import binascii
 import re
 from optparse import OptionParser
 
-from certfuzz.tools.common.drillresults import readfile, carve, carve2, \
-    score_reports, reg_set, printreport, loadcached, cache_results
+from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
+    score_reports, reg_set, print_report, cache_results, load_cached, \
+    ResultDriller
 
 
 regex = {
@@ -42,20 +43,15 @@ re_set = set(really_exploitable)
 
 results = {}
 scoredcrashes = {}
-#regdict = {}
-gdblist = []
-ignorejit = False
-_64bit_debugger = False
 
 
 def check_64bit(reporttext):
     '''
     Check if the debugger and target app are 64-bit
     '''
-    global _64bit_debugger
-
-    if _64bit_debugger:
-        return
+    # TODO: When would this ever happen?
+#    if _64bit_debugger:
+#        return
 
     for line in reporttext.splitlines():
         m = re.match(regex['bt_addr'], line)
@@ -63,9 +59,8 @@ def check_64bit(reporttext):
             start_addr = m.group(1)
             #print '%s length: %s'% (start_addr, len(start_addr))
             if len(start_addr) > 10:
-                _64bit_debugger = True
-                #print 'Target process is 64-bit'
-                break
+                return True
+    return False
 
 
 def pc_in_mapped_address(reporttext, instraddr):
@@ -104,12 +99,12 @@ def pc_in_mapped_address(reporttext, instraddr):
     return mapped_module
 
 
-def fixefabug(reporttext, instraddr, faultaddr):
+def fix_efa_bug(reporttext, instraddr, faultaddr):
     '''
     !exploitable often reports an incorrect EFA for 64-bit targets.
     If we're dealing with a 64-bit target, we can second-guess the reported EFA
     '''
-    instructionline = getinstr(reporttext, instraddr)
+    instructionline = get_instr(reporttext, instraddr)
     if not instructionline:
         return faultaddr
     ds = carve(instructionline, "ds:", "=")
@@ -118,7 +113,7 @@ def fixefabug(reporttext, instraddr, faultaddr):
     return faultaddr
 
 
-def readbinfile(textfile):
+def read_bin_file(textfile):
     '''
     Read binary file
     '''
@@ -127,7 +122,7 @@ def readbinfile(textfile):
     return text
 
 
-def getexnum(reporttext):
+def get_ex_num(reporttext):
     '''
     Get the exception number by counting the number of continues
     '''
@@ -143,7 +138,7 @@ def getexnum(reporttext):
     return exception
 
 
-def getinstraddr(reporttext):
+def get_instr_addr(reporttext):
     '''
     Find the address for the current (crashing) instruction
     '''
@@ -164,7 +159,7 @@ def getinstraddr(reporttext):
     return instraddr
 
 
-def getinstr(reporttext, instraddr):
+def get_instr(reporttext, instraddr):
     '''
     Find the disassembly line for the current (crashing) instruction
     '''
@@ -176,7 +171,7 @@ def getinstr(reporttext, instraddr):
     return ''
 
 
-def formataddr(faultaddr):
+def format_addr(faultaddr, _64bit_debugger):
     '''
     Format a 64- or 32-bit memory address to a fixed width
     '''
@@ -203,7 +198,7 @@ def formataddr(faultaddr):
     return faultaddr
 
 
-def fixefaoffset(instructionline, faultaddr):
+def fix_efa_offset(instructionline, faultaddr, _64bit_debugger):
     '''
     Adjust faulting address for instructions that use offsets
     Currently only works for instructions like CALL [reg + offset]
@@ -234,7 +229,7 @@ def fixefaoffset(instructionline, faultaddr):
                     return faultaddr
                 # Subtract offset to get actual interesting pattern
                 faultaddr = hex(eval(faultaddr) - eval(offset))
-                faultaddr = formataddr(faultaddr.replace('L', ''))
+                faultaddr = format_addr(faultaddr.replace('L', ''), _64bit_debugger)
     return faultaddr
 
 
@@ -373,8 +368,6 @@ def parsegdbs(gdblist):
 
 def main():
     # If user doesn't specify a directory to crawl, use "results"
-    global ignorejit
-    global cached_results
     pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
 
     usage = "usage: %prog [options]"
@@ -384,7 +377,8 @@ def main():
                       dest='resultsdir', default='../results')
     parser.add_option('-j', '--ignorejit', dest='ignorejit',
                       action='store_true',
-                      help='Ignore PC in unmapped module (JIT)')
+                      help='Ignore PC in unmapped module (JIT)',
+                      default=False)
     parser.add_option('-f', '--force', dest='force',
                       action='store_true',
                       help='Force recalculation of results')
@@ -396,13 +390,14 @@ def main():
     if not os.path.isdir(tld):
         # Probably using FOE 1.0, which defaults to "crashers" for output
         tld = 'crashers'
-
-    gdblist = findgdbs(tld)
     if not options.force:
-        cached_results = loadcached(pickle_file)
-    parsegdbs(gdblist)
+        cached_results = load_cached(pickle_file)
+
+    dbg_out = find_dbg_output(tld)
+    for dbg_file, crash_file, crash_hash in dbg_out:
+        check_report(dbg_file, crash_file, crash_hash, cached_results)
     score_reports(results, scoredcrashes, ignorejit, re_set)
-    printreport(results, scoredcrashes, ignorejit)
+    print_report(results, scoredcrashes, ignorejit)
     cache_results(pickle_file)
 
 if __name__ == '__main__':

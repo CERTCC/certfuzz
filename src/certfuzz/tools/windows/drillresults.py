@@ -10,9 +10,9 @@ from optparse import OptionParser
 import StringIO
 import zipfile
 
-from certfuzz.tools.common.drillresults import readfile, carve, carve2, \
-    score_reports, is_number, reg_set, reg64_set, printreport, loadcached, \
-    cache_results
+from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
+    score_reports, is_number, reg_set, reg64_set, print_report, \
+    cache_results, load_cached, ResultDriller
 
 regex = {
         'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]'),
@@ -81,12 +81,12 @@ def pc_in_mapped_address(reporttext, instraddr, _64bit_debugger):
     return mapped_module
 
 
-def fixefabug(reporttext, instraddr, faultaddr):
+def fix_efa_bug(reporttext, instraddr, faultaddr):
     '''
     !exploitable often reports an incorrect EFA for 64-bit targets.
     If we're dealing with a 64-bit target, we can second-guess the reported EFA
     '''
-    instructionline = getinstr(reporttext, instraddr)
+    instructionline = get_instr(reporttext, instraddr)
     if not instructionline or "=" not in instructionline:
         # Nothing to fix
         return faultaddr
@@ -106,7 +106,7 @@ def fixefabug(reporttext, instraddr, faultaddr):
     return faultaddr
 
 
-def readbinfile(inputfile):
+def read_bin_file(inputfile):
     '''
     Read binary file
     '''
@@ -136,7 +136,7 @@ def readbinfile(inputfile):
     return filebytes
 
 
-def getexnum(reporttext, wow64_app):
+def get_ex_num(reporttext, wow64_app):
     '''
     Get the exception number by counting the number of continues
     '''
@@ -157,7 +157,7 @@ def getexnum(reporttext, wow64_app):
     return exception
 
 
-def getregs(reporttext):
+def get_regs(reporttext):
     '''
     Populate the register dictionary with register values at crash
     '''
@@ -170,7 +170,7 @@ def getregs(reporttext):
                     regdict[splitreg[0]] = splitreg[1]
 
 
-def getinstr(reporttext, instraddr):
+def get_instr(reporttext, instraddr):
     '''
     Find the disassembly line for the current (crashing) instruction
     '''
@@ -181,7 +181,7 @@ def getinstr(reporttext, instraddr):
             return line
 
 
-def formataddr(faultaddr, _64bit_debugger, wow64_app):
+def format_addr(faultaddr, _64bit_debugger, wow64_app):
     '''
     Format a 64- or 32-bit memory address to a fixed width
     '''
@@ -206,7 +206,7 @@ def formataddr(faultaddr, _64bit_debugger, wow64_app):
         return faultaddr.zfill(8)
 
 
-def fixefaoffset(instructionline, faultaddr, _64bit_debugger, wow64_app):
+def fix_efa_offset(instructionline, faultaddr, _64bit_debugger, wow64_app):
     '''
     Adjust faulting address for instructions that use offsets
     Currently only works for instructions like CALL [reg + offset]
@@ -245,7 +245,7 @@ def fixefaoffset(instructionline, faultaddr, _64bit_debugger, wow64_app):
                         return faultaddr
                     # Subtract offset to get actual interesting pattern
                     faultaddr = hex(eval(faultaddr) - eval(offset))
-                    faultaddr = formataddr(faultaddr.replace('L', ''))
+                    faultaddr = format_addr(faultaddr.replace('L', ''))
     return faultaddr
 
 
@@ -372,7 +372,26 @@ def checkreport(reportfile, crasherfile, crash_hash, cached_results):
         crashid['exceptions'][exceptionnum]['EIF'] = True
     else:
         crashid['exceptions'][exceptionnum]['EIF'] = False
+def parse_args():
+    import argparse
 
+    usage = "usage: %prog [options]"
+    parser = argparse.ArgumentParser(usage)
+    parser.add_option('-d', '--dir',
+                      help='directory to look for results in. Default is "results"',
+                      dest='resultsdir',
+                      default='../results',
+                      type=str)
+    parser.add_option('-j', '--ignorejit', dest='ignorejit',
+                      action='store_true',
+                      help='Ignore PC in unmapped module (JIT)',
+                      default=False,
+                      type=bool)
+    parser.add_option('-f', '--force', dest='force',
+                      action='store_true',
+                      help='Force recalculation of results',
+                      type=bool)
+    return parser.parse_args()
 
 def find_dbg_output(tld):
     dbg_out_list = []
@@ -411,19 +430,8 @@ def main():
     # If user doesn't specify a directory to crawl, use "results"
     pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
 
-    usage = "usage: %prog [options]"
-    parser = OptionParser(usage=usage)
-    parser.add_option('-d', '--dir',
-                      help='directory to look for results in. Default is "results"',
-                      dest='resultsdir', default='../results')
-    parser.add_option('-j', '--ignorejit', dest='ignorejit',
-                      action='store_true',
-                      help='Ignore PC in unmapped module (JIT)',
-                      default=False)
-    parser.add_option('-f', '--force', dest='force',
-                      action='store_true',
-                      help='Force recalculation of results')
-    (options, args) = parser.parse_args()
+    options = parse_args()
+
     ignorejit = options.ignorejit
     tld = options.resultsdir
     if not os.path.isdir(tld):
@@ -431,13 +439,15 @@ def main():
     if not os.path.isdir(tld):
         # Probably using FOE 1.0, which defaults to "crashers" for output
         tld = 'crashers'
-    dbg_out = find_dbg_output(tld)
+
     if not options.force:
-        cached_results = loadcached(pickle_file)
+        cached_results = load_cached(pickle_file)
+
+    dbg_out = find_dbg_output(tld)
     for dbg_file, crash_file, crash_hash in dbg_out:
-        checkreport(dbg_file, crash_file, crash_hash, cached_results)
+        check_report(dbg_file, crash_file, crash_hash, cached_results)
     score_reports(results, scoredcrashes, ignorejit, re_set)
-    printreport(results, scoredcrashes, ignorejit)
+    print_report(results, scoredcrashes, ignorejit)
     cache_results(pickle_file)
 
 if __name__ == '__main__':

@@ -17,7 +17,7 @@ reg_set = set(registers)
 reg64_set = set(registers64)
 
 
-def readfile(textfile):
+def read_file(textfile):
     '''
     Read text file
     '''
@@ -153,7 +153,7 @@ def print_crash_report(crasher, score, details, ignorejit):
             print 'Code executing in: %s' % module
 
 
-def printreport(scoredcrashes, results, ignorejit):
+def print_report(scoredcrashes, results, ignorejit):
     sorted_crashes = sorted(scoredcrashes.iteritems(), key=lambda(k, v): (v, k))
 
     for crashes in sorted_crashes:
@@ -163,7 +163,7 @@ def printreport(scoredcrashes, results, ignorejit):
         print_crash_report(crasher, score, details)
 
 
-def loadcached(pkl_filename):
+def load_cached(pkl_filename):
     try:
         with open(pkl_filename, 'rb') as pkl_file:
             return pickle.load(pkl_file)
