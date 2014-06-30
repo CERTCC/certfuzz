@@ -5,6 +5,7 @@ Created on Jun 30, 2014
 '''
 import os
 import cPickle as pickle
+import abc
 
 registers = ('eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi',
              'edi', 'eip')
@@ -180,8 +181,89 @@ def cache_results(pkl_filename, results):
         pickle.dump(results, pkl_file, -1)
 
 
-def main():
+class DrillResultsError(Exception):
     pass
+
+
+class ResultDriller(object):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self,
+                 ignore_jit=False,
+                 base_dir='../results',
+                 force_reload=False):
+        self.ignore_jit = ignore_jit
+        self.base_dir = base_dir
+        self.tld = None
+        self.force = force_reload
+
+        self.pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
+        self.cached_results = None
+        self.dbg_out = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        return
+
+    def _check_dirs(self):
+        check_dirs = [self.base_dir, 'results', 'crashers']
+        for d in check_dirs:
+            if os.path.isdir(d):
+                self.tld = d
+                return
+        # if you got here, none of them exist
+        raise DrillResultsError('None of {} appears to be a dir'.format(check_dirs))
+
+    def load_cached(self):
+        try:
+            with open(self.pkl_filename, 'rb') as pkl_file:
+                self.cached_results = pickle.load(pkl_file)
+        except IOError:
+            # No cached results
+            pass
+
+    @abc.abstractmethod
+    def check_64bit(self, reporttext):
+        '''
+        Check if the debugger and target app are 64-bit
+        '''
+        pass
+
+    @abc.abstractmethod
+    def _platform_find_dbg_output(self, crash_hash):
+        pass
+
+    def find_dbg_output(self):
+        '''
+        Crawls self.tld looking for crash directories to process. Puts a list
+        of tuples into self.dbg_out.
+        '''
+        # Walk the results directory
+        for root, dirs, files in os.walk(self.tld):
+            dir_basename = os.path.basename(root)
+            self._platform_find_dbg_output(dir_basename, files, root)
+
+    @abc.abstractmethod
+    def _check_report(self, dbg_file, crash_file, crash_hash, cached_results):
+        pass
+
+    def check_reports(self):
+        for dbg_file, crash_file, crash_hash in self.dbg_out:
+            self.check_report(dbg_file, crash_file, crash_hash, self.cached_results)
+
+    def drill_results(self):
+        self._check_dirs()
+
+        if not self.force:
+            self.load_cached()
+
+        self.find_dbg_output()
+        self.check_reports()
+        self.score_reports()
+        self.print_reports()
+        self.cache_results()
 
 if __name__ == '__main__':
     main()
