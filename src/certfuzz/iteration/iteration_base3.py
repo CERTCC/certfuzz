@@ -10,12 +10,15 @@ import tempfile
 from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
+import abc
 
 
 logger = logging.getLogger(__name__)
 
 
 class IterationBase3(object):
+    __metaclass__ = abc.ABCMeta
+
     def __init__(self, workdirbase):
         logger.debug('init')
         self.workdirbase = workdirbase
@@ -45,27 +48,35 @@ class IterationBase3(object):
 
         return handled
 
+    @abc.abstractmethod
     def _pre_fuzz(self):
         pass
 
+    @abc.abstractmethod
     def _fuzz(self):
         pass
 
+    @abc.abstractmethod
     def _post_fuzz(self):
         pass
 
+    @abc.abstractmethod
     def _pre_run(self):
         pass
 
+    @abc.abstractmethod
     def _run(self):
         pass
 
+    @abc.abstractmethod
     def _post_run(self):
         pass
 
+    @abc.abstractmethod
     def _pre_analyze(self, testcase):
         pass
 
+    @abc.abstractmethod
     def _analyze(self, testcase):
         '''
         Loops through all known analyzer_classes for a given testcase
@@ -83,52 +94,78 @@ class IterationBase3(object):
 
         self.analyzed.append(testcase)
 
+    @abc.abstractmethod
     def _post_analyze(self, testcase):
         pass
 
+    @abc.abstractmethod
     def _pre_verify(self, testcase):
         pass
 
+    @abc.abstractmethod
     def _verify(self, testcase):
         pass
 
+    @abc.abstractmethod
     def _post_verify(self, testcase):
         pass
 
+    @abc.abstractmethod
     def _pre_report(self, testcase):
         pass
 
+    @abc.abstractmethod
     def _report(self, testcase):
         pass
 
+    @abc.abstractmethod
     def _post_report(self, testcase):
         pass
 
     def fuzz(self):
+        '''
+        Prepares a test case
+        '''
         logger.debug('fuzz')
         self._pre_fuzz()
         self._fuzz()
         self._post_fuzz()
 
     def run(self):
+        '''
+        Runs a test case. Populates self.candidates if it finds anything
+        interesting.
+        '''
         logger.debug('run')
         self._pre_run()
         self._run()
         self._post_run()
 
     def verify(self, testcase):
+        '''
+        Verifies a test case.
+        :param testcase:
+        '''
         logger.debug('verify')
         self._pre_verify(testcase)
         self._verify(testcase)
         self._post_verify(testcase)
 
     def analyze(self, testcase):
+        '''
+        Analyzes a test case
+        :param testcase:
+        '''
         logger.debug('analyze')
         self._pre_analyze(testcase)
         self._analyze(testcase)
         self._post_analyze(testcase)
 
     def report(self, testcase):
+        '''
+        Prepares the test case report
+        :param testcase:
+        '''
         logger.debug('report')
         self._pre_report(testcase)
         self._report(testcase)
@@ -143,6 +180,9 @@ class IterationBase3(object):
         if not self.candidates:
             return
 
+
+        # FIXME: This is wrong. Don't modify the list you're looping over.
+        # TODO: Come up with a better way to do this.
         # every test case is a candidate until verified
         # use a while loop so we have the option of adding
         # candidates during the loop
@@ -159,5 +199,4 @@ class IterationBase3(object):
         while len(self.analyzed) > 0:
             testcase = self.analyzed.pop(0)
             self.report(testcase)
-
 
