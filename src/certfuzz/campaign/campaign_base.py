@@ -233,18 +233,15 @@ class CampaignBase(object):
             msg = 'Cannot find program "%s" (resolves to "%s")' % (self.program, os.path.abspath(self.program))
             raise CampaignError(msg)
 
-    @abc.abstractmethod
     def _set_fuzzer(self):
         self.fuzzer_module = import_module_by_name(self.fuzzer_module_name)
         self.fuzzer = self.fuzzer_module._fuzzer_class
 
-    @abc.abstractmethod
     def _set_runner(self):
         if self.runner_module_name:
             self.runner_module = import_module_by_name(self.runner_module_name)
             self.runner = self.runner_module._runner_class
 
-    @abc.abstractmethod
     def _set_debugger(self):
         # this will import the module which registers the debugger
         self.debugger_module = import_module_by_name(self.debugger_module_name)

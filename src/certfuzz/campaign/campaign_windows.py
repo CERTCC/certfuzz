@@ -239,12 +239,3 @@ class WindowsCampaign(CampaignBase):
             # for k, score, successes, tries, p in self.seedfile_set.status():
             #    logger.info('%s %0.6f %d %d %0.6f', k, score, successes,
             #                tries, p)
-
-    def _set_fuzzer(self):
-        CampaignBase._set_fuzzer(self)
-
-    def _set_runner(self):
-        CampaignBase._set_runner(self)
-
-    def _set_debugger(self):
-        CampaignBase._set_debugger(self)
