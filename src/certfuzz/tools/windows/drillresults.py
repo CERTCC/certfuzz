@@ -12,7 +12,7 @@ import zipfile
 import cPickle as pickle
 
 from certfuzz.tools.common.drillresults import readfile, carve, carve2, \
-    score_reports, is_number, reg_set, reg64_set
+    score_reports, is_number, reg_set, reg64_set, printreport
 
 regex = {
         'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]'),
@@ -188,7 +188,8 @@ def getinstr(reporttext, instraddr):
     '''
     regex = re.compile('^%s\s.+.+\s+' % instraddr)
     for line in reporttext.splitlines():
-        if regex.match(line):
+        n = regex.match(line)
+        if n:
             return line
 
 
@@ -312,10 +313,9 @@ def checkreport(reportfile, crasherfile, crash_hash):
     if shortdesc:
         # Set !exploitable Short Description for the exception
         crashid['exceptions'][exceptionnum]['shortdesc'] = shortdesc
-        if shortdesc in re_set:
-            # Flag the entire crash ID as really exploitable if this is a good
-            # exception
-            crashid['reallyexploitable'] = True
+        # Flag the entire crash ID as really exploitable if this is a good
+        # exception
+        crashid['reallyexploitable'] = shortdesc in re_set
     # Check if the expected crasher file (fuzzed file) exists
     if not os.path.isfile(crasherfile):
         # It's not there, so try to extract the filename from the cdb
@@ -436,32 +436,6 @@ def parsemsecs(mseclist):
 
 
 
-
-
-
-def printreport():
-    sorted_crashes = sorted(scoredcrashes.iteritems(), key=lambda(k, v): (v, k))
-
-    for crashes in sorted_crashes:
-        crasher = crashes[0]
-        score = crashes[1]
-        print '\n%s - Exploitability rank: %s' % (crasher, score)
-        print 'Fuzzed file: %s' % results[crasher]['fuzzedfile']
-        for exception in results[crasher]['exceptions']:
-            shortdesc = results[crasher]['exceptions'][exception]['shortdesc']
-            eiftext = ''
-            efa = '0x' + results[crasher]['exceptions'][exception]['efa']
-            if results[crasher]['exceptions'][exception]['EIF']:
-                eiftext = " *** Byte pattern is in fuzzed file! ***"
-            print 'exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext)
-            print results[crasher]['exceptions'][exception]['instructionline']
-            module = results[crasher]['exceptions'][exception]['pcmodule']
-            if module == 'unloaded':
-                if not ignorejit:
-                    print 'Instruction pointer is not in a loaded module!'
-            else:
-                print 'Code executing in: %s' % module
-
 def loadcached(pkl_filename):
     try:
         with open(pkl_filename, 'rb') as pkl_file:
@@ -507,7 +481,7 @@ def main():
         cached_results = loadcached(pickle_file)
     parsemsecs(mseclist)
     score_reports(results, scoredcrashes, ignorejit, re_set)
-    printreport()
+    printreport(results, scoredcrashes, ignorejit)
     cache_results(pickle_file)
 
 if __name__ == '__main__':
