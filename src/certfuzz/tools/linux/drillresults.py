@@ -11,8 +11,8 @@ import sys
 import logging
 sys.path.insert(0, '/Users/adh/git/bff/src')
 
-from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
-    reg_set, ResultDriller, parse_args, TestCaseBundle, set_log_level, \
+from certfuzz.tools.common.drillresults import carve, carve2, \
+    reg_set, ResultDriller, parse_args, TestCaseBundle, \
     root_logger_to_console
 
 logger = logging.getLogger(__name__)

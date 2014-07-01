@@ -57,7 +57,7 @@ class Test(unittest.TestCase):
         fd, f = tempfile.mkstemp(text=True)
         os.write(fd, 'fizzle')
         os.close(fd)
-        result = drillresults.read_file(f)
+        result = drillresults.read_text_file(f)
         self.assertEqual('fizzle', result)
         os.remove(f)
 
