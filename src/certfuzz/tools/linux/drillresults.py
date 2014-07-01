@@ -387,11 +387,11 @@ class LinuxResultDriller(ResultDriller):
             if current_file.endswith('.gdb'):
 #            if regex['gdb_report'].match(current_file):
                 #print 'checking %s' % current_file
-                gdbfile = os.path.join(root, current_file)
-                logger.debug('found gdb file: %s', gdbfile)
-                crasherfile = gdbfile.replace('.gdb', '')
+                dbg_file = os.path.join(root, current_file)
+                logger.debug('found gdb file: %s', dbg_file)
+                crasherfile = dbg_file.replace('.gdb', '')
                 #crasherfile = os.path.join(root, crasherfile)
-                tcb = LinuxTestCaseBundle(gdbfile, crasherfile, crash_hash,
+                tcb = LinuxTestCaseBundle(dbg_file, crasherfile, crash_hash,
                                           self.re_set, self.ignore_jit)
                 self.testcase_bundles.append(tcb)
 
