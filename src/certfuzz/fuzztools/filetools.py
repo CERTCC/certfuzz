@@ -333,6 +333,31 @@ def make_writable(filename):
     os.chmod(filename, mode | stat.S_IWRITE)
 
 
+def _read_file(path, perm):
+    '''
+    Generic file read
+    :param path:
+    :param perm:
+    '''
+    with open(path, perm) as f:
+        return f.read()
+
+
+def read_text_file(textfile):
+    '''
+    Read text file
+    '''
+    return _read_file(textfile, 'r')
+
+
+def read_bin_file(binfile):
+    '''
+    Read binary file
+    '''
+    return _read_file(binfile, 'rb')
+
+
+
 # Adapted from Python Cookbook 2nd Ed. p.88
 def all_files(root, patterns='*', single_level=False, yield_folders=False):
     # Expand patterns from semicolon-separated string to list

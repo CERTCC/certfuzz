@@ -9,6 +9,7 @@ import abc
 import logging
 import argparse
 from certfuzz.tools.common.errors import DrillResultsError
+from certfuzz.fuzztools.filetools import read_text_file, read_bin_file
 
 logger = logging.getLogger(__name__)
 
@@ -75,23 +76,6 @@ def parse_args():
     return parser.parse_args()
 
 
-def read_file(textfile):
-    '''
-    Read text file
-    '''
-    with open(textfile, 'r') as f:
-        return f.read()
-
-
-def read_bin_file(textfile):
-    '''
-    Read binary file
-    '''
-    f = open(textfile, 'rb')
-    text = f.read()
-    return text
-
-
 def carve(string, token1, token2):
     startindex = string.find(token1)
     if startindex == -1:
@@ -135,7 +119,7 @@ class TestCaseBundle(object):
         self.crash_hash = crash_hash
         self.re_set = re_set
 
-        self.reporttext = read_file(self.dbg_outfile)
+        self.reporttext = read_text_file(self.dbg_outfile)
         # Read in the fuzzed file
         self.crasherdata = read_bin_file(self.testcase_file)
         self.current_dir = os.path.dirname(self.dbg_outfile)
@@ -167,6 +151,7 @@ class TestCaseBundle(object):
     @abc.abstractmethod
     def _score_testcase(self):
         pass
+
 
 class ResultDriller(object):
     __metaclass__ = abc.ABCMeta
