@@ -88,6 +88,48 @@ def is_number(s):
         return False
 
 
+class TestCaseBundle(object):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, dbg_outfile, testcase_file, crash_hash, re_set):
+        self.dbg_outfile = dbg_outfile
+        self.testcase_file = testcase_file
+        self.crash_hash = crash_hash
+        self.re_set = re_set
+
+        self.reporttext = read_file(self.dbg_outfile)
+        # Read in the fuzzed file
+        self.crasherdata = read_bin_file(self.testcase_file)
+        self.current_dir = os.path.dirname(self.dbg_outfile)
+
+        self.details = {'reallyexploitable': False,
+                        'exceptions': {}}
+        self.score = 100
+        self._64bit_debugger = False
+
+        # See if we're dealing with 64-bit debugger or target app
+        self._check_64bit()
+        self._check_report()
+        self._score_testcase()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        pass
+
+    @abc.abstractmethod
+    def _check_64bit(self):
+        pass
+
+    @abc.abstractmethod
+    def _check_report(self):
+        pass
+
+    @abc.abstractmethod
+    def _score_testcase(self):
+        pass
+
 class ResultDriller(object):
     __metaclass__ = abc.ABCMeta
 
