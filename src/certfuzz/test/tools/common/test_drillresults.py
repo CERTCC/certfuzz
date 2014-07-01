@@ -9,8 +9,12 @@ import tempfile
 import shutil
 import os
 
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
 class MockRd(drillresults.ResultDriller):
+    # really_exploitable expects a list
+    really_exploitable = list(alphabet)
+
     def _check_report(self):
         pass
 
@@ -18,9 +22,6 @@ class MockRd(drillresults.ResultDriller):
         pass
 
     def check_64bit(self):
-        pass
-
-    def really_exploitable(self):
         pass
 
 
@@ -91,6 +92,10 @@ class Test(unittest.TestCase):
     def test_rd_acts_as_metaclass(self):
         self.assertRaises(TypeError, drillresults.ResultDriller)
 
+    def test_rd(self):
+        rd = MockRd()
+        for letter in alphabet:
+            self.assertTrue(letter in rd.re_set)
 
 
 if __name__ == "__main__":
