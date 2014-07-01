@@ -484,7 +484,7 @@ class LinuxResultDriller(ResultDriller):
 
 def main():
     options = parse_args()
-    with ResultDriller(ignore_jit=options.ignorejit,
+    with LinuxResultDriller(ignore_jit=options.ignorejit,
                        base_dir=options.resultsdir) as rd:
         rd.drill_results()
 
