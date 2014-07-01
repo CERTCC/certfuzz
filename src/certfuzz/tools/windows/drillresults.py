@@ -6,13 +6,11 @@ import os
 import struct
 import binascii
 import re
-from optparse import OptionParser
 import StringIO
 import zipfile
 
 from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
-    score_reports, is_number, reg_set, reg64_set, print_report, \
-    cache_results, load_cached, ResultDriller
+    is_number, reg_set, reg64_set, ResultDriller, parse_args
 
 regex = {
         'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]'),
@@ -38,8 +36,6 @@ really_exploitable = [
                       ]
 
 re_set = set(really_exploitable)
-
-
 
 
 def fix_efa_bug(reporttext, instraddr, faultaddr):
@@ -185,27 +181,6 @@ def fix_efa_offset(instructionline, faultaddr, _64bit_debugger, wow64_app):
                     faultaddr = hex(eval(faultaddr) - eval(offset))
                     faultaddr = format_addr(faultaddr.replace('L', ''))
     return faultaddr
-
-def parse_args():
-    import argparse
-
-    usage = "usage: %prog [options]"
-    parser = argparse.ArgumentParser(usage)
-    parser.add_option('-d', '--dir',
-                      help='directory to look for results in. Default is "results"',
-                      dest='resultsdir',
-                      default='../results',
-                      type=str)
-    parser.add_option('-j', '--ignorejit', dest='ignorejit',
-                      action='store_true',
-                      help='Ignore PC in unmapped module (JIT)',
-                      default=False,
-                      type=bool)
-    parser.add_option('-f', '--force', dest='force',
-                      action='store_true',
-                      help='Force recalculation of results',
-                      type=bool)
-    return parser.parse_args()
 
 def WindowsResultDriller(ResultDriller):
     # These !exploitable short descriptions indicate a very interesting crash
@@ -432,31 +407,8 @@ def WindowsResultDriller(ResultDriller):
         return mapped_module
 
 
-
 def main():
-    # If user doesn't specify a directory to crawl, use "results"
-    pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
-
     options = parse_args()
-
-    ignorejit = options.ignorejit
-    tld = options.resultsdir
-    if not os.path.isdir(tld):
-        tld = 'results'
-    if not os.path.isdir(tld):
-        # Probably using FOE 1.0, which defaults to "crashers" for output
-        tld = 'crashers'
-
-    if not options.force:
-        cached_results = load_cached(pickle_file)
-
-    dbg_out = find_dbg_output(tld)
-    for dbg_file, crash_file, crash_hash in dbg_out:
-        check_report(dbg_file, crash_file, crash_hash, cached_results)
-    score_reports(results, scoredcrashes, ignorejit, re_set)
-    print_report(results, scoredcrashes, ignorejit)
-    cache_results(pickle_file)
-
     with ResultDriller(ignore_jit=options.ignorejit,
                          base_dir=options.resultsdir) as rd:
         rd.drill_results()
