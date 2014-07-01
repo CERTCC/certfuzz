@@ -18,7 +18,7 @@ class MockRd(drillresults.ResultDriller):
     def _check_report(self):
         pass
 
-    def _platform_find_dbg_output(self):
+    def _platform_find_testcases(self):
         pass
 
     def check_64bit(self):

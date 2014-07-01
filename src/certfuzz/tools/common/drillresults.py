@@ -181,13 +181,12 @@ class ResultDriller(object):
         self.force = force_reload
 
         self.pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
-        self.cached_results = None
-        self.dbg_out = []
-        self.results = {}
-        self.crash_scores = {}
+        self.cached_testcases = None
+        self.testcase_bundles = []
+#        self.results = {}
+#        self.crash_scores = {}
 
         self._64bit_debugger = False
-
         self.re_set = set(self.really_exploitable)
 
     @abc.abstractproperty
@@ -207,35 +206,31 @@ class ResultDriller(object):
         return handled
 
     @abc.abstractmethod
-    def check_64bit(self, reporttext):
-        '''
-        Check if the debugger and target app are 64-bit
-        '''
+    def _platform_find_testcases(self, crash_hash):
         pass
 
-    @abc.abstractmethod
-    def _platform_find_dbg_output(self, crash_hash):
-        pass
-
-    def find_dbg_output(self):
+    def process_testcases(self):
         '''
         Crawls self.tld looking for crash directories to process. Puts a list
-        of tuples into self.dbg_out.
+        of tuples into self.testcase_bundles.
         '''
         # Walk the results directory
         for root, dirs, files in os.walk(self.tld):
+            logger.debug('Looking for testcases in %s', root)
             dir_basename = os.path.basename(root)
-            self._platform_find_dbg_output(dir_basename, files, root)
+            self._platform_find_testcases(dir_basename, files, root)
 
-    @abc.abstractmethod
-    def _check_report(self, dbg_file, crash_file, crash_hash, cached_results):
-        pass
+
+#    @abc.abstractmethod
+#    def _check_report(self, tcb):
+#        pass
 
     def _check_dirs(self):
         check_dirs = [self.base_dir, 'results', 'crashers']
         for d in check_dirs:
             if os.path.isdir(d):
                 self.tld = d
+                logger.debug('found dir: %s', self.tld)
                 return
         # if you got here, none of them exist
         raise DrillResultsError('None of {} appears to be a dir'.format(check_dirs))
@@ -246,88 +241,32 @@ class ResultDriller(object):
             return
 
         try:
-            with open(self.pkl_filename, 'rb') as pkl_file:
-                self.cached_results = pickle.load(pkl_file)
+            with open(self.pickle_file, 'rb') as pkl_file:
+                self.cached_testcases = pickle.load(pkl_file)
         except IOError:
             # No cached results
             pass
 
-    def check_reports(self):
-        for dbg_file, crash_file, crash_hash in self.dbg_out:
-            self._check_report(dbg_file, crash_file, crash_hash, self.cached_results)
+#    def score_testcases(self):
+#        # Assign a ranking to each crash report.  The lower the rank, the higher
+#        # the exploitability
+#        # For each of the crash ids in the results dictionary, apply ranking
+#        for tcb in self.testcase_bundles:
+#            testcase_key = tcb.crash_hash
+#            testcase_details = tcb.details
+#            logger.debug('Scoring testcase: %s', testcase_key)
+#            try:
+#                self.crash_scores[testcase_key] = self._score_crasher(testcase_details)
+#            except KeyError:
+#                logger.warning("Error scoring crash %s", testcase_key)
+#                continue
 
-    def _score_crasher(self, details):
-        scores = [100]
-        if details['reallyexploitable'] == True:
-        # The crash summary is a very interesting one
-            for exception in details['exceptions']:
-                module = details['exceptions'][exception]['pcmodule']
-                if module == 'unloaded' and not self.ignorejit:
-                    # EIP is not in a loaded module
-                    scores.append(20)
-                if details['exceptions'][exception]['shortdesc'] in self.re_set:
-                    efa = '0x' + details['exceptions'][exception]['efa']
-                    if details['exceptions'][exception]['EIF']:
-                    # The faulting address pattern is in the fuzzed file
-                        if '0x000000' in efa:
-                            # Faulting address is near null
-                            scores.append(30)
-                        elif '0x0000' in efa:
-                            # Faulting address is somewhat near null
-                            scores.append(20)
-                        elif '0xffff' in efa:
-                            # Faulting address is likely a negative number
-                            scores.append(20)
-                        else:
-                            # Faulting address has high entropy.  Most exploitable.
-                            scores.append(10)
-                    else:
-                        # The faulting address pattern is not in the fuzzed file
-                        scores.append(40)
-        else:
-            # The crash summary isn't necessarily interesting
-            for exception in details['exceptions']:
-                efa = '0x' + details['exceptions'][exception]['efa']
-                module = details['exceptions'][exception]['pcmodule']
-                if module == 'unloaded' and not self.ignorejit:
-                    scores.append(20)
-                elif module.lower() == 'ntdll.dll' or 'msvcr' in module.lower():
-                    # likely heap corruption.  Exploitable, but difficult
-                    scores.append(45)
-                elif '0x00120000' in efa or '0x00130000' in efa or '0x00140000' in efa:
-                    # non-continued potential stack buffer overflow
-                    scores.append(40)
-                elif details['exceptions'][exception]['EIF']:
-                # The faulting address pattern is in the fuzzed file
-                    if '0x000000' in efa:
-                        # Faulting address is near null
-                        scores.append(70)
-                    elif '0x0000' in efa:
-                        # Faulting address is somewhat near null
-                        scores.append(60)
-                    elif '0xffff' in efa:
-                        # Faulting address is likely a negative number
-                        scores.append(60)
-                    else:
-                        # Faulting address has high entropy.
-                        scores.append(50)
-        return min(scores)
+    @property
+    def crash_scores(self):
+        return dict([(tcb.crash_hash, tcb.score) for tcb in self.testcase_bundles])
 
-    def score_reports(self):
-        # Assign a ranking to each crash report.  The lower the rank, the higher
-        # the exploitability
-        if self.results:
-            print "--- Interesting crashes ---\n"
-            # For each of the crash ids in the results dictionary, apply ranking
-            for crash_key, crash_details in self.results.iteritems():
-                try:
-                    self.crash_scores[crash_key] = self._score_crasher(crash_details)
-                except KeyError:
-                    print "Error scoring crash %s" % crash_key
-                    continue
-
-    def print_crash_report(self, crash_key, score):
-        details = self.results[crash_key]
+    def print_crash_report(self, crash_key, score, details):
+#        details = self.results[crash_key]
         print '\n%s - Exploitability rank: %s' % (crash_key, score)
         print 'Fuzzed file: %s' % details['fuzzedfile']
         for exception in details['exceptions']:
@@ -351,21 +290,26 @@ class ResultDriller(object):
         return sorted(self.crash_scores.iteritems(), key=lambda(k, v): (v, k))
 
     def print_reports(self):
+        results = dict([(tcb.crash_hash, tcb.details) for tcb in self.testcase_bundles])
+        print "--- Interesting crashes ---\n"
         for crash_key, score in self.sorted_crashes:
-            self.print_crash_report(crash_key, score)
+            details = results[crash_key]
+            try:
+                self.print_crash_report(crash_key, score, details)
+            except KeyError as e:
+                logger.warning('Tescase %s is missing information: %s', crash_key, e)
 
     def cache_results(self):
-        pkldir = os.path.dirname(self.pkl_filename)
+        pkldir = os.path.dirname(self.pickle_file)
         if not os.path.exists(pkldir):
             os.makedirs(pkldir)
-        with open(self.pkl_filename, 'wb') as pkl_file:
-            pickle.dump(self.results, pkl_file, -1)
+        with open(self.pickle_file, 'wb') as pkl_file:
+            pickle.dump(self.testcase_bundles, pkl_file, -1)
 
     def drill_results(self):
+        logger.debug('drill_results')
         self._check_dirs()
         self.load_cached()
-        self.find_dbg_output()
-        self.check_reports()
-        self.score_reports()
+        self.process_testcases()
         self.print_reports()
         self.cache_results()
