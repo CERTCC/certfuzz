@@ -24,23 +24,25 @@ reg_set = set(registers)
 reg64_set = set(registers64)
 
 
-def parse_args():
+def _build_arg_parser():
     usage = "usage: %prog [options]"
     parser = argparse.ArgumentParser(usage)
-    parser.add_option('-d', '--dir',
+    parser.add_argument('-d', '--dir',
                       help='directory to look for results in. Default is "results"',
                       dest='resultsdir',
                       default='../results',
                       type=str)
-    parser.add_option('-j', '--ignorejit', dest='ignorejit',
+    parser.add_argument('-j', '--ignorejit', dest='ignorejit',
                       action='store_true',
                       help='Ignore PC in unmapped module (JIT)',
-                      default=False,
-                      type=bool)
-    parser.add_option('-f', '--force', dest='force',
+                      default=False)
+    parser.add_argument('-f', '--force', dest='force',
                       action='store_true',
-                      help='Force recalculation of results',
-                      type=bool)
+                      help='Force recalculation of results')
+    return parser
+
+def parse_args():
+    parser = _build_arg_parser()
     return parser.parse_args()
 
 
