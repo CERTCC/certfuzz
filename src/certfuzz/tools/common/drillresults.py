@@ -8,7 +8,7 @@ import cPickle as pickle
 import abc
 import logging
 import argparse
-from certfuzz.tools.common.errors import DrillResultsError
+from certfuzz.tools.common.errors import DrillResultsError, TestCaseBundleError
 from certfuzz.fuzztools.filetools import read_text_file, read_bin_file
 
 logger = logging.getLogger(__name__)
@@ -115,6 +115,9 @@ class TestCaseBundle(object):
     def __init__(self, dbg_outfile, testcase_file, crash_hash, re_set, ignore_jit=False):
         self.dbg_outfile = dbg_outfile
         self.testcase_file = testcase_file
+
+        self._verify_files_exist()
+
         self.crash_hash = crash_hash
         self.re_set = re_set
         self.ignore_jit = ignore_jit
@@ -133,6 +136,11 @@ class TestCaseBundle(object):
         self._check_64bit()
         self._check_report()
         self._score_testcase()
+
+    def _verify_files_exist(self):
+        for f in [self.dbg_outfile, self.testcase_file]:
+            if not os.path.exists(f):
+                raise TestCaseBundleError('File not found: {}'.format(f))
 
     def __enter__(self):
         return self
@@ -203,7 +211,11 @@ class ResultDriller(object):
         for root, dirs, files in os.walk(self.tld):
             logger.debug('Looking for testcases in %s', root)
             dir_basename = os.path.basename(root)
-            self._platform_find_testcases(dir_basename, files, root)
+            try:
+                self._platform_find_testcases(dir_basename, files, root)
+            except TestCaseBundleError as e:
+                logger.warning('Skipping %s: %s', dir_basename, e)
+                continue
 
     def _check_dirs(self):
         check_dirs = [self.base_dir, 'results', 'crashers']
