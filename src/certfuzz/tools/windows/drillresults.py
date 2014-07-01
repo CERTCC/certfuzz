@@ -39,46 +39,7 @@ really_exploitable = [
 
 re_set = set(really_exploitable)
 
-results = {}
-scoredcrashes = {}
-regdict = {}
 
-
-def check_64bit(reporttext):
-    '''
-    Check if the debugger and target app are 64-bit
-    '''
-    for line in reporttext.splitlines():
-        n = re.match(regex['64bit_debugger'], line)
-        if n:
-            _64bit_debugger = True
-        if _64bit_debugger:
-            n = re.match(regex['syswow64'], line)
-            if n:
-                wow64_app = True
-    return (_64bit_debugger, wow64_app)
-
-
-def pc_in_mapped_address(reporttext, instraddr, _64bit_debugger):
-    '''
-    Check if the instruction pointer is in a loaded module
-    '''
-    ma_regex = 'mapped_address'
-    mapped_module = 'unloaded'
-    if _64bit_debugger:
-        ma_regex = 'mapped_address64'
-
-    instraddr = instraddr.replace('`', '')
-    instraddr = int(instraddr, 16)
-    for line in reporttext.splitlines():
-        n = re.match(regex[ma_regex], line)
-        if n:
-            # Strip out backticks present on 64-bit systems
-            begin_address = int(n.group(1).replace('`', ''), 16)
-            end_address = int(n.group(2).replace('`', ''), 16)
-            if begin_address < instraddr < end_address:
-                mapped_module = n.group(3)
-    return mapped_module
 
 
 def fix_efa_bug(reporttext, instraddr, faultaddr):
@@ -181,29 +142,6 @@ def get_instr(reporttext, instraddr):
             return line
 
 
-def format_addr(faultaddr, _64bit_debugger, wow64_app):
-    '''
-    Format a 64- or 32-bit memory address to a fixed width
-    '''
-    if not faultaddr:
-        return
-
-    faultaddr = faultaddr.strip().replace('0x', '')
-
-    if _64bit_debugger and not wow64_app:
-        # Due to a bug in !exploitable, the Exception Faulting Address is
-        # often wrong with 64-bit targets
-        if len(faultaddr) < 10:
-            # pad faultaddr
-            return faultaddr.zfill(16)
-
-    if len(faultaddr) > 10:
-        # 0x12345678 = 10 chars
-        return faultaddr[-8:]
-
-    if len(faultaddr) < 10:
-        # pad faultaddr
-        return faultaddr.zfill(8)
 
 
 def fix_efa_offset(instructionline, faultaddr, _64bit_debugger, wow64_app):
@@ -248,130 +186,6 @@ def fix_efa_offset(instructionline, faultaddr, _64bit_debugger, wow64_app):
                     faultaddr = format_addr(faultaddr.replace('L', ''))
     return faultaddr
 
-
-def checkreport(reportfile, crasherfile, crash_hash, cached_results):
-    '''
-    Parse the msec file
-    '''
-    if cached_results:
-        if cached_results.get(crash_hash):
-            results[crash_hash] = cached_results[crash_hash]
-            return
-
-    crashid = results[crash_hash]
-
-    if crasherfile == '':
-        # Old FOE version that didn't do multiple exceptions or rename msec
-        # file with exploitability
-        crasherfile, reportfileext = os.path.splitext(reportfile)
-
-    reporttext = readfile(reportfile)
-    getregs(reporttext)
-    current_dir = os.path.dirname(reportfile)
-    exceptionnum = getexnum(reporttext, wow64_app)
-    classification = carve(reporttext, "Exploitability Classification: ", "\n")
-    try:
-        if classification:
-            # Create a new exception dictionary to add to the crash
-            exception = {}
-            crashid['exceptions'][exceptionnum] = exception
-    except KeyError:
-        # Crash ID (crash_hash) not yet seen
-        # Default it to not being "really exploitable"
-        crashid['reallyexploitable'] = False
-        # Create a dictionary of exceptions for the crash id
-        exceptions = {}
-        crashid['exceptions'] = exceptions
-        # Create a dictionary for the exception
-        crashid['exceptions'][exceptionnum] = exception
-
-    # Set !exploitable classification for the exception
-    if classification:
-        crashid['exceptions'][exceptionnum]['classification'] = classification
-
-    shortdesc = carve(reporttext, "Short Description: ", "\n")
-    if shortdesc:
-        # Set !exploitable Short Description for the exception
-        crashid['exceptions'][exceptionnum]['shortdesc'] = shortdesc
-        # Flag the entire crash ID as really exploitable if this is a good
-        # exception
-        crashid['reallyexploitable'] = shortdesc in re_set
-    # Check if the expected crasher file (fuzzed file) exists
-    if not os.path.isfile(crasherfile):
-        # It's not there, so try to extract the filename from the cdb
-        # commandline
-        commandline = carve(reporttext, "CommandLine: ", "\n")
-        args = commandline.split()
-        for arg in args:
-            if "sf_" in arg:
-                crasherfile = os.path.basename(arg)
-                if "-" in crasherfile:
-                    # FOE 2.0 verify mode puts a '-<iteration>' part on the
-                    # filename when invoking cdb, however the resulting file
-                    # is really just 'sf_<hash>.<ext>'
-                    fileparts = crasherfile.split('-')
-                    m = re.search('\..+', fileparts[1])
-                    # Recreate the original file name, minus the iteration
-                    crasherfile = os.path.join(current_dir, fileparts[0] + m.group(0))
-                else:
-                    crasherfile = os.path.join(current_dir, crasherfile)
-    if not os.path.isfile(crasherfile):
-        # Can't find the crasher file
-        return
-    # Set the "fuzzedfile" property for the crash ID
-    crashid['fuzzedfile'] = crasherfile
-    # See if we're dealing with 64-bit debugger or target app
-    (_64bit_debugger, wow64_app) = check_64bit(reporttext)
-    faultaddr = carve2(reporttext)
-    instraddr = carve(reporttext, "Instruction Address:", "\n")
-    faultaddr = formataddr(faultaddr, _64bit_debugger, wow64_app)
-    instraddr = formataddr(instraddr, _64bit_debugger, wow64_app)
-
-    # No faulting address means no crash.
-    if not faultaddr or not instraddr:
-        return
-
-    if _64bit_debugger and not wow64_app and instraddr:
-        # Put backtick into instruction address for pattern matching
-        instraddr = ''.join([instraddr[:8], '`', instraddr[8:]])
-        if shortdesc != 'DEPViolation':
-            faultaddr = fixefabug(reporttext, instraddr, faultaddr)
-
-#    pc_module = pc_in_mapped_address(reporttext, instraddr)
-    crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr, _64bit_debugger)
-
-    # Get the cdb line that contains the crashing instruction
-    instructionline = getinstr(reporttext, instraddr)
-    crashid['exceptions'][exceptionnum]['instructionline'] = instructionline
-    if instructionline:
-        faultaddr = fixefaoffset(instructionline, faultaddr, _64bit_debugger, wow64_app)
-
-    # Fix faulting pattern endian
-    faultaddr = faultaddr.replace('0x', '')
-    crashid['exceptions'][exceptionnum]['efa'] = faultaddr
-    if _64bit_debugger and not wow64_app:
-        # 64-bit target app
-        faultaddr = faultaddr.zfill(16)
-        efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
-        efapattern = hex(efaptr[0]).replace('0x', '')
-        efapattern = efapattern.replace('L', '')
-        efapattern = efapattern.zfill(16)
-    else:
-        # 32-bit target app
-        faultaddr = faultaddr.zfill(8)
-        efaptr = struct.unpack('<L', binascii.a2b_hex(faultaddr))
-        efapattern = hex(efaptr[0]).replace('0x', '')
-        efapattern = efapattern.replace('L', '')
-        efapattern = efapattern.zfill(8)
-
-    # Read in the fuzzed file
-    crasherdata = readbinfile(crasherfile)
-
-    # If there's a match, flag this exception has having Efa In File
-    if binascii.a2b_hex(efapattern) in crasherdata:
-        crashid['exceptions'][exceptionnum]['EIF'] = True
-    else:
-        crashid['exceptions'][exceptionnum]['EIF'] = False
 def parse_args():
     import argparse
 
@@ -393,17 +207,27 @@ def parse_args():
                       type=bool)
     return parser.parse_args()
 
-def find_dbg_output(tld):
-    dbg_out_list = []
-    # Walk the results directory
-    for root, dirs, files in os.walk(tld):
-        crash_hash = os.path.basename(root)
-        # Only use directories that are hashes
+def WindowsResultDriller(ResultDriller):
+    # These !exploitable short descriptions indicate a very interesting crash
+    really_exploitable = [
+                      'ReadAVonIP',
+                      'TaintedDataControlsCodeFlow',
+                      'ReadAVonControlFlow',
+                      'DEPViolation',
+                      'IllegalInstruction',
+                      'PrivilegedInstruction',
+                      ]
+
+    def __init__(self, ignore_jit=False, base_dir='../results', force_reload=False):
+        ResultDriller.__init__(self, ignore_jit, base_dir, force_reload)
+        self.wow64_app = False
+
+    def _platform_find_dbg_output(self, crash_hash, files, root):
         if "0x" in crash_hash:
             # Create dictionary for hashes in results dictionary
             hash_dict = {}
             hash_dict['hash'] = crash_hash
-            results[crash_hash] = hash_dict
+            self.results[crash_hash] = hash_dict
             crasherfile = ''
             # Check each of the files in the hash directory
             for current_file in files:
@@ -422,8 +246,191 @@ def find_dbg_output(tld):
                     if crasherfile and root not in crasherfile:
                         crasherfile = os.path.join(root, crasherfile)
                     dbg_tuple = (msecfile, crasherfile, crash_hash)
-                    dbg_out_list.append(dbg_tuple)
-    return dbg_out_list
+                    self.dbg_out.append(dbg_tuple)
+
+    def check_64bit(self, reporttext):
+        '''
+        Check if the debugger and target app are 64-bit
+        '''
+        for line in reporttext.splitlines():
+            n = re.match(regex['64bit_debugger'], line)
+            if n:
+                self._64bit_debugger = True
+
+            if self._64bit_debugger:
+                n = re.match(regex['syswow64'], line)
+                if n:
+                    self.wow64_app = True
+
+    def _check_report(self, reportfile, crasherfile, crash_hash, cached_results):
+        '''
+        Parse the msec file
+        '''
+        if cached_results:
+            if cached_results.get(crash_hash):
+                self.results[crash_hash] = cached_results[crash_hash]
+                return
+
+        crashid = self.results[crash_hash]
+
+        if crasherfile == '':
+            # Old FOE version that didn't do multiple exceptions or rename msec
+            # file with exploitability
+            crasherfile, reportfileext = os.path.splitext(reportfile)
+
+        reporttext = read_file(reportfile)
+        get_regs(reporttext)
+        current_dir = os.path.dirname(reportfile)
+        exceptionnum = get_ex_num(reporttext, self.wow64_app)
+        classification = carve(reporttext, "Exploitability Classification: ", "\n")
+        try:
+            if classification:
+                # Create a new exception dictionary to add to the crash
+                exception = {}
+                crashid['exceptions'][exceptionnum] = exception
+        except KeyError:
+            # Crash ID (crash_hash) not yet seen
+            # Default it to not being "really exploitable"
+            crashid['reallyexploitable'] = False
+            # Create a dictionary of exceptions for the crash id
+            exceptions = {}
+            crashid['exceptions'] = exceptions
+            # Create a dictionary for the exception
+            crashid['exceptions'][exceptionnum] = exception
+
+        # Set !exploitable classification for the exception
+        if classification:
+            crashid['exceptions'][exceptionnum]['classification'] = classification
+
+        shortdesc = carve(reporttext, "Short Description: ", "\n")
+        if shortdesc:
+            # Set !exploitable Short Description for the exception
+            crashid['exceptions'][exceptionnum]['shortdesc'] = shortdesc
+            # Flag the entire crash ID as really exploitable if this is a good
+            # exception
+            crashid['reallyexploitable'] = shortdesc in re_set
+        # Check if the expected crasher file (fuzzed file) exists
+        if not os.path.isfile(crasherfile):
+            # It's not there, so try to extract the filename from the cdb
+            # commandline
+            commandline = carve(reporttext, "CommandLine: ", "\n")
+            args = commandline.split()
+            for arg in args:
+                if "sf_" in arg:
+                    crasherfile = os.path.basename(arg)
+                    if "-" in crasherfile:
+                        # FOE 2.0 verify mode puts a '-<iteration>' part on the
+                        # filename when invoking cdb, however the resulting file
+                        # is really just 'sf_<hash>.<ext>'
+                        fileparts = crasherfile.split('-')
+                        m = re.search('\..+', fileparts[1])
+                        # Recreate the original file name, minus the iteration
+                        crasherfile = os.path.join(current_dir, fileparts[0] + m.group(0))
+                    else:
+                        crasherfile = os.path.join(current_dir, crasherfile)
+        if not os.path.isfile(crasherfile):
+            # Can't find the crasher file
+            return
+        # Set the "fuzzedfile" property for the crash ID
+        crashid['fuzzedfile'] = crasherfile
+        # See if we're dealing with 64-bit debugger or target app
+        self.check_64bit(reporttext)
+        faultaddr = carve2(reporttext)
+        instraddr = carve(reporttext, "Instruction Address:", "\n")
+        faultaddr = self.format_addr(faultaddr)
+        instraddr = self.format_addr(instraddr)
+
+        # No faulting address means no crash.
+        if not faultaddr or not instraddr:
+            return
+
+        if self._64bit_debugger and not self.wow64_app and instraddr:
+            # Put backtick into instruction address for pattern matching
+            instraddr = ''.join([instraddr[:8], '`', instraddr[8:]])
+            if shortdesc != 'DEPViolation':
+                faultaddr = fix_efa_bug(reporttext, instraddr, faultaddr)
+
+    #    pc_module = pc_in_mapped_address(reporttext, instraddr)
+        crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr, _64bit_debugger)
+
+        # Get the cdb line that contains the crashing instruction
+        instructionline = get_instr(reporttext, instraddr)
+        crashid['exceptions'][exceptionnum]['instructionline'] = instructionline
+        if instructionline:
+            faultaddr = fix_efa_offset(instructionline, faultaddr, _64bit_debugger, wow64_app)
+
+        # Fix faulting pattern endian
+        faultaddr = faultaddr.replace('0x', '')
+        crashid['exceptions'][exceptionnum]['efa'] = faultaddr
+        if _64bit_debugger and not wow64_app:
+            # 64-bit target app
+            faultaddr = faultaddr.zfill(16)
+            efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
+            efapattern = hex(efaptr[0]).replace('0x', '')
+            efapattern = efapattern.replace('L', '')
+            efapattern = efapattern.zfill(16)
+        else:
+            # 32-bit target app
+            faultaddr = faultaddr.zfill(8)
+            efaptr = struct.unpack('<L', binascii.a2b_hex(faultaddr))
+            efapattern = hex(efaptr[0]).replace('0x', '')
+            efapattern = efapattern.replace('L', '')
+            efapattern = efapattern.zfill(8)
+
+        # Read in the fuzzed file
+        crasherdata = read_bin_file(crasherfile)
+
+        # If there's a match, flag this exception has having Efa In File
+        if binascii.a2b_hex(efapattern) in crasherdata:
+            crashid['exceptions'][exceptionnum]['EIF'] = True
+        else:
+            crashid['exceptions'][exceptionnum]['EIF'] = False
+
+    def format_addr(self, faultaddr):
+        '''
+        Format a 64- or 32-bit memory address to a fixed width
+        '''
+        if not faultaddr:
+            return
+
+        faultaddr = faultaddr.strip().replace('0x', '')
+
+        if self._64bit_debugger and not self.wow64_app:
+            # Due to a bug in !exploitable, the Exception Faulting Address is
+            # often wrong with 64-bit targets
+            if len(faultaddr) < 10:
+                # pad faultaddr
+                return faultaddr.zfill(16)
+
+        if len(faultaddr) > 10:
+            # 0x12345678 = 10 chars
+            return faultaddr[-8:]
+
+        if len(faultaddr) < 10:
+            # pad faultaddr
+            return faultaddr.zfill(8)
+
+    def pc_in_mapped_address(self, reporttext, instraddr):
+        '''
+        Check if the instruction pointer is in a loaded module
+        '''
+        ma_regex = 'mapped_address'
+        mapped_module = 'unloaded'
+        if self._64bit_debugger:
+            ma_regex = 'mapped_address64'
+
+        instraddr = instraddr.replace('`', '')
+        instraddr = int(instraddr, 16)
+        for line in reporttext.splitlines():
+            n = re.match(regex[ma_regex], line)
+            if n:
+                # Strip out backticks present on 64-bit systems
+                begin_address = int(n.group(1).replace('`', ''), 16)
+                end_address = int(n.group(2).replace('`', ''), 16)
+                if begin_address < instraddr < end_address:
+                    mapped_module = n.group(3)
+        return mapped_module
+
 
 
 def main():
@@ -449,6 +456,10 @@ def main():
     score_reports(results, scoredcrashes, ignorejit, re_set)
     print_report(results, scoredcrashes, ignorejit)
     cache_results(pickle_file)
+
+    with ResultDriller(ignore_jit=options.ignorejit,
+                         base_dir=options.resultsdir) as rd:
+        rd.drill_results()
 
 if __name__ == '__main__':
     main()
