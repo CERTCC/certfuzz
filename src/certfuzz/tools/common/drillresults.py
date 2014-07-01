@@ -72,13 +72,12 @@ def carve2(string):
     delims = [("Exception Faulting Address: ", "\n"),
               ("si_addr:$2 = (void *)", "\n")]
     for token1, token2 in delims:
-        startindex = string.find(token1)
-        if startindex == -1:
-            # can't find token1
-            continue
-        startindex = startindex + len(token1)
-        endindex = string.find(token2, startindex)
-        return string[startindex:endindex]
+        substring = carve(string, token1, token2)
+        if len(substring):
+            # returns the first matching substring
+            return substring
+    # if we got here, no match was found, just return empty string
+    return ""
 
 
 def is_number(s):
