@@ -141,6 +141,8 @@ class TestCaseBundle(object):
         for f in [self.dbg_outfile, self.testcase_file]:
             if not os.path.exists(f):
                 raise TestCaseBundleError('File not found: {}'.format(f))
+            else:
+                logger.debug('Found file: %s', f)
 
     def __enter__(self):
         return self
@@ -176,8 +178,6 @@ class ResultDriller(object):
         self.pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
         self.cached_testcases = None
         self.testcase_bundles = []
-#        self.results = {}
-#        self.crash_scores = {}
 
         self._64bit_debugger = False
         self.re_set = set(self.really_exploitable)
