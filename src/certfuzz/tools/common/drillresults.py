@@ -86,37 +86,6 @@ def is_number(s):
     except ValueError:
         return False
 
-def print_crash_report(crash_key, score, details, ignorejit):
-    print '\n%s - Exploitability rank: %s' % (crash_key, score)
-    print 'Fuzzed file: %s' % details['fuzzedfile']
-    for exception in details['exceptions']:
-        shortdesc = details['exceptions'][exception]['shortdesc']
-        eiftext = ''
-        efa = '0x' + details['exceptions'][exception]['efa']
-        if details['exceptions'][exception]['EIF']:
-            eiftext = " *** Byte pattern is in fuzzed file! ***"
-        print 'exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext)
-        if details['exceptions'][exception]['instructionline']:
-            print details['exceptions'][exception]['instructionline']
-        module = details['exceptions'][exception]['pcmodule']
-        if module == 'unloaded':
-            if not ignorejit:
-                print 'Instruction pointer is not in a loaded module!'
-        else:
-            print 'Code executing in: %s' % module
-
-
-def print_report(scoredcrashes, results, ignorejit):
-    sorted_crashes = sorted(scoredcrashes.iteritems(), key=lambda(k, v): (v, k))
-
-    for crash_key, score in sorted_crashes:
-        details = results[crash_key]
-        print_crash_report(crash_key, score, details)
-
-
-class DrillResultsError(Exception):
-    pass
-
 
 class ResultDriller(object):
     __metaclass__ = abc.ABCMeta
@@ -134,7 +103,7 @@ class ResultDriller(object):
         self.cached_results = None
         self.dbg_out = []
         self.results = {}
-        self.scoredcrashes = {}
+        self.crash_scores = {}
 
         self._64bit_debugger = False
 
@@ -257,7 +226,7 @@ class ResultDriller(object):
                         scores.append(50)
         return min(scores)
 
-    def score_reports(self, crashscores, ignorejit, re_set):
+    def score_reports(self):
         # Assign a ranking to each crash report.  The lower the rank, the higher
         # the exploitability
         if self.results:
@@ -265,13 +234,38 @@ class ResultDriller(object):
             # For each of the crash ids in the results dictionary, apply ranking
             for crash_key, crash_details in self.results.iteritems():
                 try:
-                    crashscores[crash_key] = self._score_crasher(crash_details)
+                    self.crash_scores[crash_key] = self._score_crasher(crash_details)
                 except KeyError:
                     print "Error scoring crash %s" % crash_key
                     continue
 
+    def print_crash_report(self, crash_key, score):
+        details = self.results[crash_key]
+        print '\n%s - Exploitability rank: %s' % (crash_key, score)
+        print 'Fuzzed file: %s' % details['fuzzedfile']
+        for exception in details['exceptions']:
+            shortdesc = details['exceptions'][exception]['shortdesc']
+            eiftext = ''
+            efa = '0x' + details['exceptions'][exception]['efa']
+            if details['exceptions'][exception]['EIF']:
+                eiftext = " *** Byte pattern is in fuzzed file! ***"
+            print 'exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext)
+            if details['exceptions'][exception]['instructionline']:
+                print details['exceptions'][exception]['instructionline']
+            module = details['exceptions'][exception]['pcmodule']
+            if module == 'unloaded':
+                if not self.ignorejit:
+                    print 'Instruction pointer is not in a loaded module!'
+            else:
+                print 'Code executing in: %s' % module
+
+    @property
+    def sorted_crashes(self):
+        return sorted(self.crash_scores.iteritems(), key=lambda(k, v): (v, k))
+
     def print_reports(self):
-        pass
+        for crash_key, score in self.sorted_crashes:
+            self.print_crash_report(crash_key, score)
 
     def cache_results(self):
         pkldir = os.path.dirname(self.pkl_filename)
