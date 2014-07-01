@@ -27,6 +27,14 @@ reg64_set = set(registers64)
 def _build_arg_parser():
     usage = "usage: %prog [options]"
     parser = argparse.ArgumentParser(usage)
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--debug', dest='debug', action='store_true',
+                      help='Set logging to DEBUG and enable additional debuggers if available')
+    group.add_argument('-v', '--verbose', dest='verbose', action='store_true',
+                      help='Set logging to INFO level')
+
+
     parser.add_argument('-d', '--dir',
                       help='directory to look for results in. Default is "results"',
                       dest='resultsdir',
@@ -39,7 +47,28 @@ def _build_arg_parser():
     parser.add_argument('-f', '--force', dest='force',
                       action='store_true',
                       help='Force recalculation of results')
+
     return parser
+
+
+def root_logger_to_console(args):
+    root_logger = logging.getLogger()
+    hdlr = logging.StreamHandler()
+    root_logger.addHandler(hdlr)
+
+    set_log_level(root_logger, args)
+
+
+def set_log_level(log_obj, args):
+    if args.debug:
+        log_obj.setLevel(logging.DEBUG)
+        log_obj.debug('Log level = DEBUG')
+    elif args.verbose:
+        log_obj.setLevel(logging.INFO)
+        log_obj.info('Log level = INFO')
+    else:
+        log_obj.setLevel(logging.WARNING)
+
 
 def parse_args():
     parser = _build_arg_parser()
@@ -52,6 +81,15 @@ def read_file(textfile):
     '''
     with open(textfile, 'r') as f:
         return f.read()
+
+
+def read_bin_file(textfile):
+    '''
+    Read binary file
+    '''
+    f = open(textfile, 'rb')
+    text = f.read()
+    return text
 
 
 def carve(string, token1, token2):
