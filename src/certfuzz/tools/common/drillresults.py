@@ -7,6 +7,7 @@ import os
 import cPickle as pickle
 import abc
 import logging
+import argparse
 from certfuzz.tools.common.errors import DrillResultsError
 
 logger = logging.getLogger(__name__)
@@ -21,6 +22,26 @@ registers64 = ('rax', 'rcx', 'rdx', 'rbx', 'rsp', 'rbp', 'rsi',
 
 reg_set = set(registers)
 reg64_set = set(registers64)
+
+
+def parse_args():
+    usage = "usage: %prog [options]"
+    parser = argparse.ArgumentParser(usage)
+    parser.add_option('-d', '--dir',
+                      help='directory to look for results in. Default is "results"',
+                      dest='resultsdir',
+                      default='../results',
+                      type=str)
+    parser.add_option('-j', '--ignorejit', dest='ignorejit',
+                      action='store_true',
+                      help='Ignore PC in unmapped module (JIT)',
+                      default=False,
+                      type=bool)
+    parser.add_option('-f', '--force', dest='force',
+                      action='store_true',
+                      help='Force recalculation of results',
+                      type=bool)
+    return parser.parse_args()
 
 
 def read_file(textfile):
