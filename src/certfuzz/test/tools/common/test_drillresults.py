@@ -10,6 +10,20 @@ import shutil
 import os
 
 
+class MockRd(drillresults.ResultDriller):
+    def _check_report(self):
+        pass
+
+    def _platform_find_dbg_output(self):
+        pass
+
+    def check_64bit(self):
+        pass
+
+    def really_exploitable(self):
+        pass
+
+
 class Test(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
@@ -74,6 +88,8 @@ class Test(unittest.TestCase):
         for s in expect_false:
             self.assertFalse(drillresults.is_number(s))
 
+    def test_rd_acts_as_metaclass(self):
+        self.assertRaises(TypeError, drillresults.ResultDriller)
 
 
 
