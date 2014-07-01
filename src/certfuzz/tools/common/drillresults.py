@@ -35,13 +35,12 @@ def _build_arg_parser():
     group.add_argument('-v', '--verbose', dest='verbose', action='store_true',
                       help='Set logging to INFO level')
 
-
     parser.add_argument('-d', '--dir',
                       help='directory to look for results in. Default is "results"',
                       dest='resultsdir',
                       default='../results',
                       type=str)
-    parser.add_argument('-j', '--ignorejit', dest='ignorejit',
+    parser.add_argument('-j', '--ignore-jit', dest='ignore_jit',
                       action='store_true',
                       help='Ignore PC in unmapped module (JIT)',
                       default=False)
