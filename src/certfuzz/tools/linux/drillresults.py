@@ -315,7 +315,7 @@ class LinuxTestCaseBundle(TestCaseBundle):
         # The crash summary is a very interesting one
             for exception in details['exceptions']:
                 module = details['exceptions'][exception]['pcmodule']
-                if module == 'unloaded' and not self.ignorejit:
+                if module == 'unloaded' and not self.ignore_jit:
                     # EIP is not in a loaded module
                     scores.append(20)
                 if details['exceptions'][exception]['shortdesc'] in self.re_set:
@@ -342,7 +342,7 @@ class LinuxTestCaseBundle(TestCaseBundle):
             for exception in details['exceptions']:
                 efa = '0x' + details['exceptions'][exception]['efa']
                 module = details['exceptions'][exception]['pcmodule']
-                if module == 'unloaded' and not self.ignorejit:
+                if module == 'unloaded' and not self.ignore_jit:
                     scores.append(20)
                 elif module.lower() == 'ntdll.dll' or 'msvcr' in module.lower():
                     # likely heap corruption.  Exploitable, but difficult
@@ -401,7 +401,7 @@ def main():
 
     root_logger_to_console(args)
 
-    with LinuxResultDriller(ignore_jit=args.ignorejit,
+    with LinuxResultDriller(ignore_jit=args.ignore_jit,
                             base_dir=args.resultsdir,
                             force_reload=args.force) as rd:
         rd.drill_results()
