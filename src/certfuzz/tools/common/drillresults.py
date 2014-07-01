@@ -7,6 +7,7 @@ import os
 import cPickle as pickle
 import abc
 import logging
+from certfuzz.tools.common.errors import DrillResultsError
 
 logger = logging.getLogger(__name__)
 
