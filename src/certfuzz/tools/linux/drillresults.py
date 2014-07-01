@@ -7,13 +7,19 @@ import struct
 import binascii
 import re
 
-from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
-    reg_set, ResultDriller, parse_args
+import sys
+import logging
+sys.path.insert(0, '/Users/adh/git/bff/src')
 
+from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
+    reg_set, ResultDriller, parse_args, TestCaseBundle, set_log_level, \
+    root_logger_to_console
+
+logger = logging.getLogger(__name__)
 
 regex = {
         'gdb_report': re.compile(r'.+.gdb$'),
-#        'current_instr': re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)'),
+        'current_instr': re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)'),
         'frame0': re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+'),
         'regs1': re.compile(r'^eax=.+'),
         'regs2': re.compile(r'^eip=.+'),
@@ -27,38 +33,6 @@ regex = {
         'syswow64': re.compile(r'ModLoad:.*syswow64.*', re.IGNORECASE),
         'dbg_prompt': re.compile(r'^[0-9]:[0-9][0-9][0-9]> (.*)'),
         }
-
-
-# These !exploitable short descriptions indicate a very interesting crash
-really_exploitable = [
-                      'SegFaultOnPc',
-                      'BranchAv',
-                      'StackCodeExection',
-                      'BadInstruction',
-                      'ReturnAv',
-                      ]
-re_set = set(really_exploitable)
-
-results = {}
-scoredcrashes = {}
-
-
-def check_64bit(reporttext):
-    '''
-    Check if the debugger and target app are 64-bit
-    '''
-    # TODO: When would this ever happen?
-#    if _64bit_debugger:
-#        return
-
-    for line in reporttext.splitlines():
-        m = re.match(regex['bt_addr'], line)
-        if m:
-            start_addr = m.group(1)
-            #print '%s length: %s'% (start_addr, len(start_addr))
-            if len(start_addr) > 10:
-                return True
-    return False
 
 
 def pc_in_mapped_address(reporttext, instraddr):
@@ -111,15 +85,6 @@ def fix_efa_bug(reporttext, instraddr, faultaddr):
     return faultaddr
 
 
-def read_bin_file(textfile):
-    '''
-    Read binary file
-    '''
-    f = open(textfile, 'rb')
-    text = f.read()
-    return text
-
-
 def get_ex_num(reporttext):
     '''
     Get the exception number by counting the number of continues
@@ -161,9 +126,9 @@ def get_instr(reporttext, instraddr):
     '''
     Find the disassembly line for the current (crashing) instruction
     '''
-    regex = re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)')
+    rgx = regex['current_instr']
     for line in reporttext.splitlines():
-        n = regex.match(line)
+        n = rgx.match(line)
         if n:
             return n.group(3)
     return ''
@@ -231,172 +196,26 @@ def fix_efa_offset(instructionline, faultaddr, _64bit_debugger):
     return faultaddr
 
 
-#def check_report(reportfile, crasherfile, crash_hash, cached_results):
-#    '''
-#    Parse the gdb file
-#    '''
-#
-##    global _64bit_debugger
-#
-#    if cached_results:
-#        if cached_results.get(crash_hash):
-#            results[crash_hash] = cached_results[crash_hash]
-#            return
-#
-#
-#    #print('checking %s against %s: %s' % (reportfile, crasherfile, crash_hash))
-#    crashid = results[crash_hash]
-#
-#    reporttext = read_file(reportfile)
-#    current_dir = os.path.dirname(reportfile)
-#    exceptionnum = 0
-#    classification = carve(reporttext, "Classification: ", "\n")
-#    #print 'classification: %s' % classification
-#    try:
-#        if classification:
-#            # Create a new exception dictionary to add to the crash
-#            exception = {}
-#            crashid['exceptions'][exceptionnum] = exception
-#    except KeyError:
-#        # Crash ID (crash_hash) not yet seen
-#        # Default it to not being "really exploitable"
-#        crashid['reallyexploitable'] = False
-#        # Create a dictionary of exceptions for the crash id
-#        exceptions = {}
-#        crashid['exceptions'] = exceptions
-#        # Create a dictionary for the exception
-#        crashid['exceptions'][exceptionnum] = exception
-#
-#    # Set !exploitable classification for the exception
-#    if classification:
-#        crashid['exceptions'][exceptionnum]['classification'] = classification
-#
-#    shortdesc = carve(reporttext, "Short description: ", " (")
-#    #print 'shortdesc: %s' % shortdesc
-#    if shortdesc:
-#        # Set !exploitable Short Description for the exception
-#        crashid['exceptions'][exceptionnum]['shortdesc'] = shortdesc
-#        # Flag the entire crash ID as really exploitable if this is a good
-#        # exception
-#        crashid['reallyexploitable'] = shortdesc in re_set
-#
-#    if not os.path.isfile(crasherfile):
-#        # Can't find the crasher file
-#        #print "WTF! Cannot find %s" % crasherfile
-#        return
-#    # Set the "fuzzedfile" property for the crash ID
-#    crashid['fuzzedfile'] = crasherfile
-#    # See if we're dealing with 64-bit debugger or target app
-#    _64bit_debugger = check_64bit(reporttext)
-#    faultaddr = carve2(reporttext)
-#    instraddr = get_instr_addr(reporttext)
-#    faultaddr = format_addr(faultaddr, _64bit_debugger)
-#    instraddr = format_addr(instraddr, _64bit_debugger)
-#
-#    # No faulting address means no crash.
-#    if not faultaddr:
-#        return
-#
-#    if instraddr:
-#        crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr)
-#
-#    # Get the cdb line that contains the crashing instruction
-#    instructionline = get_instr(reporttext, instraddr)
-#    crashid['exceptions'][exceptionnum]['instructionline'] = instructionline
-#    if instructionline:
-#        faultaddr = fix_efa_offset(instructionline, faultaddr, _64bit_debugger)
-#
-#    # Fix faulting pattern endian
-#    faultaddr = faultaddr.replace('0x', '')
-#    crashid['exceptions'][exceptionnum]['efa'] = faultaddr
-#    if _64bit_debugger:
-#        # 64-bit target app
-#        faultaddr = faultaddr.zfill(16)
-#        efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
-#        efapattern = hex(efaptr[0]).replace('0x', '')
-#        efapattern = efapattern.replace('L', '')
-#        efapattern = efapattern.zfill(16)
-#    else:
-#        # 32-bit target app
-#        faultaddr = faultaddr.zfill(8)
-#        efaptr = struct.unpack('<L', binascii.a2b_hex(faultaddr))
-#        efapattern = hex(efaptr[0]).replace('0x', '')
-#        efapattern = efapattern.replace('L', '')
-#        efapattern = efapattern.zfill(8)
-#
-#    # Read in the fuzzed file
-#    crasherdata = read_bin_file(crasherfile)
-#
-#    # If there's a match, flag this exception has having Efa In File
-#    if binascii.a2b_hex(efapattern) in crasherdata:
-#        crashid['exceptions'][exceptionnum]['EIF'] = True
-#    else:
-#        crashid['exceptions'][exceptionnum]['EIF'] = False
-
-
-#def find_dbg_output(tld):
-#    dbg_out_list = []
-#    # Walk the results directory
-#    for root, dirs, files in os.walk(tld):
-#        crash_hash = os.path.basename(root)
-#        # Only use directories that are hashes
-#        # if "0x" in crash_hash:
-#            # Create dictionary for hashes in results dictionary
-#        hash_dict = {}
-#        hash_dict['hash'] = crash_hash
-#        results[crash_hash] = hash_dict
-#        crasherfile = ''
-#        # Check each of the files in the hash directory
-#        for current_file in files:
-#            # Go through all of the .gdb files and parse them
-#            if regex['gdb_report'].match(current_file):
-#                #print 'checking %s' % current_file
-#                gdbfile = os.path.join(root, current_file)
-#                crasherfile = gdbfile.replace('.gdb', '')
-#                #crasherfile = os.path.join(root, crasherfile)
-#                dbg_files = (gdbfile, crasherfile, crash_hash)
-#                dbg_out_list.append(dbg_files)
-#    return dbg_out_list
-
-
-class LinuxResultDriller(ResultDriller):
-    def _platform_find_dbg_output(self, crash_hash, files, root):
-                # Only use directories that are hashes
-        # if "0x" in crash_hash:
-            # Create dictionary for hashes in results dictionary
-        hash_dict = {}
-        hash_dict['hash'] = crash_hash
-        results[crash_hash] = hash_dict
-        crasherfile = ''
-        # Check each of the files in the hash directory
-        for current_file in files:
-            # Go through all of the .gdb files and parse them
-            if regex['gdb_report'].match(current_file):
-                #print 'checking %s' % current_file
-                gdbfile = os.path.join(root, current_file)
-                crasherfile = gdbfile.replace('.gdb', '')
-                #crasherfile = os.path.join(root, crasherfile)
-                dbg_files = (gdbfile, crasherfile, crash_hash)
-                self.dbg_out.append(dbg_files)
-
-    def _check_report(self, reportfile, crasherfile, crash_hash, cached_results):
+class LinuxTestCaseBundle(TestCaseBundle):
+    def _check_report(self):
         '''
         Parse the gdb file
         '''
+        crasherfile = self.testcase_file
+        reporttext = self.reporttext
+        _64bit_debugger = self._64bit_debugger
+        crasherdata = self.crasherdata
 
     #    global _64bit_debugger
 
-        if cached_results:
-            if cached_results.get(crash_hash):
-                results[crash_hash] = cached_results[crash_hash]
-                return
+        # TODO move this back to ResultDriller class
+#        if self.cached_results:
+#            if self.cached_results.get(crash_hash):
+#                self.results[crash_hash] = self.cached_results[crash_hash]
+#                return
 
+        details = self.details
 
-        #print('checking %s against %s: %s' % (reportfile, crasherfile, crash_hash))
-        crashid = results[crash_hash]
-
-        reporttext = read_file(reportfile)
-        current_dir = os.path.dirname(reportfile)
         exceptionnum = 0
         classification = carve(reporttext, "Classification: ", "\n")
         #print 'classification: %s' % classification
@@ -404,38 +223,36 @@ class LinuxResultDriller(ResultDriller):
             if classification:
                 # Create a new exception dictionary to add to the crash
                 exception = {}
-                crashid['exceptions'][exceptionnum] = exception
+                details['exceptions'][exceptionnum] = exception
         except KeyError:
             # Crash ID (crash_hash) not yet seen
             # Default it to not being "really exploitable"
-            crashid['reallyexploitable'] = False
+            details['reallyexploitable'] = False
             # Create a dictionary of exceptions for the crash id
             exceptions = {}
-            crashid['exceptions'] = exceptions
+            details['exceptions'] = exceptions
             # Create a dictionary for the exception
-            crashid['exceptions'][exceptionnum] = exception
+            details['exceptions'][exceptionnum] = exception
 
         # Set !exploitable classification for the exception
         if classification:
-            crashid['exceptions'][exceptionnum]['classification'] = classification
+            details['exceptions'][exceptionnum]['classification'] = classification
 
         shortdesc = carve(reporttext, "Short description: ", " (")
         #print 'shortdesc: %s' % shortdesc
         if shortdesc:
             # Set !exploitable Short Description for the exception
-            crashid['exceptions'][exceptionnum]['shortdesc'] = shortdesc
+            details['exceptions'][exceptionnum]['shortdesc'] = shortdesc
             # Flag the entire crash ID as really exploitable if this is a good
             # exception
-            crashid['reallyexploitable'] = shortdesc in re_set
+            details['reallyexploitable'] = shortdesc in self.re_set
 
         if not os.path.isfile(crasherfile):
             # Can't find the crasher file
             #print "WTF! Cannot find %s" % crasherfile
             return
         # Set the "fuzzedfile" property for the crash ID
-        crashid['fuzzedfile'] = crasherfile
-        # See if we're dealing with 64-bit debugger or target app
-        _64bit_debugger = check_64bit(reporttext)
+        details['fuzzedfile'] = crasherfile
         faultaddr = carve2(reporttext)
         instraddr = get_instr_addr(reporttext)
         faultaddr = format_addr(faultaddr, _64bit_debugger)
@@ -446,17 +263,17 @@ class LinuxResultDriller(ResultDriller):
             return
 
         if instraddr:
-            crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr)
+            details['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr)
 
         # Get the cdb line that contains the crashing instruction
         instructionline = get_instr(reporttext, instraddr)
-        crashid['exceptions'][exceptionnum]['instructionline'] = instructionline
+        details['exceptions'][exceptionnum]['instructionline'] = instructionline
         if instructionline:
             faultaddr = fix_efa_offset(instructionline, faultaddr, _64bit_debugger)
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
-        crashid['exceptions'][exceptionnum]['efa'] = faultaddr
+        details['exceptions'][exceptionnum]['efa'] = faultaddr
         if _64bit_debugger:
             # 64-bit target app
             faultaddr = faultaddr.zfill(16)
@@ -472,20 +289,120 @@ class LinuxResultDriller(ResultDriller):
             efapattern = efapattern.replace('L', '')
             efapattern = efapattern.zfill(8)
 
-        # Read in the fuzzed file
-        crasherdata = read_bin_file(crasherfile)
-
         # If there's a match, flag this exception has having Efa In File
         if binascii.a2b_hex(efapattern) in crasherdata:
-            crashid['exceptions'][exceptionnum]['EIF'] = True
+            details['exceptions'][exceptionnum]['EIF'] = True
         else:
-            crashid['exceptions'][exceptionnum]['EIF'] = False
+            details['exceptions'][exceptionnum]['EIF'] = False
+
+    def _check_64bit(self):
+        '''
+        Check if the debugger and target app are 64-bit
+        '''
+        for line in self.reporttext.splitlines():
+            m = re.match(regex['bt_addr'], line)
+            if m:
+                start_addr = m.group(1)
+                if len(start_addr) > 10:
+                    self._64bit_debugger = True
+                    logger.debug()
+
+    def _score_testcase(self):
+        logger.debug('Scoring testcase: %s', self.crash_hash)
+        details = self.details
+        scores = [100]
+        if details['reallyexploitable'] == True:
+        # The crash summary is a very interesting one
+            for exception in details['exceptions']:
+                module = details['exceptions'][exception]['pcmodule']
+                if module == 'unloaded' and not self.ignorejit:
+                    # EIP is not in a loaded module
+                    scores.append(20)
+                if details['exceptions'][exception]['shortdesc'] in self.re_set:
+                    efa = '0x' + details['exceptions'][exception]['efa']
+                    if details['exceptions'][exception]['EIF']:
+                    # The faulting address pattern is in the fuzzed file
+                        if '0x000000' in efa:
+                            # Faulting address is near null
+                            scores.append(30)
+                        elif '0x0000' in efa:
+                            # Faulting address is somewhat near null
+                            scores.append(20)
+                        elif '0xffff' in efa:
+                            # Faulting address is likely a negative number
+                            scores.append(20)
+                        else:
+                            # Faulting address has high entropy.  Most exploitable.
+                            scores.append(10)
+                    else:
+                        # The faulting address pattern is not in the fuzzed file
+                        scores.append(40)
+        else:
+            # The crash summary isn't necessarily interesting
+            for exception in details['exceptions']:
+                efa = '0x' + details['exceptions'][exception]['efa']
+                module = details['exceptions'][exception]['pcmodule']
+                if module == 'unloaded' and not self.ignorejit:
+                    scores.append(20)
+                elif module.lower() == 'ntdll.dll' or 'msvcr' in module.lower():
+                    # likely heap corruption.  Exploitable, but difficult
+                    scores.append(45)
+                elif '0x00120000' in efa or '0x00130000' in efa or '0x00140000' in efa:
+                    # non-continued potential stack buffer overflow
+                    scores.append(40)
+                elif details['exceptions'][exception]['EIF']:
+                # The faulting address pattern is in the fuzzed file
+                    if '0x000000' in efa:
+                        # Faulting address is near null
+                        scores.append(70)
+                    elif '0x0000' in efa:
+                        # Faulting address is somewhat near null
+                        scores.append(60)
+                    elif '0xffff' in efa:
+                        # Faulting address is likely a negative number
+                        scores.append(60)
+                    else:
+                        # Faulting address has high entropy.
+                        scores.append(50)
+        self.score = min(scores)
+
+
+class LinuxResultDriller(ResultDriller):
+    really_exploitable = [
+                      'SegFaultOnPc',
+                      'BranchAv',
+                      'StackCodeExection',
+                      'BadInstruction',
+                      'ReturnAv',
+                      ]
+
+    def _platform_find_testcases(self, crash_hash, files, root):
+                # Only use directories that are hashes
+        # if "0x" in crash_hash:
+            # Create dictionary for hashes in results dictionary
+        crasherfile = ''
+        # Check each of the files in the hash directory
+        for current_file in files:
+            # Go through all of the .gdb files and parse them
+            if current_file.endswith('.gdb'):
+#            if regex['gdb_report'].match(current_file):
+                #print 'checking %s' % current_file
+                gdbfile = os.path.join(root, current_file)
+                logger.debug('found gdb file: %s', gdbfile)
+                crasherfile = gdbfile.replace('.gdb', '')
+                #crasherfile = os.path.join(root, crasherfile)
+                tcb = LinuxTestCaseBundle(gdbfile, crasherfile, crash_hash, self.re_set)
+                self.testcase_bundles.append(tcb)
 
 
 def main():
-    options = parse_args()
-    with LinuxResultDriller(ignore_jit=options.ignorejit,
-                       base_dir=options.resultsdir) as rd:
+    args = parse_args()
+
+    root_logger_to_console(args)
+
+    with LinuxResultDriller(ignore_jit=args.ignorejit,
+                            base_dir=args.resultsdir,
+                            force_reload=args.force) as rd:
         rd.drill_results()
 
 
