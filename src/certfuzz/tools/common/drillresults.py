@@ -118,7 +118,13 @@ class ResultDriller(object):
         return self
 
     def __exit__(self, etype, value, traceback):
-        return
+        handled = False
+
+        if etype is DrillResultsError:
+            print "{}: {}".format(etype.__name__, value)
+            handled = True
+
+        return handled
 
     @abc.abstractmethod
     def check_64bit(self, reporttext):
