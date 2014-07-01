@@ -113,11 +113,12 @@ def is_number(s):
 class TestCaseBundle(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, dbg_outfile, testcase_file, crash_hash, re_set):
+    def __init__(self, dbg_outfile, testcase_file, crash_hash, re_set, ignore_jit=False):
         self.dbg_outfile = dbg_outfile
         self.testcase_file = testcase_file
         self.crash_hash = crash_hash
         self.re_set = re_set
+        self.ignore_jit = ignore_jit
 
         self.reporttext = read_text_file(self.dbg_outfile)
         # Read in the fuzzed file
@@ -205,11 +206,6 @@ class ResultDriller(object):
             dir_basename = os.path.basename(root)
             self._platform_find_testcases(dir_basename, files, root)
 
-
-#    @abc.abstractmethod
-#    def _check_report(self, tcb):
-#        pass
-
     def _check_dirs(self):
         check_dirs = [self.base_dir, 'results', 'crashers']
         for d in check_dirs:
@@ -231,20 +227,6 @@ class ResultDriller(object):
         except IOError:
             # No cached results
             pass
-
-#    def score_testcases(self):
-#        # Assign a ranking to each crash report.  The lower the rank, the higher
-#        # the exploitability
-#        # For each of the crash ids in the results dictionary, apply ranking
-#        for tcb in self.testcase_bundles:
-#            testcase_key = tcb.crash_hash
-#            testcase_details = tcb.details
-#            logger.debug('Scoring testcase: %s', testcase_key)
-#            try:
-#                self.crash_scores[testcase_key] = self._score_crasher(testcase_details)
-#            except KeyError:
-#                logger.warning("Error scoring crash %s", testcase_key)
-#                continue
 
     @property
     def crash_scores(self):

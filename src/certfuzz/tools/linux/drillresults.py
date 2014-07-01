@@ -391,7 +391,8 @@ class LinuxResultDriller(ResultDriller):
                 logger.debug('found gdb file: %s', gdbfile)
                 crasherfile = gdbfile.replace('.gdb', '')
                 #crasherfile = os.path.join(root, crasherfile)
-                tcb = LinuxTestCaseBundle(gdbfile, crasherfile, crash_hash, self.re_set)
+                tcb = LinuxTestCaseBundle(gdbfile, crasherfile, crash_hash,
+                                          self.re_set, self.ignore_jit)
                 self.testcase_bundles.append(tcb)
 
 
