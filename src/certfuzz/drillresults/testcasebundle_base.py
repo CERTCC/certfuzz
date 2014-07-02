@@ -11,6 +11,8 @@ from certfuzz.fuzztools.filetools import read_text_file
 
 from certfuzz.drillresults.common import read_bin_file
 from certfuzz.drillresults.errors import TestCaseBundleError
+import binascii
+import struct
 
 
 logger = logging.getLogger(__name__)
@@ -59,6 +61,10 @@ class TestCaseBundle(object):
     def really_exploitable(self):
         return []
 
+    @abc.abstractproperty
+    def _64bit_target_app(self):
+        return self._64bit_debugger
+
     def _verify_files_exist(self):
         for f in [self.dbg_outfile, self.testcase_file]:
             if not os.path.exists(f):
@@ -87,11 +93,79 @@ class TestCaseBundle(object):
 
     @abc.abstractmethod
     def _check_64bit(self):
-        pass
+        '''
+        Check if the debugger and target app are 64-bit
+        '''
+
+    def _parse_testcase(self):
+        '''
+        Parse the debugger output file
+        '''
+        # TODO move this back to ResultDriller class
+#        if self.cached_testcases:
+#            if self.cached_testcases.get(self.crash_hash):
+#                self.results[self.crash_hash] = self.cached_testcases[self.crash_hash]
+#                return
+
+        exceptionnum = self.get_ex_num()
+        self._record_exception_info(exceptionnum)
+
+        faultaddr = self.get_fault_addr()
+        instraddr = self.get_instr_addr()
+
+        # No faulting address means no crash.
+        if not faultaddr:
+            raise TestCaseBundleError('No faulting address means no crash')
+
+        if not instraddr:
+            raise TestCaseBundleError('No instraddr address means no crash')
+
+        instraddr, faultaddr = self._64bit_addr_fixup(faultaddr, instraddr)
+
+        if instraddr:
+            self.details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(instraddr)
+
+        # Get the cdb line that contains the crashing instruction
+        instructionline = self.get_instr(instraddr)
+        self.details['exceptions'][exceptionnum]['instructionline'] = instructionline
+        if instructionline:
+            faultaddr = self.fix_efa_offset(instructionline, faultaddr)
+
+        # Fix faulting pattern endian
+        faultaddr = faultaddr.replace('0x', '')
+
+        self.details['exceptions'][exceptionnum]['efa'] = faultaddr
+
+        if self._64bit_target_app:
+            # 64-bit target app
+            faultaddr = faultaddr.zfill(16)
+            efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
+            efapattern = hex(efaptr[0]).replace('0x', '')
+            efapattern = efapattern.replace('L', '')
+            efapattern = efapattern.zfill(16)
+        else:
+            # 32-bit target app
+            faultaddr = faultaddr.zfill(8)
+            efaptr = struct.unpack('<L', binascii.a2b_hex(faultaddr))
+            efapattern = hex(efaptr[0]).replace('0x', '')
+            efapattern = efapattern.replace('L', '')
+            efapattern = efapattern.zfill(8)
+
+        # If there's a match, flag this exception has having Efa In File
+        if binascii.a2b_hex(efapattern) in self.crasherdata:
+            self.details['exceptions'][exceptionnum]['EIF'] = True
+        else:
+            self.details['exceptions'][exceptionnum]['EIF'] = False
 
     @abc.abstractmethod
-    def _parse_testcase(self):
-        pass
+    def _64bit_addr_fixup(self, faultaddr, instraddr):
+        '''
+        Some platforms need extra help with 64 bit addresses.
+        Do that here before we really need to start using faultaddr
+        and instraddr.
+        :param faultaddr:
+        :param instraddr:
+        '''
 
     def get_ex_num(self):
         '''

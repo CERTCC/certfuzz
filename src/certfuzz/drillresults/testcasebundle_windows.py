@@ -61,9 +61,6 @@ class WindowsTestCaseBundle(TestCaseBundle):
         logger.debug('Short Description: %s', self.shortdesc)
 
     def _check_64bit(self):
-        '''
-        Check if the debugger and target app are 64-bit
-        '''
         for line in self.reporttext.splitlines():
             n = re.match(regex['64bit_debugger'], line)
             if n:
@@ -101,69 +98,16 @@ class WindowsTestCaseBundle(TestCaseBundle):
 
         TestCaseBundle._find_testcase_file(self)
 
-    def _parse_testcase(self):
-        '''
-        Parse the msec file
-        '''
-        # TODO move this back to ResultDriller class
-#        if self.cached_testcases:
-#            if self.cached_testcases.get(self.crash_hash):
-#                self.results[self.crash_hash] = self.cached_testcases[self.crash_hash]
-#                return
-
-#        self.get_regs()
-        exceptionnum = self.get_ex_num()
-        self._record_exception_info(exceptionnum)
-
-        faultaddr = self.get_fault_addr()
-        instraddr = self.get_instr_addr()
-
-        # No faulting address means no crash.
-        if not faultaddr:
-            raise TestCaseBundleError('No faulting address means no crash')
-
-        if not instraddr:
-            raise TestCaseBundleError('No instraddr address means no crash')
-
-        if self._64bit_debugger and not self.wow64_app and instraddr:
-            # Put backtick into instruction address for pattern matching
+    def _64bit_addr_fixup(self, faultaddr, instraddr):
+        if self._64bit_debugger and not self.wow64_app and instraddr: # Put backtick into instruction address for pattern matching
             instraddr = ''.join([instraddr[:8], '`', instraddr[8:]])
             if self.shortdesc != 'DEPViolation':
                 faultaddr = self.fix_efa_bug(instraddr, faultaddr)
+        return instraddr, faultaddr
 
-        if instraddr:
-            self.details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(instraddr)
-
-        # Get the cdb line that contains the crashing instruction
-        instructionline = self.get_instr(instraddr)
-        self.details['exceptions'][exceptionnum]['instructionline'] = instructionline
-        if instructionline:
-            faultaddr = self.fix_efa_offset(instructionline, faultaddr)
-
-        # Fix faulting pattern endian
-        faultaddr = faultaddr.replace('0x', '')
-
-        self.details['exceptions'][exceptionnum]['efa'] = faultaddr
-        if self._64bit_debugger and not self.wow64_app:
-            # 64-bit target app
-            faultaddr = faultaddr.zfill(16)
-            efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
-            efapattern = hex(efaptr[0]).replace('0x', '')
-            efapattern = efapattern.replace('L', '')
-            efapattern = efapattern.zfill(16)
-        else:
-            # 32-bit target app
-            faultaddr = faultaddr.zfill(8)
-            efaptr = struct.unpack('<L', binascii.a2b_hex(faultaddr))
-            efapattern = hex(efaptr[0]).replace('0x', '')
-            efapattern = efapattern.replace('L', '')
-            efapattern = efapattern.zfill(8)
-
-        # If there's a match, flag this exception has having Efa In File
-        if binascii.a2b_hex(efapattern) in self.crasherdata:
-            self.details['exceptions'][exceptionnum]['EIF'] = True
-        else:
-            self.details['exceptions'][exceptionnum]['EIF'] = False
+    @property
+    def _64bit_target_app(self):
+        return self._64bit_debugger and not self.wow64_app
 
     def pc_in_mapped_address(self, instraddr):
         '''
