@@ -72,35 +72,6 @@ def fix_efa_bug(reporttext, instraddr, faultaddr):
     return faultaddr
 
 
-def read_bin_file(inputfile):
-    '''
-    Read binary file
-    '''
-    f = open(inputfile, 'rb')
-    filebytes = f.read()
-    # For zip files, return the uncompressed bytes
-    file_like_content = StringIO.StringIO(filebytes)
-    if zipfile.is_zipfile(file_like_content):
-        # Make sure that it's not an embedded zip
-        # (e.g. a DOC file from Office 2007)
-        file_like_content.seek(0)
-        zipmagic = file_like_content.read(2)
-        if zipmagic == 'PK':
-            try:
-                # The file begins with the PK header
-                z = zipfile.ZipFile(file_like_content, 'r')
-                for filename in z.namelist():
-                    try:
-                        filebytes += z.read(filename)
-                    except:
-                        pass
-            except:
-                # If the zip container is fuzzed we may get here
-                pass
-    file_like_content.close()
-    f.close
-    return filebytes
-
 
 def get_ex_num(reporttext, wow64_app):
     '''

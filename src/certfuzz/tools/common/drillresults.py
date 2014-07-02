@@ -118,6 +118,53 @@ def is_number(s):
     except ValueError:
         return False
 
+def _read_zip(raw_file_byte_string):
+    '''
+    If the bytes in raw_file_byte_string look like a zip file,
+    attempt to decompress it and return the concatenated contents of the
+    decompressed zip
+    :param raw_file_byte_string:
+    :return string of bytes
+    '''
+    zbytes = str()
+
+    # For zip files, return the uncompressed bytes
+    file_like_content = StringIO.StringIO(raw_file_byte_string)
+    if zipfile.is_zipfile(file_like_content):
+        # Make sure that it's not an embedded zip
+        # (e.g. a DOC file from Office 2007)
+        file_like_content.seek(0)
+        zipmagic = file_like_content.read(2)
+        if zipmagic == 'PK':
+            try:
+                # The file begins with the PK header
+                z = zipfile.ZipFile(file_like_content, 'r')
+                for filename in z.namelist():
+                    try:
+                        zbytes += z.read(filename)
+                    except:
+                        pass
+            except:
+                # If the zip container is fuzzed we may get here
+                pass
+    file_like_content.close()
+    return zbytes
+
+
+def read_bin_file(inputfile):
+    '''
+    Read binary file
+    '''
+    filebytes = _read_bin_file(inputfile)
+
+    #append decommpressed zip bytes
+    zipbytes = _read_zip(filebytes)
+
+    # _read_zip returns an empty string on failure, so we can safely
+    # append its result here
+    return filebytes + zipbytes
+
+
 
 class TestCaseBundle(object):
     __metaclass__ = abc.ABCMeta
