@@ -23,6 +23,8 @@ class TestCaseBundle(object):
         self.dbg_outfile = dbg_outfile
         self.testcase_file = testcase_file
 
+        self._find_testcase_file()
+
         self._verify_files_exist()
 
         self.crash_hash = crash_hash
@@ -38,15 +40,18 @@ class TestCaseBundle(object):
         self.current_dir = os.path.dirname(self.dbg_outfile)
 
         self.details = {'reallyexploitable': False,
-                        'exceptions': {}}
+                        'exceptions': {},
+                        'fuzzedfile': self.testcase_file}
+
         self.score = 100
         self._64bit_debugger = False
         self.classification = None
-
+        self.shortdesc = None
 
         # See if we're dealing with 64-bit debugger or target app
         self._check_64bit()
         self._get_classification()
+        self._get_shortdesc()
         self._parse_testcase()
         self._score_testcase()
 
@@ -67,6 +72,19 @@ class TestCaseBundle(object):
     def __exit__(self, etype, value, traceback):
         pass
 
+    def _find_testcase_file(self):
+        if not os.path.isfile(self.testcase_file):
+            # Can't find the crasher file
+            raise TestCaseBundleError('Cannot find testcase file %s', self.testcase_file)
+
+    @abc.abstractmethod
+    def _get_classification(self):
+        pass
+
+    @abc.abstractmethod
+    def _get_shortdesc(self):
+        pass
+
     @abc.abstractmethod
     def _check_64bit(self):
         pass
@@ -74,6 +92,24 @@ class TestCaseBundle(object):
     @abc.abstractmethod
     def _parse_testcase(self):
         pass
+
+    def get_ex_num(self):
+        '''
+        Override this method for platforms where exceptions can be continued
+        '''
+        return 0
+
+    def _record_exception_info(self, exceptionnum):
+        if self.classification:
+            # Create a new exception dictionary to add to the crash
+            exception = {}
+            self.details['exceptions'][exceptionnum] = exception
+            self.details['exceptions'][exceptionnum]['classification'] = self.classification
+        if self.shortdesc:
+            # Set !exploitable Short Description for the exception
+            self.details['exceptions'][exceptionnum]['shortdesc'] = self.shortdesc # Flag the entire crash ID as really exploitable if this is a good
+            # exception
+            self.details['reallyexploitable'] = self.shortdesc in self.re_set
 
     def _score_testcase(self):
         logger.debug('Scoring testcase: %s', self.crash_hash)

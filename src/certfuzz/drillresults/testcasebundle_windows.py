@@ -4,18 +4,19 @@ Created on Jul 2, 2014
 @organization: cert.org
 '''
 import binascii
+import logging
 import os
 import re
 import struct
-import logging
 
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
 from certfuzz.drillresults.common import is_number
-from certfuzz.drillresults.common import read_bin_file
 from certfuzz.drillresults.common import reg64_set
 from certfuzz.drillresults.errors import WindowsTestCaseBundleError
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
+from certfuzz.drillresults.errors import TestCaseBundleError
+
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,9 @@ class WindowsTestCaseBundle(TestCaseBundle):
         self.classification = carve(self.reporttext, "Exploitability Classification: ", "\n")
         logger.debug('Classification: %s', self.classification)
 
+    def _get_shortdesc(self):
+        self.shortdesc = carve(self.reporttext, "Short Description: ", "\n")
+        logger.debug('Short Description: %s', self.shortdesc)
 
     def _check_64bit(self):
         '''
@@ -70,45 +74,12 @@ class WindowsTestCaseBundle(TestCaseBundle):
                 if n:
                     self.wow64_app = True
 
-    def _parse_testcase(self):
-        '''
-        Parse the msec file
-        '''
-        if self.cached_testcases:
-            if self.cached_testcases.get(self.crash_hash):
-                self.results[self.crash_hash] = self.cached_testcases[self.crash_hash]
-                return
+    def _find_testcase_file(self):
+        # Tries a little harder than the base class to find a test case file to
+        # work with
 
-        self.get_regs()
-        exceptionnum = self.get_ex_num()
-        current_dir = os.path.dirname(self.dbg_outfile)
-        try:
-            if self.classification:
-                # Create a new exception dictionary to add to the crash
-                exception = {}
-                self.details['exceptions'][exceptionnum] = exception
-        except KeyError:
-            # Crash ID (crash_hash) not yet seen
-            # Default it to not being "really exploitable"
-            self.details['reallyexploitable'] = False
-            # Create a dictionary of exceptions for the crash id
-            exceptions = {}
-            self.details['exceptions'] = exceptions
-            # Create a dictionary for the exception
-            self.details['exceptions'][exceptionnum] = exception
-
-        # Set !exploitable classification for the exception
-        if self.classification:
-            self.details['exceptions'][exceptionnum]['classification'] = self.classification
-
-        shortdesc = carve(self.reporttext, "Short Description: ", "\n")
-        if shortdesc:
-            # Set !exploitable Short Description for the exception
-            self.details['exceptions'][exceptionnum]['shortdesc'] = shortdesc
-            # Flag the entire crash ID as really exploitable if this is a good
-            # exception
-            self.details['reallyexploitable'] = shortdesc in self.re_set
         # Check if the expected crasher file (fuzzed file) exists
+        current_dir = os.path.dirname(self.dbg_outfile)
         if not os.path.isfile(self.testcase_file):
             # It's not there, so try to extract the filename from the cdb
             # commandline
@@ -127,38 +98,51 @@ class WindowsTestCaseBundle(TestCaseBundle):
                         self.testcase_file = os.path.join(current_dir, fileparts[0] + m.group(0))
                     else:
                         self.testcase_file = os.path.join(current_dir, self.testcase_file)
-        if not os.path.isfile(self.testcase_file):
-            # Can't find the crasher file
-            return
-        # Set the "fuzzedfile" property for the crash ID
-        self.details['fuzzedfile'] = self.testcase_file
-        # See if we're dealing with 64-bit debugger or target app
-        faultaddr = carve2(self.reporttext)
-        instraddr = carve(self.reporttext, "Instruction Address:", "\n")
-        faultaddr = self.format_addr(faultaddr)
-        instraddr = self.format_addr(instraddr)
+
+        TestCaseBundle._find_testcase_file(self)
+
+    def _parse_testcase(self):
+        '''
+        Parse the msec file
+        '''
+        # TODO move this back to ResultDriller class
+#        if self.cached_testcases:
+#            if self.cached_testcases.get(self.crash_hash):
+#                self.results[self.crash_hash] = self.cached_testcases[self.crash_hash]
+#                return
+
+#        self.get_regs()
+        exceptionnum = self.get_ex_num()
+        self._record_exception_info(exceptionnum)
+
+        faultaddr = self.get_fault_addr()
+        instraddr = self.get_instr_addr()
 
         # No faulting address means no crash.
-        if not faultaddr or not instraddr:
-            return
+        if not faultaddr:
+            raise TestCaseBundleError('No faulting address means no crash')
+
+        if not instraddr:
+            raise TestCaseBundleError('No instraddr address means no crash')
 
         if self._64bit_debugger and not self.wow64_app and instraddr:
             # Put backtick into instruction address for pattern matching
             instraddr = ''.join([instraddr[:8], '`', instraddr[8:]])
-            if shortdesc != 'DEPViolation':
+            if self.shortdesc != 'DEPViolation':
                 faultaddr = self.fix_efa_bug(instraddr, faultaddr)
 
-    #    pc_module = pc_in_mapped_address(reporttext, instraddr)
-        self.details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(self.reporttext, instraddr, self._64bit_debugger)
+        if instraddr:
+            self.details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(instraddr)
 
         # Get the cdb line that contains the crashing instruction
-        instructionline = self.get_instr(self.reporttext, instraddr)
+        instructionline = self.get_instr(instraddr)
         self.details['exceptions'][exceptionnum]['instructionline'] = instructionline
         if instructionline:
             faultaddr = self.fix_efa_offset(instructionline, faultaddr)
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
+
         self.details['exceptions'][exceptionnum]['efa'] = faultaddr
         if self._64bit_debugger and not self.wow64_app:
             # 64-bit target app
@@ -322,14 +306,22 @@ class WindowsTestCaseBundle(TestCaseBundle):
             faultaddr = ds.replace('`', '')
         return faultaddr
 
-    def get_regs(self):
-        '''
-        Populate the register dictionary with register values at crash
-        '''
-        for line in self.reporttext.splitlines():
-            if regex['regs1'].match(line) or regex['regs2'].match(line):
-                regs1 = line.split()
-                for reg in regs1:
-                    if "=" in reg:
-                        splitreg = reg.split("=")
-                        self.regdict[splitreg[0]] = splitreg[1]
+    def get_instr_addr(self):
+        instraddr = carve(self.reporttext, "Instruction Address:", "\n")
+        return self.format_addr(instraddr)
+
+    def get_fault_addr(self):
+        faultaddr = carve2(self.reporttext)
+        return self.format_addr(faultaddr)
+
+#    def get_regs(self):
+#        '''
+#        Populate the register dictionary with register values at crash
+#        '''
+#        for line in self.reporttext.splitlines():
+#            if regex['regs1'].match(line) or regex['regs2'].match(line):
+#                regs1 = line.split()
+#                for reg in regs1:
+#                    if "=" in reg:
+#                        splitreg = reg.split("=")
+#                        self.regdict[splitreg[0]] = splitreg[1]
