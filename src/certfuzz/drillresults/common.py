@@ -173,7 +173,7 @@ def main(driller_class=None):
     if driller_class is None:
         raise DrillResultsError('A platform-specific driller_class must be specified.')
 
-    with driller_class(ignore_jit=args.ignorejit,
+    with driller_class(ignore_jit=args.ignore_jit,
                          base_dir=args.resultsdir,
                          force_reload=args.force,
                          report_all=args.report_all) as rd:
