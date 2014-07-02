@@ -8,15 +8,15 @@ import os
 import re
 import struct
 
-from certfuzz.tools.common.drillresults import ResultDriller
-from certfuzz.tools.common.drillresults import TestCaseBundle
-from certfuzz.tools.common.drillresults import carve
-from certfuzz.tools.common.drillresults import carve2
-from certfuzz.tools.common.drillresults import is_number
-from certfuzz.tools.common.drillresults import main as _main
-from certfuzz.tools.common.drillresults import read_bin_file
-from certfuzz.tools.common.drillresults import reg64_set
-from certfuzz.tools.common.drillresults import reg_set
+from certfuzz.drillresults.common import ResultDriller
+from certfuzz.drillresults.common import TestCaseBundle
+from certfuzz.drillresults.common import carve
+from certfuzz.drillresults.common import carve2
+from certfuzz.drillresults.common import is_number
+from certfuzz.drillresults.common import main as _main
+from certfuzz.drillresults.common import read_bin_file
+from certfuzz.drillresults.common import reg64_set
+from certfuzz.drillresults.common import reg_set
 
 
 logger = logging.getLogger(__name__)

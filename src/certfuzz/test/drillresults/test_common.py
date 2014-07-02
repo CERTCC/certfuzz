@@ -4,12 +4,13 @@ Created on Jul 1, 2014
 @organization: cert.org
 '''
 import unittest
-from certfuzz.tools.common import drillresults
+from certfuzz.drillresults import common as drillresults
 import tempfile
 import shutil
 import os
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
 
 class MockRd(drillresults.ResultDriller):
     # really_exploitable expects a list
