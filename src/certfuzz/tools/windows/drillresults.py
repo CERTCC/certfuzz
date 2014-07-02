@@ -2,12 +2,22 @@
 This script looks for interesting crashes and rate them by potential exploitability
 '''
 
-import os
-import struct
 import binascii
+import logging
+import os
 import re
-import StringIO
-import zipfile
+import struct
+
+from certfuzz.tools.common.drillresults import ResultDriller
+from certfuzz.tools.common.drillresults import TestCaseBundle
+from certfuzz.tools.common.drillresults import carve
+from certfuzz.tools.common.drillresults import carve2
+from certfuzz.tools.common.drillresults import is_number
+from certfuzz.tools.common.drillresults import main as _main
+from certfuzz.tools.common.drillresults import read_bin_file
+from certfuzz.tools.common.drillresults import reg64_set
+from certfuzz.tools.common.drillresults import reg_set
+
 
 from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
     is_number, reg_set, reg64_set, ResultDriller, parse_args

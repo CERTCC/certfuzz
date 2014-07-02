@@ -3,13 +3,20 @@ Created on Jun 30, 2014
 
 @organization: cert.org
 '''
-import os
-import cPickle as pickle
+import StringIO
 import abc
-import logging
 import argparse
-from certfuzz.tools.common.errors import DrillResultsError, TestCaseBundleError
-from certfuzz.fuzztools.filetools import read_text_file, read_bin_file
+import logging
+import os
+import zipfile
+
+from certfuzz.fuzztools.filetools import read_bin_file as _read_bin_file
+from certfuzz.fuzztools.filetools import read_text_file
+
+import cPickle as pickle
+from certfuzz.tools.common.errors import DrillResultsError
+from certfuzz.tools.common.errors import TestCaseBundleError
+
 
 logger = logging.getLogger(__name__)
 

@@ -2,18 +2,19 @@
 This script looks for interesting crashes and rate them by potential exploitability
 '''
 
-import os
-import struct
 import binascii
-import re
-
-import sys
 import logging
-sys.path.insert(0, '/Users/adh/git/bff/src')
+import os
+import re
+import struct
 
-from certfuzz.tools.common.drillresults import carve, carve2, \
-    reg_set, ResultDriller, parse_args, TestCaseBundle, \
-    root_logger_to_console
+from certfuzz.tools.common.drillresults import ResultDriller
+from certfuzz.tools.common.drillresults import TestCaseBundle
+from certfuzz.tools.common.drillresults import carve
+from certfuzz.tools.common.drillresults import carve2
+from certfuzz.tools.common.drillresults import main as _main
+from certfuzz.tools.common.drillresults import reg_set
+
 
 logger = logging.getLogger(__name__)
 
