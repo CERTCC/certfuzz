@@ -1,7 +1,6 @@
 '''
 This script looks for interesting crashes and rate them by potential exploitability
 '''
-
 import logging
 import os
 import re
@@ -39,9 +38,9 @@ class WindowsResultDriller(ResultDriller):
             for current_file in files:
                 # Go through all of the .msec files and parse them
                 if regex['msec_report'].match(current_file):
-                    msecfile = os.path.join(root, current_file)
+                    dbg_file = os.path.join(root, current_file)
                     if crasherfile and root not in crasherfile:
                         crasherfile = os.path.join(root, crasherfile)
-                    tcb = TestCaseBundle(msecfile, crasherfile, crash_hash,
+                    tcb = TestCaseBundle(dbg_file, crasherfile, crash_hash,
                                          self.ignore_jit)
                     self.testcase_bundles.append(tcb)
