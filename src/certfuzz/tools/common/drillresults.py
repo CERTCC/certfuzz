@@ -54,6 +54,9 @@ def _build_arg_parser():
     parser.add_argument('-f', '--force', dest='force',
                       action='store_true',
                       help='Force recalculation of results')
+    parser.add_argument('-a', '--all', dest='report_all',
+                        help='Report all scores (default is to only print if <=70)',
+                        default=False)
 
     return parser
 
@@ -225,18 +228,24 @@ class TestCaseBundle(object):
         self.score = min(scores)
 
 
-
 class ResultDriller(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self,
                  ignore_jit=False,
                  base_dir='../results',
-                 force_reload=False):
+                 force_reload=False,
+                 report_all=False):
         self.ignore_jit = ignore_jit
         self.base_dir = base_dir
         self.tld = None
         self.force = force_reload
+        self.report_all = report_all
+
+        if report_all:
+            self.max_score = None
+        else:
+            self.max_score = 70
 
         self.pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
         self.cached_testcases = None
@@ -334,6 +343,11 @@ class ResultDriller(object):
         results = dict([(tcb.crash_hash, tcb.details) for tcb in self.testcase_bundles])
         print "--- Interesting crashes ---\n"
         for crash_key, score in self.sorted_crashes:
+            if self.max_score is not None:
+                if score > self.max_score:
+                    # skip test cases with scores above our max
+                    continue
+
             details = results[crash_key]
             try:
                 self.print_crash_report(crash_key, score, details)
