@@ -13,14 +13,13 @@ from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
     is_number, reg_set, reg64_set, ResultDriller, parse_args
 
 regex = {
+        '64bit_debugger': re.compile('^Microsoft.*AMD64$'),
         'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]'),
+        'mapped_address': re.compile('^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)'),
+        'mapped_address64': re.compile('^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
         'msec_report': re.compile('.+.msec$'),
         'regs1': re.compile('^eax=.+'),
         'regs2': re.compile('^eip=.+'),
-        '64bit_debugger': re.compile('^Microsoft.*AMD64$'),
-        'syswow64': re.compile('ModLoad:.*syswow64.*', re.IGNORECASE),
-        'mapped_address': re.compile('^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)'),
-        'mapped_address64': re.compile('^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
         'syswow64': re.compile('ModLoad:.*syswow64.*', re.IGNORECASE),
         }
 

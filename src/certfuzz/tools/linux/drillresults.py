@@ -18,20 +18,19 @@ from certfuzz.tools.common.drillresults import carve, carve2, \
 logger = logging.getLogger(__name__)
 
 regex = {
-        'gdb_report': re.compile(r'.+.gdb$'),
-        'current_instr': re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)'),
-        'frame0': re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+'),
-        'regs1': re.compile(r'^eax=.+'),
-        'regs2': re.compile(r'^eip=.+'),
-        'bt_addr': re.compile(r'(0x[0-9a-fA-F]+)\s+.+$'),
         '64bit_debugger': re.compile(r'^Microsoft.*AMD64$'),
-        'syswow64': re.compile(r'ModLoad:.*syswow64.*', re.IGNORECASE),
-        'mapped_frame': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(/.+)'),
-        'vdso': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+\[vdso\]'),
+        'bt_addr': re.compile(r'(0x[0-9a-fA-F]+)\s+.+$'),
+        'current_instr': re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)'),
+        'dbg_prompt': re.compile(r'^[0-9]:[0-9][0-9][0-9]> (.*)'),
+        'frame0': re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+'),
+        'gdb_report': re.compile(r'.+.gdb$'),
         'mapped_address': re.compile(r'^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)'),
         'mapped_address64': re.compile(r'^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
+        'mapped_frame': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(/.+)'),
+        'regs1': re.compile(r'^eax=.+'),
+        'regs2': re.compile(r'^eip=.+'),
         'syswow64': re.compile(r'ModLoad:.*syswow64.*', re.IGNORECASE),
-        'dbg_prompt': re.compile(r'^[0-9]:[0-9][0-9][0-9]> (.*)'),
+        'vdso': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+\[vdso\]'),
         }
 
 
