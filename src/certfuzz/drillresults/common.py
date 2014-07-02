@@ -10,7 +10,7 @@ import zipfile
 
 from certfuzz.fuzztools.filetools import read_bin_file as _read_bin_file
 
-from certfuzz.drillresults.result_driller_base import ResultDriller
+from certfuzz.drillresults.errors import DrillResultsError
 
 
 logger = logging.getLogger(__name__)
@@ -113,6 +113,7 @@ def is_number(s):
     except ValueError:
         return False
 
+
 def _read_zip(raw_file_byte_string):
     '''
     If the bytes in raw_file_byte_string look like a zip file,
@@ -160,7 +161,7 @@ def read_bin_file(inputfile):
     return filebytes + zipbytes
 
 
-def main(driller_class=ResultDriller):
+def main(driller_class=None):
     '''
     Main method for drill results script. Platform-specific customizations are
     passed in via the driller_class argument (which must be implemented elsewhere)
@@ -168,10 +169,12 @@ def main(driller_class=ResultDriller):
     '''
     args = parse_args()
     root_logger_to_console(args)
+
+    if driller_class is None:
+        raise DrillResultsError('A platform-specific driller_class must be specified.')
+
     with driller_class(ignore_jit=args.ignorejit,
                          base_dir=args.resultsdir,
                          force_reload=args.force,
                          report_all=args.report_all) as rd:
         rd.drill_results()
-
-
