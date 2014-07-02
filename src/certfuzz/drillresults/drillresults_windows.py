@@ -6,9 +6,9 @@ import logging
 import os
 import re
 
-from certfuzz.drillresults.common import ResultDriller
 from certfuzz.drillresults.common import main as _main
 from certfuzz.drillresults.testcasebundle_windows import WindowsTestCaseBundle as TestCaseBundle
+from certfuzz.drillresults.result_driller_base import ResultDriller
 
 
 logger = logging.getLogger(__name__)

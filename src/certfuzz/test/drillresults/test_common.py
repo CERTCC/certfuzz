@@ -9,21 +9,6 @@ import tempfile
 import shutil
 import os
 
-alphabet = 'abcdefghijklmnopqrstuvwxyz'
-
-
-class MockRd(drillresults.ResultDriller):
-    # really_exploitable expects a list
-    really_exploitable = list(alphabet)
-
-    def _parse_testcase(self):
-        pass
-
-    def _platform_find_testcases(self):
-        pass
-
-    def check_64bit(self):
-        pass
 
 
 class Test(unittest.TestCase):
@@ -54,14 +39,6 @@ class Test(unittest.TestCase):
         # not much to test here
         pass
 
-    def test_read_file(self):
-        fd, f = tempfile.mkstemp(text=True)
-        os.write(fd, 'fizzle')
-        os.close(fd)
-        result = drillresults.read_text_file(f)
-        self.assertEqual('fizzle', result)
-        os.remove(f)
-
     def test_carve(self):
         s = 'redbluegreenyellowred'
         r = drillresults.carve(s, 'red', 'red')
@@ -90,13 +67,6 @@ class Test(unittest.TestCase):
         for s in expect_false:
             self.assertFalse(drillresults.is_number(s))
 
-    def test_rd_acts_as_metaclass(self):
-        self.assertRaises(TypeError, drillresults.ResultDriller)
-
-    def test_rd(self):
-        rd = MockRd()
-        for letter in alphabet:
-            self.assertTrue(letter in rd.re_set)
 
 
 if __name__ == "__main__":

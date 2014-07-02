@@ -5,9 +5,9 @@ This script looks for interesting crashes and rate them by potential exploitabil
 import logging
 import os
 
-from certfuzz.drillresults.common import ResultDriller
 from certfuzz.drillresults.common import main as _main
 from certfuzz.drillresults.testcasebundle_linux import LinuxTestCaseBundle
+from certfuzz.drillresults.result_driller_base import ResultDriller
 
 logger = logging.getLogger(__name__)
 
