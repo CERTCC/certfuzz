@@ -9,6 +9,7 @@ import struct
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
 from certfuzz.drillresults.common import reg_set
+from certfuzz.drillresults.errors import LinuxTestCaseBundleError
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 import logging
 import re

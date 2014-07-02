@@ -12,3 +12,11 @@ class DrillResultsError(CERTFuzzToolError):
 
 class TestCaseBundleError(DrillResultsError):
     pass
+
+
+class LinuxTestCaseBundleError(TestCaseBundleError):
+    pass
+
+
+class WindowsTestCaseBundleError(TestCaseBundleError):
+    pass
