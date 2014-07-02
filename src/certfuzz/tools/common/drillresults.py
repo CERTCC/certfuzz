@@ -134,7 +134,7 @@ class TestCaseBundle(object):
 
         # See if we're dealing with 64-bit debugger or target app
         self._check_64bit()
-        self._check_report()
+        self._parse_testcase()
         self._score_testcase()
 
     def _verify_files_exist(self):
@@ -155,7 +155,7 @@ class TestCaseBundle(object):
         pass
 
     @abc.abstractmethod
-    def _check_report(self):
+    def _parse_testcase(self):
         pass
 
     @abc.abstractmethod

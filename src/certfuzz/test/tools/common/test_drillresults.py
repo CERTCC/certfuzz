@@ -15,7 +15,7 @@ class MockRd(drillresults.ResultDriller):
     # really_exploitable expects a list
     really_exploitable = list(alphabet)
 
-    def _check_report(self):
+    def _parse_testcase(self):
         pass
 
     def _platform_find_testcases(self):

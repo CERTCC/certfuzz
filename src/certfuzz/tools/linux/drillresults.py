@@ -197,7 +197,7 @@ def fix_efa_offset(instructionline, faultaddr, _64bit_debugger):
 
 
 class LinuxTestCaseBundle(TestCaseBundle):
-    def _check_report(self):
+    def _parse_testcase(self):
         '''
         Parse the gdb file
         '''
