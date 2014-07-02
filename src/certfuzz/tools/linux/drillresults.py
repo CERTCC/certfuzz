@@ -197,6 +197,18 @@ def fix_efa_offset(instructionline, faultaddr, _64bit_debugger):
 
 
 class LinuxTestCaseBundle(TestCaseBundle):
+    def _check_64bit(self):
+        '''
+        Check if the debugger and target app are 64-bit
+        '''
+        for line in self.reporttext.splitlines():
+            m = re.match(regex['bt_addr'], line)
+            if m:
+                start_addr = m.group(1)
+                if len(start_addr) > 10:
+                    self._64bit_debugger = True
+                    logger.debug()
+
     def _parse_testcase(self):
         '''
         Parse the gdb file
@@ -295,17 +307,6 @@ class LinuxTestCaseBundle(TestCaseBundle):
         else:
             details['exceptions'][exceptionnum]['EIF'] = False
 
-    def _check_64bit(self):
-        '''
-        Check if the debugger and target app are 64-bit
-        '''
-        for line in self.reporttext.splitlines():
-            m = re.match(regex['bt_addr'], line)
-            if m:
-                start_addr = m.group(1)
-                if len(start_addr) > 10:
-                    self._64bit_debugger = True
-                    logger.debug()
 
 class LinuxResultDriller(ResultDriller):
     really_exploitable = [
