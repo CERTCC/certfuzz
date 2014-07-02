@@ -342,7 +342,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
                 for reg in regs1:
                     if "=" in reg:
                         splitreg = reg.split("=")
-                        regdict[splitreg[0]] = splitreg[1]
+                        self.regdict[splitreg[0]] = splitreg[1]
 
 
 class WindowsResultDriller(ResultDriller):

@@ -180,6 +180,8 @@ class TestCaseBundle(object):
 
         self.re_set = set(self.really_exploitable)
 
+        self.regdict = {}
+
         self.reporttext = read_text_file(self.dbg_outfile)
         # Read in the fuzzed file
         self.crasherdata = read_bin_file(self.testcase_file)
