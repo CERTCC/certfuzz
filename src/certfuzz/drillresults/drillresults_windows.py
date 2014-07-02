@@ -9,7 +9,6 @@ import re
 import struct
 
 from certfuzz.drillresults.common import ResultDriller
-from certfuzz.drillresults.common import TestCaseBundle
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
 from certfuzz.drillresults.common import is_number
@@ -17,6 +16,7 @@ from certfuzz.drillresults.common import main as _main
 from certfuzz.drillresults.common import read_bin_file
 from certfuzz.drillresults.common import reg64_set
 from certfuzz.drillresults.common import reg_set
+from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 
 logger = logging.getLogger(__name__)

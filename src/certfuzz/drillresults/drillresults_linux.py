@@ -9,11 +9,11 @@ import re
 import struct
 
 from certfuzz.drillresults.common import ResultDriller
-from certfuzz.drillresults.common import TestCaseBundle
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
 from certfuzz.drillresults.common import main as _main
 from certfuzz.drillresults.common import reg_set
+from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 
 logger = logging.getLogger(__name__)
