@@ -154,6 +154,41 @@ class LinuxTestCaseBundle(TestCaseBundle):
         else:
             details['exceptions'][exceptionnum]['EIF'] = False
 
+    def pc_in_mapped_address(self, instraddr):
+        '''
+        Check if the instruction pointer is in a loaded module
+        '''
+        if not instraddr:
+            # The gdb file doesn't have anything in it that'll tell us
+            # where the PC is.
+            return ''
+    #    print 'checking if %s is mapped...' % instraddr
+        mapped_module = 'unloaded'
+
+        instraddr = int(instraddr, 16)
+    #    print 'instraddr: %d' % instraddr
+        for line in self.reporttext.splitlines():
+            #print 'checking: %s for %s' % (line,regex['mapped_frame'])
+            n = re.search(regex['mapped_frame'], line)
+            if n:
+    #            print '*** found mapped address regex!'
+                # Strip out backticks present on 64-bit systems
+                begin_address = int(n.group(1).replace('`', ''), 16)
+                end_address = int(n.group(2).replace('`', ''), 16)
+                if begin_address < instraddr < end_address:
+                    mapped_module = n.group(4)
+                    #print 'mapped_module: %s' % mapped_module
+            else:
+                # [vdso] still counts as a mapped module
+                n = re.search(regex['vdso'], line)
+                if n:
+                    begin_address = int(n.group(1).replace('`', ''), 16)
+                    end_address = int(n.group(2).replace('`', ''), 16)
+                    if begin_address < instraddr < end_address:
+                        mapped_module = '[vdso]'
+
+        return mapped_module
+
     def format_addr(self, faultaddr):
         '''
         Format a 64- or 32-bit memory address to a fixed width
@@ -214,6 +249,21 @@ class LinuxTestCaseBundle(TestCaseBundle):
                     faultaddr = self.format_addr(faultaddr.replace('L', ''))
         return faultaddr
 
+    def get_ex_num(self):
+        '''
+        Get the exception number by counting the number of continues
+        '''
+        exception = 0
+        for line in self.reporttext.splitlines():
+            n = re.match(regex['dbg_prompt'], line)
+            if n:
+                cdbcmd = n.group(1)
+                cmds = cdbcmd.split(';')
+                for cmd in cmds:
+                    if cmd == 'g':
+                        exception = exception + 1
+        return exception
+
     def get_instr(self, instraddr):
         '''
         Find the disassembly line for the current (crashing) instruction
@@ -238,56 +288,6 @@ class LinuxTestCaseBundle(TestCaseBundle):
             faultaddr = ds.replace('`', '')
         return faultaddr
 
-    def pc_in_mapped_address(self, instraddr):
-        '''
-        Check if the instruction pointer is in a loaded module
-        '''
-        if not instraddr:
-            # The gdb file doesn't have anything in it that'll tell us
-            # where the PC is.
-            return ''
-    #    print 'checking if %s is mapped...' % instraddr
-        mapped_module = 'unloaded'
-
-        instraddr = int(instraddr, 16)
-    #    print 'instraddr: %d' % instraddr
-        for line in self.reporttext.splitlines():
-            #print 'checking: %s for %s' % (line,regex['mapped_frame'])
-            n = re.search(regex['mapped_frame'], line)
-            if n:
-    #            print '*** found mapped address regex!'
-                # Strip out backticks present on 64-bit systems
-                begin_address = int(n.group(1).replace('`', ''), 16)
-                end_address = int(n.group(2).replace('`', ''), 16)
-                if begin_address < instraddr < end_address:
-                    mapped_module = n.group(4)
-                    #print 'mapped_module: %s' % mapped_module
-            else:
-                # [vdso] still counts as a mapped module
-                n = re.search(regex['vdso'], line)
-                if n:
-                    begin_address = int(n.group(1).replace('`', ''), 16)
-                    end_address = int(n.group(2).replace('`', ''), 16)
-                    if begin_address < instraddr < end_address:
-                        mapped_module = '[vdso]'
-
-        return mapped_module
-
-    def get_ex_num(self):
-        '''
-        Get the exception number by counting the number of continues
-        '''
-        exception = 0
-        for line in self.reporttext.splitlines():
-            n = re.match(regex['dbg_prompt'], line)
-            if n:
-                cdbcmd = n.group(1)
-                cmds = cdbcmd.split(';')
-                for cmd in cmds:
-                    if cmd == 'g':
-                        exception = exception + 1
-        return exception
-
     def get_instr_addr(self):
         '''
         Find the address for the current (crashing) instruction
@@ -307,9 +307,6 @@ class LinuxTestCaseBundle(TestCaseBundle):
                     instraddr = n.group(1)
                     #print 'Found instruction address: %s' % instraddr
         return instraddr
-
-
-
 
 
 class LinuxResultDriller(ResultDriller):
