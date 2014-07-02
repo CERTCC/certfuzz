@@ -6,7 +6,6 @@ import logging
 import os
 import re
 
-from certfuzz.drillresults.common import main as _main
 from certfuzz.drillresults.testcasebundle_windows import WindowsTestCaseBundle as TestCaseBundle
 from certfuzz.drillresults.result_driller_base import ResultDriller
 
@@ -46,10 +45,3 @@ class WindowsResultDriller(ResultDriller):
                     tcb = TestCaseBundle(msecfile, crasherfile, crash_hash,
                                          self.ignore_jit)
                     self.testcase_bundles.append(tcb)
-
-
-def main():
-    _main(driller_class=WindowsResultDriller)
-
-if __name__ == '__main__':
-    main()
