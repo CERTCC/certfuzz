@@ -169,15 +169,16 @@ def read_bin_file(inputfile):
 class TestCaseBundle(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, dbg_outfile, testcase_file, crash_hash, re_set, ignore_jit=False):
+    def __init__(self, dbg_outfile, testcase_file, crash_hash, ignore_jit=False):
         self.dbg_outfile = dbg_outfile
         self.testcase_file = testcase_file
 
         self._verify_files_exist()
 
         self.crash_hash = crash_hash
-        self.re_set = re_set
         self.ignore_jit = ignore_jit
+
+        self.re_set = set(self.really_exploitable)
 
         self.reporttext = read_text_file(self.dbg_outfile)
         # Read in the fuzzed file
@@ -193,6 +194,10 @@ class TestCaseBundle(object):
         self._check_64bit()
         self._parse_testcase()
         self._score_testcase()
+
+    @abc.abstractproperty
+    def really_exploitable(self):
+        return []
 
     def _verify_files_exist(self):
         for f in [self.dbg_outfile, self.testcase_file]:
@@ -298,13 +303,6 @@ class ResultDriller(object):
         self.cached_testcases = None
         self.testcase_bundles = []
 
-        self._64bit_debugger = False
-        self.re_set = set(self.really_exploitable)
-
-    @abc.abstractproperty
-    def really_exploitable(self):
-        return []
-
     def __enter__(self):
         return self
 
@@ -377,7 +375,7 @@ class ResultDriller(object):
                 print details['exceptions'][exception]['instructionline']
             module = details['exceptions'][exception]['pcmodule']
             if module == 'unloaded':
-                if not self.ignorejit:
+                if not self.ignore_jit:
                     print 'Instruction pointer is not in a loaded module!'
             else:
                 print 'Code executing in: %s' % module
@@ -415,3 +413,20 @@ class ResultDriller(object):
         self.process_testcases()
         self.print_reports()
         self.cache_results()
+
+
+def main(driller_class=ResultDriller):
+    '''
+    Main method for drill results script. Platform-specific customizations are
+    passed in via the driller_class argument (which must be implemented elsewhere)
+    :param driller_class:
+    '''
+    args = parse_args()
+    root_logger_to_console(args)
+    with driller_class(ignore_jit=args.ignorejit,
+                         base_dir=args.resultsdir,
+                         force_reload=args.force,
+                         report_all=args.report_all) as rd:
+        rd.drill_results()
+
+

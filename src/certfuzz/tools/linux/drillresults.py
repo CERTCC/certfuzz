@@ -197,6 +197,15 @@ def fix_efa_offset(instructionline, faultaddr, _64bit_debugger):
 
 
 class LinuxTestCaseBundle(TestCaseBundle):
+    really_exploitable = [
+                  'SegFaultOnPc',
+                  'BranchAv',
+                  'StackCodeExection',
+                  'BadInstruction',
+                  'ReturnAv',
+                  ]
+
+
     def _check_64bit(self):
         '''
         Check if the debugger and target app are 64-bit
@@ -309,14 +318,6 @@ class LinuxTestCaseBundle(TestCaseBundle):
 
 
 class LinuxResultDriller(ResultDriller):
-    really_exploitable = [
-                      'SegFaultOnPc',
-                      'BranchAv',
-                      'StackCodeExection',
-                      'BadInstruction',
-                      'ReturnAv',
-                      ]
-
     def _platform_find_testcases(self, crash_hash, files, root):
                 # Only use directories that are hashes
         # if "0x" in crash_hash:
@@ -333,20 +334,12 @@ class LinuxResultDriller(ResultDriller):
                 crasherfile = dbg_file.replace('.gdb', '')
                 #crasherfile = os.path.join(root, crasherfile)
                 tcb = LinuxTestCaseBundle(dbg_file, crasherfile, crash_hash,
-                                          self.re_set, self.ignore_jit)
+                                          self.ignore_jit)
                 self.testcase_bundles.append(tcb)
 
 
 def main():
-    args = parse_args()
-
-    root_logger_to_console(args)
-
-    with LinuxResultDriller(ignore_jit=args.ignore_jit,
-                            base_dir=args.resultsdir,
-                            force_reload=args.force) as rd:
-        rd.drill_results()
-
+    _main(driller_class=LinuxResultDriller)
 
 if __name__ == '__main__':
     main()

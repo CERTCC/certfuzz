@@ -19,8 +19,8 @@ from certfuzz.tools.common.drillresults import reg64_set
 from certfuzz.tools.common.drillresults import reg_set
 
 
-from certfuzz.tools.common.drillresults import read_file, carve, carve2, \
-    is_number, reg_set, reg64_set, ResultDriller, parse_args
+logger = logging.getLogger(__name__)
+
 
 regex = {
         '64bit_debugger': re.compile('^Microsoft.*AMD64$'),
@@ -34,135 +34,7 @@ regex = {
         }
 
 
-# These !exploitable short descriptions indicate a very interesting crash
-really_exploitable = [
-                      'ReadAVonIP',
-                      'TaintedDataControlsCodeFlow',
-                      'ReadAVonControlFlow',
-                      'DEPViolation',
-                      'IllegalInstruction',
-                      'PrivilegedInstruction',
-                      ]
-
-re_set = set(really_exploitable)
-
-
-def fix_efa_bug(reporttext, instraddr, faultaddr):
-    '''
-    !exploitable often reports an incorrect EFA for 64-bit targets.
-    If we're dealing with a 64-bit target, we can second-guess the reported EFA
-    '''
-    instructionline = get_instr(reporttext, instraddr)
-    if not instructionline or "=" not in instructionline:
-        # Nothing to fix
-        return faultaddr
-    if 'ds:' in instructionline:
-        # There's a target address in the msec file
-        if '??' in instructionline:
-            # The AV is on dereferencing where to call
-            ds = carve(instructionline, "ds:", "=")
-        else:
-            # The AV is on accessing the code location
-            ds = instructionline.split("=")[-1]
-    else:
-        # AV must be on current instruction
-        ds = instructionline.split(' ')[0]
-    if ds:
-        faultaddr = ds.replace('`', '')
-    return faultaddr
-
-
-
-def get_ex_num(reporttext, wow64_app):
-    '''
-    Get the exception number by counting the number of continues
-    '''
-    if wow64_app:
-        pattern = re.compile('^[0-9]:[0-9][0-9][0-9]:x86> (.*)')
-    else:
-        pattern = re.compile('^[0-9]:[0-9][0-9][0-9]> (.*)')
-
-    exception = 0
-
-    for line in reporttext.splitlines():
-        n = re.match(pattern, line)
-        if n:
-            cdbcmd = n.group(1)
-            cmds = cdbcmd.split(';')
-            exception += cmds.count('g')
-
-    return exception
-
-
-def get_regs(reporttext):
-    '''
-    Populate the register dictionary with register values at crash
-    '''
-    for line in reporttext.splitlines():
-        if regex['regs1'].match(line) or regex['regs2'].match(line):
-            regs1 = line.split()
-            for reg in regs1:
-                if "=" in reg:
-                    splitreg = reg.split("=")
-                    regdict[splitreg[0]] = splitreg[1]
-
-
-def get_instr(reporttext, instraddr):
-    '''
-    Find the disassembly line for the current (crashing) instruction
-    '''
-    regex = re.compile('^%s\s.+.+\s+' % instraddr)
-    for line in reporttext.splitlines():
-        n = regex.match(line)
-        if n:
-            return line
-
-
-
-
-def fix_efa_offset(instructionline, faultaddr, _64bit_debugger, wow64_app):
-    '''
-    Adjust faulting address for instructions that use offsets
-    Currently only works for instructions like CALL [reg + offset]
-    '''
-    if _64bit_debugger and not wow64_app:
-        reg_set = reg64_set
-
-    if '0x' not in faultaddr:
-        faultaddr = '0x' + faultaddr
-    instructionpieces = instructionline.split()
-    if '??' not in instructionpieces[-1]:
-        # The av is on the address of the code called, not the address
-        # of the call
-        return faultaddr
-    for index, piece in enumerate(instructionpieces):
-        if piece == 'call':
-            # CALL instruction
-            if len(instructionpieces) <= index + 3:
-                # CALL to just a register.  No offset
-                return faultaddr
-            address = instructionpieces[index + 3]
-            if '+' in address:
-                splitaddress = address.split('+')
-                reg = splitaddress[0]
-                reg = reg.replace('[', '')
-                if reg not in reg_set:
-                    return faultaddr
-                offset = splitaddress[1]
-                offset = offset.replace('h', '')
-                offset = offset.replace(']', '')
-                if is_number(offset):
-                    if '0x' not in offset:
-                        offset = '0x' + offset
-                    if int(offset, 16) > int(faultaddr, 16):
-                        # TODO: fix up negative numbers
-                        return faultaddr
-                    # Subtract offset to get actual interesting pattern
-                    faultaddr = hex(eval(faultaddr) - eval(offset))
-                    faultaddr = format_addr(faultaddr.replace('L', ''))
-    return faultaddr
-
-def WindowsResultDriller(ResultDriller):
+class WindowsTestCaseBundle(TestCaseBundle):
     # These !exploitable short descriptions indicate a very interesting crash
     really_exploitable = [
                       'ReadAVonIP',
@@ -173,41 +45,17 @@ def WindowsResultDriller(ResultDriller):
                       'PrivilegedInstruction',
                       ]
 
-    def __init__(self, ignore_jit=False, base_dir='../results', force_reload=False):
-        ResultDriller.__init__(self, ignore_jit, base_dir, force_reload)
+    def __init__(self, dbg_outfile, testcase_file, crash_hash, re_set,
+                 ignore_jit):
+        TestCaseBundle(self, dbg_outfile, testcase_file, crash_hash, re_set,
+                 ignore_jit)
         self.wow64_app = False
 
-    def _platform_find_dbg_output(self, crash_hash, files, root):
-        if "0x" in crash_hash:
-            # Create dictionary for hashes in results dictionary
-            hash_dict = {}
-            hash_dict['hash'] = crash_hash
-            self.results[crash_hash] = hash_dict
-            crasherfile = ''
-            # Check each of the files in the hash directory
-            for current_file in files:
-                # If it's exception #0, strip out the exploitability part of
-                # the file name. This gives us the crasher file name
-                if regex['first_msec'].match(current_file):
-                    crasherfile, reportfileext = os.path.splitext(current_file)
-                    crasherfile = crasherfile.replace('-EXP', '')
-                    crasherfile = crasherfile.replace('-PEX', '')
-                    crasherfile = crasherfile.replace('-PNE', '')
-                    crasherfile = crasherfile.replace('-UNK', '')
-            for current_file in files:
-                # Go through all of the .msec files and parse them
-                if regex['msec_report'].match(current_file):
-                    msecfile = os.path.join(root, current_file)
-                    if crasherfile and root not in crasherfile:
-                        crasherfile = os.path.join(root, crasherfile)
-                    dbg_tuple = (msecfile, crasherfile, crash_hash)
-                    self.dbg_out.append(dbg_tuple)
-
-    def check_64bit(self, reporttext):
+    def _check_64bit(self):
         '''
         Check if the debugger and target app are 64-bit
         '''
-        for line in reporttext.splitlines():
+        for line in self.reporttext.splitlines():
             n = re.match(regex['64bit_debugger'], line)
             if n:
                 self._64bit_debugger = True
@@ -217,13 +65,17 @@ def WindowsResultDriller(ResultDriller):
                 if n:
                     self.wow64_app = True
 
-    def _check_report(self, reportfile, crasherfile, crash_hash, cached_results):
+    def _parse_testcase(self, tcb):
         '''
         Parse the msec file
         '''
-        if cached_results:
-            if cached_results.get(crash_hash):
-                self.results[crash_hash] = cached_results[crash_hash]
+        reportfile = tcb.dbg_outfile
+        crasherfile = tcb.testcase_file
+        crash_hash = tcb.crash_hash
+
+        if self.cached_testcases:
+            if self.cached_testcases.get(crash_hash):
+                self.results[crash_hash] = self.cached_testcases[crash_hash]
                 return
 
         crashid = self.results[crash_hash]
@@ -231,13 +83,12 @@ def WindowsResultDriller(ResultDriller):
         if crasherfile == '':
             # Old FOE version that didn't do multiple exceptions or rename msec
             # file with exploitability
-            crasherfile, reportfileext = os.path.splitext(reportfile)
+            crasherfile, _junk = os.path.splitext(reportfile)
 
-        reporttext = read_file(reportfile)
-        get_regs(reporttext)
+        self.get_regs()
         current_dir = os.path.dirname(reportfile)
-        exceptionnum = get_ex_num(reporttext, self.wow64_app)
-        classification = carve(reporttext, "Exploitability Classification: ", "\n")
+        exceptionnum = self.get_ex_num()
+        classification = carve(self.reporttext, "Exploitability Classification: ", "\n")
         try:
             if classification:
                 # Create a new exception dictionary to add to the crash
@@ -257,18 +108,18 @@ def WindowsResultDriller(ResultDriller):
         if classification:
             crashid['exceptions'][exceptionnum]['classification'] = classification
 
-        shortdesc = carve(reporttext, "Short Description: ", "\n")
+        shortdesc = carve(self.reporttext, "Short Description: ", "\n")
         if shortdesc:
             # Set !exploitable Short Description for the exception
             crashid['exceptions'][exceptionnum]['shortdesc'] = shortdesc
             # Flag the entire crash ID as really exploitable if this is a good
             # exception
-            crashid['reallyexploitable'] = shortdesc in re_set
+            crashid['reallyexploitable'] = shortdesc in self.re_set
         # Check if the expected crasher file (fuzzed file) exists
         if not os.path.isfile(crasherfile):
             # It's not there, so try to extract the filename from the cdb
             # commandline
-            commandline = carve(reporttext, "CommandLine: ", "\n")
+            commandline = carve(self.reporttext, "CommandLine: ", "\n")
             args = commandline.split()
             for arg in args:
                 if "sf_" in arg:
@@ -289,9 +140,8 @@ def WindowsResultDriller(ResultDriller):
         # Set the "fuzzedfile" property for the crash ID
         crashid['fuzzedfile'] = crasherfile
         # See if we're dealing with 64-bit debugger or target app
-        self.check_64bit(reporttext)
-        faultaddr = carve2(reporttext)
-        instraddr = carve(reporttext, "Instruction Address:", "\n")
+        faultaddr = carve2(self.reporttext)
+        instraddr = carve(self.reporttext, "Instruction Address:", "\n")
         faultaddr = self.format_addr(faultaddr)
         instraddr = self.format_addr(instraddr)
 
@@ -303,21 +153,21 @@ def WindowsResultDriller(ResultDriller):
             # Put backtick into instruction address for pattern matching
             instraddr = ''.join([instraddr[:8], '`', instraddr[8:]])
             if shortdesc != 'DEPViolation':
-                faultaddr = fix_efa_bug(reporttext, instraddr, faultaddr)
+                faultaddr = self.fix_efa_bug(instraddr, faultaddr)
 
     #    pc_module = pc_in_mapped_address(reporttext, instraddr)
-        crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr, _64bit_debugger)
+        crashid['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(self.reporttext, instraddr, self._64bit_debugger)
 
         # Get the cdb line that contains the crashing instruction
-        instructionline = get_instr(reporttext, instraddr)
+        instructionline = self.get_instr(self.reporttext, instraddr)
         crashid['exceptions'][exceptionnum]['instructionline'] = instructionline
         if instructionline:
-            faultaddr = fix_efa_offset(instructionline, faultaddr, _64bit_debugger, wow64_app)
+            faultaddr = self.fix_efa_offset(instructionline, faultaddr)
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
         crashid['exceptions'][exceptionnum]['efa'] = faultaddr
-        if _64bit_debugger and not wow64_app:
+        if self._64bit_debugger and not self.wow64_app:
             # 64-bit target app
             faultaddr = faultaddr.zfill(16)
             efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
@@ -340,6 +190,27 @@ def WindowsResultDriller(ResultDriller):
             crashid['exceptions'][exceptionnum]['EIF'] = True
         else:
             crashid['exceptions'][exceptionnum]['EIF'] = False
+
+    def pc_in_mapped_address(self, instraddr):
+        '''
+        Check if the instruction pointer is in a loaded module
+        '''
+        ma_regex = 'mapped_address'
+        mapped_module = 'unloaded'
+        if self._64bit_debugger:
+            ma_regex = 'mapped_address64'
+
+        instraddr = instraddr.replace('`', '')
+        instraddr = int(instraddr, 16)
+        for line in self.reporttext.splitlines():
+            n = re.match(regex[ma_regex], line)
+            if n:
+                # Strip out backticks present on 64-bit systems
+                begin_address = int(n.group(1).replace('`', ''), 16)
+                end_address = int(n.group(2).replace('`', ''), 16)
+                if begin_address < instraddr < end_address:
+                    mapped_module = n.group(3)
+        return mapped_module
 
     def format_addr(self, faultaddr):
         '''
@@ -365,33 +236,146 @@ def WindowsResultDriller(ResultDriller):
             # pad faultaddr
             return faultaddr.zfill(8)
 
-    def pc_in_mapped_address(self, reporttext, instraddr):
+    def fix_efa_offset(self, instructionline, faultaddr):
         '''
-        Check if the instruction pointer is in a loaded module
+        Adjust faulting address for instructions that use offsets
+        Currently only works for instructions like CALL [reg + offset]
         '''
-        ma_regex = 'mapped_address'
-        mapped_module = 'unloaded'
-        if self._64bit_debugger:
-            ma_regex = 'mapped_address64'
+        if self._64bit_debugger and not self.wow64_app:
+            reg_set = reg64_set
 
-        instraddr = instraddr.replace('`', '')
-        instraddr = int(instraddr, 16)
-        for line in reporttext.splitlines():
-            n = re.match(regex[ma_regex], line)
+        if '0x' not in faultaddr:
+            faultaddr = '0x' + faultaddr
+        instructionpieces = instructionline.split()
+        if '??' not in instructionpieces[-1]:
+            # The av is on the address of the code called, not the address
+            # of the call
+            return faultaddr
+        for index, piece in enumerate(instructionpieces):
+            if piece == 'call':
+                # CALL instruction
+                if len(instructionpieces) <= index + 3:
+                    # CALL to just a register.  No offset
+                    return faultaddr
+                address = instructionpieces[index + 3]
+                if '+' in address:
+                    splitaddress = address.split('+')
+                    reg = splitaddress[0]
+                    reg = reg.replace('[', '')
+                    if reg not in reg_set:
+                        return faultaddr
+                    offset = splitaddress[1]
+                    offset = offset.replace('h', '')
+                    offset = offset.replace(']', '')
+                    if is_number(offset):
+                        if '0x' not in offset:
+                            offset = '0x' + offset
+                        if int(offset, 16) > int(faultaddr, 16):
+                            # TODO: fix up negative numbers
+                            return faultaddr
+                        # Subtract offset to get actual interesting pattern
+                        faultaddr = hex(eval(faultaddr) - eval(offset))
+                        faultaddr = self.format_addr(faultaddr.replace('L', ''))
+        return faultaddr
+
+    def get_ex_num(self):
+        '''
+        Get the exception number by counting the number of continues
+        '''
+        if self.wow64_app:
+            pattern = re.compile('^[0-9]:[0-9][0-9][0-9]:x86> (.*)')
+        else:
+            pattern = re.compile('^[0-9]:[0-9][0-9][0-9]> (.*)')
+
+        exception = 0
+
+        for line in self.reporttext.splitlines():
+            n = re.match(pattern, line)
             if n:
-                # Strip out backticks present on 64-bit systems
-                begin_address = int(n.group(1).replace('`', ''), 16)
-                end_address = int(n.group(2).replace('`', ''), 16)
-                if begin_address < instraddr < end_address:
-                    mapped_module = n.group(3)
-        return mapped_module
+                cdbcmd = n.group(1)
+                cmds = cdbcmd.split(';')
+                exception += cmds.count('g')
+
+        return exception
+
+    def get_instr(self, instraddr):
+        '''
+        Find the disassembly line for the current (crashing) instruction
+        '''
+        regex = re.compile('^%s\s.+.+\s+' % instraddr)
+        for line in self.reporttext.splitlines():
+            n = regex.match(line)
+            if n:
+                return line
+
+    def fix_efa_bug(self, instraddr, faultaddr):
+        '''
+        !exploitable often reports an incorrect EFA for 64-bit targets.
+        If we're dealing with a 64-bit target, we can second-guess the reported EFA
+        '''
+        instructionline = self.get_instr(instraddr)
+        if not instructionline or "=" not in instructionline:
+            # Nothing to fix
+            return faultaddr
+        if 'ds:' in instructionline:
+            # There's a target address in the msec file
+            if '??' in instructionline:
+                # The AV is on dereferencing where to call
+                ds = carve(instructionline, "ds:", "=")
+            else:
+                # The AV is on accessing the code location
+                ds = instructionline.split("=")[-1]
+        else:
+            # AV must be on current instruction
+            ds = instructionline.split(' ')[0]
+        if ds:
+            faultaddr = ds.replace('`', '')
+        return faultaddr
+
+    def get_regs(self):
+        '''
+        Populate the register dictionary with register values at crash
+        '''
+        for line in self.reporttext.splitlines():
+            if regex['regs1'].match(line) or regex['regs2'].match(line):
+                regs1 = line.split()
+                for reg in regs1:
+                    if "=" in reg:
+                        splitreg = reg.split("=")
+                        regdict[splitreg[0]] = splitreg[1]
+
+
+class WindowsResultDriller(ResultDriller):
+    def _platform_find_testcases(self, crash_hash, files, root):
+        if "0x" in crash_hash:
+            # Create dictionary for hashes in results dictionary
+            hash_dict = {}
+            hash_dict['hash'] = crash_hash
+            self.results[crash_hash] = hash_dict
+            crasherfile = ''
+            # Check each of the files in the hash directory
+            for current_file in files:
+                # If it's exception #0, strip out the exploitability part of
+                # the file name. This gives us the crasher file name
+                if regex['first_msec'].match(current_file):
+                    crasherfile, reportfileext = os.path.splitext(current_file)
+                    crasherfile = crasherfile.replace('-EXP', '')
+                    crasherfile = crasherfile.replace('-PEX', '')
+                    crasherfile = crasherfile.replace('-PNE', '')
+                    crasherfile = crasherfile.replace('-UNK', '')
+            for current_file in files:
+                # Go through all of the .msec files and parse them
+                if regex['msec_report'].match(current_file):
+                    msecfile = os.path.join(root, current_file)
+                    if crasherfile and root not in crasherfile:
+                        crasherfile = os.path.join(root, crasherfile)
+                    tcb = TestCaseBundle(msecfile, crasherfile, crash_hash,
+                                         self.ignore_jit)
+                    self.testcase_bundles.append(tcb)
 
 
 def main():
-    options = parse_args()
-    with WindowsResultDriller(ignore_jit=options.ignorejit,
-                         base_dir=options.resultsdir) as rd:
-        rd.drill_results()
+    _main(driller_class=WindowsResultDriller)
 
 if __name__ == '__main__':
     main()
