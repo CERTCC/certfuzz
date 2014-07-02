@@ -7,6 +7,7 @@ import binascii
 import os
 import re
 import struct
+import logging
 
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
@@ -14,6 +15,8 @@ from certfuzz.drillresults.common import is_number
 from certfuzz.drillresults.common import read_bin_file
 from certfuzz.drillresults.common import reg64_set
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
+
+logger = logging.getLogger(__name__)
 
 regex = {
         '64bit_debugger': re.compile('^Microsoft.*AMD64$'),
@@ -38,9 +41,19 @@ class WindowsTestCaseBundle(TestCaseBundle):
 
     def __init__(self, dbg_outfile, testcase_file, crash_hash, re_set,
                  ignore_jit):
+        if self.testcase_file == '':
+            # Old FOE version that didn't do multiple exceptions or rename msec
+            # file with exploitability
+            testcase_file, _junk = os.path.splitext(dbg_outfile)
+
         TestCaseBundle(self, dbg_outfile, testcase_file, crash_hash, re_set,
                  ignore_jit)
         self.wow64_app = False
+
+    def _get_classification(self):
+        self.classification = carve(self.reporttext, "Exploitability Classification: ", "\n")
+        logger.debug('Classification: %s', self.classification)
+
 
     def _check_64bit(self):
         '''
@@ -56,80 +69,68 @@ class WindowsTestCaseBundle(TestCaseBundle):
                 if n:
                     self.wow64_app = True
 
-    def _parse_testcase(self, tcb):
+    def _parse_testcase(self):
         '''
         Parse the msec file
         '''
-        reportfile = tcb.dbg_outfile
-        crasherfile = tcb.testcase_file
-        crash_hash = tcb.crash_hash
-
         if self.cached_testcases:
-            if self.cached_testcases.get(crash_hash):
-                self.results[crash_hash] = self.cached_testcases[crash_hash]
+            if self.cached_testcases.get(self.crash_hash):
+                self.results[self.crash_hash] = self.cached_testcases[self.crash_hash]
                 return
 
-        crashid = self.results[crash_hash]
-
-        if crasherfile == '':
-            # Old FOE version that didn't do multiple exceptions or rename msec
-            # file with exploitability
-            crasherfile, _junk = os.path.splitext(reportfile)
-
         self.get_regs()
-        current_dir = os.path.dirname(reportfile)
         exceptionnum = self.get_ex_num()
-        classification = carve(self.reporttext, "Exploitability Classification: ", "\n")
+        current_dir = os.path.dirname(self.dbg_outfile)
         try:
-            if classification:
+            if self.classification:
                 # Create a new exception dictionary to add to the crash
                 exception = {}
-                crashid['exceptions'][exceptionnum] = exception
+                self.details['exceptions'][exceptionnum] = exception
         except KeyError:
             # Crash ID (crash_hash) not yet seen
             # Default it to not being "really exploitable"
-            crashid['reallyexploitable'] = False
+            self.details['reallyexploitable'] = False
             # Create a dictionary of exceptions for the crash id
             exceptions = {}
-            crashid['exceptions'] = exceptions
+            self.details['exceptions'] = exceptions
             # Create a dictionary for the exception
-            crashid['exceptions'][exceptionnum] = exception
+            self.details['exceptions'][exceptionnum] = exception
 
         # Set !exploitable classification for the exception
-        if classification:
-            crashid['exceptions'][exceptionnum]['classification'] = classification
+        if self.classification:
+            self.details['exceptions'][exceptionnum]['classification'] = self.classification
 
         shortdesc = carve(self.reporttext, "Short Description: ", "\n")
         if shortdesc:
             # Set !exploitable Short Description for the exception
-            crashid['exceptions'][exceptionnum]['shortdesc'] = shortdesc
+            self.details['exceptions'][exceptionnum]['shortdesc'] = shortdesc
             # Flag the entire crash ID as really exploitable if this is a good
             # exception
-            crashid['reallyexploitable'] = shortdesc in self.re_set
+            self.details['reallyexploitable'] = shortdesc in self.re_set
         # Check if the expected crasher file (fuzzed file) exists
-        if not os.path.isfile(crasherfile):
+        if not os.path.isfile(self.testcase_file):
             # It's not there, so try to extract the filename from the cdb
             # commandline
             commandline = carve(self.reporttext, "CommandLine: ", "\n")
             args = commandline.split()
             for arg in args:
                 if "sf_" in arg:
-                    crasherfile = os.path.basename(arg)
-                    if "-" in crasherfile:
+                    self.testcase_file = os.path.basename(arg)
+                    if "-" in self.testcase_file:
                         # FOE 2.0 verify mode puts a '-<iteration>' part on the
                         # filename when invoking cdb, however the resulting file
                         # is really just 'sf_<hash>.<ext>'
-                        fileparts = crasherfile.split('-')
+                        fileparts = self.testcase_file.split('-')
                         m = re.search('\..+', fileparts[1])
                         # Recreate the original file name, minus the iteration
-                        crasherfile = os.path.join(current_dir, fileparts[0] + m.group(0))
+                        self.testcase_file = os.path.join(current_dir, fileparts[0] + m.group(0))
                     else:
-                        crasherfile = os.path.join(current_dir, crasherfile)
-        if not os.path.isfile(crasherfile):
+                        self.testcase_file = os.path.join(current_dir, self.testcase_file)
+        if not os.path.isfile(self.testcase_file):
             # Can't find the crasher file
             return
         # Set the "fuzzedfile" property for the crash ID
-        crashid['fuzzedfile'] = crasherfile
+        self.details['fuzzedfile'] = self.testcase_file
         # See if we're dealing with 64-bit debugger or target app
         faultaddr = carve2(self.reporttext)
         instraddr = carve(self.reporttext, "Instruction Address:", "\n")
@@ -147,17 +148,17 @@ class WindowsTestCaseBundle(TestCaseBundle):
                 faultaddr = self.fix_efa_bug(instraddr, faultaddr)
 
     #    pc_module = pc_in_mapped_address(reporttext, instraddr)
-        crashid['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(self.reporttext, instraddr, self._64bit_debugger)
+        self.details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(self.reporttext, instraddr, self._64bit_debugger)
 
         # Get the cdb line that contains the crashing instruction
         instructionline = self.get_instr(self.reporttext, instraddr)
-        crashid['exceptions'][exceptionnum]['instructionline'] = instructionline
+        self.details['exceptions'][exceptionnum]['instructionline'] = instructionline
         if instructionline:
             faultaddr = self.fix_efa_offset(instructionline, faultaddr)
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
-        crashid['exceptions'][exceptionnum]['efa'] = faultaddr
+        self.details['exceptions'][exceptionnum]['efa'] = faultaddr
         if self._64bit_debugger and not self.wow64_app:
             # 64-bit target app
             faultaddr = faultaddr.zfill(16)
@@ -173,14 +174,11 @@ class WindowsTestCaseBundle(TestCaseBundle):
             efapattern = efapattern.replace('L', '')
             efapattern = efapattern.zfill(8)
 
-        # Read in the fuzzed file
-        crasherdata = read_bin_file(crasherfile)
-
         # If there's a match, flag this exception has having Efa In File
-        if binascii.a2b_hex(efapattern) in crasherdata:
-            crashid['exceptions'][exceptionnum]['EIF'] = True
+        if binascii.a2b_hex(efapattern) in self.crasherdata:
+            self.details['exceptions'][exceptionnum]['EIF'] = True
         else:
-            crashid['exceptions'][exceptionnum]['EIF'] = False
+            self.details['exceptions'][exceptionnum]['EIF'] = False
 
     def pc_in_mapped_address(self, instraddr):
         '''

@@ -41,9 +41,12 @@ class TestCaseBundle(object):
                         'exceptions': {}}
         self.score = 100
         self._64bit_debugger = False
+        self.classification = None
+
 
         # See if we're dealing with 64-bit debugger or target app
         self._check_64bit()
+        self._get_classification()
         self._parse_testcase()
         self._score_testcase()
 

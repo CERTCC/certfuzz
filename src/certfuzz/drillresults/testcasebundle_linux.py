@@ -43,6 +43,10 @@ class LinuxTestCaseBundle(TestCaseBundle):
                   'ReturnAv',
                   ]
 
+    def _get_classification(self):
+        self.classification = carve(self.reporttext, "Classification: ", "\n")
+        logger.debug('Classification: %s', self.classification)
+
     def _check_64bit(self):
         '''
         Check if the debugger and target app are 64-bit
@@ -59,11 +63,6 @@ class LinuxTestCaseBundle(TestCaseBundle):
         '''
         Parse the gdb file
         '''
-        crasherfile = self.testcase_file
-        reporttext = self.reporttext
-        _64bit_debugger = self._64bit_debugger
-        crasherdata = self.crasherdata
-
     #    global _64bit_debugger
 
         # TODO move this back to ResultDriller class
@@ -72,68 +71,65 @@ class LinuxTestCaseBundle(TestCaseBundle):
 #                self.results[crash_hash] = self.cached_results[crash_hash]
 #                return
 
-        details = self.details
-
         exceptionnum = 0
-        classification = carve(reporttext, "Classification: ", "\n")
         #print 'classification: %s' % classification
         try:
-            if classification:
+            if self.classification:
                 # Create a new exception dictionary to add to the crash
                 exception = {}
-                details['exceptions'][exceptionnum] = exception
+                self.details['exceptions'][exceptionnum] = exception
         except KeyError:
             # Crash ID (crash_hash) not yet seen
             # Default it to not being "really exploitable"
-            details['reallyexploitable'] = False
+            self.details['reallyexploitable'] = False
             # Create a dictionary of exceptions for the crash id
             exceptions = {}
-            details['exceptions'] = exceptions
+            self.details['exceptions'] = exceptions
             # Create a dictionary for the exception
-            details['exceptions'][exceptionnum] = exception
+            self.details['exceptions'][exceptionnum] = exception
 
         # Set !exploitable classification for the exception
-        if classification:
-            details['exceptions'][exceptionnum]['classification'] = classification
+        if self.classification:
+            self.details['exceptions'][exceptionnum]['classification'] = self.classification
 
-        shortdesc = carve(reporttext, "Short description: ", " (")
+        shortdesc = carve(self.reporttext, "Short description: ", " (")
         #print 'shortdesc: %s' % shortdesc
         if shortdesc:
             # Set !exploitable Short Description for the exception
-            details['exceptions'][exceptionnum]['shortdesc'] = shortdesc
+            self.details['exceptions'][exceptionnum]['shortdesc'] = shortdesc
             # Flag the entire crash ID as really exploitable if this is a good
             # exception
-            details['reallyexploitable'] = shortdesc in self.re_set
+            self.details['reallyexploitable'] = shortdesc in self.re_set
 
-        if not os.path.isfile(crasherfile):
+        if not os.path.isfile(self.testcase_file):
             # Can't find the crasher file
             #print "WTF! Cannot find %s" % crasherfile
             return
         # Set the "fuzzedfile" property for the crash ID
-        details['fuzzedfile'] = crasherfile
-        faultaddr = carve2(reporttext)
+        self.details['fuzzedfile'] = self.testcase_file
+        faultaddr = carve2(self.reporttext)
         instraddr = self.get_instr_addr()
-        faultaddr = self.format_addr(faultaddr, _64bit_debugger)
-        instraddr = self.format_addr(instraddr, _64bit_debugger)
+        faultaddr = self.format_addr(faultaddr, self._64bit_debugger)
+        instraddr = self.format_addr(instraddr, self._64bit_debuggerugger)
 
         # No faulting address means no crash.
         if not faultaddr:
             return
 
         if instraddr:
-            details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(instraddr)
+            self.details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(instraddr)
 
         # Get the cdb line that contains the crashing instruction
         instructionline = self.get_instr(instraddr)
-        details['exceptions'][exceptionnum]['instructionline'] = instructionline
+        self.details['exceptions'][exceptionnum]['instructionline'] = instructionline
         if instructionline:
             faultaddr = self.fix_efa_offset(instructionline, faultaddr)
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
-        details['exceptions'][exceptionnum]['efa'] = faultaddr
-        if _64bit_debugger:
             # 64-bit target app
+        self.details['exceptions'][exceptionnum]['efa'] = faultaddr
+        if self._64bit_debugger:
             faultaddr = faultaddr.zfill(16)
             efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
             efapattern = hex(efaptr[0]).replace('0x', '')
@@ -148,10 +144,10 @@ class LinuxTestCaseBundle(TestCaseBundle):
             efapattern = efapattern.zfill(8)
 
         # If there's a match, flag this exception has having Efa In File
-        if binascii.a2b_hex(efapattern) in crasherdata:
-            details['exceptions'][exceptionnum]['EIF'] = True
+        if binascii.a2b_hex(efapattern) in self.crasherdata:
+            self.details['exceptions'][exceptionnum]['EIF'] = True
         else:
-            details['exceptions'][exceptionnum]['EIF'] = False
+            self.details['exceptions'][exceptionnum]['EIF'] = False
 
     def pc_in_mapped_address(self, instraddr):
         '''
