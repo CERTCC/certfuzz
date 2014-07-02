@@ -5,7 +5,6 @@ This script looks for interesting crashes and rate them by potential exploitabil
 import logging
 import os
 
-from certfuzz.drillresults.common import main as _main
 from certfuzz.drillresults.testcasebundle_linux import LinuxTestCaseBundle
 from certfuzz.drillresults.result_driller_base import ResultDriller
 
@@ -31,10 +30,3 @@ class LinuxResultDriller(ResultDriller):
                 tcb = LinuxTestCaseBundle(dbg_file, crasherfile, crash_hash,
                                           self.ignore_jit)
                 self.testcase_bundles.append(tcb)
-
-
-def main():
-    _main(driller_class=LinuxResultDriller)
-
-if __name__ == '__main__':
-    main()
