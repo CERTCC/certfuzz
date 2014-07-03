@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # compile our regular expresssions once
 RE_BT_ADDR = re.compile(r'(0x[0-9a-fA-F]+)\s+.+$')
 RE_MAPPED_FRAME = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(/.+)')
-RE_VDSO = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+\[vdso\]'),
+RE_VDSO = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(\[vdso\])')
 RE_CURRENT_INSTR = re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)')
 RE_FRAME_0 = re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+')
 
@@ -69,24 +69,16 @@ class LinuxTestCaseBundle(TestCaseBundle):
         instraddr = int(instraddr, 16)
         logger.debug('instraddr: %d', instraddr)
         for line in self.reporttext.splitlines():
-            logger.debug('checking: %s for %s', line, RE_MAPPED_FRAME)
-
-            n = re.search(RE_MAPPED_FRAME, line)
-            if n:
-                logger.debug('found mapped address regex')
-                # Strip out backticks present on 64-bit systems
-                begin_address = int(n.group(1).replace('`', ''), 16)
-                end_address = int(n.group(2).replace('`', ''), 16)
-                if begin_address < instraddr < end_address:
-                    mapped_module = n.group(4)
-            else:
-                # [vdso] still counts as a mapped module
-                n = re.search(RE_VDSO, line)
+            for pattern in [RE_MAPPED_FRAME, RE_VDSO]:
+                logger.debug('checking: %s for %s', line, pattern)
+                n = re.search(pattern, line)
                 if n:
+                    logger.debug('found mapped address regex')
+                    # Strip out backticks present on 64-bit systems
                     begin_address = int(n.group(1).replace('`', ''), 16)
                     end_address = int(n.group(2).replace('`', ''), 16)
                     if begin_address < instraddr < end_address:
-                        mapped_module = '[vdso]'
+                        mapped_module = n.group(4)
         logger.debug('mapped_module: %s', mapped_module)
         return mapped_module
 
