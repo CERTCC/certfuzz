@@ -14,21 +14,11 @@ from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 logger = logging.getLogger(__name__)
 
-regex = {
-        '64bit_debugger': re.compile(r'^Microsoft.*AMD64$'),
-        'bt_addr': re.compile(r'(0x[0-9a-fA-F]+)\s+.+$'),
-        'current_instr': re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)'),
-        'dbg_prompt': re.compile(r'^[0-9]:[0-9][0-9][0-9]> (.*)'),
-        'frame0': re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+'),
-        'gdb_report': re.compile(r'.+.gdb$'),
-        'mapped_address': re.compile(r'^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)'),
-        'mapped_address64': re.compile(r'^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
-        'mapped_frame': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(/.+)'),
-        'regs1': re.compile(r'^eax=.+'),
-        'regs2': re.compile(r'^eip=.+'),
-        'syswow64': re.compile(r'ModLoad:.*syswow64.*', re.IGNORECASE),
-        'vdso': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+\[vdso\]'),
-        }
+RE_BT_ADDR = re.compile(r'(0x[0-9a-fA-F]+)\s+.+$')
+RE_MAPPED_FRAME = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(/.+)')
+RE_VDSO = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+\[vdso\]'),
+RE_CURRENT_INSTR = re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)')
+RE_FRAME_0 = re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+')
 
 
 class LinuxTestCaseBundle(TestCaseBundle):
@@ -50,7 +40,7 @@ class LinuxTestCaseBundle(TestCaseBundle):
 
     def _check_64bit(self):
         for line in self.reporttext.splitlines():
-            m = re.match(regex['bt_addr'], line)
+            m = re.match(RE_BT_ADDR, line)
             if m:
                 start_addr = m.group(1)
                 if len(start_addr) > 10:
@@ -72,31 +62,31 @@ class LinuxTestCaseBundle(TestCaseBundle):
             # The gdb file doesn't have anything in it that'll tell us
             # where the PC is.
             return ''
-    #    print 'checking if %s is mapped...' % instraddr
+        logger.debug('checking if %s is mapped', instraddr)
         mapped_module = 'unloaded'
 
         instraddr = int(instraddr, 16)
-    #    print 'instraddr: %d' % instraddr
+        logger.debug('instraddr: %d', instraddr)
         for line in self.reporttext.splitlines():
-            #print 'checking: %s for %s' % (line,regex['mapped_frame'])
-            n = re.search(regex['mapped_frame'], line)
+            logger.debug('checking: %s for %s', line, RE_MAPPED_FRAME)
+
+            n = re.search(RE_MAPPED_FRAME, line)
             if n:
-    #            print '*** found mapped address regex!'
+                logger.debug('found mapped address regex')
                 # Strip out backticks present on 64-bit systems
                 begin_address = int(n.group(1).replace('`', ''), 16)
                 end_address = int(n.group(2).replace('`', ''), 16)
                 if begin_address < instraddr < end_address:
                     mapped_module = n.group(4)
-                    #print 'mapped_module: %s' % mapped_module
             else:
                 # [vdso] still counts as a mapped module
-                n = re.search(regex['vdso'], line)
+                n = re.search(RE_VDSO, line)
                 if n:
                     begin_address = int(n.group(1).replace('`', ''), 16)
                     end_address = int(n.group(2).replace('`', ''), 16)
                     if begin_address < instraddr < end_address:
                         mapped_module = '[vdso]'
-
+        logger.debug('mapped_module: %s', mapped_module)
         return mapped_module
 
     def format_addr(self, faultaddr):
@@ -163,7 +153,7 @@ class LinuxTestCaseBundle(TestCaseBundle):
         '''
         Find the disassembly line for the current (crashing) instruction
         '''
-        rgx = regex['current_instr']
+        rgx = RE_CURRENT_INSTR
         for line in self.reporttext.splitlines():
             n = rgx.match(line)
             if n:
@@ -190,14 +180,14 @@ class LinuxTestCaseBundle(TestCaseBundle):
         instraddr = None
         for line in self.reporttext.splitlines():
             #print 'checking: %s' % line
-            n = re.match(regex['current_instr'], line)
+            n = re.match(RE_CURRENT_INSTR, line)
             if n:
                 instraddr = n.group(1)
                 #print 'Found instruction address: %s' % instraddr
         if not instraddr:
             for line in self.reporttext.splitlines():
                 #No disassembly. Resort to frame 0 address
-                n = re.match(regex['frame0'], line)
+                n = re.match(RE_FRAME_0, line)
                 if n:
                     instraddr = n.group(1)
                     #print 'Found instruction address: %s' % instraddr

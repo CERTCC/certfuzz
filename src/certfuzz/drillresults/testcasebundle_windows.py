@@ -16,14 +16,10 @@ from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 logger = logging.getLogger(__name__)
 
-regex = {
-        '64bit_debugger': re.compile('^Microsoft.*AMD64$'),
-        'mapped_address': re.compile('^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)'),
-        'mapped_address64': re.compile('^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
-        'regs1': re.compile('^eax=.+'),
-        'regs2': re.compile('^eip=.+'),
-        'syswow64': re.compile('ModLoad:.*syswow64.*', re.IGNORECASE),
-        }
+RE_64BIT_DEBUGGER = re.compile('^Microsoft.*AMD64$')
+RE_SYSWOW64 = re.compile('ModLoad:.*syswow64.*', re.IGNORECASE)
+RE_MAPPED_ADDRESS = re.compile('^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)')
+RE_MAPPED_ADDRESS64 = re.compile('^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
 
 
 class WindowsTestCaseBundle(TestCaseBundle):
@@ -58,12 +54,12 @@ class WindowsTestCaseBundle(TestCaseBundle):
 
     def _check_64bit(self):
         for line in self.reporttext.splitlines():
-            n = re.match(regex['64bit_debugger'], line)
+            n = re.match(RE_64BIT_DEBUGGER, line)
             if n:
                 self._64bit_debugger = True
 
             if self._64bit_debugger:
-                n = re.match(regex['syswow64'], line)
+                n = re.match(RE_SYSWOW64, line)
                 if n:
                     self.wow64_app = True
 
@@ -109,15 +105,15 @@ class WindowsTestCaseBundle(TestCaseBundle):
         '''
         Check if the instruction pointer is in a loaded module
         '''
-        ma_regex = 'mapped_address'
+        pattern = RE_MAPPED_ADDRESS
         mapped_module = 'unloaded'
         if self._64bit_debugger:
-            ma_regex = 'mapped_address64'
+            pattern = RE_MAPPED_ADDRESS64
 
         instraddr = instraddr.replace('`', '')
         instraddr = int(instraddr, 16)
         for line in self.reporttext.splitlines():
-            n = re.match(regex[ma_regex], line)
+            n = re.match(pattern, line)
             if n:
                 # Strip out backticks present on 64-bit systems
                 begin_address = int(n.group(1).replace('`', ''), 16)
@@ -259,7 +255,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
 #        Populate the register dictionary with register values at crash
 #        '''
 #        for line in self.reporttext.splitlines():
-#            if regex['regs1'].match(line) or regex['regs2'].match(line):
+#            if RE_regs1'].match(line) or regex['regs2.match(line):
 #                regs1 = line.split()
 #                for reg in regs1:
 #                    if "=" in reg:
