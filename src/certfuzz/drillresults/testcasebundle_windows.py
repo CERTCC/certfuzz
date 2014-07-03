@@ -16,6 +16,7 @@ from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 logger = logging.getLogger(__name__)
 
+# compile our regular expresssions once
 RE_64BIT_DEBUGGER = re.compile('^Microsoft.*AMD64$')
 RE_SYSWOW64 = re.compile('ModLoad:.*syswow64.*', re.IGNORECASE)
 RE_MAPPED_ADDRESS = re.compile('^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)')

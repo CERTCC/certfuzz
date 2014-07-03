@@ -14,6 +14,7 @@ from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 logger = logging.getLogger(__name__)
 
+# compile our regular expresssions once
 RE_BT_ADDR = re.compile(r'(0x[0-9a-fA-F]+)\s+.+$')
 RE_MAPPED_FRAME = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(/.+)')
 RE_VDSO = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+\[vdso\]'),
