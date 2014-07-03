@@ -59,10 +59,16 @@ class TestCaseBundle(object):
 
     @abc.abstractproperty
     def really_exploitable(self):
+        '''
+        List of strings indicating debugger descriptions of particular interest
+        '''
         return []
 
     @abc.abstractproperty
     def _64bit_target_app(self):
+        '''
+        Returns true if the target app is 64-bit.
+        '''
         return self._64bit_debugger
 
     def _verify_files_exist(self):
