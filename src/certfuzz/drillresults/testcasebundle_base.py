@@ -13,6 +13,8 @@ from certfuzz.drillresults.common import read_bin_file
 from certfuzz.drillresults.errors import TestCaseBundleError
 import binascii
 import struct
+from certfuzz.drillresults.common import reg64_set
+from certfuzz.drillresults.common import reg_set
 
 
 logger = logging.getLogger(__name__)
@@ -52,6 +54,12 @@ class TestCaseBundle(object):
 
         # See if we're dealing with 64-bit debugger or target app
         self._check_64bit()
+
+        if self._64bit_target_app:
+            self.reg_set = reg64_set
+        else:
+            self.reg_set = reg_set
+
         self._get_classification()
         self._get_shortdesc()
         self._parse_testcase()

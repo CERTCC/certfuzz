@@ -10,8 +10,6 @@ import re
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
 from certfuzz.drillresults.common import is_number
-from certfuzz.drillresults.common import reg_set
-from certfuzz.drillresults.common import reg64_set
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 
@@ -93,7 +91,8 @@ class WindowsTestCaseBundle(TestCaseBundle):
         TestCaseBundle._find_testcase_file(self)
 
     def _64bit_addr_fixup(self, faultaddr, instraddr):
-        if self._64bit_target_app and instraddr: # Put backtick into instruction address for pattern matching
+        if self._64bit_target_app and instraddr:
+            # Put backtick into instruction address for pattern matching
             instraddr = ''.join([instraddr[:8], '`', instraddr[8:]])
             if self.shortdesc != 'DEPViolation':
                 faultaddr = self.fix_efa_bug(instraddr, faultaddr)
@@ -123,6 +122,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
             begin_address = int(n.group(1).replace('`', ''), 16)
             end_address = int(n.group(2).replace('`', ''), 16)
             module_name = n.group(3)
+            logger.debug('%x %x %s %x', begin_address, end_address, module_name, instraddr)
             if begin_address < instraddr < end_address:
                 logger.debug('Matched: %x in %x %x %s', instraddr,
                              begin_address, end_address, module_name)
@@ -134,16 +134,16 @@ class WindowsTestCaseBundle(TestCaseBundle):
         Adjust faulting address for instructions that use offsets
         Currently only works for instructions like CALL [reg + offset]
         '''
-        if self._64bit_target_app:
-            reg_set = reg64_set
-
         if '0x' not in faultaddr:
             faultaddr = '0x' + faultaddr
+
         instructionpieces = instructionline.split()
+
         if '??' not in instructionpieces[-1]:
             # The av is on the address of the code called, not the address
             # of the call
             return faultaddr
+
         for index, piece in enumerate(instructionpieces):
             if piece == 'call':
                 # CALL instruction
@@ -155,7 +155,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
                     splitaddress = address.split('+')
                     reg = splitaddress[0]
                     reg = reg.replace('[', '')
-                    if reg not in reg_set:
+                    if reg not in self.reg_set:
                         return faultaddr
                     offset = splitaddress[1]
                     offset = offset.replace('h', '')

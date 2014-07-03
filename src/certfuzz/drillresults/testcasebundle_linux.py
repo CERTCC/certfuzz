@@ -8,7 +8,6 @@ import re
 
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
-from certfuzz.drillresults.common import reg_set
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 
@@ -80,7 +79,9 @@ class LinuxTestCaseBundle(TestCaseBundle):
         '''
         if '0x' not in faultaddr:
             faultaddr = '0x' + faultaddr
+
         instructionpieces = instructionline.split()
+
         for index, piece in enumerate(instructionpieces):
             if piece == 'call':
                 # CALL instruction
@@ -92,7 +93,7 @@ class LinuxTestCaseBundle(TestCaseBundle):
                     splitaddress = address.split('+')
                     reg = splitaddress[0]
                     reg = reg.replace('[', '')
-                    if reg not in reg_set:
+                    if reg not in self.reg_set:
                         return faultaddr
                     offset = splitaddress[1]
                     offset = offset.replace('h', '')
