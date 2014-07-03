@@ -13,7 +13,7 @@ try:
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.campaign.config.bff_config import ConfigHelper, read_config_options
-    from certfuzz.debuggers import gdb  # @UnusedImport
+    from certfuzz.debuggers import gdb, crashwrangler  # @UnusedImport
 except ImportError:
     # if we got here, we probably don't have .. in our PYTHONPATH
     import sys
@@ -24,7 +24,7 @@ except ImportError:
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.campaign.config.bff_config import ConfigHelper, read_config_options
-    from certfuzz.debuggers import gdb  # @UnusedImport
+    from certfuzz.debuggers import gdb, crashwrangler  # @UnusedImport
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARNING)
