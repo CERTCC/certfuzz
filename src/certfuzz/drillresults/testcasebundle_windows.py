@@ -10,6 +10,7 @@ import re
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
 from certfuzz.drillresults.common import is_number
+from certfuzz.drillresults.common import reg_set
 from certfuzz.drillresults.common import reg64_set
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
@@ -92,7 +93,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
         TestCaseBundle._find_testcase_file(self)
 
     def _64bit_addr_fixup(self, faultaddr, instraddr):
-        if self._64bit_debugger and not self.wow64_app and instraddr: # Put backtick into instruction address for pattern matching
+        if self._64bit_target_app and instraddr: # Put backtick into instruction address for pattern matching
             instraddr = ''.join([instraddr[:8], '`', instraddr[8:]])
             if self.shortdesc != 'DEPViolation':
                 faultaddr = self.fix_efa_bug(instraddr, faultaddr)
@@ -102,57 +103,38 @@ class WindowsTestCaseBundle(TestCaseBundle):
     def _64bit_target_app(self):
         return self._64bit_debugger and not self.wow64_app
 
-    def pc_in_mapped_address(self, instraddr):
+    def _look_for_loaded_module(self, instraddr, line):
         '''
-        Check if the instruction pointer is in a loaded module
+        Returns a string containing the module location if found, None otherwise
+        :param instraddr:
+        :param line:
         '''
         pattern = RE_MAPPED_ADDRESS
-        mapped_module = 'unloaded'
         if self._64bit_debugger:
             pattern = RE_MAPPED_ADDRESS64
 
+        # convert to an int as hex
         instraddr = instraddr.replace('`', '')
         instraddr = int(instraddr, 16)
-        for line in self.reporttext.splitlines():
-            n = re.match(pattern, line)
-            if n:
-                # Strip out backticks present on 64-bit systems
-                begin_address = int(n.group(1).replace('`', ''), 16)
-                end_address = int(n.group(2).replace('`', ''), 16)
-                if begin_address < instraddr < end_address:
-                    mapped_module = n.group(3)
-        return mapped_module
 
-    def format_addr(self, faultaddr):
-        '''
-        Format a 64- or 32-bit memory address to a fixed width
-        '''
-        if not faultaddr:
-            return
-
-        faultaddr = faultaddr.strip().replace('0x', '')
-
-        if self._64bit_debugger and not self.wow64_app:
-            # Due to a bug in !exploitable, the Exception Faulting Address is
-            # often wrong with 64-bit targets
-            if len(faultaddr) < 10:
-                # pad faultaddr
-                return faultaddr.zfill(16)
-
-        if len(faultaddr) > 10:
-            # 0x12345678 = 10 chars
-            return faultaddr[-8:]
-
-        if len(faultaddr) < 10:
-            # pad faultaddr
-            return faultaddr.zfill(8)
+        n = re.match(pattern, line)
+        if n:
+            # Strip out backticks present on 64-bit systems
+            begin_address = int(n.group(1).replace('`', ''), 16)
+            end_address = int(n.group(2).replace('`', ''), 16)
+            module_name = n.group(3)
+            if begin_address < instraddr < end_address:
+                logger.debug('Matched: %x in %x %x %s', instraddr,
+                             begin_address, end_address, module_name)
+                # as soon as we find this, we're done
+                return module_name
 
     def fix_efa_offset(self, instructionline, faultaddr):
         '''
         Adjust faulting address for instructions that use offsets
         Currently only works for instructions like CALL [reg + offset]
         '''
-        if self._64bit_debugger and not self.wow64_app:
+        if self._64bit_target_app:
             reg_set = reg64_set
 
         if '0x' not in faultaddr:

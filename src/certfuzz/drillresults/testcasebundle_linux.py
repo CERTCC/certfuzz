@@ -53,60 +53,25 @@ class LinuxTestCaseBundle(TestCaseBundle):
 
     @property
     def _64bit_target_app(self):
-        return TestCaseBundle._64bit_target_app(self)
+        return TestCaseBundle._64bit_target_app
 
-    def pc_in_mapped_address(self, instraddr):
-        '''
-        Check if the instruction pointer is in a loaded module
-        '''
-        if not instraddr:
-            # The gdb file doesn't have anything in it that'll tell us
-            # where the PC is.
-            return ''
-        logger.debug('checking if %s is mapped', instraddr)
-        mapped_module = 'unloaded'
-
+    def _look_for_loaded_module(self, instraddr, line):
+        # convert to an int as hex
         instraddr = int(instraddr, 16)
-        logger.debug('instraddr: %d', instraddr)
-        for line in self.reporttext.splitlines():
-            for pattern in [RE_MAPPED_FRAME, RE_VDSO]:
-                logger.debug('checking: %s for %s', line, pattern)
-                n = re.search(pattern, line)
-                if n:
-                    logger.debug('found mapped address regex')
-                    # Strip out backticks present on 64-bit systems
-                    begin_address = int(n.group(1).replace('`', ''), 16)
-                    end_address = int(n.group(2).replace('`', ''), 16)
-                    if begin_address < instraddr < end_address:
-                        mapped_module = n.group(4)
-        logger.debug('mapped_module: %s', mapped_module)
-        return mapped_module
 
-    def format_addr(self, faultaddr):
-        '''
-        Format a 64- or 32-bit memory address to a fixed width
-        '''
-
-        if not faultaddr:
-            return
-        else:
-            faultaddr = faultaddr.strip()
-        faultaddr = faultaddr.replace('0x', '')
-
-        if self._64bit_debugger:
-            # Due to a bug in !exploitable, the Exception Faulting Address is
-            # often wrong with 64-bit targets
-            if len(faultaddr) < 10:
-                # pad faultaddr
-                faultaddr = faultaddr.zfill(16)
-        else:
-            if len(faultaddr) > 10:  # 0x12345678 = 10 chars
-                faultaddr = faultaddr[-8:]
-            elif len(faultaddr) < 10:
-                # pad faultaddr
-                faultaddr = faultaddr.zfill(8)
-
-        return faultaddr
+        for pattern in [RE_MAPPED_FRAME, RE_VDSO]:
+            n = re.search(pattern, line)
+            if n:
+                # Strip out backticks present on 64-bit systems
+                begin_address = int(n.group(1).replace('`', ''), 16)
+                end_address = int(n.group(2).replace('`', ''), 16)
+                module_name = n.group(4)
+                logger.debug('%x %x %s %x', begin_address, end_address, module_name, instraddr)
+                if begin_address < instraddr < end_address:
+                    logger.debug('Matched: %x in %x %x %s', instraddr,
+                                 begin_address, end_address, module_name)
+                    # as soon as we find this, we're done
+                    return module_name
 
     def fix_efa_offset(self, instructionline, faultaddr):
         '''

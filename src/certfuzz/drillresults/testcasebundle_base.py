@@ -126,7 +126,7 @@ class TestCaseBundle(object):
         if not instraddr:
             raise TestCaseBundleError('No instraddr address means no crash')
 
-        instraddr, faultaddr = self._64bit_addr_fixup(faultaddr, instraddr)
+        faultaddr, instraddr = self._64bit_addr_fixup(faultaddr, instraddr)
 
         if instraddr:
             self.details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(instraddr)
@@ -162,6 +162,61 @@ class TestCaseBundle(object):
             self.details['exceptions'][exceptionnum]['EIF'] = True
         else:
             self.details['exceptions'][exceptionnum]['EIF'] = False
+
+    @abc.abstractmethod
+    def _look_for_loaded_module(self, instraddr, line):
+        '''
+        If the line contains loaded module info, see if instraddr is in the module.
+        If it is, return the module name, otherwise return None
+        :param instraddr:
+        :param line:
+        '''
+
+    def format_addr(self, faultaddr):
+        '''
+        Format a 64- or 32-bit memory address to a fixed width
+        '''
+        if not faultaddr:
+            return
+
+        faultaddr = faultaddr.strip().replace('0x', '')
+
+        if self._64bit_target_app:
+            # Due to a bug in !exploitable, the Exception Faulting Address is
+            # often wrong with 64-bit targets
+            if len(faultaddr) < 16:
+                # pad faultaddr if it's shorter than 64 bits
+                return faultaddr.zfill(16)
+
+        # if faultaddr is longer than 32 bits, truncate it
+        if len(faultaddr) > 8:
+            return faultaddr[-8:]
+
+        # if faultaddr is shorter than 32 bits, pad it
+        if len(faultaddr) < 8:
+            # pad faultaddr
+            return faultaddr.zfill(8)
+
+        return faultaddr
+
+
+    def pc_in_mapped_address(self, instraddr):
+        '''
+        Check if the instruction pointer is in a loaded module
+        '''
+        if not instraddr:
+            # The debugger file doesn't have anything in it that'll tell us
+            # where the PC is.
+            return ''
+
+        logger.debug('checking if %s is mapped', instraddr)
+        for line in self.reporttext.splitlines():
+            module_name = self._look_for_loaded_module(instraddr, line)
+            if module_name is not None:
+                # short circuit as soon as we find a mapped module
+                return module_name
+        # if you got here, instraddr is not in a loaded module
+        return 'unloaded'
 
     @abc.abstractmethod
     def _64bit_addr_fixup(self, faultaddr, instraddr):
