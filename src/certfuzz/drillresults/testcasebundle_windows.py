@@ -3,19 +3,15 @@ Created on Jul 2, 2014
 
 @organization: cert.org
 '''
-import binascii
 import logging
 import os
 import re
-import struct
 
 from certfuzz.drillresults.common import carve
 from certfuzz.drillresults.common import carve2
 from certfuzz.drillresults.common import is_number
 from certfuzz.drillresults.common import reg64_set
-from certfuzz.drillresults.errors import WindowsTestCaseBundleError
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
-from certfuzz.drillresults.errors import TestCaseBundleError
 
 
 logger = logging.getLogger(__name__)
