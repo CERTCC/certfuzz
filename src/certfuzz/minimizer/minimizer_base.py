@@ -19,14 +19,9 @@ from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzztools import hamming, filetools, probability, text
 from certfuzz.fuzztools.filetools import delete_files, write_file
 from certfuzz.minimizer.errors import MinimizerError
-
-
-try:
-    from ..analyzers import pin_calltrace
-    from ..analyzers import AnalyzerEmptyOutputError
-    from ..debuggers.output_parsers.calltracefile import Calltracefile
-except ImportError:
-    pass
+from certfuzz.analyzers import pin_calltrace
+from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
+from certfuzz.debuggers.output_parsers.calltracefile import Calltracefile
 
 logger = logging.getLogger(__name__)
 
