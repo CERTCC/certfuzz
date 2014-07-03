@@ -12,7 +12,6 @@ try:
     from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.runners.runner_base import get_command_args_list
     from certfuzz.campaign.config.bff_config import ConfigHelper, read_config_options
     from certfuzz.debuggers import gdb  # @UnusedImport
 except ImportError:
@@ -24,7 +23,6 @@ except ImportError:
     from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.runners.runner_base import get_command_args_list
     from certfuzz.campaign.config.bff_config import ConfigHelper, read_config_options
     from certfuzz.debuggers import gdb  # @UnusedImport
 
