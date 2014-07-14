@@ -15,6 +15,7 @@ import binascii
 import struct
 from certfuzz.drillresults.common import reg64_set
 from certfuzz.drillresults.common import reg_set
+from certfuzz.drillresults.common import is_number
 
 
 logger = logging.getLogger(__name__)
@@ -143,7 +144,10 @@ class TestCaseBundle(object):
         instructionline = self.get_instr(instraddr)
         self.details['exceptions'][exceptionnum]['instructionline'] = instructionline
         if instructionline:
-            faultaddr = self.fix_efa_offset(instructionline, faultaddr)
+            self.instructionpieces = instructionline.split()
+            faultaddr = self._prefix_0x(faultaddr)
+
+            faultaddr = self.fix_efa_offset(faultaddr)
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
@@ -206,7 +210,6 @@ class TestCaseBundle(object):
             return faultaddr.zfill(8)
 
         return faultaddr
-
 
     def pc_in_mapped_address(self, instraddr):
         '''
@@ -312,3 +315,50 @@ class TestCaseBundle(object):
                         # Faulting address has high entropy.
                         scores.append(50)
         self.score = min(scores)
+
+    def _prefix_0x(self, addr):
+        if addr.startswith('0x'):
+            return addr
+        else:
+            return '0x{}'.format(addr)
+
+    def fix_efa_offset(self, faultaddr):
+        try:
+            index = self.instructionpieces.index('call')
+        except ValueError:
+            return faultaddr
+
+        # CALL instruction
+        try:
+            address = self.instructionpieces[index + 3]
+        except IndexError:
+            # CALL to just a register.  No offset
+            return faultaddr
+
+        if not '+' in address:
+            return faultaddr
+
+        splitaddress = address.split('+')
+        reg = splitaddress[0]
+        reg = reg.replace('[', '')
+
+        if reg not in self.reg_set:
+            return faultaddr
+
+        offset = splitaddress[1]
+        offset = offset.replace('h', '')
+        offset = offset.replace(']', '')
+
+        if not is_number(offset):
+            return faultaddr
+
+        offset = self._prefix_0x(offset)
+
+        if int(offset, 16) > int(faultaddr, 16):
+            # TODO: fix up negative numbers
+            return faultaddr
+
+        # Subtract offset to get actual interesting pattern
+        faultaddr = hex(eval(faultaddr) - eval(offset))
+        faultaddr = self.format_addr(faultaddr.replace('L', ''))
+        return faultaddr

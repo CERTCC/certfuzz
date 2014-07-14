@@ -72,42 +72,6 @@ class LinuxTestCaseBundle(TestCaseBundle):
                     # as soon as we find this, we're done
                     return module_name
 
-    def fix_efa_offset(self, instructionline, faultaddr):
-        '''
-        Adjust faulting address for instructions that use offsets
-        Currently only works for instructions like CALL [reg + offset]
-        '''
-        if '0x' not in faultaddr:
-            faultaddr = '0x' + faultaddr
-
-        instructionpieces = instructionline.split()
-
-        for index, piece in enumerate(instructionpieces):
-            if piece == 'call':
-                # CALL instruction
-                if len(instructionpieces) <= index + 3:
-                    # CALL to just a register.  No offset
-                    return faultaddr
-                address = instructionpieces[index + 3]
-                if '+' in address:
-                    splitaddress = address.split('+')
-                    reg = splitaddress[0]
-                    reg = reg.replace('[', '')
-                    if reg not in self.reg_set:
-                        return faultaddr
-                    offset = splitaddress[1]
-                    offset = offset.replace('h', '')
-                    offset = offset.replace(']', '')
-                    if '0x' not in offset:
-                        offset = '0x' + offset
-                    if int(offset, 16) > int(faultaddr, 16):
-                        # TODO: fix up negative numbers
-                        return faultaddr
-                    # Subtract offset to get actual interesting pattern
-                    faultaddr = hex(eval(faultaddr) - eval(offset))
-                    faultaddr = self.format_addr(faultaddr.replace('L', ''))
-        return faultaddr
-
     def get_instr(self, instraddr):
         '''
         Find the disassembly line for the current (crashing) instruction

@@ -134,42 +134,12 @@ class WindowsTestCaseBundle(TestCaseBundle):
         Adjust faulting address for instructions that use offsets
         Currently only works for instructions like CALL [reg + offset]
         '''
-        if '0x' not in faultaddr:
-            faultaddr = '0x' + faultaddr
-
-        instructionpieces = instructionline.split()
-
-        if '??' not in instructionpieces[-1]:
+        if '??' not in self.instructionpieces[-1]:
             # The av is on the address of the code called, not the address
             # of the call
             return faultaddr
 
-        for index, piece in enumerate(instructionpieces):
-            if piece == 'call':
-                # CALL instruction
-                if len(instructionpieces) <= index + 3:
-                    # CALL to just a register.  No offset
-                    return faultaddr
-                address = instructionpieces[index + 3]
-                if '+' in address:
-                    splitaddress = address.split('+')
-                    reg = splitaddress[0]
-                    reg = reg.replace('[', '')
-                    if reg not in self.reg_set:
-                        return faultaddr
-                    offset = splitaddress[1]
-                    offset = offset.replace('h', '')
-                    offset = offset.replace(']', '')
-                    if is_number(offset):
-                        if '0x' not in offset:
-                            offset = '0x' + offset
-                        if int(offset, 16) > int(faultaddr, 16):
-                            # TODO: fix up negative numbers
-                            return faultaddr
-                        # Subtract offset to get actual interesting pattern
-                        faultaddr = hex(eval(faultaddr) - eval(offset))
-                        faultaddr = self.format_addr(faultaddr.replace('L', ''))
-        return faultaddr
+        return TestCaseBundle.fix_efa_offset(self, faultaddr)
 
     def get_ex_num(self):
         '''
