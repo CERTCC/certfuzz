@@ -8,8 +8,6 @@ import os
 import re
 
 from certfuzz.drillresults.common import carve
-from certfuzz.drillresults.common import carve2
-from certfuzz.drillresults.common import is_number
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 

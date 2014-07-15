@@ -7,7 +7,6 @@ import logging
 import re
 
 from certfuzz.drillresults.common import carve
-from certfuzz.drillresults.common import carve2
 from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
 
 

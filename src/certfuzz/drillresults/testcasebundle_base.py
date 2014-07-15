@@ -16,6 +16,7 @@ import struct
 from certfuzz.drillresults.common import reg64_set
 from certfuzz.drillresults.common import reg_set
 from certfuzz.drillresults.common import is_number
+from certfuzz.drillresults.common import carve2
 
 
 logger = logging.getLogger(__name__)
