@@ -53,14 +53,14 @@ class TestCaseBundle(object):
         self._64bit_debugger = False
         self.classification = None
         self.shortdesc = None
+        self.reg_set = reg_set
 
+    def go(self):
         # See if we're dealing with 64-bit debugger or target app
         self._check_64bit()
 
         if self._64bit_target_app:
             self.reg_set = reg64_set
-        else:
-            self.reg_set = reg_set
 
         self._get_classification()
         self._get_shortdesc()
@@ -117,6 +117,12 @@ class TestCaseBundle(object):
     def get_instr(self, instraddr):
         '''
         Find the disassembly line for the current (crashing) instruction
+        '''
+
+    @abc.abstractmethod
+    def get_instr_addr(self):
+        '''
+        Find the address for the current (crashing) instruction
         '''
 
     def _parse_testcase(self):

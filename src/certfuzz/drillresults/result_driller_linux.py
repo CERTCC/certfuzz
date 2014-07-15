@@ -27,6 +27,7 @@ class LinuxResultDriller(ResultDriller):
                 logger.debug('found gdb file: %s', dbg_file)
                 crasherfile = dbg_file.replace('.gdb', '')
                 #crasherfile = os.path.join(root, crasherfile)
-                tcb = TestCaseBundle(dbg_file, crasherfile, crash_hash,
-                                          self.ignore_jit)
-                self.testcase_bundles.append(tcb)
+                with TestCaseBundle(dbg_file, crasherfile, crash_hash,
+                                          self.ignore_jit) as tcb:
+                    tcb.go()
+                    self.testcase_bundles.append(tcb)

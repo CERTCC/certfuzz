@@ -192,4 +192,3 @@ class WindowsTestCaseBundle(TestCaseBundle):
     def get_instr_addr(self):
         instraddr = carve(self.reporttext, "Instruction Address:", "\n")
         return self.format_addr(instraddr)
-

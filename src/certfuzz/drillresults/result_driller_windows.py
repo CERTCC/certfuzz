@@ -41,6 +41,7 @@ class WindowsResultDriller(ResultDriller):
                     dbg_file = os.path.join(root, current_file)
                     if crasherfile and root not in crasherfile:
                         crasherfile = os.path.join(root, crasherfile)
-                    tcb = TestCaseBundle(dbg_file, crasherfile, crash_hash,
-                                         self.ignore_jit)
-                    self.testcase_bundles.append(tcb)
+                    with TestCaseBundle(dbg_file, crasherfile, crash_hash,
+                                         self.ignore_jit) as tcb:
+                        tcb.go()
+                        self.testcase_bundles.append(tcb)
