@@ -11,6 +11,7 @@ from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 import abc
+import Queue
 
 
 logger = logging.getLogger(__name__)
@@ -25,9 +26,9 @@ class IterationBase3(object):
         self.working_dir = None
         self.analyzer_classes = []
 
-        self.candidates = []
-        self.verified = []
-        self.analyzed = []
+        self.candidates = Queue.Queue()
+        self.verified = Queue.Queue()
+        self.analyzed = Queue.Queue()
 
         self.debug = True
 
@@ -92,7 +93,7 @@ class IterationBase3(object):
                 except AnalyzerEmptyOutputError:
                     logger.warning('Unexpected empty output from analyzer_class. Continuing')
 
-        self.analyzed.append(testcase)
+        self.analyzed.put(testcase)
 
     @abc.abstractmethod
     def _post_analyze(self, testcase):
@@ -176,27 +177,19 @@ class IterationBase3(object):
         self.fuzz()
         self.run()
 
-        # short circuit if nothing found
-        if not self.candidates:
-            return
-
-
-        # FIXME: This is wrong. Don't modify the list you're looping over.
-        # TODO: Come up with a better way to do this.
         # every test case is a candidate until verified
         # use a while loop so we have the option of adding
         # candidates during the loop
-        while len(self.candidates) > 0:
-            testcase = self.candidates.pop(0)
+        while not self.candidates.empty():
+            testcase = self.candidates.get()
             self.verify(testcase)
 
-        # analyze each verified crash
-        while len(self.verified) > 0:
-            testcase = self.verified.pop(0)
+        while not self.verified.empty():
+            testcase = self.verified.get()
             self.analyze(testcase)
 
-        # construct output bundle for each analyzed test case
-        while len(self.analyzed) > 0:
-            testcase = self.analyzed.pop(0)
+        while not self.analyzed.empty():
+            testcase = self.analyzed.get()
             self.report(testcase)
+
 

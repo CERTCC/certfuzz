@@ -175,7 +175,7 @@ class Iteration(IterationBase3):
         testcase.logger.debug("zzuflog: %s", zzuf_log.line)
 #        testcase.logger.info('Command: %s', testcase.cmdline)
 
-        self.candidates.append(testcase)
+        self.candidates.put(testcase)
 
     def _verify(self, testcase):
         '''
@@ -205,12 +205,13 @@ class Iteration(IterationBase3):
 
                 if tc.is_unique:
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
-
+                    self.dbg_out_file_orig = tc.dbg.file
+                    logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
                     self._minimize(tc)
 
                     # we're ready to proceed with this testcase
                     # so add it to the verified list
-                    self.verified.append(tc)
+                    self.verified.put(tc)
                 else:
                     logger.debug('%s was found, not unique', tc.signature)
                     if self.cfg.keep_duplicates:
@@ -248,7 +249,8 @@ class Iteration(IterationBase3):
                            maxtime=self.cfg.minimizertimeout
                            ) as m:
                 m.go()
-                self.candidates.extend(m.other_crashes.values())
+                for new_tc in m.other_crashes.values():
+                    self.candidates.put(new_tc)
         except MinimizerError as e:
             logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
             m = None
@@ -307,7 +309,6 @@ class Iteration(IterationBase3):
         # in older code (see above) we kept track of specific crashes seen per seedfile
         # & range. Should we still do that?
         self.record_success()
-
 
     def _pre_report(self, testcase):
         uniqlogger = get_uniq_logger(self.cfg.uniq_log)
