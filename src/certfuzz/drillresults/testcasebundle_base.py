@@ -194,6 +194,7 @@ class TestCaseBundle(object):
         '''
         Format a 64- or 32-bit memory address to a fixed width
         '''
+        logger.debug('formatting address [%s]', faultaddr)
         if not faultaddr:
             return
 
@@ -204,15 +205,18 @@ class TestCaseBundle(object):
             # often wrong with 64-bit targets
             if len(faultaddr) < 16:
                 # pad faultaddr if it's shorter than 64 bits
+                logger.debug('addr < 64 bits: pad')
                 return faultaddr.zfill(16)
 
         # if faultaddr is longer than 32 bits, truncate it
         if len(faultaddr) > 8:
+            logger.debug('addr > 32 bits: truncate')
             return faultaddr[-8:]
 
         # if faultaddr is shorter than 32 bits, pad it
         if len(faultaddr) < 8:
             # pad faultaddr
+            logger.debug('addr < 32 bits: pad')
             return faultaddr.zfill(8)
 
         return faultaddr
@@ -231,8 +235,10 @@ class TestCaseBundle(object):
             module_name = self._look_for_loaded_module(instraddr, line)
             if module_name is not None:
                 # short circuit as soon as we find a mapped module
+                logger.debug('module found: %s', module_name)
                 return module_name
         # if you got here, instraddr is not in a loaded module
+        logger.debug('addr %s is not in loaded module', instraddr)
         return 'unloaded'
 
     @abc.abstractmethod
