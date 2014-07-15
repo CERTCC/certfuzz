@@ -362,3 +362,8 @@ class TestCaseBundle(object):
         faultaddr = hex(eval(faultaddr) - eval(offset))
         faultaddr = self.format_addr(faultaddr.replace('L', ''))
         return faultaddr
+
+    def get_fault_addr(self):
+        faultaddr = carve2(self.reporttext)
+        logger.debug('carved fault address: %s', faultaddr)
+        return self.format_addr(faultaddr)

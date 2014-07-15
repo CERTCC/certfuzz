@@ -199,18 +199,3 @@ class WindowsTestCaseBundle(TestCaseBundle):
         instraddr = carve(self.reporttext, "Instruction Address:", "\n")
         return self.format_addr(instraddr)
 
-    def get_fault_addr(self):
-        faultaddr = carve2(self.reporttext)
-        return self.format_addr(faultaddr)
-
-#    def get_regs(self):
-#        '''
-#        Populate the register dictionary with register values at crash
-#        '''
-#        for line in self.reporttext.splitlines():
-#            if RE_regs1'].match(line) or regex['regs2.match(line):
-#                regs1 = line.split()
-#                for reg in regs1:
-#                    if "=" in reg:
-#                        splitreg = reg.split("=")
-#                        self.regdict[splitreg[0]] = splitreg[1]

@@ -115,7 +115,3 @@ class LinuxTestCaseBundle(TestCaseBundle):
                     instraddr = n.group(1)
                     #print 'Found instruction address: %s' % instraddr
         return self.format_addr(instraddr)
-
-    def get_fault_addr(self):
-        faultaddr = carve2(self.reporttext)
-        return self.format_addr(faultaddr)
