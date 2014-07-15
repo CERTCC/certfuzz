@@ -112,6 +112,12 @@ class TestCaseBundle(object):
         Check if the debugger and target app are 64-bit
         '''
 
+    @abc.abstractmethod
+    def get_instr(self, instraddr):
+        '''
+        Find the disassembly line for the current (crashing) instruction
+        '''
+
     def _parse_testcase(self):
         '''
         Parse the debugger output file
@@ -244,6 +250,12 @@ class TestCaseBundle(object):
         Override this method for platforms where exceptions can be continued
         '''
         return 0
+
+    def _match_rgx(self, rgx, return_value_func):
+        for line in self.reporttext.splitlines():
+            n = rgx.match(line)
+            if n:
+                return return_value_func(n, line)
 
     def _record_exception_info(self, exceptionnum):
         if self.classification:

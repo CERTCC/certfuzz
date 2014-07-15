@@ -73,28 +73,10 @@ class LinuxTestCaseBundle(TestCaseBundle):
                     return module_name
 
     def get_instr(self, instraddr):
-        '''
-        Find the disassembly line for the current (crashing) instruction
-        '''
+        rvfunc = lambda x, l: x.group(3)
         rgx = RE_CURRENT_INSTR
-        for line in self.reporttext.splitlines():
-            n = rgx.match(line)
-            if n:
-                return n.group(3)
-        return ''
 
-    def fix_efa_bug(self, instraddr, faultaddr):
-        '''
-        !exploitable often reports an incorrect EFA for 64-bit targets.
-        If we're dealing with a 64-bit target, we can second-guess the reported EFA
-        '''
-        instructionline = self.get_instr(instraddr)
-        if not instructionline:
-            return faultaddr
-        ds = carve(instructionline, "ds:", "=")
-        if ds:
-            faultaddr = ds.replace('`', '')
-        return faultaddr
+        return self._match_rgx(rgx, rvfunc)
 
     def get_instr_addr(self):
         '''

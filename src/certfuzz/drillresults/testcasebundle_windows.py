@@ -162,14 +162,10 @@ class WindowsTestCaseBundle(TestCaseBundle):
         return exception
 
     def get_instr(self, instraddr):
-        '''
-        Find the disassembly line for the current (crashing) instruction
-        '''
-        regex = re.compile('^%s\s.+.+\s+' % instraddr)
-        for line in self.reporttext.splitlines():
-            n = regex.match(line)
-            if n:
-                return line
+        rvfunc = lambda x, l: l
+        rgx = re.compile('^%s\s.+.+\s+' % instraddr)
+
+        return self._match_rgx(rgx, rvfunc)
 
     def fix_efa_bug(self, instraddr, faultaddr):
         '''
