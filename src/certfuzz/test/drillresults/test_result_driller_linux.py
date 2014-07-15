@@ -4,7 +4,7 @@ Created on Jan 23, 2014
 @organization: cert.org
 '''
 import unittest
-from certfuzz.drillresults import drillresults_linux
+from certfuzz.drillresults import result_driller_linux
 
 
 class Test(unittest.TestCase):
