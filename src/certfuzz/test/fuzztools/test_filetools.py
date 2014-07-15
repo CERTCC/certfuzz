@@ -3,18 +3,21 @@ Created on Apr 8, 2011
 
 @organization: cert.org
 '''
-import os
-import tempfile
-from certfuzz.fuzztools.filetools import copy_file
-from certfuzz.fuzztools.filetools import delete_files
-from certfuzz.fuzztools.filetools import copy_files
-from certfuzz.fuzztools.filetools import make_directories
-from certfuzz.fuzztools.filetools import write_oneline_to_file
-from certfuzz.fuzztools.filetools import get_file_md5
 import hashlib
+import os
 import shutil
-from certfuzz.fuzztools import filetools
+import tempfile
 import unittest
+
+from certfuzz.fuzztools import filetools
+from certfuzz.fuzztools.filetools import copy_file
+from certfuzz.fuzztools.filetools import copy_files
+from certfuzz.fuzztools.filetools import delete_files
+from certfuzz.fuzztools.filetools import get_file_md5
+from certfuzz.fuzztools.filetools import make_directories
+from certfuzz.fuzztools.filetools import read_text_file
+from certfuzz.fuzztools.filetools import write_oneline_to_file
+
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -25,6 +28,14 @@ class Test(unittest.TestCase):
             shutil.rmtree(self.tempdir)
         except OSError:
             pass
+
+    def test_read_file(self):
+        fd, f = tempfile.mkstemp(dir=self.tempdir, text=True)
+        os.write(fd, 'fizzle')
+        os.close(fd)
+        result = read_text_file(f)
+        self.assertEqual('fizzle', result)
+        os.remove(f)
 
     def delete_file(self, f):
         os.remove(f)
