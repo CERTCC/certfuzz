@@ -267,72 +267,94 @@ class TestCaseBundle(object):
     def _record_exception_info(self, exceptionnum):
         if self.classification:
             # Create a new exception dictionary to add to the crash
-            exception = {}
-            self.details['exceptions'][exceptionnum] = exception
-            self.details['exceptions'][exceptionnum]['classification'] = self.classification
-        if self.shortdesc:
-            # Set !exploitable Short Description for the exception
-            self.details['exceptions'][exceptionnum]['shortdesc'] = self.shortdesc # Flag the entire crash ID as really exploitable if this is a good
-            # exception
-            self.details['reallyexploitable'] = self.shortdesc in self.re_set
+            self.details['exceptions'][exceptionnum] = {'classification': self.classification}
+
+        if not self.shortdesc:
+            logger.debug('no short description')
+            return
+
+        # Set !exploitable Short Description for the exception
+        self.details['exceptions'][exceptionnum]['shortdesc'] = self.shortdesc
+        # Flag the entire crash ID as really exploitable if this is a good
+        # exception
+        self.details['reallyexploitable'] = self.shortdesc in self.re_set
+
+    def _score_interesting(self):
+        scores = []
+        exceptions = self.details['exceptions']
+
+        for exception in exceptions.itervalues():
+            module = exception['pcmodule']
+            if module == 'unloaded' and not self.ignore_jit:
+                # EIP is not in a loaded module
+                scores.append(20)
+
+            if exception['shortdesc'] in self.re_set:
+                efa = '0x' + exception['efa']
+
+                if exception['EIF']:
+                # The faulting address pattern is in the fuzzed file
+                    if '0x000000' in efa:
+                        # Faulting address is near null
+                        scores.append(30)
+                    elif '0x0000' in efa:
+                        # Faulting address is somewhat near null
+                        scores.append(20)
+                    elif '0xffff' in efa:
+                        # Faulting address is likely a negative number
+                        scores.append(20)
+                    else:
+                        # Faulting address has high entropy.  Most exploitable.
+                        scores.append(10)
+                else:
+                    # The faulting address pattern is not in the fuzzed file
+                    scores.append(40)
+
+        return scores
+
+    def _score_less_interesting(self):
+        scores = []
+        exceptions = self.details['exceptions']
+
+        for exception in exceptions.itervalues():
+            efa = '0x' + exception['efa']
+            module = exception['pcmodule']
+            if module == 'unloaded' and not self.ignore_jit:
+                scores.append(20)
+            elif module.lower() == 'ntdll.dll' or 'msvcr' in module.lower():
+                # likely heap corruption.  Exploitable, but difficult
+                scores.append(45)
+            elif '0x00120000' in efa or '0x00130000' in efa or '0x00140000' in efa:
+                # non-continued potential stack buffer overflow
+                scores.append(40)
+            elif exception['EIF']:
+            # The faulting address pattern is in the fuzzed file
+                if '0x000000' in efa:
+                    # Faulting address is near null
+                    scores.append(70)
+                elif '0x0000' in efa:
+                    # Faulting address is somewhat near null
+                    scores.append(60)
+                elif '0xffff' in efa:
+                    # Faulting address is likely a negative number
+                    scores.append(60)
+                else:
+                    # Faulting address has high entropy.
+                    scores.append(50)
+
+        return scores
 
     def _score_testcase(self):
         logger.debug('Scoring testcase: %s', self.crash_hash)
         details = self.details
         scores = [100]
         if details['reallyexploitable'] == True:
-        # The crash summary is a very interesting one
-            for exception in details['exceptions']:
-                module = details['exceptions'][exception]['pcmodule']
-                if module == 'unloaded' and not self.ignore_jit:
-                    # EIP is not in a loaded module
-                    scores.append(20)
-                if details['exceptions'][exception]['shortdesc'] in self.re_set:
-                    efa = '0x' + details['exceptions'][exception]['efa']
-                    if details['exceptions'][exception]['EIF']:
-                    # The faulting address pattern is in the fuzzed file
-                        if '0x000000' in efa:
-                            # Faulting address is near null
-                            scores.append(30)
-                        elif '0x0000' in efa:
-                            # Faulting address is somewhat near null
-                            scores.append(20)
-                        elif '0xffff' in efa:
-                            # Faulting address is likely a negative number
-                            scores.append(20)
-                        else:
-                            # Faulting address has high entropy.  Most exploitable.
-                            scores.append(10)
-                    else:
-                        # The faulting address pattern is not in the fuzzed file
-                        scores.append(40)
+            # The crash summary is a very interesting one
+            scores.extend(self._score_interesting())
         else:
             # The crash summary isn't necessarily interesting
-            for exception in details['exceptions']:
-                efa = '0x' + details['exceptions'][exception]['efa']
-                module = details['exceptions'][exception]['pcmodule']
-                if module == 'unloaded' and not self.ignore_jit:
-                    scores.append(20)
-                elif module.lower() == 'ntdll.dll' or 'msvcr' in module.lower():
-                    # likely heap corruption.  Exploitable, but difficult
-                    scores.append(45)
-                elif '0x00120000' in efa or '0x00130000' in efa or '0x00140000' in efa:
-                    # non-continued potential stack buffer overflow
-                    scores.append(40)
-                elif details['exceptions'][exception]['EIF']:
-                # The faulting address pattern is in the fuzzed file
-                    if '0x000000' in efa:
-                        # Faulting address is near null
-                        scores.append(70)
-                    elif '0x0000' in efa:
-                        # Faulting address is somewhat near null
-                        scores.append(60)
-                    elif '0xffff' in efa:
-                        # Faulting address is likely a negative number
-                        scores.append(60)
-                    else:
-                        # Faulting address has high entropy.
-                        scores.append(50)
+            scores.extend(self._score_less_interesting())
+        logger.debug('accumulated scores: %s', scores)
         self.score = min(scores)
 
     def _prefix_0x(self, addr):
