@@ -76,30 +76,10 @@ class Iteration(IterationBase3):
         self.cfg.clean_tmpdir()
         return handled
 
-    def record_success(self):
-        self.sf_set.record_success(key=self.seedfile.md5)
-        self.rf.record_success(key=self.r.id)
-
-    def record_failure(self):
-        self.record_tries()
-
-    def record_tries(self):
-        self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-        self.rf.record_tries(key=self.r.id, tries=1)
-
-    def _setup_analyzers(self):
-        self.analyzer_classes.append(stderr.StdErr)
-        self.analyzer_classes.append(cw_gmalloc.CrashWranglerGmalloc)
-
-        if self.cfg.use_valgrind:
-            self.analyzer_classes.append(valgrind.Valgrind)
-            self.analyzer_classes.append(callgrind.Callgrind)
-
-        if self.cfg.use_pin_calltrace:
-            self.analyzer_classes.append(pin_calltrace.Pin_calltrace)
+    def _fuzz(self):
+        pass
 
     def _pre_run(self):
-        IterationBase3._pre_run(self)
         # do the fuzz
         cmdline = self.cfg.get_command(self.sf.path)
 
@@ -213,6 +193,82 @@ class Iteration(IterationBase3):
                         logger.debug('Analyzing %s anyway because keep_duplicates is set', tc.signature)
                         self.verified.append(tc)
 
+    def _pre_analyze(self, testcase):
+        STATE_TIMER.enter_state('analyze_testcase')
+
+        # get one last debugger output for the newly minimized file
+        if testcase.pc_in_function:
+            # change the debugger template
+            testcase.set_debugger_template('complete')
+        else:
+            # use a debugger template that specifies fixed offsets from $pc for disassembly
+            testcase.set_debugger_template('complete_nofunction')
+        logger.info('Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
+        testcase.get_debug_output(testcase.fuzzedfile.path)
+
+        if self.dbg_out_file_orig != testcase.dbg.file:
+            # we have a new debugger output
+            # remove the old one
+            filetools.delete_files(self.dbg_out_file_orig)
+            if os.path.exists(self.dbg_out_file_orig):
+                logger.warning('Failed to remove old debugger file %s', self.dbg_out_file_orig)
+            else:
+                logger.debug('Removed old debug file %s', self.dbg_out_file_orig)
+
+    def _analyze(self, testcase):
+        IterationBase3._analyze(self, testcase)
+
+    def _post_analyze(self, testcase):
+        logger.info('Annotating callgrind output')
+        try:
+            annotate_callgrind(testcase)
+            annotate_callgrind_tree(testcase)
+        except CallgrindAnnotateEmptyOutputFileError:
+            logger.warning('Unexpected empty output from annotate_callgrind. Continuing')
+        except CallgrindAnnotateMissingInputFileError:
+            logger.warning('Missing callgrind output. Continuing')
+
+    def _pre_report(self, testcase):
+        uniqlogger = get_uniq_logger(self.cfg.uniq_log)
+        uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
+        logger.info('%s first seen at %d', testcase.signature, testcase.seednum)
+
+        # whether it was unique or not, record some details for posterity
+        # record the details of this crash so we can regenerate it later if needed
+        testcase.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', testcase.seedfile.basename, testcase.seednum, testcase.range, testcase.fuzzedfile.path)
+        testcase.logger.info('PC=%s', testcase.pc)
+
+    def _report(self, testcase):
+        testcase.copy_files()
+
+    def _post_report(self, testcase):
+        # always clean up after yourself
+        testcase.clean_tmpdir()
+        # clean up
+        testcase.delete_files()
+
+    def record_success(self):
+        self.sf_set.record_success(key=self.seedfile.md5)
+        self.rf.record_success(key=self.r.id)
+
+    def record_failure(self):
+        self.record_tries()
+
+    def record_tries(self):
+        self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
+        self.rf.record_tries(key=self.r.id, tries=1)
+
+    def _setup_analyzers(self):
+        self.analyzer_classes.append(stderr.StdErr)
+        self.analyzer_classes.append(cw_gmalloc.CrashWranglerGmalloc)
+
+        if self.cfg.use_valgrind:
+            self.analyzer_classes.append(valgrind.Valgrind)
+            self.analyzer_classes.append(callgrind.Callgrind)
+
+        if self.cfg.use_pin_calltrace:
+            self.analyzer_classes.append(pin_calltrace.Pin_calltrace)
+
     def _minimize(self, testcase):
         if self.cfg.minimizecrashers:
             self._mininimize_to_seedfile(testcase)
@@ -250,41 +306,6 @@ class Iteration(IterationBase3):
             logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
             m = None
 
-    def _pre_analyze(self, testcase):
-        IterationBase3._pre_analyze(self, testcase)
-
-        STATE_TIMER.enter_state('analyze_testcase')
-
-        # get one last debugger output for the newly minimized file
-        if testcase.pc_in_function:
-            # change the debugger template
-            testcase.set_debugger_template('complete')
-        else:
-            # use a debugger template that specifies fixed offsets from $pc for disassembly
-            testcase.set_debugger_template('complete_nofunction')
-        logger.info('Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
-        testcase.get_debug_output(testcase.fuzzedfile.path)
-
-        if self.dbg_out_file_orig != testcase.dbg.file:
-            # we have a new debugger output
-            # remove the old one
-            filetools.delete_files(self.dbg_out_file_orig)
-            if os.path.exists(self.dbg_out_file_orig):
-                logger.warning('Failed to remove old debugger file %s', self.dbg_out_file_orig)
-            else:
-                logger.debug('Removed old debug file %s', self.dbg_out_file_orig)
-
-    def _post_analyze(self, testcase):
-        IterationBase3._post_analyze(self, testcase)
-
-        logger.info('Annotating callgrind output')
-        try:
-            annotate_callgrind(testcase)
-            annotate_callgrind_tree(testcase)
-        except CallgrindAnnotateEmptyOutputFileError:
-            logger.warning('Unexpected empty output from annotate_callgrind. Continuing')
-        except CallgrindAnnotateMissingInputFileError:
-            logger.warning('Missing callgrind output. Continuing')
 
 # TODO
 #        if self.cfg.recycle_crashers:
@@ -305,21 +326,3 @@ class Iteration(IterationBase3):
         # & range. Should we still do that?
         self.record_success()
 
-    def _pre_report(self, testcase):
-        uniqlogger = get_uniq_logger(self.cfg.uniq_log)
-        uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
-        logger.info('%s first seen at %d', testcase.signature, testcase.seednum)
-
-        # whether it was unique or not, record some details for posterity
-        # record the details of this crash so we can regenerate it later if needed
-        testcase.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', testcase.seedfile.basename, testcase.seednum, testcase.range, testcase.fuzzedfile.path)
-        testcase.logger.info('PC=%s', testcase.pc)
-
-    def _report(self, testcase):
-        testcase.copy_files()
-
-    def _post_report(self, testcase):
-        # always clean up after yourself
-        testcase.clean_tmpdir()
-        # clean up
-        testcase.delete_files()

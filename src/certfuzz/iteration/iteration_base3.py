@@ -29,13 +29,15 @@ class IterationBase3(object):
 
         self.tc_candidate_q = Queue.Queue()
 
-        self.analysis_pipeline = self.verify(self.analyze(self.report()))
+        # this gets set up in __enter__
+        self.analysis_pipeline = None
 
         self.debug = True
 
     def __enter__(self):
         self.working_dir = tempfile.mkdtemp(prefix='iteration-', dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
+        self._setup_analysis_pipeline()
         return self
 
     def __exit__(self, etype, value, traceback):
@@ -50,7 +52,11 @@ class IterationBase3(object):
 
         return handled
 
-    @abc.abstractmethod
+    def _setup_analysis_pipeline(self):
+        # build up the pipeline:
+        # verify | analyze | report
+        self.analysis_pipeline = self.verify(self.analyze(self.report()))
+
     def _pre_fuzz(self):
         pass
 
@@ -58,11 +64,9 @@ class IterationBase3(object):
     def _fuzz(self):
         pass
 
-    @abc.abstractmethod
     def _post_fuzz(self):
         pass
 
-    @abc.abstractmethod
     def _pre_run(self):
         pass
 
@@ -70,11 +74,19 @@ class IterationBase3(object):
     def _run(self):
         pass
 
-    @abc.abstractmethod
     def _post_run(self):
         pass
 
+    def _pre_verify(self, testcase):
+        pass
+
     @abc.abstractmethod
+    def _verify(self, testcase):
+        pass
+
+    def _post_verify(self, testcase):
+        pass
+
     def _pre_analyze(self, testcase):
         pass
 
@@ -94,23 +106,9 @@ class IterationBase3(object):
                 except AnalyzerEmptyOutputError:
                     logger.warning('Unexpected empty output from analyzer_class. Continuing')
 
-    @abc.abstractmethod
     def _post_analyze(self, testcase):
         pass
 
-    @abc.abstractmethod
-    def _pre_verify(self, testcase):
-        pass
-
-    @abc.abstractmethod
-    def _verify(self, testcase):
-        pass
-
-    @abc.abstractmethod
-    def _post_verify(self, testcase):
-        pass
-
-    @abc.abstractmethod
     def _pre_report(self, testcase):
         pass
 
@@ -118,7 +116,6 @@ class IterationBase3(object):
     def _report(self, testcase):
         pass
 
-    @abc.abstractmethod
     def _post_report(self, testcase):
         pass
 
@@ -142,11 +139,11 @@ class IterationBase3(object):
         self._post_run()
 
     @coroutine
-    def verify(self, target=None):
+    def verify(self, *targets):
         '''
         Verifies that a test case is unique before sending the test case. Acts
         as a filter on the analysis pipeline.
-        :param testcase:
+        :param targets: one or more downstream coroutines to send the testcase to
         '''
         logger.debug('Verifier standing by for testcases')
         while True:
@@ -157,17 +154,17 @@ class IterationBase3(object):
             self._verify(testcase)
             self._post_verify(testcase)
 
-            if target is not None:
+            for target in targets:
                 if testcase.is_unique:
                     # we're ready to proceed with this testcase
                     # so send it downstream
                     target.send(testcase)
 
     @coroutine
-    def analyze(self, target=None):
+    def analyze(self, *targets):
         '''
         Analyzes a test case before passing it down the pipeline
-        :param testcase:
+        :param targets: one or more downstream coroutines to send the testcase to
         '''
         logger.debug('Analyzer standing by for testcases')
         while True:
@@ -178,14 +175,14 @@ class IterationBase3(object):
             self._analyze(testcase)
             self._post_analyze(testcase)
 
-            if target is not None:
+            for target in targets:
                 target.send(testcase)
 
     @coroutine
-    def report(self, target=None):
+    def report(self, *targets):
         '''
         Prepares the test case report.
-        :param testcase:
+        :param targets: one or more downstream coroutines to send the testcase to
         '''
         logger.debug('Reporter standing by for testcases')
         while True:
@@ -196,7 +193,7 @@ class IterationBase3(object):
             self._report(testcase)
             self._post_report(testcase)
 
-            if target is not None:
+            for target in targets:
                 target.send(testcase)
 
     def go(self):
