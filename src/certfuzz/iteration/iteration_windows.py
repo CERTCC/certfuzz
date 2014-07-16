@@ -35,7 +35,7 @@ MAX_IOERRORS = 5
 
 
 class Iteration(IterationBase3):
-    def __init__(self, sf, rng_seed, current_seed, config, fuzzer,
+    def __init__(self, sf, rng_seed, current_seed, config, fuzzer_cls,
                  runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
                  cmd_template, uniq_func, workdirbase, outdir, debug):
         IterationBase3.__init__(self, workdirbase)
@@ -44,7 +44,7 @@ class Iteration(IterationBase3):
         self.rng_seed = rng_seed
         self.current_seed = current_seed
         self.config = config
-        self.fuzzer = fuzzer
+        self.fuzzer_cls = fuzzer_cls
         self.runner = runner
         self.debugger_module = debugger
         self.debugger_class = dbg_class
@@ -67,14 +67,6 @@ class Iteration(IterationBase3):
         else:
             # runner is not null
             self.retries = 4
-
-    def __enter__(self):
-        '''
-        set up an iteration context
-        '''
-        self.working_dir = tempfile.mkdtemp(prefix=self.iteration_tmpdir_pfx, dir=self.workdirbase)
-        self.crashes = []
-        return self
 
     def __exit__(self, etype, value, traceback):
 
@@ -143,42 +135,114 @@ class Iteration(IterationBase3):
         return handled
 
     def _fuzz(self):
-        pass
+        # generated test case (fuzzed input)
+        logger.info('...fuzzing')
+        fuzz_opts = self.config['fuzzer']
+        fuzz_args = self.sf, self.working_dir, self.rng_seed, self.current_seed, fuzz_opts
+        with self.fuzzer_cls(*fuzz_args) as fuzzer:
+            fuzzer.fuzz()
+            self.fuzzed = True
+            self.r = fuzzer.range
+            if self.r:
+                logger.info('Selected r: %s', self.r)
+        # decide if we can minimize this case later
+        # do this here (and not sooner) because the fuzzer_cls could
+        # decide at runtime whether it is or is not minimizable
+        self.minimizable = fuzzer.is_minimizable and self.config['runoptions']['minimize']
+
+        # hang on to this fuzzer instance, we use it in _run
+        self.fuzzer = fuzzer
 
     def _run(self):
+        # analysis is required in two cases:
+        # 1) runner is not defined (self.runner == None)
+        # 2) runner is defined, and detects crash (runner.saw_crash == True)
+        # this takes care of case 1 by default
+        analysis_needed = True
+        if self.runner:
+            logger.info('...running %s', self.runner.__name__)
+            with self.runner(self.config['runner'],
+                             self.cmd_template,
+                             self.fuzzer.output_file_path,
+                             self.working_dir) as runner:
+                runner.run()
+                # this takes care of case 2
+                analysis_needed = runner.saw_crash
+        # is further analysis needed?
+        if analysis_needed:
+            logger.info('...analyzing')
+            cmdlist = get_command_args_list(self.cmd_template, self.fuzzer.output_file_path)[1]
+            dbg_opts = self.config['debugger']
+            fuzzed_file = BasicFile(self.fuzzer.output_file_path)
+            self._build_crash(self.fuzzer, cmdlist, dbg_opts, fuzzed_file)
+        else:
+            logger.debug('...no crash')
         pass
 
     def _verify(self, testcase):
-        pass
+        keep_it, reason = self.keep_testcase(testcase)
+
+        if not keep_it:
+            logger.info('Candidate testcase rejected: %s', reason)
+            testcase.should_proceed_with_analysis = False
+            return
+
+        logger.debug('Keeping testcase (reason=%s)', reason)
+        testcase.should_proceed_with_analysis = True
+        logger.info("Crash confirmed: %s Exploitability: %s Faulting Address: %s", testcase.crash_hash, testcase.exp, testcase.faddr)
+        if self.minimizable:
+            testcase.should_proceed_with_analysis = True
+        self.success = True
 
     def _minimize(self, testcase):
-        pass
+        logger.info('Minimizing testcase %s', testcase.signature)
+        logger.debug('config = %s', self.config)
+
+        config = self._create_minimizer_cfg()
+
+        debuggers.verify_supported_platform()
+
+        kwargs = {'cfg': config,
+                  'crash': testcase,
+                  'seedfile_as_target': True,
+                  'bitwise': False,
+                  'confidence': 0.999,
+                  'tempdir': self.working_dir,
+                  'maxtime': self.config['runoptions']['minimizer_timeout']
+                  }
+
+        with Minimizer(**kwargs) as minimizer:
+            minimizer.go()
+            if len(minimizer.other_crashes):
+                # minimzer found other crashes, so we should add them
+                # to our list for subsequent processing
+                self.crashes.extend(minimizer.other_crashes.values())
 
     def _analyze(self, testcase):
         pass
 
     def _report(self, testcase):
-        pass
+        self.copy_files(testcase)
 
-    def keep_crash(self, crash):
-        '''Given a crash, decide whether it is a keeper. Returns a tuple
-        containing a boolean indicating whether to keep the crash, and
+    def keep_testcase(self, testcase):
+        '''Given a testcase, decide whether it is a keeper. Returns a tuple
+        containing a boolean indicating whether to keep the testcase, and
         a string containing the reason for the boolean result.
-        @param crash: a crash object
+        @param testcase: a testcase object
         @return (bool,str)
         '''
-        if crash.is_crash:
+        if testcase.is_crash:
             if self.keep_duplicates:
                 return (True, 'keep duplicates')
-            elif self.uniq_func(crash.signature):
+            elif self.uniq_func(testcase.signature):
                 # Check if crasher directory exists already
-                target_dir = crash._get_output_dir(self.outdir)
+                target_dir = testcase._get_output_dir(self.outdir)
                 if os.path.exists(target_dir):
-                    return (False, 'skip duplicate %s' % crash.signature)
+                    return (False, 'skip duplicate %s' % testcase.signature)
                 else:
                     return (True, 'unique')
             else:
-                return (False, 'skip duplicate %s' % crash.signature)
+                return (False, 'skip duplicate %s' % testcase.signature)
         elif not self.runner:
             return (False, 'not a crash')
         elif self.keep_heisenbugs:
@@ -198,30 +262,6 @@ class Iteration(IterationBase3):
         config.exclude_unmapped_frames = False
         config.watchdogfile = os.devnull
         return config
-
-    def minimize(self, crash):
-        logger.info('Minimizing crash %s', crash.signature)
-        logger.debug('config = %s', self.config)
-
-        config = self._create_minimizer_cfg()
-
-        debuggers.verify_supported_platform()
-
-        kwargs = {'cfg': config,
-                  'crash': crash,
-                  'seedfile_as_target': True,
-                  'bitwise': False,
-                  'confidence': 0.999,
-                  'tempdir': self.working_dir,
-                  'maxtime': self.config['runoptions']['minimizer_timeout']
-                  }
-
-        with Minimizer(**kwargs) as minimizer:
-            minimizer.go()
-            if len(minimizer.other_crashes):
-                # minimzer found other crashes, so we should add them
-                # to our list for subsequent processing
-                self.crashes.extend(minimizer.other_crashes.values())
 
     def _copy_seedfile(self):
         target = os.path.join(self.working_dir, self.sf.basename)
@@ -265,28 +305,7 @@ class Iteration(IterationBase3):
         # FIXME
         # self.sf.record_failure()
 
-    def _process_crash(self, crash):
-        '''
-        processes a single crash
-        @param crash: the crash to process
-        '''
-        keep_it, reason = self.keep_crash(crash)
-
-        if not keep_it:
-            logger.info('Candidate crash rejected: %s', reason)
-            return
-
-        logger.debug('Keeping crash (reason=%s)', reason)
-        logger.info("Crash confirmed: %s Exploitability: %s Faulting Address: %s", crash.crash_hash, crash.exp, crash.faddr)
-        if self.minimizable:
-            try:
-                self.minimize(crash)
-            except MinimizerError as e:
-                logger.warning('Caught minimizer error: %s', e)
-        self.copy_files(crash)
-        self.success = True
-
-    def _log_crash(self, crash):
+    def _log_testcase(self, crash):
         # pretty-print the crash for debugging
         logger.debug('Crash:')
         from pprint import pformat
@@ -295,48 +314,11 @@ class Iteration(IterationBase3):
             logger.debug('... %s', line.rstrip())
 
     def _build_crash(self, fuzzer, cmdlist, dbg_opts, fuzzed_file):
-        logger.debug('Building crash object')
+        logger.debug('Building testcase object')
         with WindowsCrash(self.cmd_template, self.sf, fuzzed_file, cmdlist, fuzzer, self.debugger_class,
                    dbg_opts, self.working_dir, self.config['runoptions']['keep_unique_faddr'],
                    self.config['target']['program'], heisenbug_retries=self.retries,
-                   copy_fuzzedfile=fuzzer.fuzzed_changes_input) as crash:
-            self._log_crash(crash)
-            self.crashes.append(crash)
-
-    def _fuzz_and_run(self):
-        # generated test case (fuzzed input)
-        logger.info('...fuzzing')
-        fuzz_opts = self.config['fuzzer']
-        fuzz_args = self.sf, self.working_dir, self.rng_seed, self.current_seed, fuzz_opts
-        with self.fuzzer(*fuzz_args) as fuzzer:
-            fuzzer.fuzz()
-            self.fuzzed = True
-            self.r = fuzzer.range
-            if self.r:
-                logger.info('Selected r: %s', self.r)
-        fuzzed_file_full_path = fuzzer.output_file_path
-    # decide if we can minimize this case later
-    # do this here (and not sooner) because the fuzzer could
-    # decide at runtime whether it is or is not minimizable
-        self.minimizable = fuzzer.is_minimizable and self.config['runoptions']['minimize']
-    # analysis is required in two cases:
-    # 1) runner is not defined (self.runner == None)
-    # 2) runner is defined, and detects crash (runner.saw_crash == True)
-    # this takes care of case 1 by default
-        analysis_needed = True
-        if self.runner:
-            logger.info('...running %s', self.runner.__name__)
-            run_args = self.config['runner'], self.cmd_template, fuzzed_file_full_path, self.working_dir
-            with self.runner(*run_args) as runner:
-                runner.run()
-                # this takes care of case 2
-                analysis_needed = runner.saw_crash
-        # is further analysis needed?
-        if analysis_needed:
-            logger.info('...analyzing')
-            cmdlist = get_command_args_list(self.cmd_template, fuzzer.output_file_path)[1]
-            dbg_opts = self.config['debugger']
-            fuzzed_file = BasicFile(fuzzer.output_file_path)
-            self._build_crash(fuzzer, cmdlist, dbg_opts, fuzzed_file)
-        else:
-            logger.debug('...no crash')
+                   copy_fuzzedfile=fuzzer.fuzzed_changes_input) as testcase:
+            self._log_testcase(testcase)
+            # put it on the queue for the analysis pipeline
+            self.tc_candidate_q.put(testcase)

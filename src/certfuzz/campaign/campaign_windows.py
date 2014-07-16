@@ -79,7 +79,7 @@ class WindowsCampaign(CampaignBase):
         # for attributes that are modules,
         # we can safely delete them as they will be
         # reconstituted when we __enter__ a context
-        for key in ['fuzzer_module', 'fuzzer',
+        for key in ['fuzzer_module', 'fuzzer_cls',
                     'runner_module', 'runner',
                     'debugger_module', 'dbg_class'
                     ]:
@@ -212,7 +212,7 @@ class WindowsCampaign(CampaignBase):
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
         # newly created Iteration()
-        with Iteration(sf, rng_seed, seednum, self.config, self.fuzzer,
+        with Iteration(sf, rng_seed, seednum, self.config, self.fuzzer_cls,
                      self.runner, self.debugger_module, self.dbg_class,
                      self.keep_heisenbugs, self.keep_duplicates,
                      self.cmd_template, self._crash_is_unique,

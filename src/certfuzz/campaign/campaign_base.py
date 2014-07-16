@@ -234,7 +234,7 @@ class CampaignBase(object):
 
     def _set_fuzzer(self):
         self.fuzzer_module = import_module_by_name(self.fuzzer_module_name)
-        self.fuzzer = self.fuzzer_module._fuzzer_class
+        self.fuzzer_cls = self.fuzzer_module._fuzzer_class
 
     def _set_runner(self):
         if self.runner_module_name:

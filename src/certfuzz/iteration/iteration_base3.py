@@ -169,7 +169,7 @@ class IterationBase3(object):
             self._post_verify(testcase)
 
             for target in targets:
-                if testcase.is_unique:
+                if testcase.should_proceed_with_analysis:
                     # we're ready to proceed with this testcase
                     # so send it downstream
                     target.send(testcase)

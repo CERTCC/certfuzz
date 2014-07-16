@@ -176,12 +176,9 @@ class Iteration(IterationBase3):
                 #
                 crash_dir_found = filetools.find_or_create_dir(tc.result_dir)
 
-                tc.is_unique = is_new_to_campaign and not crash_dir_found
+                tc.should_proceed_with_analysis = is_new_to_campaign and not crash_dir_found
 
-                self.dbg_out_file_orig = testcase.dbg.file
-                logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
-
-                if tc.is_unique:
+                if tc.should_proceed_with_analysis:
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
                     self.dbg_out_file_orig = tc.dbg.file
                     logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
