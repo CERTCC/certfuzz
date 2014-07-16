@@ -185,13 +185,17 @@ class Iteration(IterationBase3):
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
                     self.dbg_out_file_orig = tc.dbg.file
                     logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
-                    self._minimize(tc)
-
                 else:
                     logger.debug('%s was found, not unique', tc.signature)
                     if self.cfg.keep_duplicates:
                         logger.debug('Analyzing %s anyway because keep_duplicates is set', tc.signature)
                         self.verified.append(tc)
+
+    def _minimize(self, testcase):
+        if self.cfg.minimizecrashers:
+            self._mininimize_to_seedfile(testcase)
+        if self.cfg.minimize_to_string:
+            self._minimize_to_string(testcase)
 
     def _pre_analyze(self, testcase):
         STATE_TIMER.enter_state('analyze_testcase')
@@ -269,11 +273,6 @@ class Iteration(IterationBase3):
         if self.cfg.use_pin_calltrace:
             self.analyzer_classes.append(pin_calltrace.Pin_calltrace)
 
-    def _minimize(self, testcase):
-        if self.cfg.minimizecrashers:
-            self._mininimize_to_seedfile(testcase)
-        if self.cfg.minimize_to_string:
-            self._minimize_to_string(testcase)
 
     def _mininimize_to_seedfile(self, testcase):
         self._minimize_generic(testcase, sftarget=True, confidence=0.999)

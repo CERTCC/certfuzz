@@ -54,8 +54,12 @@ class IterationBase3(object):
 
     def _setup_analysis_pipeline(self):
         # build up the pipeline:
-        # verify | analyze | report
-        self.analysis_pipeline = self.verify(self.analyze(self.report()))
+        # verify | minimize | analyze | report
+        r = self.report()
+        a = self.analyze(r)
+        m = self.minimize(a)
+
+        self.analysis_pipeline = self.verify(m)
 
     def _pre_fuzz(self):
         pass
@@ -85,6 +89,16 @@ class IterationBase3(object):
         pass
 
     def _post_verify(self, testcase):
+        pass
+
+    def _pre_minimize(self, testcase):
+        pass
+
+    @abc.abstractmethod
+    def _minimize(self, testacse):
+        pass
+
+    def _post_minimize(self, testcase):
         pass
 
     def _pre_analyze(self, testcase):
@@ -159,6 +173,20 @@ class IterationBase3(object):
                     # we're ready to proceed with this testcase
                     # so send it downstream
                     target.send(testcase)
+
+    @coroutine
+    def minimize(self, *targets):
+        logger.debug('Minimizer standing by for testcases')
+        while True:
+            testcase = (yield)
+
+            logger.debug('minimize testcase')
+            self._pre_minimize(testcase)
+            self._minimize(testcase)
+            self._post_minimize(testcase)
+
+            for target in targets:
+                target.send(testcase)
 
     @coroutine
     def analyze(self, *targets):
