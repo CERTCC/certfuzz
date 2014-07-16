@@ -12,6 +12,7 @@ from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 import abc
 import Queue
+from certfuzz.helpers.coroutine import coroutine
 
 
 logger = logging.getLogger(__name__)
@@ -26,9 +27,9 @@ class IterationBase3(object):
         self.working_dir = None
         self.analyzer_classes = []
 
-        self.candidates = Queue.Queue()
-        self.verified = Queue.Queue()
-        self.analyzed = Queue.Queue()
+        self.tc_candidate_q = Queue.Queue()
+
+        self.analysis_pipeline = self.verify(self.analyze(self.report()))
 
         self.debug = True
 
@@ -93,8 +94,6 @@ class IterationBase3(object):
                 except AnalyzerEmptyOutputError:
                     logger.warning('Unexpected empty output from analyzer_class. Continuing')
 
-        self.analyzed.put(testcase)
-
     @abc.abstractmethod
     def _post_analyze(self, testcase):
         pass
@@ -134,7 +133,7 @@ class IterationBase3(object):
 
     def run(self):
         '''
-        Runs a test case. Populates self.candidates if it finds anything
+        Runs a test case. Populates self.tc_candidate_q if it finds anything
         interesting.
         '''
         logger.debug('run')
@@ -142,35 +141,63 @@ class IterationBase3(object):
         self._run()
         self._post_run()
 
-    def verify(self, testcase):
+    @coroutine
+    def verify(self, target=None):
         '''
-        Verifies a test case.
+        Verifies that a test case is unique before sending the test case. Acts
+        as a filter on the analysis pipeline.
         :param testcase:
         '''
-        logger.debug('verify')
-        self._pre_verify(testcase)
-        self._verify(testcase)
-        self._post_verify(testcase)
+        logger.debug('Verifier standing by for testcases')
+        while True:
+            testcase = (yield)
 
-    def analyze(self, testcase):
-        '''
-        Analyzes a test case
-        :param testcase:
-        '''
-        logger.debug('analyze')
-        self._pre_analyze(testcase)
-        self._analyze(testcase)
-        self._post_analyze(testcase)
+            logger.debug('verify testcase')
+            self._pre_verify(testcase)
+            self._verify(testcase)
+            self._post_verify(testcase)
 
-    def report(self, testcase):
+            if target is not None:
+                if testcase.is_unique:
+                    # we're ready to proceed with this testcase
+                    # so send it downstream
+                    target.send(testcase)
+
+    @coroutine
+    def analyze(self, target=None):
         '''
-        Prepares the test case report
+        Analyzes a test case before passing it down the pipeline
         :param testcase:
         '''
-        logger.debug('report')
-        self._pre_report(testcase)
-        self._report(testcase)
-        self._post_report(testcase)
+        logger.debug('Analyzer standing by for testcases')
+        while True:
+            testcase = (yield)
+
+            logger.debug('analyze testcase')
+            self._pre_analyze(testcase)
+            self._analyze(testcase)
+            self._post_analyze(testcase)
+
+            if target is not None:
+                target.send(testcase)
+
+    @coroutine
+    def report(self, target=None):
+        '''
+        Prepares the test case report.
+        :param testcase:
+        '''
+        logger.debug('Reporter standing by for testcases')
+        while True:
+            testcase = (yield)
+
+            logger.debug('report testcase')
+            self._pre_report(testcase)
+            self._report(testcase)
+            self._post_report(testcase)
+
+            if target is not None:
+                target.send(testcase)
 
     def go(self):
         logger.debug('go')
@@ -179,17 +206,7 @@ class IterationBase3(object):
 
         # every test case is a candidate until verified
         # use a while loop so we have the option of adding
-        # candidates during the loop
-        while not self.candidates.empty():
-            testcase = self.candidates.get()
-            self.verify(testcase)
-
-        while not self.verified.empty():
-            testcase = self.verified.get()
-            self.analyze(testcase)
-
-        while not self.analyzed.empty():
-            testcase = self.analyzed.get()
-            self.report(testcase)
-
-
+        # tc_candidate_q during the loop
+        while not self.tc_candidate_q.empty():
+            testcase = self.tc_candidate_q.get()
+            self.analysis_pipeline.send(testcase)

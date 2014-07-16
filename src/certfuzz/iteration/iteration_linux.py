@@ -16,8 +16,7 @@ from certfuzz.analyzers.callgrind.errors import \
 from certfuzz.crash.bff_crash import BffCrash
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
-from certfuzz.file_handlers import seedfile_set
-from certfuzz.fuzztools import bff_helper as z, filetools
+from certfuzz.fuzztools import filetools
 from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.zzuf import Zzuf, ZzufTestCase
 from certfuzz.fuzztools.zzuflog import ZzufLog
@@ -174,7 +173,7 @@ class Iteration(IterationBase3):
         testcase.logger.debug("zzuflog: %s", zzuf_log.line)
 #        testcase.logger.info('Command: %s', testcase.cmdline)
 
-        self.candidates.put(testcase)
+        self.tc_candidate_q.put(testcase)
 
     def _verify(self, testcase):
         '''
@@ -184,8 +183,8 @@ class Iteration(IterationBase3):
         STATE_TIMER.enter_state('verify_testcase')
         IterationBase3._verify(self, testcase)
 
-        # if you find more testcases, append them to self.candidates
-        # verified crashes append to self.verified
+        # if you find more testcases, append them to self.tc_candidate_q
+        # tc_verified_q crashes append to self.tc_verified_q
 
         logger.debug('verifying crash')
         with testcase as tc:
@@ -208,9 +207,6 @@ class Iteration(IterationBase3):
                     logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
                     self._minimize(tc)
 
-                    # we're ready to proceed with this testcase
-                    # so add it to the verified list
-                    self.verified.put(tc)
                 else:
                     logger.debug('%s was found, not unique', tc.signature)
                     if self.cfg.keep_duplicates:
@@ -249,7 +245,7 @@ class Iteration(IterationBase3):
                            ) as m:
                 m.go()
                 for new_tc in m.other_crashes.values():
-                    self.candidates.put(new_tc)
+                    self.tc_candidate_q.put(new_tc)
         except MinimizerError as e:
             logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
             m = None
