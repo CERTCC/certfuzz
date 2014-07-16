@@ -224,14 +224,16 @@ class IterationBase3(object):
             for target in targets:
                 target.send(testcase)
 
-    def go(self):
-        logger.debug('go')
-        self.fuzz()
-        self.run()
-
+    def process_testcases(self):
         # every test case is a candidate until verified
         # use a while loop so we have the option of adding
         # tc_candidate_q during the loop
         while not self.tc_candidate_q.empty():
             testcase = self.tc_candidate_q.get()
             self.analysis_pipeline.send(testcase)
+
+    def go(self):
+        logger.debug('go')
+        self.fuzz()
+        self.run()
+        self.process_testcases()
