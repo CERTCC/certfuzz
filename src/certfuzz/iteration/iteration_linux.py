@@ -151,11 +151,10 @@ class Iteration(IterationBase3):
 
         with ZzufTestCase(seedfile=self.seedfile, seed=self.s1,
                            range=zzuf_range,
-                           working_dir=self.working_dir) as testcase:
-            testcase.generate()
+                           working_dir=self.working_dir) as ztc:
+            ztc.generate()
 
-        # Do internal verification using GDB / Valgrind / Stderr
-        fuzzedfile = BasicFile(testcase.outfile)
+        fuzzedfile = BasicFile(ztc.outfile)
 
         testcase = BffCrash(cfg=self.cfg,
                             seedfile=self.seedfile,
