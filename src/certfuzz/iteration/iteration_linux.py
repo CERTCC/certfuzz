@@ -220,6 +220,7 @@ class Iteration(IterationBase3):
                 logger.debug('Removed old debug file %s', self.dbg_out_file_orig)
 
     def _analyze(self, testcase):
+        # we'll just use the implementation in our parent class
         IterationBase3._analyze(self, testcase)
 
     def _post_analyze(self, testcase):
@@ -272,7 +273,6 @@ class Iteration(IterationBase3):
 
         if self.cfg.use_pin_calltrace:
             self.analyzer_classes.append(pin_calltrace.Pin_calltrace)
-
 
     def _mininimize_to_seedfile(self, testcase):
         self._minimize_generic(testcase, sftarget=True, confidence=0.999)

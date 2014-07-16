@@ -24,7 +24,8 @@ from certfuzz.minimizer import MinimizerError, WindowsMinimizer as Minimizer
 from certfuzz.runners.errors import RunnerRegistryError
 
 from certfuzz.iteration.errors import IterationError
-from certfuzz.iteration.iteration_base import IterationBase2
+from certfuzz.iteration.iteration_base3 import IterationBase3
+#from certfuzz.iteration.iteration_base import IterationBase2
 
 
 logger = logging.getLogger(__name__)
@@ -33,10 +34,11 @@ IOERROR_COUNT = 0
 MAX_IOERRORS = 5
 
 
-class Iteration(IterationBase2):
+class Iteration(IterationBase3):
     def __init__(self, sf, rng_seed, current_seed, config, fuzzer,
                  runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
-                 cmd_template, uniq_func, working_dir_base, outdir, debug):
+                 cmd_template, uniq_func, workdirbase, outdir, debug):
+        IterationBase3.__init__(self, workdirbase)
         self.sf = sf
         self.r = None
         self.rng_seed = rng_seed
@@ -54,7 +56,6 @@ class Iteration(IterationBase2):
         self.uniq_func = uniq_func
         self.fuzzed = False
         self.outdir = outdir
-        self.working_dir_base = working_dir_base
         self.crash = None
         self.success = False
         self.iteration_tmpdir_pfx = 'iteration_'
@@ -71,7 +72,7 @@ class Iteration(IterationBase2):
         '''
         set up an iteration context
         '''
-        self.working_dir = tempfile.mkdtemp(prefix=self.iteration_tmpdir_pfx, dir=self.working_dir_base)
+        self.working_dir = tempfile.mkdtemp(prefix=self.iteration_tmpdir_pfx, dir=self.workdirbase)
         self.crashes = []
         return self
 
@@ -133,13 +134,31 @@ class Iteration(IterationBase2):
             # this iteration's temp dir
             paths = [self.working_dir]
             # sweep up any iteration temp dirs left behind previously
-            pattern = os.path.join(self.working_dir_base, self.iteration_tmpdir_pfx + '*')
+            pattern = os.path.join(self.workdirbase, self.iteration_tmpdir_pfx + '*')
             paths.extend(glob.glob(pattern))
             delete_files_or_dirs(paths)
             # wipe them out, all of them
             TmpReaper().clean_tmp()
 
         return handled
+
+    def _fuzz(self):
+        pass
+
+    def _run(self):
+        pass
+
+    def _verify(self, testcase):
+        pass
+
+    def _minimize(self, testcase):
+        pass
+
+    def _analyze(self, testcase):
+        pass
+
+    def _report(self, testcase):
+        pass
 
     def keep_crash(self, crash):
         '''Given a crash, decide whether it is a keeper. Returns a tuple
