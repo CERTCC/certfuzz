@@ -7,54 +7,45 @@ import logging
 import os
 
 from certfuzz.file_handlers.basicfile import BasicFile
-from certfuzz.analyzers import cw_gmalloc, pin_calltrace, stderr, valgrind
-from certfuzz.analyzers.callgrind import callgrind
-from certfuzz.analyzers.callgrind.annotate import annotate_callgrind, \
-    annotate_callgrind_tree
-from certfuzz.analyzers.callgrind.errors import \
-    CallgrindAnnotateEmptyOutputFileError, CallgrindAnnotateMissingInputFileError
 from certfuzz.crash.bff_crash import BffCrash
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
-from certfuzz.fuzztools import filetools
 from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.zzuf import Zzuf, ZzufTestCase
 from certfuzz.fuzztools.zzuflog import ZzufLog
-from certfuzz.minimizer import MinimizerError, UnixMinimizer as Minimizer
-
-from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.iteration_base3 import IterationBase3
+from certfuzz.testcase_pipeline.testcase_pipeline_linux import LinuxTestCasePipeline
 
 
 logger = logging.getLogger(__name__)
 
 
-def get_uniq_logger(logfile):
-    l = logging.getLogger('uniq_crash')
-    if len(l.handlers) == 0:
-        hdlr = logging.FileHandler(logfile)
-        l.addHandler(hdlr)
-    return l
-
-
 class Iteration(IterationBase3):
+    tcpipeline_cls = LinuxTestCasePipeline
+
     def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
                  sf_set=None, rf=None, outdir=None):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf)
+                                sf_set, rf, uniq_func)
         self.cfg = cfg
         self.r = r
         self.quiet_flag = quiet
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
-        if uniq_func is None:
-            self.uniq_func = lambda _tc_id: True
-        else:
-            self.uniq_func = uniq_func
+        self._zzuf_range = None
+        self._zzuf_line = None
 
-        self._setup_analyzers()
+        self.pipeline_options = {
+                                 'use_valgrind': self.cfg.use_valgrind,
+                                 'use_pin_calltrace': self.cfg.use_pin_calltrace,
+                                 'minimize_crashers': self.cfg.minimizecrashers,
+                                 'minimize_to_string': self.cfg.minimize_to_string,
+                                 'uniq_log': self.cfg.uniq_log,
+                                 'local_dir': self.cfg.local_dir,
+                                 'minimizertimeout': self.cfg.minimizertimeout,
+                                 }
 
     def __enter__(self):
         IterationBase3.__enter__(self)
@@ -87,12 +78,9 @@ class Iteration(IterationBase3):
             self.quiet_flag)
 
     def _run(self):
-        IterationBase3._run(self)
         self.zzuf.go()
 
     def _post_run(self):
-        IterationBase3._post_run(self)
-
         STATE_TIMER.enter_state('checking_results')
             # we must have made it through this chunk without a crash
             # so go to next chunk
@@ -110,23 +98,25 @@ class Iteration(IterationBase3):
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
         # report the exit code in its output log.  The exit code is 128 + the signal number.
-        crash_status = zzuf_log.crash_logged(self.cfg.copymode)
+        analysis_needed = zzuf_log.crash_logged(self.cfg.copymode)
 
-        if not crash_status:
+        if not analysis_needed:
             return
 
-        logger.info('Generating testcase for %s', zzuf_log.line)
-        # a true crash
-        zzuf_range = zzuf_log.range
+        # store a few things for use downstream
+        self._zzuf_range = zzuf_log.range
+        self._zzuf_line = zzuf_log.line
+        self._construct_testcase()
 
+    def _construct_testcase(self):
         with ZzufTestCase(seedfile=self.seedfile, seed=self.seednum,
-                           range=zzuf_range,
+                           range=self._zzuf_range,
                            working_dir=self.working_dir) as ztc:
             ztc.generate()
-
         fuzzedfile = BasicFile(ztc.outfile)
 
-        testcase = BffCrash(cfg=self.cfg,
+        logger.info('Building testcase object')
+        with BffCrash(cfg=self.cfg,
                             seedfile=self.seedfile,
                             fuzzedfile=fuzzedfile,
                             program=self.cfg.program,
@@ -136,159 +126,6 @@ class Iteration(IterationBase3):
                             crashers_dir=self.testcase_base_dir,
                             workdir_base=self.working_dir,
                             seednum=self.seednum,
-                            range=self.r)
-
-        # record the zzuf log line for this crash
-        testcase.get_logger()
-
-        testcase.logger.debug("zzuflog: %s", zzuf_log.line)
-#        testcase.logger.info('Command: %s', testcase.cmdline)
-
-        self.tc_candidate_q.put(testcase)
-
-    def _verify(self, testcase):
-        '''
-        Confirms that a test case is interesting enough to pursue further analysis
-        :param testcase:
-        '''
-        STATE_TIMER.enter_state('verify_testcase')
-        IterationBase3._verify(self, testcase)
-
-        # if you find more testcases, append them to self.tc_candidate_q
-        # tc_verified_q crashes append to self.tc_verified_q
-
-        logger.debug('verifying crash')
-        with testcase as tc:
-            if tc.is_crash:
-
-                is_new_to_campaign = self.uniq_func(tc.signature)
-
-                # fall back to checking if the crash directory exists
-                #
-                crash_dir_found = filetools.find_or_create_dir(tc.result_dir)
-
-                tc.should_proceed_with_analysis = is_new_to_campaign and not crash_dir_found
-
-                if tc.should_proceed_with_analysis:
-                    logger.info('%s first seen at %d', tc.signature, tc.seednum)
-                    self.dbg_out_file_orig = tc.dbg.file
-                    logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
-                    self.success = True
-                else:
-                    logger.debug('%s was found, not unique', tc.signature)
-                    if self.cfg.keep_duplicates:
-                        logger.debug('Analyzing %s anyway because keep_duplicates is set', tc.signature)
-                        self.verified.append(tc)
-
-    def _minimize(self, testcase):
-        if self.cfg.minimizecrashers:
-            self._mininimize_to_seedfile(testcase)
-        if self.cfg.minimize_to_string:
-            self._minimize_to_string(testcase)
-
-    def _post_minimize(self, testcase):
-        pass
-        # TODO
-#        if self.cfg.recycle_crashers:
-#            logger.debug('Recycling crash as seedfile')
-#            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
-#            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-#            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
-#            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
-#            seedfile_set.add_file(crasherseed_path)
-
-    def _pre_analyze(self, testcase):
-        STATE_TIMER.enter_state('analyze_testcase')
-
-        # get one last debugger output for the newly minimized file
-        if testcase.pc_in_function:
-            # change the debugger template
-            testcase.set_debugger_template('complete')
-        else:
-            # use a debugger template that specifies fixed offsets from $pc for disassembly
-            testcase.set_debugger_template('complete_nofunction')
-        logger.info('Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
-        testcase.get_debug_output(testcase.fuzzedfile.path)
-
-        if self.dbg_out_file_orig != testcase.dbg.file:
-            # we have a new debugger output
-            # remove the old one
-            filetools.delete_files(self.dbg_out_file_orig)
-            if os.path.exists(self.dbg_out_file_orig):
-                logger.warning('Failed to remove old debugger file %s', self.dbg_out_file_orig)
-            else:
-                logger.debug('Removed old debug file %s', self.dbg_out_file_orig)
-
-    def _analyze(self, testcase):
-        # we'll just use the implementation in our parent class
-        IterationBase3._analyze(self, testcase)
-
-    def _post_analyze(self, testcase):
-        logger.info('Annotating callgrind output')
-        try:
-            annotate_callgrind(testcase)
-            annotate_callgrind_tree(testcase)
-        except CallgrindAnnotateEmptyOutputFileError:
-            logger.warning('Unexpected empty output from annotate_callgrind. Continuing')
-        except CallgrindAnnotateMissingInputFileError:
-            logger.warning('Missing callgrind output. Continuing')
-
-    def _pre_report(self, testcase):
-        uniqlogger = get_uniq_logger(self.cfg.uniq_log)
-        uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
-        logger.info('%s first seen at %d', testcase.signature, testcase.seednum)
-
-        # whether it was unique or not, record some details for posterity
-        # record the details of this crash so we can regenerate it later if needed
-        testcase.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', testcase.seedfile.basename, testcase.seednum, testcase.range, testcase.fuzzedfile.path)
-        testcase.logger.info('PC=%s', testcase.pc)
-
-    def _report(self, testcase):
-        testcase.copy_files()
-
-    def _post_report(self, testcase):
-        # always clean up after yourself
-        testcase.clean_tmpdir()
-        # clean up
-        testcase.delete_files()
-
-    def _setup_analyzers(self):
-        self.analyzer_classes.append(stderr.StdErr)
-        self.analyzer_classes.append(cw_gmalloc.CrashWranglerGmalloc)
-
-        if self.cfg.use_valgrind:
-            self.analyzer_classes.append(valgrind.Valgrind)
-            self.analyzer_classes.append(callgrind.Callgrind)
-
-        if self.cfg.use_pin_calltrace:
-            self.analyzer_classes.append(pin_calltrace.Pin_calltrace)
-
-    def _mininimize_to_seedfile(self, testcase):
-        self._minimize_generic(testcase, sftarget=True, confidence=0.999)
-        # calculate the hamming distances for this crash
-        # between the original seedfile and the minimized fuzzed file
-        testcase.calculate_hamming_distances()
-
-    def _minimize_to_string(self, testcase):
-        self._minimize_generic(testcase, sftarget=False, confidence=0.9)
-
-    def _minimize_generic(self, testcase, sftarget=True, confidence=0.999):
-        touch_watchdog_file()
-
-        STATE_TIMER.enter_state('minimize_testcase')
-        try:
-            with Minimizer(cfg=self.cfg,
-                           crash=testcase,
-                           bitwise=False,
-                           seedfile_as_target=sftarget,
-                           confidence=confidence,
-                           tempdir=self.cfg.local_dir,
-                           maxtime=self.cfg.minimizertimeout
-                           ) as m:
-                m.go()
-                for new_tc in m.other_crashes.values():
-                    self.tc_candidate_q.put(new_tc)
-        except MinimizerError as e:
-            logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
-            m = None
-
+                            range=self.r) as testcase:
+            # put it on the list for the analysis pipeline
+            self.testcases.append(testcase)
