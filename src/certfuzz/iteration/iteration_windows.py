@@ -35,14 +35,14 @@ MAX_IOERRORS = 5
 
 
 class Iteration(IterationBase3):
-    def __init__(self, sf, rng_seed, current_seed, config, fuzzer_cls,
+    def __init__(self, seedfile, rng_seed, seednum, config, fuzzer_cls,
                  runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
-                 cmd_template, uniq_func, workdirbase, outdir, debug):
-        IterationBase3.__init__(self, workdirbase)
-        self.sf = sf
+                 cmd_template, uniq_func, workdirbase, outdir, debug,
+                 sf_set, rf):
+        IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
+                                sf_set, rf)
         self.r = None
         self.rng_seed = rng_seed
-        self.current_seed = current_seed
         self.config = config
         self.fuzzer_cls = fuzzer_cls
         self.runner = runner
@@ -55,9 +55,6 @@ class Iteration(IterationBase3):
         self.cmd_template = string.Template(cmd_template)
         self.uniq_func = uniq_func
         self.fuzzed = False
-        self.outdir = outdir
-        self.crash = None
-        self.success = False
         self.iteration_tmpdir_pfx = 'iteration_'
         self.minimizable = False
 
@@ -69,6 +66,7 @@ class Iteration(IterationBase3):
             self.retries = 4
 
     def __exit__(self, etype, value, traceback):
+        handled = IterationBase3.__exit__(self, etype, value, traceback)
 
         global IOERROR_COUNT
 
@@ -77,19 +75,18 @@ class Iteration(IterationBase3):
             IOERROR_COUNT = 0
 
         # check for exceptions we want to handle
-        handled = False
         if etype is FuzzerExhaustedError:
             # let Fuzzer Exhaustion filter up to the campaign level
             handled = False
         elif etype is FuzzerInputMatchesOutputError:
             # Non-fuzzing happens sometimes, just log and move on
-            logger.debug('Skipping seed %d, fuzzed == input', self.current_seed)
+            logger.debug('Skipping seed %d, fuzzed == input', self.seednum)
             handled = True
         elif etype is FuzzerError:
-            logger.warning('Failed to fuzz, Skipping seed %d.', self.current_seed)
+            logger.warning('Failed to fuzz, Skipping seed %d.', self.seednum)
             handled = True
         elif etype is DebuggerFileError:
-            logger.warning('Failed to debug, Skipping seed %d', self.current_seed)
+            logger.warning('Failed to debug, Skipping seed %d', self.seednum)
             handled = True
         elif etype is RunnerRegistryError:
             logger.warning('Runner cannot set registry entries. Consider null runner in config?')
@@ -109,37 +106,35 @@ class Iteration(IterationBase3):
         if etype and not handled:
             logger.warning('Iteration terminating abnormally due to %s: %s', etype.__name__, value)
         else:
-            logger.info('Done with iteration %d', self.current_seed)
-
-        # count this iteration
-        if self.success:
-            self.record_success()
-        else:
-            self.record_failure()
+            logger.info('Done with iteration %d', self.seednum)
 
         if self.debug and etype and not handled:
             # don't clean up if we're in debug mode and have an unhandled exception
             logger.debug('Skipping cleanup since we are in debug mode.')
         else:
-            # wrap up this iteration
-            logger.debug('Cleanup iteration %s', self.current_seed)
-            # this iteration's temp dir
-            paths = [self.working_dir]
-            # sweep up any iteration temp dirs left behind previously
-            pattern = os.path.join(self.workdirbase, self.iteration_tmpdir_pfx + '*')
-            paths.extend(glob.glob(pattern))
-            delete_files_or_dirs(paths)
-            # wipe them out, all of them
-            TmpReaper().clean_tmp()
+            self._tidy()
 
         return handled
+
+    def _tidy(self):
+        # wrap up this iteration
+        paths = []
+        # sweep up any iteration temp dirs left behind previously
+        pattern = os.path.join(self.workdirbase, self.iteration_tmpdir_pfx + '*')
+        paths.extend(glob.glob(pattern))
+        delete_files_or_dirs(paths)
+        # wipe them out, all of them
+        TmpReaper().clean_tmp()
 
     def _fuzz(self):
         # generated test case (fuzzed input)
         logger.info('...fuzzing')
         fuzz_opts = self.config['fuzzer']
-        fuzz_args = self.sf, self.working_dir, self.rng_seed, self.current_seed, fuzz_opts
-        with self.fuzzer_cls(*fuzz_args) as fuzzer:
+        with self.fuzzer_cls(self.seedfile,
+                             self.working_dir,
+                             self.rng_seed,
+                             self.seednum,
+                             fuzz_opts) as fuzzer:
             fuzzer.fuzz()
             self.fuzzed = True
             self.r = fuzzer.range
@@ -213,10 +208,11 @@ class Iteration(IterationBase3):
 
         with Minimizer(**kwargs) as minimizer:
             minimizer.go()
-            if len(minimizer.other_crashes):
-                # minimzer found other crashes, so we should add them
-                # to our list for subsequent processing
-                self.crashes.extend(minimizer.other_crashes.values())
+
+            # minimzer found other crashes, so we should add them
+            # to our list for subsequent processing
+            for tc in minimizer.other_crashes.values():
+                self.tc_candidate_q.put(tc)
 
     def _analyze(self, testcase):
         pass
@@ -264,9 +260,9 @@ class Iteration(IterationBase3):
         return config
 
     def _copy_seedfile(self):
-        target = os.path.join(self.working_dir, self.sf.basename)
+        target = os.path.join(self.working_dir, self.seedfile.basename)
         logger.debug('Copy files to %s: %s', self.working_dir, target)
-        shutil.copy(self.sf.path, target)
+        shutil.copy(self.seedfile.path, target)
 
     def copy_files(self, crash):
         if not self.outdir:
@@ -285,26 +281,6 @@ class Iteration(IterationBase3):
             shutil.copytree(crash.tempdir, target_dir)
             assert os.path.isdir(target_dir)
 
-    def record_success(self):
-        crash = self.crashes[0]
-        if self.r:
-            # ranges should only get scored on the first crash
-            # found in this iteration. Others found via minimization
-            # don't count for this r
-            # FIXME
-            pass
-            # self.r.record_success(crash.signature)
-        # FIXME
-        # self.sf.record_success(crash.signature)
-
-    def record_failure(self):
-        if self.r:
-            # FIXME
-            pass
-            # self.r.record_failure()
-        # FIXME
-        # self.sf.record_failure()
-
     def _log_testcase(self, crash):
         # pretty-print the crash for debugging
         logger.debug('Crash:')
@@ -315,10 +291,12 @@ class Iteration(IterationBase3):
 
     def _build_crash(self, fuzzer, cmdlist, dbg_opts, fuzzed_file):
         logger.debug('Building testcase object')
-        with WindowsCrash(self.cmd_template, self.sf, fuzzed_file, cmdlist, fuzzer, self.debugger_class,
-                   dbg_opts, self.working_dir, self.config['runoptions']['keep_unique_faddr'],
-                   self.config['target']['program'], heisenbug_retries=self.retries,
-                   copy_fuzzedfile=fuzzer.fuzzed_changes_input) as testcase:
+        with WindowsCrash(self.cmd_template, self.seedfile, fuzzed_file, cmdlist,
+                          fuzzer, self.debugger_class, dbg_opts,
+                          self.working_dir, self.config['runoptions']['keep_unique_faddr'],
+                          self.config['target']['program'],
+                          heisenbug_retries=self.retries,
+                          copy_fuzzedfile=fuzzer.fuzzed_changes_input) as testcase:
             self._log_testcase(testcase)
             # put it on the queue for the analysis pipeline
             self.tc_candidate_q.put(testcase)

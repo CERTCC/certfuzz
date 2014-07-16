@@ -36,6 +36,7 @@ class Crash(TestCaseBase):
         self.is_crash = False
         self.debugger_file = None
         self.is_unique = False
+        self.should_proceed_with_analysis = False
         self.is_corrupt_stack = False
         self.copy_fuzzedfile = True
         self.pc = None

@@ -21,9 +21,22 @@ logger = logging.getLogger(__name__)
 class IterationBase3(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, workdirbase):
+    def __init__(self,
+                 seedfile=None,
+                 seednum=None,
+                 workdirbase=None,
+                 outdir=None,
+                 sf_set=None,
+                 rf=None):
+
         logger.debug('init')
+        self.seedfile = seedfile
+        self.seednum = seednum
         self.workdirbase = workdirbase
+        self.outdir = outdir
+        self.sf_set = sf_set
+        self.rf = rf
+
         self.working_dir = None
         self.analyzer_classes = []
 
@@ -31,6 +44,9 @@ class IterationBase3(object):
 
         # this gets set up in __enter__
         self.analysis_pipeline = None
+
+        # flag that will decide whether we score as a success or failure
+        self.success = False
 
         self.debug = True
 
@@ -42,6 +58,12 @@ class IterationBase3(object):
 
     def __exit__(self, etype, value, traceback):
         handled = False
+
+        if self.success:
+            # score it so we can learn
+            self.record_success()
+        else:
+            self.record_failure()
 
         if etype and self.debug:
             # leave it behind if we're in debug mode
@@ -95,8 +117,14 @@ class IterationBase3(object):
         pass
 
     @abc.abstractmethod
-    def _minimize(self, testacse):
-        pass
+    def _minimize(self, testcase):
+        '''
+        try to reduce the Hamming Distance between the testcase file and the
+        known good seedfile. testcase.fuzzedfile will be replaced with the
+        minimized result
+
+        :param testcase: the testcase to work on
+        '''
 
     def _post_minimize(self, testcase):
         pass
@@ -151,6 +179,18 @@ class IterationBase3(object):
         self._pre_run()
         self._run()
         self._post_run()
+
+    def record_success(self):
+        self.sf_set.record_success(key=self.seedfile.md5)
+        self.rf.record_success(key=self.r.id)
+
+    def record_failure(self):
+        self.record_tries()
+
+    def record_tries(self):
+        self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
+        self.rf.record_tries(key=self.r.id, tries=1)
+
 
     @coroutine
     def verify(self, *targets):

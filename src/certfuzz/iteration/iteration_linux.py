@@ -41,15 +41,11 @@ def get_uniq_logger(logfile):
 class Iteration(IterationBase3):
     def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
                  sf_set=None, rf=None, outdir=None):
-        IterationBase3.__init__(self, workdirbase)
+        IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
+                                sf_set, rf)
         self.cfg = cfg
-        self.seednum = seednum
-        self.seedfile = seedfile
         self.r = r
         self.quiet_flag = quiet
-        self.sf_set = sf_set
-        self.rf = rf
-        self.outdir = outdir
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
@@ -59,11 +55,6 @@ class Iteration(IterationBase3):
             self.uniq_func = uniq_func
 
         self._setup_analyzers()
-
-        # convenience aliases
-        self.s1 = self.seednum
-        self.s2 = self.s1
-        self.sf = self.seedfile
 
     def __enter__(self):
         IterationBase3.__enter__(self)
@@ -81,13 +72,13 @@ class Iteration(IterationBase3):
 
     def _pre_run(self):
         # do the fuzz
-        cmdline = self.cfg.get_command(self.sf.path)
+        cmdline = self.cfg.get_command(self.seedfile.path)
 
         STATE_TIMER.enter_state('fuzzing')
-        self.zzuf = Zzuf(self.cfg.local_dir, self.s1,
-            self.s1,
+        self.zzuf = Zzuf(self.cfg.local_dir, self.seednum,
+            self.seednum,
             cmdline,
-            self.sf.path,
+            self.seedfile.path,
             self.cfg.zzuf_log_file,
             self.cfg.copymode,
             self.r.min,
@@ -114,7 +105,7 @@ class Iteration(IterationBase3):
 
         # we must have seen a crash
         # get the results
-        zzuf_log = ZzufLog(self.cfg.zzuf_log_file, self.cfg.zzuf_log_out(self.sf.output_dir))
+        zzuf_log = ZzufLog(self.cfg.zzuf_log_file, self.cfg.zzuf_log_out(self.seedfile.output_dir))
 
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
@@ -128,7 +119,7 @@ class Iteration(IterationBase3):
         # a true crash
         zzuf_range = zzuf_log.range
 
-        with ZzufTestCase(seedfile=self.seedfile, seed=self.s1,
+        with ZzufTestCase(seedfile=self.seedfile, seed=self.seednum,
                            range=zzuf_range,
                            working_dir=self.working_dir) as ztc:
             ztc.generate()
@@ -144,7 +135,7 @@ class Iteration(IterationBase3):
                             backtrace_lines=self.cfg.backtracelevels,
                             crashers_dir=self.testcase_base_dir,
                             workdir_base=self.working_dir,
-                            seednum=self.s1,
+                            seednum=self.seednum,
                             range=self.r)
 
         # record the zzuf log line for this crash
@@ -182,6 +173,7 @@ class Iteration(IterationBase3):
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
                     self.dbg_out_file_orig = tc.dbg.file
                     logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
+                    self.success = True
                 else:
                     logger.debug('%s was found, not unique', tc.signature)
                     if self.cfg.keep_duplicates:
@@ -193,6 +185,17 @@ class Iteration(IterationBase3):
             self._mininimize_to_seedfile(testcase)
         if self.cfg.minimize_to_string:
             self._minimize_to_string(testcase)
+
+    def _post_minimize(self, testcase):
+        pass
+        # TODO
+#        if self.cfg.recycle_crashers:
+#            logger.debug('Recycling crash as seedfile')
+#            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
+#            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
+#            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
+#            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+#            seedfile_set.add_file(crasherseed_path)
 
     def _pre_analyze(self, testcase):
         STATE_TIMER.enter_state('analyze_testcase')
@@ -249,17 +252,6 @@ class Iteration(IterationBase3):
         # clean up
         testcase.delete_files()
 
-    def record_success(self):
-        self.sf_set.record_success(key=self.seedfile.md5)
-        self.rf.record_success(key=self.r.id)
-
-    def record_failure(self):
-        self.record_tries()
-
-    def record_tries(self):
-        self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-        self.rf.record_tries(key=self.r.id, tries=1)
-
     def _setup_analyzers(self):
         self.analyzer_classes.append(stderr.StdErr)
         self.analyzer_classes.append(cw_gmalloc.CrashWranglerGmalloc)
@@ -284,8 +276,6 @@ class Iteration(IterationBase3):
         touch_watchdog_file()
 
         STATE_TIMER.enter_state('minimize_testcase')
-        # try to reduce the Hamming Distance between the crasher file and the known good seedfile
-        # crash.fuzzedfile will be replaced with the minimized result
         try:
             with Minimizer(cfg=self.cfg,
                            crash=testcase,
@@ -301,24 +291,4 @@ class Iteration(IterationBase3):
         except MinimizerError as e:
             logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
             m = None
-
-
-# TODO
-#        if self.cfg.recycle_crashers:
-#            logger.debug('Recycling crash as seedfile')
-#            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
-#            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-#            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
-#            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
-#            seedfile_set.add_file(crasherseed_path)
-
-#        # score this crash for the seedfile
-#        testcase.seedfile.record_success(testcase.signature, tries=0)
-#        if testcase.range:
-#            # ...and for the range
-#            testcase.range.record_success(testcase.signature, tries=0)
-        # TODO: make sure this is scoring the right thing.
-        # in older code (see above) we kept track of specific crashes seen per seedfile
-        # & range. Should we still do that?
-        self.record_success()
 

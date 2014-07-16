@@ -216,7 +216,8 @@ class WindowsCampaign(CampaignBase):
                      self.runner, self.debugger_module, self.dbg_class,
                      self.keep_heisenbugs, self.keep_duplicates,
                      self.cmd_template, self._crash_is_unique,
-                     self.working_dir, self.outdir, self.debug) as iteration:
+                     self.working_dir, self.outdir, self.debug, self.seedfile_set,
+                     sf.rangefinder) as iteration:
             try:
                 iteration.go()
             except FuzzerExhaustedError:
