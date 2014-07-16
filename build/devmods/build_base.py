@@ -32,7 +32,10 @@ class Build(object):
         self.my_path = os.path.abspath(os.path.dirname(__file__))
         self.src_path = os.path.abspath(os.path.join(self.my_path, '../../src'))
         self.dev_builds_path = os.path.abspath(os.path.join(self.src_path, '..', 'dev_builds'))
-        self.target_path = os.path.abspath(os.path.join(self.dev_builds_path, self.name))
+
+        target_shortname = '{}-{}'.format(self.name, self.platform)
+
+        self.target_path = os.path.abspath(os.path.join(self.dev_builds_path, target_shortname))
         self.platform_path = os.path.join(self.src_path, self.platform)
         self.license_md_path = os.path.join(self.src_path, '..', 'LICENSE.md')
         self.license_txt_path = os.path.join(self.target_path, 'COPYING.txt')
