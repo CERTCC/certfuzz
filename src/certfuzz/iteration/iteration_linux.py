@@ -7,8 +7,6 @@ import logging
 import os
 
 from certfuzz.crash.bff_crash import BffCrash
-from certfuzz.debuggers import crashwrangler  # @UnusedImport
-from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.state_timer import STATE_TIMER
