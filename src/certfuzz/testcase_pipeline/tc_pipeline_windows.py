@@ -19,6 +19,9 @@ logger = logging.getLogger(__name__)
 
 
 class WindowsTestCasePipeline(TestCasePipelineBase):
+    def _setup_analyzers(self):
+        TestCasePipelineBase._setup_analyzers(self)
+
     def _pre_verify(self, testcase):
         # pretty-print the testcase for debugging
         logger.debug('Testcase:')
