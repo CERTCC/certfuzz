@@ -178,7 +178,9 @@ class BffCrash(Crash):
         '''
         self.logger = logging.getLogger(self.signature)
         if len(self.logger.handlers) == 0:
-            assert os.path.exists(self.result_dir)
+            if not os.path.exists(self.result_dir):
+                logger.error('Result path not found: %s', self.result_dir)
+                raise CrashError('Result path not found: {}'.format(self.result_dir))
             logger.debug('result_dir=%s sig=%s', self.result_dir, self.signature)
             logfile = '%s.log' % self.signature
             logger.debug('logfile=%s', logfile)
