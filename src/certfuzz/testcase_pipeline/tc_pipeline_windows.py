@@ -115,13 +115,13 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         config.watchdogfile = os.devnull
         return config
 
-    def copy_files(self, crash):
+    def copy_files(self, testcase):
         if not self.outdir:
             raise IterationError('Need a target dir to copy to')
 
         logger.debug('target_base=%s', self.outdir)
 
-        target_dir = crash._get_output_dir(self.outdir)
+        target_dir = testcase._get_output_dir(self.outdir)
 
         if os.path.exists(target_dir):
             logger.debug('Repeat crash, will not copy to %s', target_dir)
@@ -129,5 +129,5 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
             # make sure target_base exists already
             filetools.find_or_create_dir(self.outdir)
             logger.debug('Copying to %s', target_dir)
-            shutil.copytree(crash.tempdir, target_dir)
+            shutil.copytree(testcase.tempdir, target_dir)
             assert os.path.isdir(target_dir)
