@@ -3,16 +3,17 @@ Created on Jul 16, 2014
 
 @organization: cert.org
 '''
+import logging
+import os
+import shutil
+
+from certfuzz import debuggers
+from certfuzz.campaign.config.config_windows import get_command_args_list
+from certfuzz.fuzztools import filetools
+from certfuzz.iteration.errors import IterationError
+from certfuzz.minimizer import WindowsMinimizer as Minimizer
 from certfuzz.testcase_pipeline.testcase_pipeline_base import TestCasePipelineBase
 
-import logging
-from certfuzz import debuggers
-from certfuzz.minimizer import WindowsMinimizer as Minimizer
-import os
-from certfuzz.campaign.config.config_windows import get_command_args_list
-from certfuzz.iteration.errors import IterationError
-from certfuzz.fuzztools import filetools
-import shutil
 
 logger = logging.getLogger(__name__)
 

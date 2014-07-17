@@ -4,11 +4,13 @@ Created on Jul 16, 2014
 @organization: cert.org
 '''
 import Queue
-from certfuzz.helpers.coroutine import coroutine
-import logging
 import abc
-from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
+import logging
+
 from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
+from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
+from certfuzz.helpers.coroutine import coroutine
+
 
 logger = logging.getLogger(__name__)
 

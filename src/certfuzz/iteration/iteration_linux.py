@@ -6,14 +6,15 @@ Created on Feb 12, 2014
 import logging
 import os
 
-from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.crash.bff_crash import BffCrash
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
-from certfuzz.fuzztools.state_timer import STATE_TIMER
-from certfuzz.fuzztools.zzuf import Zzuf, ZzufTestCase
-from certfuzz.fuzztools.zzuflog import ZzufLog
+from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.ppid_observer import check_ppid
+from certfuzz.fuzztools.state_timer import STATE_TIMER
+from certfuzz.fuzztools.zzuf import Zzuf
+from certfuzz.fuzztools.zzuf import ZzufTestCase
+from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.testcase_pipeline.testcase_pipeline_linux import LinuxTestCasePipeline
 
