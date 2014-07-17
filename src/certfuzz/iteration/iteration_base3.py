@@ -21,7 +21,8 @@ class IterationBase3(object):
                  outdir=None,
                  sf_set=None,
                  rf=None,
-                 uniq_func=None):
+                 uniq_func=None,
+                 config=None):
 
         logger.debug('init')
         self.seedfile = seedfile
@@ -30,6 +31,7 @@ class IterationBase3(object):
         self.outdir = outdir
         self.sf_set = sf_set
         self.rf = rf
+        self.cfg = config
 
         self.pipeline_options = {}
 

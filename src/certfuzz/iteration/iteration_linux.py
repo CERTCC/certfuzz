@@ -26,8 +26,7 @@ class LinuxIteration(IterationBase3):
     def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
                  sf_set=None, rf=None, outdir=None):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf, uniq_func)
-        self.cfg = cfg
+                                sf_set, rf, uniq_func, cfg)
         self.r = r
         self.quiet_flag = quiet
 

@@ -37,10 +37,9 @@ class WindowsIteration(IterationBase3):
                  cmd_template, uniq_func, workdirbase, outdir, debug,
                  sf_set, rf):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf, uniq_func)
+                                sf_set, rf, uniq_func, config)
         self.r = None
         self.rng_seed = rng_seed
-        self.config = config
         self.fuzzer_cls = fuzzer_cls
         self.runner = runner
         self.debugger_module = debugger
@@ -125,7 +124,7 @@ class WindowsIteration(IterationBase3):
     def _fuzz(self):
         # generated test case (fuzzed input)
         logger.info('...fuzzing')
-        fuzz_opts = self.config['fuzzer']
+        fuzz_opts = self.cfg['fuzzer']
         with self.fuzzer_cls(self.seedfile,
                              self.working_dir,
                              self.rng_seed,
@@ -139,7 +138,7 @@ class WindowsIteration(IterationBase3):
         # decide if we can minimize this case later
         # do this here (and not sooner) because the fuzzer_cls could
         # decide at runtime whether it is or is not minimizable
-        self.minimizable = fuzzer.is_minimizable and self.config['runoptions']['minimize']
+        self.minimizable = fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
 
         # hang on to this fuzzer instance, we use it in _run
         self.fuzzer = fuzzer
@@ -152,7 +151,7 @@ class WindowsIteration(IterationBase3):
         analysis_needed = True
         if self.runner:
             logger.info('...running %s', self.runner.__name__)
-            with self.runner(self.config['runner'],
+            with self.runner(self.cfg['runner'],
                              self.cmd_template,
                              self.fuzzer.output_file_path,
                              self.working_dir) as runner:
@@ -168,14 +167,14 @@ class WindowsIteration(IterationBase3):
 
     def _construct_testcase(self):
         cmdlist = get_command_args_list(self.cmd_template, self.fuzzer.output_file_path)[1]
-        dbg_opts = self.config['debugger']
+        dbg_opts = self.cfg['debugger']
         fuzzed_file = BasicFile(self.fuzzer.output_file_path)
 
         logger.debug('Building testcase object')
         with WindowsCrash(self.cmd_template, self.seedfile, fuzzed_file, cmdlist,
                           self.fuzzer, self.debugger_class, dbg_opts,
-                          self.working_dir, self.config['runoptions']['keep_unique_faddr'],
-                          self.config['target']['program'],
+                          self.working_dir, self.cfg['runoptions']['keep_unique_faddr'],
+                          self.cfg['target']['program'],
                           heisenbug_retries=self.retries,
                           copy_fuzzedfile=self.fuzzer.fuzzed_changes_input) as testcase:
 
