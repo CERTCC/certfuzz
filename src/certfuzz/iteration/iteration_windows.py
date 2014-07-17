@@ -49,7 +49,6 @@ class WindowsIteration(IterationBase3):
         self.keep_heisenbugs = keep_heisenbugs
         self.cmd_template = string.Template(cmd_template)
         self.fuzzed = False
-        self.iteration_tmpdir_pfx = 'iteration_'
         self.minimizable = False
 
         if self.runner is None:
@@ -114,7 +113,7 @@ class WindowsIteration(IterationBase3):
         # wrap up this iteration
         paths = []
         # sweep up any iteration temp dirs left behind previously
-        pattern = os.path.join(self.workdirbase, self.iteration_tmpdir_pfx + '*')
+        pattern = os.path.join(self.workdirbase, self._tmpdir_pfx + '*')
         paths.extend(glob.glob(pattern))
         delete_files_or_dirs(paths)
         # wipe them out, all of them

@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 class IterationBase3(object):
     __metaclass__ = abc.ABCMeta
+    _tmpdir_pfx = 'iteration_'
 
     def __init__(self,
                  seedfile=None,
@@ -58,7 +59,8 @@ class IterationBase3(object):
         '''
 
     def __enter__(self):
-        self.working_dir = tempfile.mkdtemp(prefix='iteration-', dir=self.workdirbase)
+        self.working_dir = tempfile.mkdtemp(prefix=self._tmpdir_pfx,
+                                            dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
 #        self._setup_analysis_pipeline()
         return self
