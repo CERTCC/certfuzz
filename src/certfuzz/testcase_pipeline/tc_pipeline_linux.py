@@ -77,6 +77,9 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                 else:
                     logger.debug('%s was found, not unique', tc.signature)
 
+    def _post_verify(self, testcase):
+        testcase.get_logger()
+
     def _minimize(self, testcase):
         if self.options.get('minimize_crashers'):
             self._mininimize_to_seedfile(testcase)
