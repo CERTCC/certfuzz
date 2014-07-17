@@ -26,8 +26,7 @@ class LinuxIteration(IterationBase3):
     def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
                  sf_set=None, rf=None, outdir=None):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf, uniq_func, cfg)
-        self.r = r
+                                sf_set, rf, uniq_func, cfg, r)
         self.quiet_flag = quiet
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')

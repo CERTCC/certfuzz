@@ -22,7 +22,8 @@ class IterationBase3(object):
                  sf_set=None,
                  rf=None,
                  uniq_func=None,
-                 config=None):
+                 config=None,
+                 r=None):
 
         logger.debug('init')
         self.seedfile = seedfile
@@ -32,6 +33,7 @@ class IterationBase3(object):
         self.sf_set = sf_set
         self.rf = rf
         self.cfg = config
+        self.r = r
 
         self.pipeline_options = {}
 

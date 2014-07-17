@@ -37,8 +37,7 @@ class WindowsIteration(IterationBase3):
                  cmd_template, uniq_func, workdirbase, outdir, debug,
                  sf_set, rf):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf, uniq_func, config)
-        self.r = None
+                                sf_set, rf, uniq_func, config, None)
         self.rng_seed = rng_seed
         self.fuzzer_cls = fuzzer_cls
         self.runner = runner
