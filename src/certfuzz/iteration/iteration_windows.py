@@ -46,8 +46,9 @@ class WindowsIteration(IterationBase3):
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
-        self.cmd_template = string.Template(cmd_template)
         self.fuzzed = False
+
+        self.cmd_template = string.Template(cmd_template)
 
         if self.runner is None:
             # null runner case
@@ -60,6 +61,7 @@ class WindowsIteration(IterationBase3):
                                  'keep_duplicates': keep_duplicates,
                                  'keep_heisenbugs': keep_heisenbugs,
                                  'minimizable': False,
+                                 'cmd_template': self.cmd_template,
                                  }
 
     def __exit__(self, etype, value, traceback):

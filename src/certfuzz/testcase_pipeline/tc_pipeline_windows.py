@@ -108,7 +108,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         config = DummyCfg()
         config.backtracelevels = 5  # doesn't matter what this is, we don't use it
         config.debugger_timeout = self.cfg['debugger']['runtimeout']
-        config.get_command_args_list = lambda x: get_command_args_list(self.cmd_template, x)[1]
+        config.get_command_args_list = lambda x: get_command_args_list(self.options['cmd_template'], x)[1]
         config.program = self.cfg['target']['program']
         config.killprocname = None
         config.exclude_unmapped_frames = False
