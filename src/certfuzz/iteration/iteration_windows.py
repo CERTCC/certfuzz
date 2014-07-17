@@ -44,9 +44,10 @@ class WindowsIteration(IterationBase3):
         self.debugger_module = debugger
         self.debugger_class = dbg_class
         self.debug = debug
+        # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
-        self.keep_duplicates = keep_duplicates
-        self.keep_heisenbugs = keep_heisenbugs
+#        self.keep_duplicates = keep_duplicates
+#        self.keep_heisenbugs = keep_heisenbugs
         self.cmd_template = string.Template(cmd_template)
         self.fuzzed = False
         self.minimizable = False
@@ -57,6 +58,11 @@ class WindowsIteration(IterationBase3):
         else:
             # runner is not null
             self.retries = 4
+
+        self.pipeline_options = {
+                                 'keep_duplicates': keep_duplicates,
+                                 'keep_heisenbugs': keep_heisenbugs,
+                                 }
 
     def __exit__(self, etype, value, traceback):
         handled = IterationBase3.__exit__(self, etype, value, traceback)
