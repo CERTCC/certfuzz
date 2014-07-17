@@ -141,6 +141,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         testcase.logger.info('PC=%s', testcase.pc)
 
     def _report(self, testcase):
+        # TODO move BffCrash.copy_files into this module
         testcase.copy_files()
 
     def _post_report(self, testcase):

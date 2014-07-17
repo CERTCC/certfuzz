@@ -21,13 +21,18 @@ class TestCasePipelineBase(object):
     '''
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, testcases=None, uniq_func=None, cfg=None, options=None):
+    def __init__(self, testcases=None, uniq_func=None, cfg=None, options=None,
+                 outdir=None, workdirbase=None):
         '''
         Constructor
         '''
         self.cfg = cfg
         self.options = options
         self.uniq_func = uniq_func
+        self.outdir = outdir
+
+        self.working_dir = workdirbase
+
         self.tc_candidate_q = Queue.Queue()
 
         self.analyzer_classes = []

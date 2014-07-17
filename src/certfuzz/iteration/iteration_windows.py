@@ -46,11 +46,8 @@ class WindowsIteration(IterationBase3):
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
-#        self.keep_duplicates = keep_duplicates
-#        self.keep_heisenbugs = keep_heisenbugs
         self.cmd_template = string.Template(cmd_template)
         self.fuzzed = False
-        self.minimizable = False
 
         if self.runner is None:
             # null runner case
@@ -62,6 +59,7 @@ class WindowsIteration(IterationBase3):
         self.pipeline_options = {
                                  'keep_duplicates': keep_duplicates,
                                  'keep_heisenbugs': keep_heisenbugs,
+                                 'minimizable': False,
                                  }
 
     def __exit__(self, etype, value, traceback):
@@ -139,10 +137,11 @@ class WindowsIteration(IterationBase3):
             self.r = fuzzer.range
             if self.r:
                 logger.info('Selected r: %s', self.r)
+
         # decide if we can minimize this case later
         # do this here (and not sooner) because the fuzzer_cls could
         # decide at runtime whether it is or is not minimizable
-        self.minimizable = fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
+        self.pipeline_options['minimizable'] = fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
 
         # hang on to this fuzzer instance, we use it in _run
         self.fuzzer = fuzzer

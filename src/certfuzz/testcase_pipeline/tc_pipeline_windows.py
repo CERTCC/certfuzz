@@ -41,13 +41,13 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         logger.debug('Keeping testcase (reason=%s)', reason)
         testcase.should_proceed_with_analysis = True
         logger.info("Crash confirmed: %s Exploitability: %s Faulting Address: %s", testcase.crash_hash, testcase.exp, testcase.faddr)
-        if self.minimizable:
+        if self.options['minimizable']:
             testcase.should_proceed_with_analysis = True
         self.success = True
 
     def _minimize(self, testcase):
         logger.info('Minimizing testcase %s', testcase.signature)
-        logger.debug('config = %s', self.config)
+        logger.debug('config = %s', self.cfg)
 
         config = self._create_minimizer_cfg()
 
@@ -59,7 +59,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
                   'bitwise': False,
                   'confidence': 0.999,
                   'tempdir': self.working_dir,
-                  'maxtime': self.config['runoptions']['minimizer_timeout']
+                  'maxtime': self.cfg['runoptions']['minimizer_timeout']
                   }
 
         with Minimizer(**kwargs) as minimizer:
@@ -107,9 +107,9 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
             pass
         config = DummyCfg()
         config.backtracelevels = 5  # doesn't matter what this is, we don't use it
-        config.debugger_timeout = self.config['debugger']['runtimeout']
+        config.debugger_timeout = self.cfg['debugger']['runtimeout']
         config.get_command_args_list = lambda x: get_command_args_list(self.cmd_template, x)[1]
-        config.program = self.config['target']['program']
+        config.program = self.cfg['target']['program']
         config.killprocname = None
         config.exclude_unmapped_frames = False
         config.watchdogfile = os.devnull

@@ -138,7 +138,9 @@ class IterationBase3(object):
         with self.tcpipeline_cls(testcases=self.testcases,
                                  uniq_func=self.uniq_func,
                                  cfg=self.cfg,
-                                 options=self.pipeline_options) as pipeline:
+                                 options=self.pipeline_options,
+                                 outdir=self.outdir,
+                                 workdirbase=self.working_dir) as pipeline:
                 pipeline.go()
 
     def go(self):
