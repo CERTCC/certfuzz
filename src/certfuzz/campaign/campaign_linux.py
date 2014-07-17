@@ -23,7 +23,7 @@ from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.iteration.iteration_linux import Iteration
+from certfuzz.iteration.iteration_linux import LinuxIteration
 
 
 logger = logging.getLogger(__name__)
@@ -213,7 +213,7 @@ class LinuxCampaign(CampaignBase):
     def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
         # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
         touch_watchdog_file()
-        with Iteration(cfg=self.config, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
+        with LinuxIteration(cfg=self.config, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
             uniq_func=self._crash_is_unique,
             sf_set=self.seedfile_set,
             rf=seedfile.rangefinder,

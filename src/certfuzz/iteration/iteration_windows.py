@@ -19,7 +19,7 @@ from certfuzz.fuzzers.errors import FuzzerInputMatchesOutputError
 from certfuzz.fuzztools.filetools import delete_files_or_dirs
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.runners.errors import RunnerRegistryError
-from certfuzz.testcase_pipeline.testcase_pipeline_windows import WindowsTestCasePipeline
+from certfuzz.testcase_pipeline.tc_pipeline_windows import WindowsTestCasePipeline
 
 
 #from certfuzz.iteration.iteration_base import IterationBase2
@@ -29,7 +29,7 @@ IOERROR_COUNT = 0
 MAX_IOERRORS = 5
 
 
-class Iteration(IterationBase3):
+class WindowsIteration(IterationBase3):
     tcpipeline_cls = WindowsTestCasePipeline
 
     def __init__(self, seedfile, rng_seed, seednum, config, fuzzer_cls,
@@ -100,7 +100,7 @@ class Iteration(IterationBase3):
 
         # log something different if we failed to handle an exception
         if etype and not handled:
-            logger.warning('Iteration terminating abnormally due to %s: %s', etype.__name__, value)
+            logger.warning('WindowsIteration terminating abnormally due to %s: %s', etype.__name__, value)
         else:
             logger.info('Done with iteration %d', self.seednum)
 

@@ -15,7 +15,7 @@ from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 from certfuzz.runners.killableprocess import Popen
 from certfuzz.campaign.config.config_windows import Config
-from certfuzz.iteration.iteration_windows import Iteration
+from certfuzz.iteration.iteration_windows import WindowsIteration
 
 
 logger = logging.getLogger(__name__)
@@ -211,8 +211,8 @@ class WindowsCampaign(CampaignBase):
     def _do_iteration(self, sf, rng_seed, seednum):
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
-        # newly created Iteration()
-        with Iteration(sf, rng_seed, seednum, self.config, self.fuzzer_cls,
+        # newly created WindowsIteration()
+        with WindowsIteration(sf, rng_seed, seednum, self.config, self.fuzzer_cls,
                      self.runner, self.debugger_module, self.dbg_class,
                      self.keep_heisenbugs, self.keep_duplicates,
                      self.cmd_template, self._crash_is_unique,

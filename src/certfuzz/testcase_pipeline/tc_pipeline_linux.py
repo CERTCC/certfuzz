@@ -19,7 +19,7 @@ from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools import filetools
 from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.minimizer import MinimizerError, UnixMinimizer as Minimizer
-from certfuzz.testcase_pipeline.testcase_pipeline_base import TestCasePipelineBase
+from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 
 
 logger = logging.getLogger(__name__)

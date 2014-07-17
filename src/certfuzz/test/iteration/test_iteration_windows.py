@@ -5,7 +5,7 @@ Created on Mar 23, 2012
 '''
 
 import unittest
-from certfuzz.iteration.iteration_windows import Iteration
+from certfuzz.iteration.iteration_windows import WindowsIteration
 
 
 class Test(unittest.TestCase):
@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
     def setUp(self):
         args = list('0123456789ABCDE')
         args[3] = {'runoptions': {'keep_unique_faddr': False}}
-        self.iteration = Iteration(*args)
+        self.iteration = WindowsIteration(*args)
 
     def tearDown(self):
         pass

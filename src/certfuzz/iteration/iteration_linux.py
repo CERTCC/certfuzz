@@ -14,13 +14,13 @@ from certfuzz.fuzztools.zzuf import Zzuf
 from certfuzz.fuzztools.zzuf import ZzufTestCase
 from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
-from certfuzz.testcase_pipeline.testcase_pipeline_linux import LinuxTestCasePipeline
+from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 
 
 logger = logging.getLogger(__name__)
 
 
-class Iteration(IterationBase3):
+class LinuxIteration(IterationBase3):
     tcpipeline_cls = LinuxTestCasePipeline
 
     def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
