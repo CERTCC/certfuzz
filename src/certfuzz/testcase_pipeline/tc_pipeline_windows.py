@@ -13,6 +13,7 @@ from certfuzz.fuzztools import filetools
 from certfuzz.iteration.errors import IterationError
 from certfuzz.minimizer import WindowsMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
+from certfuzz.testcase_pipeline.errors import TestCasePipelineError
 
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class WindowsTestCasePipeline(TestCasePipelineBase):
     def _setup_analyzers(self):
-        TestCasePipelineBase._setup_analyzers(self)
+        pass
 
     def _pre_verify(self, testcase):
         # pretty-print the testcase for debugging
@@ -74,7 +75,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         pass
 
     def _report(self, testcase):
-        self.copy_files(testcase)
+        self._copy_files(testcase)
 
     def keep_testcase(self, testcase):
         '''Given a testcase, decide whether it is a keeper. Returns a tuple
@@ -114,21 +115,3 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         config.exclude_unmapped_frames = False
         config.watchdogfile = os.devnull
         return config
-
-    def copy_files(self, testcase):
-        if not self.outdir:
-            raise IterationError('Need a target dir to copy to')
-
-        logger.debug('target_base=%s', self.outdir)
-
-        target_dir = testcase._get_output_dir(self.outdir)
-
-        if os.path.exists(target_dir):
-            logger.debug('Repeat crash, will not copy to %s', target_dir)
-            return
-
-        # make sure target_base exists already
-        filetools.find_or_create_dir(self.outdir)
-        logger.debug('Copying to %s', target_dir)
-        shutil.copytree(testcase.tempdir, target_dir)
-        assert os.path.isdir(target_dir)

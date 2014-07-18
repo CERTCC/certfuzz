@@ -20,6 +20,8 @@ from certfuzz.fuzztools import filetools
 from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.minimizer import MinimizerError, UnixMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
+from certfuzz.testcase_pipeline.errors import TestCasePipelineError
+import shutil
 
 
 logger = logging.getLogger(__name__)
@@ -82,8 +84,10 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
 
     def _minimize(self, testcase):
         if self.options.get('minimize_crashers'):
+            touch_watchdog_file()
             self._mininimize_to_seedfile(testcase)
         if self.options.get('minimize_to_string'):
+            touch_watchdog_file()
             self._minimize_to_string(testcase)
 
     def _post_minimize(self, testcase):
@@ -144,8 +148,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         testcase.logger.info('PC=%s', testcase.pc)
 
     def _report(self, testcase):
-        # TODO move BffCrash.copy_files into this module
-        testcase.copy_files()
+        self._copy_files(testcase)
 
     def _post_report(self, testcase):
         # always clean up after yourself
@@ -163,8 +166,6 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         self._minimize_generic(testcase, sftarget=False, confidence=0.9)
 
     def _minimize_generic(self, testcase, sftarget=True, confidence=0.999):
-        touch_watchdog_file()
-
         STATE_TIMER.enter_state('minimize_testcase')
         try:
             with Minimizer(cfg=self.cfg,

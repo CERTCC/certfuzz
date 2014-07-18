@@ -10,6 +10,10 @@ import logging
 from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.helpers.coroutine import coroutine
+from certfuzz.testcase_pipeline.errors import TestCasePipelineError
+import os
+from certfuzz.fuzztools import filetools
+import shutil
 
 
 logger = logging.getLogger(__name__)
@@ -199,3 +203,23 @@ class TestCasePipelineBase(object):
         while not self.tc_candidate_q.empty():
             testcase = self.tc_candidate_q.get()
             self.analysis_pipeline.send(testcase)
+
+    def _copy_files(self, testcase):
+        if not self.outdir:
+            raise TestCasePipelineError('No outdir set')
+
+        logger.debug('target_base=%s', self.outdir)
+
+        target_dir = testcase.result_dir
+
+        if os.path.exists(target_dir):
+            logger.debug('Repeat crash, will not copy to %s', target_dir)
+            return
+
+        # make sure target_base exists already
+        filetools.find_or_create_dir(self.outdir)
+        logger.debug('Copying to %s', target_dir)
+        shutil.copytree(testcase.tempdir, target_dir)
+
+        if not os.path.exists(target_dir):
+            raise TestCasePipelineError('Failed to create target dir %s', target_dir)

@@ -71,11 +71,6 @@ class Testcase(TestCaseBase):
     def _set_attr_from_dbg(self, attrname):
         raise NotImplementedError
 
-    def _temp_output_files(self):
-        t = self.tempdir
-        file_list = [os.path.join(t, f) for f in os.listdir(t)]
-        return file_list
-
     def _verify_crash_base_dir(self):
         raise NotImplementedError
 
@@ -101,19 +96,6 @@ class Testcase(TestCaseBase):
 
     def confirm_crash(self):
         raise NotImplementedError
-
-    def copy_files(self, target=None):
-        if not target:
-            target = self.result_dir
-        if not target or not os.path.isdir(target):
-            raise CrashError("Target directory does not exist: %s" % target)
-
-        logger.debug('Copying to %s', target)
-        file_list = self._temp_output_files()
-        for f in file_list:
-            logger.debug('\t...file: %s', f)
-
-        filetools.copy_files(target, *file_list)
 
     def copy_files_to_temp(self):
         if self.fuzzedfile and self.copy_fuzzedfile:
