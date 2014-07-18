@@ -95,7 +95,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
                     return (True, 'unique')
             else:
                 return (False, 'skip duplicate %s' % testcase.signature)
-        elif not self.runner:
+        elif not self.options['used_runner']:
             return (False, 'not a crash')
         elif self.options['keep_heisenbugs']:
             return (True, 'heisenbug')
@@ -125,9 +125,10 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
 
         if os.path.exists(target_dir):
             logger.debug('Repeat crash, will not copy to %s', target_dir)
-        else:
-            # make sure target_base exists already
-            filetools.find_or_create_dir(self.outdir)
-            logger.debug('Copying to %s', target_dir)
-            shutil.copytree(testcase.tempdir, target_dir)
-            assert os.path.isdir(target_dir)
+            return
+
+        # make sure target_base exists already
+        filetools.find_or_create_dir(self.outdir)
+        logger.debug('Copying to %s', target_dir)
+        shutil.copytree(testcase.tempdir, target_dir)
+        assert os.path.isdir(target_dir)

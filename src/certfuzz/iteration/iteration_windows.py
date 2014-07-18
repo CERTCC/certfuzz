@@ -62,6 +62,7 @@ class WindowsIteration(IterationBase3):
                                  'keep_heisenbugs': keep_heisenbugs,
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,
+                                 'used_runner': self.runner is not None,
                                  }
 
     def __exit__(self, etype, value, traceback):
