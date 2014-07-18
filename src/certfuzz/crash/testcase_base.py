@@ -64,14 +64,3 @@ class TestCaseBase(object):
 
         self.hd_bits = hamming.bitwise_hd(a_string, fuzzed)
         self.hd_bytes = hamming.bytewise_hd(a_string, fuzzed)
-
-    def to_TestCaseDoc(self):
-        from ..db.couchdb.datatypes import TestCaseDoc
-
-        doc = TestCaseDoc()
-        doc.crash_signature = self.signature
-        doc.fuzzed_file = self.fuzzedfile.to_FileDoc().id
-        doc.seed_file = self.seedfile.to_FileDoc().id
-        doc.bitwise_hd = self.hd_bits
-        doc.bytewise_hd = self.hd_bytes
-        return doc

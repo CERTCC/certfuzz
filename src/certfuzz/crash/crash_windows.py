@@ -8,7 +8,7 @@ import logging
 import os
 
 from certfuzz.campaign.config.config_windows import get_command_args_list
-from certfuzz.crash.crash_base import Crash
+from certfuzz.crash.crash_base import Testcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
 from certfuzz.helpers import random_str
@@ -37,7 +37,7 @@ exp_rank = {
             }
 
 
-class WindowsCrash(Crash):
+class WindowsCrash(Testcase):
     tmpdir_pfx = 'bff-crash-'
 
     # TODO: do we still need fuzzer as an arg?
@@ -47,7 +47,7 @@ class WindowsCrash(Crash):
 
         dbg_timeout = dbg_opts['runtimeout']
 
-        Crash.__init__(self, seedfile, fuzzedfile, dbg_timeout)
+        Testcase.__init__(self, seedfile, fuzzedfile, dbg_timeout)
 
         self.dbg_class = dbg_class
         self.dbg_opts = dbg_opts
@@ -94,7 +94,7 @@ class WindowsCrash(Crash):
         as needed. Used in both object runtime context and for refresh after
         a crash object is copied.
         '''
-        Crash.update_crash_details(self)
+        Testcase.update_crash_details(self)
         # Reset properties that need to be regenerated
         self.exception_depth = 0
         self.parsed_outputs = []

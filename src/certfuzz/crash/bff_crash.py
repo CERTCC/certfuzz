@@ -6,7 +6,7 @@ Created on Jul 19, 2011
 import logging
 import os
 
-from certfuzz.crash.crash_base import Crash, CrashError
+from certfuzz.crash.crash_base import Testcase, CrashError
 from certfuzz.debuggers import registration
 from certfuzz.fuzztools import hostinfo, filetools
 
@@ -24,7 +24,7 @@ debugger = None
 host_info = hostinfo.HostInfo()
 
 
-class BffCrash(Crash):
+class BffCrash(Testcase):
     '''
     classdocs
     '''
@@ -36,7 +36,7 @@ class BffCrash(Crash):
         '''
         Constructor
         '''
-        Crash.__init__(self, seedfile, fuzzedfile, debugger_timeout)
+        Testcase.__init__(self, seedfile, fuzzedfile, debugger_timeout)
         self.cfg = cfg
         self.workdir_base = workdir_base
         self.program = program
@@ -70,7 +70,7 @@ class BffCrash(Crash):
                 raise CrashError('Debugger template does not exist at %s' % self.debugger_template)
 
     def update_crash_details(self):
-        Crash.update_crash_details(self)
+        Testcase.update_crash_details(self)
 
         self.cmdargs = self.cfg.get_command_args_list(self.fuzzedfile.path)
 #        self.debugger_file = debuggers.get_debug_file(self.fuzzedfile.path)
@@ -140,9 +140,9 @@ class BffCrash(Crash):
         if not self.signature:
             self.signature = self.dbg.get_crash_signature(self.backtrace_lines)
             if self.signature:
-                logger.debug("Crash signature is %s", self.signature)
+                logger.debug("Testcase signature is %s", self.signature)
             else:
-                raise CrashError('Crash has no signature.')
+                raise CrashError('Testcase has no signature.')
             if self.dbg.total_stack_corruption:
                 # total_stack_corruption.  Use pin calltrace to get a backtrace
                 analyzer_instance = pin_calltrace.Pin_calltrace(self.cfg, self)

@@ -16,11 +16,11 @@ from certfuzz.fuzztools import filetools
 logger = logging.getLogger(__name__)
 
 
-class Crash(TestCaseBase):
+class Testcase(TestCaseBase):
     tmpdir_pfx = 'crash-'
 
     def __init__(self, seedfile, fuzzedfile, dbg_timeout=30):
-        logger.debug('Inititalize Crash')
+        logger.debug('Inititalize Testcase')
         TestCaseBase.__init__(self, seedfile, fuzzedfile)
 
         self.debugger_timeout = dbg_timeout
