@@ -74,12 +74,22 @@ def make_directories(*paths):
             mkdir_p(d)
 
 
+@exponential_backoff
+def rm_rf(path):
+    '''
+    Wraps shutil.rmtree with an exponential backoff to avoid contention with
+    HGFS on some platforms (usually Windows)
+    :param path:
+    '''
+    shutil.rmtree(path)
+
+
 def delete_files(*files):
     delete_files2(files)
 
 
 @exponential_backoff
-def delete_files2(files=[]):
+def delete_files2(files):
     '''
     Deletes <files> given a list of paths
     @return: none

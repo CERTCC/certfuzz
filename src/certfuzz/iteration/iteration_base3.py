@@ -4,9 +4,9 @@ Created on Feb 13, 2014
 @author: adh
 '''
 import logging
-import shutil
 import tempfile
 import abc
+from certfuzz.fuzztools.filetools import rm_rf
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +79,7 @@ class IterationBase3(object):
             # and there's a problem
             logger.debug('Skipping cleanup since we are in debug mode.')
         else:
-            shutil.rmtree(self.working_dir)
+            rm_rf(self.working_dir)
 
         return handled
 
