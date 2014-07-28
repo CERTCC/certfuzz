@@ -17,9 +17,6 @@
 </choice>
 <choice title="Python 2.7" id="choice59" starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.Python2.7.pkg" />
-<choice-reqs>
-<requirement id="sosv" operator="lt" value="'10.9.0'" selected="no" enabled="no" hidden="unchanged" startSelected="unchanged" startEnabled="unchanged" startHidden="unchanged" />
-</choice-reqs>
 </choice>
 <choice title="Python 2.7 Numpy" id="choice60" starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.Python2.7_numpy.pkg" />
