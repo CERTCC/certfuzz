@@ -108,6 +108,10 @@ class ConfigHelper:
             self.recycle_crashers = self.cfg.getboolean('verifier', 'recycle_crashers')
         else:
             self.recycle_crashers = False
+        if self.cfg.has_option('verifier', 'keep_duplicates'):
+            self.keep_duplicates = self.cfg.getboolean('verifier', 'keep_duplicates')
+        else:
+            self.keep_duplicates = False
 
         # [directories]
         self.remote_dir = os.path.expanduser(self.cfg.get('directories', 'remote_dir'))
