@@ -70,7 +70,7 @@ if [[ "$platform" =~ "Linux" ]]; then
         echo PIN not detected. Downloading...
         tarball=~/fuzzing/`basename $PINURL`
         pindir=`basename $tarball .tar.gz`
-        wget $PINURL -O $tarball
+        wget --tries=1 $PINURL -O $tarball
         if [[ -f $tarball ]]; then      
             tar xzvf $tarball -C ~
             mv ~/$pindir ~/pin
