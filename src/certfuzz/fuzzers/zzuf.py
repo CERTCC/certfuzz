@@ -3,22 +3,30 @@ Created on Oct 22, 2014
 
 @author: adh
 '''
-from certfuzz.fuzzers import Fuzzer
 import subprocess
+from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
+from certfuzz.fuzzers.errors import FuzzerError
+from distutils.spawn import find_executable
+import os
 
 
-class ZzufFuzzer(Fuzzer):
+class ZzufFuzzer(MinimizableFuzzer):
     '''
-    This "fuzzer" copies input_file_path to output_file_path. Useful for
-    testing and "refining" a set of crashing test cases through a debugger.
-    '''
+    This fuzzer uses Sam Hocevar's zzuf to mangle self.input and puts the results into
+    self.fuzzed'''
     def _fuzz(self):
         # run zzuf and put its output in self.fuzzed
+
+        zzufloc = find_executable('zzuf')
+        if zzufloc is None:
+            raise FuzzerError('Unable to locate zzuf in %s' % os.environ['PATH'])
+
         self.range = self.sf.rangefinder.next_item()
-        zzufargs = ['zzuf',
+
+        zzufargs = [zzufloc,
                     '--quiet',
                     '--ratio={}:{}'.format(self.range.min, self.range.max),
-                    '--seed={}'.format(self.rng_seed),
+                    '--seed={}'.format(self.iteration),
                     ]
         p = subprocess.Popen(args=zzufargs, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         (stdoutdata, _stderrdata) = p.communicate(input=self.input)

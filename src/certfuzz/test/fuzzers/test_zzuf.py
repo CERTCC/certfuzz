@@ -9,11 +9,20 @@ import tempfile
 import shutil
 from certfuzz.fuzzers.zzuf import ZzufFuzzer
 import hashlib
+import os
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
+        # zzuf might not be in the default paths, so check a few other
+        # locations too
+        alternate_bin_locs = set(['/opt/local/bin'])
+        alt_bin_locs_exist = (l for l in alternate_bin_locs if os.path.exists(l))
+        add_locs = (l for l in alt_bin_locs_exist if not l in os.environ['PATH'])
+        for loc in add_locs:
+            os.environ['PATH'] += os.pathsep + loc
+
         self.sf = seedfile_obj = MockSeedfile()
         self.tempdir = tempfile.mkdtemp()
         self.outdir = outdir_base = tempfile.mkdtemp(prefix='outdir_base',
@@ -55,9 +64,6 @@ class Test(unittest.TestCase):
                     self.fail('Fuzzer repeated output: %s' % md5)
                 else:
                     fuzzed_output_seen.add(md5)
-
-                # confirm ratio
-#                self.assertAlmostEqual(f.ratio, f.fuzzed_bit_ratio(), 2)
 
 
 if __name__ == "__main__":
