@@ -14,16 +14,21 @@ class ZzufFuzzer(MinimizableFuzzer):
     '''
     This fuzzer uses Sam Hocevar's zzuf to mangle self.input and puts the results into
     self.fuzzed'''
-    def _fuzz(self):
-        # run zzuf and put its output in self.fuzzed
+    _zzuf_loc = None
 
-        zzufloc = find_executable('zzuf')
-        if zzufloc is None:
+    def __enter__(self):
+        self = MinimizableFuzzer.__enter__(self)
+
+        self._zzuf_loc = find_executable('zzuf')
+        if self._zzuf_loc is None:
             raise FuzzerNotFoundError('Unable to locate zzuf in %s' % os.environ['PATH'])
 
+        return self
+
+    def _fuzz(self):
         self.range = self.sf.rangefinder.next_item()
 
-        zzufargs = [zzufloc,
+        zzufargs = [self._zzuf_loc,
                     '--quiet',
                     '--ratio={}:{}'.format(self.range.min, self.range.max),
                     '--seed={}'.format(self.iteration),
