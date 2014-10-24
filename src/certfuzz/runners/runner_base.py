@@ -11,7 +11,7 @@ class Runner(object):
     '''
     classdocs
     '''
-    def __init__(self, options, workingdir_base):
+    def __init__(self, options, cmd_template, fuzzed_file, workingdir_base):
         '''
         Constructor
         '''
@@ -22,6 +22,7 @@ class Runner(object):
         self.hideoutput = options.get('hideoutput', False)
         self.runtimeout = options.get('runtimeout', 5)
         self.saw_crash = False
+        self.fuzzed_file = fuzzed_file
 
         self.workingdir = workingdir_base
 
