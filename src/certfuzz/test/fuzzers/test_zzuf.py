@@ -10,6 +10,7 @@ import shutil
 from certfuzz.fuzzers.zzuf import ZzufFuzzer
 import hashlib
 import os
+from certfuzz.fuzzers.errors import FuzzerNotFoundError
 
 
 class Test(unittest.TestCase):
@@ -50,21 +51,23 @@ class Test(unittest.TestCase):
     def test_fuzz(self):
         self.assertTrue(self.sf.len > 0)
         fuzzed_output_seen = set()
-        for i in xrange(200):
-            with ZzufFuzzer(*self.args) as f:
-                f.iteration = i
-                f._fuzz()
-                # same length, different output
-                self.assertEqual(self.sf.len, len(f.fuzzed))
-                self._fail_if_not_fuzzed(f.fuzzed)
+        try:
+            for i in xrange(200):
+                with ZzufFuzzer(*self.args) as f:
+                    f.iteration = i
+                    f._fuzz()
+                    # same length, different output
+                    self.assertEqual(self.sf.len, len(f.fuzzed))
+                    self._fail_if_not_fuzzed(f.fuzzed)
 
-                # check for no repeats
-                md5 = hashlib.md5(f.fuzzed).hexdigest()
-                if md5 in fuzzed_output_seen:
-                    self.fail('Fuzzer repeated output: %s' % md5)
-                else:
-                    fuzzed_output_seen.add(md5)
-
+                    # check for no repeats
+                    md5 = hashlib.md5(f.fuzzed).hexdigest()
+                    if md5 in fuzzed_output_seen:
+                        self.fail('Fuzzer repeated output: %s' % md5)
+                    else:
+                        fuzzed_output_seen.add(md5)
+        except FuzzerNotFoundError as e:
+            self.skipTest("zzuf not found in path")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
