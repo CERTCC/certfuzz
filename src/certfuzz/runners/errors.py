@@ -21,3 +21,6 @@ class RunnerPlatformVersionError(RunnerError):
 class RunnerRegistryError(RunnerError):
     pass
 
+
+class RunnerNotFoundError(RunnerError):
+    pass

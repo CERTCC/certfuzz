@@ -10,6 +10,7 @@ import os
 import subprocess
 import logging
 from collections import deque
+from certfuzz.runners.errors import RunnerNotFoundError
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ class ZzufRunner(Runner):
     def _find_zzuf(self):
         self._zzuf_loc = find_executable('zzuf')
         if self._zzuf_loc is None:
-            raise RunnerError('Unable to locate zzuf, $PATH={}'.format(os.environ['PATH']))
+            raise RunnerNotFoundError('Unable to locate zzuf, $PATH={}'.format(os.environ['PATH']))
 
     def __enter__(self):
         self = Runner.__enter__(self)
