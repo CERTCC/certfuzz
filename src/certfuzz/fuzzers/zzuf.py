@@ -5,7 +5,7 @@ Created on Oct 22, 2014
 '''
 import subprocess
 from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
-from certfuzz.fuzzers.errors import FuzzerError
+from certfuzz.fuzzers.errors import FuzzerNotFoundError
 from distutils.spawn import find_executable
 import os
 
@@ -19,7 +19,7 @@ class ZzufFuzzer(MinimizableFuzzer):
 
         zzufloc = find_executable('zzuf')
         if zzufloc is None:
-            raise FuzzerError('Unable to locate zzuf in %s' % os.environ['PATH'])
+            raise FuzzerNotFoundError('Unable to locate zzuf in %s' % os.environ['PATH'])
 
         self.range = self.sf.rangefinder.next_item()
 

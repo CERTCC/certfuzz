@@ -18,3 +18,7 @@ class FuzzerExhaustedError(FuzzerError):
 
 class FuzzerInputMatchesOutputError(FuzzerError):
     pass
+
+
+class FuzzerNotFoundError(FuzzerError):
+    pass
