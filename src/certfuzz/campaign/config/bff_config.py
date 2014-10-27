@@ -40,7 +40,8 @@ def read_config_options(cfg_file):
     @rtype: ConfigHelper
     '''
     config = ConfigParser.ConfigParser()
-    config.readfp(open(cfg_file))
+    with open(cfg_file) as fp:
+        config.readfp(fp)
     return ConfigHelper(config)
 
 
