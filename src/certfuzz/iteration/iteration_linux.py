@@ -33,6 +33,13 @@ class LinuxIteration(IterationBase3):
 
         self._zzuf_range = None
         self._zzuf_line = None
+        # analysis is required in two cases:
+        # 1) runner is not defined (self.runner == None)
+        # 2) runner is defined, and detects crash (runner.saw_crash == True)
+        # this takes care of case 1 by default
+        analysis_needed = True
+
+        self._analysis_needed = True
 
         self.pipeline_options = {
                                  'use_valgrind': self.cfg.use_valgrind,
@@ -78,11 +85,6 @@ class LinuxIteration(IterationBase3):
     # do this here (and not sooner) because the fuzzer could
     # decide at runtime whether it is or is not minimizable
         self.minimizable = self.fuzzer.is_minimizable and self.config['runoptions']['minimize']
-    # analysis is required in two cases:
-    # 1) runner is not defined (self.runner == None)
-    # 2) runner is defined, and detects crash (runner.saw_crash == True)
-    # this takes care of case 1 by default
-        analysis_needed = True
 
     def _pre_run(self):
         options = {}
@@ -109,9 +111,9 @@ class LinuxIteration(IterationBase3):
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
         # report the exit code in its output log.  The exit code is 128 + the signal number.
-        analysis_needed = zzuf_log.crash_logged(self.cfg.copymode)
+        self._analysis_needed = zzuf_log.crash_logged(self.cfg.copymode)
 
-        if not analysis_needed:
+        if not self.analysis_needed:
             return
 
         # store a few things for use downstream
