@@ -68,17 +68,27 @@ class Test(unittest.TestCase):
             else:
                 self.assertRaises(RunnerNotFoundError, zr._find_zzuf)
 
+    def test_run(self):
+        options = {}
+        cmd_template = ''
 
-#
-#    def test_run(self):
-#        options = {}
-#        cmd_template = ''
-#
-#        for i in xrange(100):
-#            with ZzufRunner(options, cmd_template, self.ff, self.tmpdir) as r:
-#                print r.__dict__
-#                r._run()
-#        self.assertTrue(False)
+        touch = '/usr/bin/touch'
+        if not os.path.exists(touch):
+            # bail out if touch doesn't exist
+            return
+
+        for _ in xrange(100):
+            zr = ZzufRunner(options, cmd_template, self.ff, self.tmpdir)
+            fd, fname = tempfile.mkstemp(prefix='zzufrun_test_', dir=self.tmpdir)
+            os.close(fd)
+            os.remove(fname)
+            with zr:
+                # we're really just testing the structure of the _run method,
+                # not whether zzuf works
+                zr._zzuf_args = [touch, fname]
+                self.assertFalse(os.path.exists(fname))
+                zr._run()
+                self.assertTrue(os.path.exists(fname))
 
 
 if __name__ == "__main__":
