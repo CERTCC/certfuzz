@@ -158,7 +158,7 @@ def main():
 
             if options.stringmode:
                 logger.debug('x character substitution')
-                length = len(minimize.fuzzed)
+                length = len(minimize.fuzzed_content)
                 if options.prefer_x_target:
                     #We minimized to 'x', so we attempt to get metasploit as a freebie
                     targetstring = list(text.metasploit_pattern_orig(length))
@@ -168,7 +168,7 @@ def main():
                     targetstring = list('x' * length)
                     filename_modifier = '-x'
 
-                fuzzed = list(minimize.fuzzed)
+                fuzzed = list(minimize.fuzzed_content)
                 for idx in minimize.bytemap:
                     logger.debug('Swapping index %d', idx)
                     targetstring[idx] = fuzzed[idx]

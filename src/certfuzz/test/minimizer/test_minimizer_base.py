@@ -91,8 +91,8 @@ class Test(unittest.TestCase):
 
     def test_set_discard_chance(self):
         self.m.seed = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        self.m.fuzzed = "abcdefghijklmnopqrstuvwxyz"
-        self.m.min_distance = hamming.bytewise_hd(self.m.seed, self.m.fuzzed)
+        self.m.fuzzed_content = "abcdefghijklmnopqrstuvwxyz"
+        self.m.min_distance = hamming.bytewise_hd(self.m.seed, self.m.fuzzed_content)
         self.assertEqual(self.m.min_distance, 26)
 
         for tsg in xrange(1, 20):
@@ -110,7 +110,7 @@ class Test(unittest.TestCase):
         for dc in (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9):
             self.m.discard_chance = dc
             self.m.seed = seed
-            self.m.fuzzed = fuzzed
+            self.m.fuzzed_content = fuzzed
             self.m.min_distance = 26
             self.m.swap_func = self.m.bytewise_swap2
             self.m.swap_bytes()
