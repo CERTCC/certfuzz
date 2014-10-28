@@ -19,7 +19,6 @@ from certfuzz.debuggers.registration import verify_supported_platform
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzztools import subprocess_helper as subp
 from certfuzz.fuzztools.process_killer import ProcessKiller
-from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
@@ -196,8 +195,6 @@ class LinuxCampaign(CampaignBase):
 
         r = sf.rangefinder.next_item()
         qf = not self.first_chunk
-
-        logger.info(STATE_TIMER)
 
         interval_limit = self.current_seed + self.seed_interval
 

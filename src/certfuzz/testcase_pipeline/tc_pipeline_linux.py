@@ -17,7 +17,6 @@ from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateEmptyOutputFile
 from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateMissingInputFileError
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools import filetools
-from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.minimizer import MinimizerError, UnixMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.testcase_pipeline.errors import TestCasePipelineError
@@ -53,7 +52,6 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         Confirms that a test case is interesting enough to pursue further analysis
         :param testcase:
         '''
-        STATE_TIMER.enter_state('verify_testcase')
         TestCasePipelineBase._verify(self, testcase)
 
         # if you find more testcases, append them to self.tc_candidate_q
@@ -102,8 +100,6 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
 #            seedfile_set.add_file(crasherseed_path)
 
     def _pre_analyze(self, testcase):
-        STATE_TIMER.enter_state('analyze_testcase')
-
         # get one last debugger output for the newly minimized file
         if testcase.pc_in_function:
             # change the debugger template
@@ -166,7 +162,6 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         self._minimize_generic(testcase, sftarget=False, confidence=0.9)
 
     def _minimize_generic(self, testcase, sftarget=True, confidence=0.999):
-        STATE_TIMER.enter_state('minimize_testcase')
         try:
             with Minimizer(cfg=self.cfg,
                            crash=testcase,

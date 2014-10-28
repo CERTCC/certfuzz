@@ -9,7 +9,6 @@ import os
 from certfuzz.crash.bff_crash import BffCrash
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.fuzztools.state_timer import STATE_TIMER
 from certfuzz.fuzztools.zzuf import Zzuf
 from certfuzz.fuzztools.zzuf import ZzufTestCase
 from certfuzz.fuzztools.zzuflog import ZzufLog
@@ -62,7 +61,6 @@ class LinuxIteration(IterationBase3):
         # do the fuzz
         cmdline = self.cfg.get_command(self.seedfile.path)
 
-        STATE_TIMER.enter_state('fuzzing')
         self.zzuf = Zzuf(self.cfg.local_dir, self.seednum,
             self.seednum,
             cmdline,
@@ -78,7 +76,6 @@ class LinuxIteration(IterationBase3):
         self.zzuf.go()
 
     def _post_run(self):
-        STATE_TIMER.enter_state('checking_results')
             # we must have made it through this chunk without a crash
             # so go to next chunk
 
