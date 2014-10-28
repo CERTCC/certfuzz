@@ -84,22 +84,21 @@ class LinuxIteration(IterationBase3):
     # this takes care of case 1 by default
         analysis_needed = True
 
-    def _run(self):
+    def _pre_run(self):
         options = {}
         cmd_template = ''
         fuzzed_file = ''
         workingdir_base = self.working_dir
-        runner = ZzufRunner(options, cmd_template, fuzzed_file, workingdir_base)
-        with runner:
-            runner.run()
+        self.runner = ZzufRunner(options, cmd_template, fuzzed_file, workingdir_base)
+
+    def _run(self):
+        with self.runner:
+            self.runner.run()
 
     def _post_run(self):
-            # we must have made it through this chunk without a crash
-            # so go to next chunk
-
         self.record_tries()
 
-        if not self.zzuf.saw_crash:
+        if not self.runner.saw_crash:
             logger.debug('No crash seen')
             return
 
