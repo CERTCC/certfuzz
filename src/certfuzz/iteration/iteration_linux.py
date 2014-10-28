@@ -9,11 +9,12 @@ import os
 from certfuzz.crash.bff_crash import BffCrash
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.fuzztools.zzuf import Zzuf
 from certfuzz.fuzztools.zzuf import ZzufTestCase
 from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
+from certfuzz.runners.zzufrun import ZzufRunner
+from certfuzz.fuzzers.zzuf import ZzufFuzzer
 
 
 logger = logging.getLogger(__name__)
@@ -54,26 +55,43 @@ class LinuxIteration(IterationBase3):
         self.cfg.clean_tmpdir()
         return handled
 
+    def _pre_fuzz(self):
+        fuzz_opts = self.config['fuzzer']
+        self.fuzzer = ZzufFuzzer(self.sf,
+                        self.working_dir,
+                        self.rng_seed,
+                        self.current_seed,
+                        fuzz_opts)
+
     def _fuzz(self):
-        pass
+        with self.fuzzer:
+            self.fuzzer.fuzz()
+            self.fuzzed = True
 
-    def _pre_run(self):
-        # do the fuzz
-        cmdline = self.cfg.get_command(self.seedfile.path)
+    def _post_fuzz(self):
+        self.r = self.fuzzer.range
+        if self.r:
+            logger.info('Selected r: %s', self.r)
 
-        self.zzuf = Zzuf(self.cfg.local_dir, self.seednum,
-            self.seednum,
-            cmdline,
-            self.seedfile.path,
-            self.cfg.zzuf_log_file,
-            self.cfg.copymode,
-            self.r.min,
-            self.r.max,
-            self.cfg.progtimeout,
-            self.quiet_flag)
+        fuzzed_file_full_path = self.fuzzer.output_file_path
+    # decide if we can minimize this case later
+    # do this here (and not sooner) because the fuzzer could
+    # decide at runtime whether it is or is not minimizable
+        self.minimizable = self.fuzzer.is_minimizable and self.config['runoptions']['minimize']
+    # analysis is required in two cases:
+    # 1) runner is not defined (self.runner == None)
+    # 2) runner is defined, and detects crash (runner.saw_crash == True)
+    # this takes care of case 1 by default
+        analysis_needed = True
 
     def _run(self):
-        self.zzuf.go()
+        options = {}
+        cmd_template = ''
+        fuzzed_file = ''
+        workingdir_base = self.working_dir
+        runner = ZzufRunner(options, cmd_template, fuzzed_file, workingdir_base)
+        with runner:
+            runner.run()
 
     def _post_run(self):
             # we must have made it through this chunk without a crash
