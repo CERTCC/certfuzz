@@ -39,11 +39,11 @@ class Test(unittest.TestCase):
             self.sf.tries = x
             with DropFuzzer(*self.args) as f:
                 f._fuzz()
-                self.assertEqual(len(f.fuzzed), self.sf.len - 1)
+                self.assertEqual(len(f.output), self.sf.len - 1)
                 if x > 0:
-                    self.assertEqual(chr(f.fuzzed[x - 1]), self.sf.value[x])
+                    self.assertEqual(chr(f.output[x - 1]), self.sf.value[x])
                 if x < self.sf.len - 1:
-                    self.assertEqual(chr(f.fuzzed[x]), self.sf.value[x + 1])
+                    self.assertEqual(chr(f.output[x]), self.sf.value[x + 1])
 
     def test_fuzz_out_of_range(self):
         self.sf.tries = self.sf.len + 1

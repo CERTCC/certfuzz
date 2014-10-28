@@ -16,7 +16,7 @@ class DropFuzzer(Fuzzer):
     '''
     def _fuzz(self):
         '''
-        Drop individual bytes of input and put output in self.fuzzed
+        Drop individual bytes of input and put output in self.output
         '''
 
         # TODO: add range list support to drop fuzzer
@@ -39,6 +39,6 @@ class DropFuzzer(Fuzzer):
 
         logger.debug('%s - dropped byte 0x%02x', self.sf.basename, byte_pos)
 
-        self.fuzzed = self.input
+        self.output = self.input
 
 _fuzzer_class = DropFuzzer

@@ -74,6 +74,6 @@ class BitMutFuzzer(MinimizableFuzzer):
         for idx, val in enumerate(self.input):
             self.input[idx] = mask[idx] ^ val
 
-        self.fuzzed = self.input
+        self.output = self.input
 
 _fuzzer_class = BitMutFuzzer

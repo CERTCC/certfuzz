@@ -57,11 +57,11 @@ class Test(unittest.TestCase):
                     f.iteration = i
                     f._fuzz()
                     # same length, different output
-                    self.assertEqual(self.sf.len, len(f.fuzzed))
-                    self._fail_if_not_fuzzed(f.fuzzed)
+                    self.assertEqual(self.sf.len, len(f.output))
+                    self._fail_if_not_fuzzed(f.output)
 
                     # check for no repeats
-                    md5 = hashlib.md5(f.fuzzed).hexdigest()
+                    md5 = hashlib.md5(f.output).hexdigest()
                     if md5 in fuzzed_output_seen:
                         self.fail('Fuzzer repeated output: %s' % md5)
                     else:

@@ -29,25 +29,25 @@ class Test(unittest.TestCase):
     def test_fuzz(self):
         self.sf.value = "ABCDE"
         with SwapFuzzer(*self.args) as f:
-            self.assertEqual(f.fuzzed, None)
+            self.assertEqual(f.output, None)
             self.sf.tries = 0
             f._fuzz()
-            self.assertEqual(f.fuzzed, "BACDE")
+            self.assertEqual(f.output, "BACDE")
 
         self.sf.value = "ABCDE"
         with SwapFuzzer(*self.args) as f:
-            self.assertEqual(f.fuzzed, None)
+            self.assertEqual(f.output, None)
             self.sf.tries = 1
             self.sf.value = "ABCDE"
             f._fuzz()
-            self.assertEqual(f.fuzzed, "ACBDE")
+            self.assertEqual(f.output, "ACBDE")
 
         self.sf.value = "ABCDE"
         with SwapFuzzer(*self.args) as f:
             self.sf.tries = 3
             self.sf.value = "ABCDE"
             f._fuzz()
-            self.assertEqual(f.fuzzed, "ABCED")
+            self.assertEqual(f.output, "ABCED")
 
     def test_fuzz_out_of_range(self):
         self.sf.tries = len(self.sf.value)

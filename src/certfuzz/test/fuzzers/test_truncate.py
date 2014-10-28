@@ -40,7 +40,7 @@ class Test(unittest.TestCase):
             with TruncateFuzzer(*self.args) as f:
                 f._fuzz()
                 n_expected = self.sf.len - self.sf.tries - 1
-                self.assertEqual(len(f.fuzzed), n_expected)
+                self.assertEqual(len(f.output), n_expected)
 
     def test_fuzz_out_of_range(self):
         self.sf.tries = self.sf.len + 1

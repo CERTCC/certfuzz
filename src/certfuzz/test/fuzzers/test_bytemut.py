@@ -119,8 +119,8 @@ class Test(unittest.TestCase):
                 f.iteration = i
                 f._fuzz()
                 # same length, different output
-                self.assertEqual(self.sf.len, len(f.fuzzed))
-                self._fail_if_not_fuzzed(f.fuzzed)
+                self.assertEqual(self.sf.len, len(f.output))
+                self._fail_if_not_fuzzed(f.output)
                 # confirm ratio
 #                 self.assertGreaterEqual(f.fuzzed_byte_ratio(), MockRange().min)
 #                 self.assertLessEqual(f.fuzzed_byte_ratio(), MockRange().max)
@@ -138,7 +138,7 @@ class Test(unittest.TestCase):
             for _ in range(20):
                 with ByteMutFuzzer(self.sf, self.outdir, x, x, self.options) as f:
                     f._fuzz()
-                    result = str(f.fuzzed)
+                    result = str(f.output)
                     if last_result:
                         self.assertEqual(result, last_result)
                     else:

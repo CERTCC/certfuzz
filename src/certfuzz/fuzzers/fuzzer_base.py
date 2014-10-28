@@ -74,7 +74,7 @@ class Fuzzer(object):
         self.output_file_path = os.path.join(self.tmpdir, self.basename_fuzzed)
 
         self.input = None
-        self.fuzzed = None
+        self.output = None
         self.fuzzed_changes_input = True
         # Not all fuzzers use rangefinder. Default to None and
         # set it in child classes for those that do
@@ -100,13 +100,13 @@ class Fuzzer(object):
         else:
             outfile = self.output_file_path
 
-        if self.fuzzed:
-            write_file(self.fuzzed, outfile)
+        if self.output:
+            write_file(self.output, outfile)
         self.output_file_path = outfile
         return os.path.exists(outfile)
 
     def fuzz(self):
-        if not self.fuzzed:
+        if not self.output:
             self._prefuzz()
             self._fuzz()
             self._postfuzz()
@@ -123,7 +123,7 @@ class Fuzzer(object):
 #
 #        # throw an exception if for some reason we didn't fuzz the input
 #        # some fuzzers don't materially alter the file every time, e.g., swap
-#        if self.input == self.fuzzed:
+#        if self.input == self.output:
 #            raise FuzzerInputMatchesOutputError('Fuzz failed: input matches output')
 
     def _prefuzz(self):
@@ -143,11 +143,11 @@ class Fuzzer(object):
     def _fuzz(self):
         '''
         Override this method to implement your fuzzer. The seed file contents
-        are in self.input. Put the output into self.fuzzed.
+        are in self.input. Put the output into self.output.
         '''
         # disable fuzzed_changes_input since we're copying in -> out
         self.fuzzed_changes_input = False
-        self.fuzzed = self.input
+        self.output = self.input
 
     def _validate(self):
         '''
@@ -215,10 +215,10 @@ class MinimizableFuzzer(Fuzzer):
         if self.options.get('fuzz_zip_container') or not self.sf.is_zip:
             return
 
-        '''rebuild the zip file and put it in self.fuzzed
+        '''rebuild the zip file and put it in self.output
         Note: We assume that the fuzzer has not changes the lengths
         of the archived files, otherwise we won't be able to properly
-        split self.fuzzed
+        split self.output
         '''
 
         logger.debug('Creating in-memory zip with mutated contents.')
@@ -230,17 +230,17 @@ class MinimizableFuzzer(Fuzzer):
         source
         '''
         for name, info in self.saved_arcinfo.iteritems():
-            # write out fuzzed file
+            # write out output file
             if info[2] == 0 or info[2] == 8:
                 # Python zipfile only supports compression types 0 and 8
                 compressiontype = info[2]
             else:
                 logger.warning('Compression type %s is not supported. Overriding', info[2])
                 compressiontype = 8
-            tempzip.writestr(name, str(self.fuzzed[info[0]:info[0] + info[1]]),
+            tempzip.writestr(name, str(self.output[info[0]:info[0] + info[1]]),
                              compress_type=compressiontype)
         tempzip.close()
 
-        # get the byte string version of the archive and put in self.fuzzed
-        self.fuzzed = inmemzip.getvalue()
+        # get the byte string version of the archive and put in self.output
+        self.output = inmemzip.getvalue()
         inmemzip.close()

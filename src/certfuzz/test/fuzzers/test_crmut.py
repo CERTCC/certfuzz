@@ -126,7 +126,7 @@ class Test(unittest.TestCase):
                 f.iteration = i
                 f._fuzz()
                 # same length, different output
-                self.assertEqual(self.sf.len, len(f.fuzzed))
+                self.assertEqual(self.sf.len, len(f.output))
                 self._fail_if_not_fuzzed(f.input)
                 # confirm ratio
 #                self.assertGreaterEqual(f.fuzzed_byte_ratio() / self.chars_inserted, MockRange().min)
@@ -144,7 +144,7 @@ class Test(unittest.TestCase):
             for _ in range(20):
                 with CRMutFuzzer(self.sf, self.outdir, x, x, self.options) as f:
                     f._fuzz()
-                    result = str(f.fuzzed)
+                    result = str(f.output)
                     if last_result:
                         self.assertEqual(result, last_result)
                     else:

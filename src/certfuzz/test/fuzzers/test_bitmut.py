@@ -44,8 +44,8 @@ class Test(unittest.TestCase):
                 f.iteration = i
                 f._fuzz()
                 # same length, different output
-                self.assertEqual(self.sf.len, len(f.fuzzed))
-                self._fail_if_not_fuzzed(f.fuzzed)
+                self.assertEqual(self.sf.len, len(f.output))
+                self._fail_if_not_fuzzed(f.output)
                 # confirm ratio
 #                self.assertAlmostEqual(f.ratio, f.fuzzed_bit_ratio(), 2)
 

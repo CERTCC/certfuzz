@@ -13,7 +13,7 @@ import os
 class ZzufFuzzer(MinimizableFuzzer):
     '''
     This fuzzer uses Sam Hocevar's zzuf to mangle self.input and puts the results into
-    self.fuzzed'''
+    self.output'''
     _zzuf_loc = None
 
     def __enter__(self):
@@ -35,6 +35,6 @@ class ZzufFuzzer(MinimizableFuzzer):
                     ]
         p = subprocess.Popen(args=zzufargs, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         (stdoutdata, _stderrdata) = p.communicate(input=self.input)
-        self.fuzzed = stdoutdata
+        self.output = stdoutdata
 
 _fuzzer_class = ZzufFuzzer

@@ -41,7 +41,7 @@ class Test(unittest.TestCase):
                 f._fuzz()
                 pos = x / 256  # note integer math
                 val = x % 256
-                self.assertEqual(f.fuzzed[pos], val)
+                self.assertEqual(f.output[pos], val)
 
     def test_fuzz_out_of_range(self):
         self.sf.tries = self.sf.len * 256 + 1
