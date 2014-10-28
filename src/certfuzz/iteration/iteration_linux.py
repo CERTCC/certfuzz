@@ -70,10 +70,6 @@ class LinuxIteration(IterationBase3):
                         self.current_seed,
                         fuzz_opts)
 
-    def _fuzz(self):
-        with self.fuzzer:
-            self.fuzzer.fuzz()
-
     def _post_fuzz(self):
         self.r = self.fuzzer.range
         if self.r:

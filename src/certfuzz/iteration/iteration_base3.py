@@ -86,9 +86,9 @@ class IterationBase3(object):
     def _pre_fuzz(self):
         pass
 
-    @abc.abstractmethod
     def _fuzz(self):
-        pass
+        with self.fuzzer:
+            self.fuzzer.fuzz()
 
     def _post_fuzz(self):
         pass

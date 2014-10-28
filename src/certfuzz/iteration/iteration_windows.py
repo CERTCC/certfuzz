@@ -125,27 +125,24 @@ class WindowsIteration(IterationBase3):
         # wipe them out, all of them
         TmpReaper().clean_tmp()
 
-    def _fuzz(self):
+    def _pre_fuzz(self):
         # generated test case (fuzzed input)
         logger.info('...fuzzing')
         fuzz_opts = self.cfg['fuzzer']
-        with self.fuzzer_cls(self.seedfile,
+        self.fuzzer = self.fuzzer_cls(self.seedfile,
                              self.working_dir,
                              self.rng_seed,
-                             self.seednum,
-                             fuzz_opts) as fuzzer:
-            fuzzer.fuzz()
-            self.r = fuzzer.range
-            if self.r:
-                logger.info('Selected r: %s', self.r)
+                             self.seednum, fuzz_opts)
+
+    def _post_fuzz(self):
+        self.r = self.fuzzer.range
+        if self.r:
+            logger.info('Selected r: %s', self.r)
 
         # decide if we can minimize this case later
         # do this here (and not sooner) because the fuzzer_cls could
         # decide at runtime whether it is or is not minimizable
-        self.pipeline_options['minimizable'] = fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
-
-        # hang on to this fuzzer instance, we use it in _run
-        self.fuzzer = fuzzer
+        self.pipeline_options['minimizable'] = self.fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
 
     def _run(self):
         # analysis is required in two cases:
