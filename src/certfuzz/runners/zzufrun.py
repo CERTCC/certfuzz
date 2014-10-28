@@ -23,6 +23,7 @@ class ZzufRunner(Runner):
         self._zzuf_log_basename = 'zzuf_log.txt'
         self._zzuf_log = os.path.join(self.workingdir, self._zzuf_log_basename)
         self._quiet = options.get('quiet', True)
+        self._zzuf_basename = 'zzuf'
 
     def _get_zzuf_args(self):
         self._zzuf_args = deque(['--signal',
@@ -36,9 +37,9 @@ class ZzufRunner(Runner):
             self._zzuf_args.appendleft('--quiet')
 
     def _find_zzuf(self):
-        self._zzuf_loc = find_executable('zzuf')
+        self._zzuf_loc = find_executable(self._zzuf_basename)
         if self._zzuf_loc is None:
-            raise RunnerNotFoundError('Unable to locate zzuf, $PATH={}'.format(os.environ['PATH']))
+            raise RunnerNotFoundError('Unable to locate {}, $PATH={}'.format(self._zzuf_basename, os.environ['PATH']))
 
     def __enter__(self):
         self = Runner.__enter__(self)

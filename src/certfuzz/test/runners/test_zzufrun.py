@@ -8,6 +8,8 @@ from certfuzz.runners.zzufrun import ZzufRunner
 import shutil
 import tempfile
 import os
+import stat
+from certfuzz.runners.errors import RunnerNotFoundError
 
 
 class Test(unittest.TestCase):
@@ -45,18 +47,39 @@ class Test(unittest.TestCase):
         with zr:
             self.assertFalse('--quiet' in zr._zzuf_args)
 
+    def test_find_zzuf(self):
+        (fd, fname) = tempfile.mkstemp(prefix='zzufrun_test_', dir=self.tmpdir)
+        os.close(fd)
+        os.remove(fname)
+        self.assertFalse(os.path.exists(fname))
 
-    def test_run(self):
-        options = {}
-        cmd_template = ''
+        for exe in ['/bin/ls', fname]:
+            zr = ZzufRunner(options={}, cmd_template=None,
+                            fuzzed_file=None, workingdir_base=self.tmpdir)
+            self.assertEqual(zr._zzuf_basename, 'zzuf')
 
-        for i in xrange(100):
-            with ZzufRunner(options, cmd_template, self.ff, self.tmpdir) as r:
-                print r.__dict__
-                r._run()
+            _basename = os.path.basename(exe)
+            zr._zzuf_basename = _basename
 
-        self.assertTrue(False)
-        pass
+            self.assertEqual(None, zr._zzuf_loc)
+            if os.path.exists(exe):
+                zr._find_zzuf()
+                self.assertEqual(exe, zr._zzuf_loc)
+            else:
+                self.assertRaises(RunnerNotFoundError, zr._find_zzuf)
+
+
+#
+#    def test_run(self):
+#        options = {}
+#        cmd_template = ''
+#
+#        for i in xrange(100):
+#            with ZzufRunner(options, cmd_template, self.ff, self.tmpdir) as r:
+#                print r.__dict__
+#                r._run()
+#        self.assertTrue(False)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
