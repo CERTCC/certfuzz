@@ -80,9 +80,9 @@ class LinuxIteration(IterationBase3):
             logger.info('Selected r: %s', self.r)
 
         fuzzed_file_full_path = self.fuzzer.output_file_path
-    # decide if we can minimize this case later
-    # do this here (and not sooner) because the fuzzer could
-    # decide at runtime whether it is or is not minimizable
+        # decide if we can minimize this case later
+        # do this here (and not sooner) because the fuzzer could
+        # decide at runtime whether it is or is not minimizable
         self.minimizable = self.fuzzer.is_minimizable and self.config['runoptions']['minimize']
 
     def _pre_run(self):
