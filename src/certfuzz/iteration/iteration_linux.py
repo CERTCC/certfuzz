@@ -73,7 +73,6 @@ class LinuxIteration(IterationBase3):
     def _fuzz(self):
         with self.fuzzer:
             self.fuzzer.fuzz()
-            self.fuzzed = True
 
     def _post_fuzz(self):
         self.r = self.fuzzer.range

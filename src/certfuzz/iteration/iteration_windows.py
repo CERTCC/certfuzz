@@ -46,7 +46,6 @@ class WindowsIteration(IterationBase3):
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
-        self.fuzzed = False
 
         self.cmd_template = string.Template(cmd_template)
 
@@ -136,7 +135,6 @@ class WindowsIteration(IterationBase3):
                              self.seednum,
                              fuzz_opts) as fuzzer:
             fuzzer.fuzz()
-            self.fuzzed = True
             self.r = fuzzer.range
             if self.r:
                 logger.info('Selected r: %s', self.r)
