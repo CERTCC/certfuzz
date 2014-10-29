@@ -82,9 +82,9 @@ class LinuxIteration(IterationBase3):
         self.minimizable = self.fuzzer.is_minimizable and self.config['runoptions']['minimize']
 
     def _pre_run(self):
-        options = {}
+        options = self.options
         cmd_template = ''
-        fuzzed_file = ''
+        fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
         self.runner = ZzufRunner(options, cmd_template, fuzzed_file, workingdir_base)
 
