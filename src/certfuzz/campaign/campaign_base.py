@@ -67,6 +67,7 @@ class CampaignBase(object):
         logger.debug('initialize %s', self.__class__.__name__)
         # Read the cfg file
         self.config_file = config_file
+        self.config = None
         self.cached_state_file = None
         self.debug = debug
         self._version = __version__
@@ -95,6 +96,12 @@ class CampaignBase(object):
         self.sf_set_out = None
         if result_dir:
             self.outdir_base = os.path.abspath(result_dir)
+
+        self._read_config_file(self.config_file)
+
+    @abc.abstractmethod
+    def _read_config_file(self):
+        logger.info('Reading config from %s', self.config_file)
 
     def _common_init(self):
         '''

@@ -56,12 +56,11 @@ class LinuxCampaign(CampaignBase):
     '''
     Extends CampaignBase to add linux-specific features.
     '''
+
     def __init__(self, config_file=None, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
-        # read configs
-        logger.info('Reading config from %s', self.config_file)
-        self.config = cfg_helper.read_config_options(self.config_file)
+        self._read_config_file()
 
         # pull stuff out of configs
         self.campaign_id = self.config.campaign_id
@@ -83,6 +82,10 @@ class LinuxCampaign(CampaignBase):
         verify_supported_platform()
         # give up if prog is a script
         self._check_for_script()
+
+    def _read_config_file(self):
+        CampaignBase._read_config_file(self)
+        self.config = cfg_helper.read_config_options(self.config_file)
 
     def _pre_enter(self):
         self._start_process_killer()

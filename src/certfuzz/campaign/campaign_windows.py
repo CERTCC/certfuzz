@@ -30,11 +30,7 @@ class WindowsCampaign(CampaignBase):
 
         self.gui_app = False
 
-        #read configs
-        logger.info('Reading config from %s', self.config_file)
-        cfgobj = Config(self.config_file)
-        self.config = cfgobj.config
-        self.configdate = cfgobj.configdate
+        self._read_config_file()
 
         # pull stuff out of configs
         self.campaign_id = self.config['campaign']['id']
@@ -68,6 +64,15 @@ class WindowsCampaign(CampaignBase):
 
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
+
+    def _read_config_file(self):
+        CampaignBase._read_config_file(self)
+
+        #read configs
+        cfgobj = Config(self.config_file)
+        self.config = cfgobj.config
+        self.configdate = cfgobj.configdate
+
 
     def __getstate__(self):
         state = self.__dict__.copy()
