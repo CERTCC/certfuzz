@@ -4,7 +4,7 @@ Created on Apr 2, 2012
 @organization: cert.org
 '''
 import unittest
-from certfuzz.campaign.config.config_windows import Config
+from certfuzz.campaign.config.config_windows import WindowsConfig
 import os
 import yaml
 import tempfile
@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
         with open(f, 'w') as fd:
             yaml.dump(self.cfg_in, fd)
 
-        return Config(f)
+        return WindowsConfig(f)
 
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         with open(f, 'w') as fd:
             yaml.dump(self.cfg_in, fd)
 
-        self.assertRaises(KeyError, Config, f)
+        self.assertRaises(KeyError, WindowsConfig, f)
 
     def test_minimal_config(self):
         try:

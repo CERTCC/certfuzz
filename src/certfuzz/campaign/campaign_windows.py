@@ -14,7 +14,7 @@ from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 from certfuzz.runners.killableprocess import Popen
-from certfuzz.campaign.config.config_windows import Config
+from certfuzz.campaign.config.config_windows import WindowsConfig
 from certfuzz.iteration.iteration_windows import WindowsIteration
 
 
@@ -67,7 +67,7 @@ class WindowsCampaign(CampaignBase):
         CampaignBase._read_config_file(self)
 
         #read configs
-        cfgobj = Config(self.config_file)
+        cfgobj = WindowsConfig(self.config_file)
         self.config = cfgobj.config
         self.configdate = cfgobj.configdate
 

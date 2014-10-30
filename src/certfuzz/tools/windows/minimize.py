@@ -14,7 +14,7 @@ try:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.campaign.config.config_windows import Config, get_command_args_list
+    from certfuzz.campaign.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 except ImportError:
@@ -27,7 +27,7 @@ except ImportError:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.campaign.config.config_windows import Config, get_command_args_list
+    from certfuzz.campaign.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 
@@ -102,7 +102,7 @@ def main():
         cfg_file = options.config
     else:
         cfg_file = "../conf.d/bff.cfg"
-    logger.debug('Config file: %s', cfg_file)
+    logger.debug('WindowsConfig file: %s', cfg_file)
 
     if options.stringmode and options.target:
         parser.error('Options --stringmode and --target are mutually exclusive.')
@@ -143,7 +143,7 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    config = Config(cfg_file).config
+    config = WindowsConfig(cfg_file).config
     cfg = _create_minimizer_cfg(config)
 
     if options.target:

@@ -12,7 +12,7 @@ from subprocess import Popen
 from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
 from certfuzz import debuggers
 from certfuzz.file_handlers.basicfile import BasicFile
-from certfuzz.campaign.config.config_windows import Config, get_command_args_list
+from certfuzz.campaign.config.config_windows import WindowsConfig, get_command_args_list
 from certfuzz.debuggers import msec  # @UnusedImport
 
 
@@ -74,7 +74,7 @@ def main():
         logger.setLevel(logging.INFO)
 
     cfg_file = options.config
-    logger.debug('Config file: %s', cfg_file)
+    logger.debug('WindowsConfig file: %s', cfg_file)
 
     if len(args) and os.path.exists(args[0]):
         fullpath_fuzzed_file = os.path.abspath(args[0])
@@ -83,7 +83,7 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    config = Config(cfg_file).config
+    config = WindowsConfig(cfg_file).config
 
     iterationpath = ''
     template = string.Template(config['target']['cmdline_template'])

@@ -30,7 +30,7 @@ def get_command_args_list(cmd_template, infile, posix=True):
     return cmd, cmdlist
 
 
-class Config(ConfigBase):
+class WindowsConfig(ConfigBase):
     def _add_validations(self):
         self.validations.append(self._validate_debugger_timeout_exceeds_runner)
         self.validations.append(self._validate_new_options)
