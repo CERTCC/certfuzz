@@ -30,8 +30,6 @@ class WindowsCampaign(CampaignBase):
 
         self.gui_app = False
 
-        self._read_config_file()
-
         # pull stuff out of configs
         self.campaign_id = self.config['campaign']['id']
 

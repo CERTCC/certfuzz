@@ -60,8 +60,6 @@ class LinuxCampaign(CampaignBase):
     def __init__(self, config_file=None, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
-        self._read_config_file()
-
         # pull stuff out of configs
         self.campaign_id = self.config.campaign_id
         self.current_seed = self.config.start_seed
