@@ -25,7 +25,7 @@ def main():
     import optparse
     try:
         from certfuzz.fuzztools.filetools import delete_contents_of
-        from certfuzz.campaign.config import Config
+        from certfuzz.campaign.config.config_base import ConfigBase
     except ImportError:
         # if we got here, we probably don't have .. in our PYTHONPATH
         import sys
@@ -33,7 +33,7 @@ def main():
         parentdir = os.path.abspath(os.path.join(mydir, '..'))
         sys.path.append(parentdir)
         from certfuzz.fuzztools.filetools import delete_contents_of
-        from certfuzz.campaign.config import Config
+        from certfuzz.campaign.config.config_base import ConfigBase
         if not os.path.exists(defaults['config']):
             defaults['config'] = '../configs/bff.yaml'
 
@@ -46,7 +46,7 @@ def main():
     parser.add_option('', '--debug', dest='debug', action='store_true', default=defaults['debug'])
     options, _args = parser.parse_args()
 
-    cfgobj = Config(options.configfile)
+    cfgobj = ConfigBase(options.configfile)
     c = cfgobj.config
 
     if options.debug:

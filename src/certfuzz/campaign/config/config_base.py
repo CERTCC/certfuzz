@@ -17,7 +17,7 @@ def parse_yaml(yaml_file):
     return yaml.load(open(yaml_file, 'r'))
 
 
-class Config(object):
+class ConfigBase(object):
     '''
     If you are inheriting this class, add validation methods to self.validations
     to have them run automatically at initialization.
@@ -48,7 +48,7 @@ class Config(object):
 
     def _verify_load(self):
         if self.config is None:
-            raise ConfigError('Config load failed for {}'.format(self.file))
+            raise ConfigError('ConfigBase load failed for {}'.format(self.file))
 
     def validate(self):
         for validation in self.validations:

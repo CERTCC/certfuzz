@@ -11,7 +11,6 @@ import sys
 import time
 
 from certfuzz.campaign.campaign_base import CampaignBase
-from certfuzz.campaign.config import bff_config as cfg_helper
 from certfuzz.campaign.errors import CampaignScriptError
 from certfuzz.debuggers import crashwrangler  #@UnusedImport
 from certfuzz.debuggers import gdb  #@UnusedImport
@@ -23,6 +22,7 @@ from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.iteration_linux import LinuxIteration
+from certfuzz.campaign.config.bff_config import read_config_options
 
 
 logger = logging.getLogger(__name__)
@@ -83,7 +83,7 @@ class LinuxCampaign(CampaignBase):
 
     def _read_config_file(self):
         CampaignBase._read_config_file(self)
-        self.config = cfg_helper.read_config_options(self.config_file)
+        self.config = read_config_options(self.config_file)
 
     def _pre_enter(self):
         self._start_process_killer()

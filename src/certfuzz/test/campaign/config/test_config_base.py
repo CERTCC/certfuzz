@@ -47,13 +47,13 @@ class Test(unittest.TestCase):
 
     def test_config_init(self):
         thing, f = self._write_yaml()
-        c = config.Config(f)
+        c = config.ConfigBase(f)
         self.assertEqual(f, c.file)
         self.assertEqual(thing, c.config)
 
     def test_validate(self):
         dummy, f = self._write_yaml()
-        c = config.Config(f)
+        c = config.ConfigBase(f)
         # add some validations
         c.validations.append(_counter)
         c.validations.append(_counter)
@@ -67,13 +67,13 @@ class Test(unittest.TestCase):
     def test_init_fails_if_load_fails(self):
         dummy, f = self._write_yaml()
         os.remove(f)
-        self.assertRaises(ConfigError, config.Config, f)
+        self.assertRaises(ConfigError, config.ConfigBase, f)
 
     def test_verify_load(self):
         # write another yaml file
         _thing, f = self._write_yaml()
         # sub the new file name
-        c = config.Config(f)
+        c = config.ConfigBase(f)
         c.config = None
         self.assertRaises(ConfigError, c._verify_load)
 
@@ -81,7 +81,7 @@ class Test(unittest.TestCase):
         # write another yaml file
         thing, f = self._write_yaml()
         # sub the new file name
-        c = config.Config(f)
+        c = config.ConfigBase(f)
         # we should get the thing back again
         self.assertEqual(thing, c.config)
 
