@@ -67,9 +67,9 @@ class WindowsCampaign(CampaignBase):
         CampaignBase._read_config_file(self)
 
         #read configs
-        cfgobj = WindowsConfig(self.config_file)
-        self.config = cfgobj.config
-        self.configdate = cfgobj.configdate
+        with WindowsConfig(self.config_file) as cfgobj:
+            self.config = cfgobj.config
+            self.configdate = cfgobj.configdate
 
 
     def __getstate__(self):

@@ -26,14 +26,18 @@ class ConfigBase(object):
         self.file = config_file
         self.config = None
         self.configdate = None
+        self.validations = []
 
+    def __enter__(self):
         self.load()
         self._verify_load()
         self._set_derived_options()
-
-        self.validations = []
         self._add_validations()
         self.validate()
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        pass
 
     def load(self):
         logger.debug('loading config from %s', self.file)
