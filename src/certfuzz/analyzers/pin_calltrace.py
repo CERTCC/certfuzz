@@ -23,7 +23,7 @@ class Pin_calltrace(Analyzer):
         outfile = get_file(crash.fuzzedfile.path)
         timeout = cfg.valgrindtimeout * 10
 
-        super(Pin_calltrace, self).__init__(cfg, crash, outfile, timeout)
+        Analyzer.__init__(self, cfg, crash, outfile, timeout)
         self.empty_output_ok = True
         self.missing_output_ok = True
 
