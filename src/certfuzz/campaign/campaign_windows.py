@@ -222,7 +222,7 @@ class WindowsCampaign(CampaignBase):
                      self.working_dir, self.outdir, self.debug, self.seedfile_set,
                      sf.rangefinder) as iteration:
             try:
-                iteration.go()
+                iteration()
             except FuzzerExhaustedError:
                 # Some fuzzers run out of things to do. They should
                 # raise a FuzzerExhaustedError when that happens.

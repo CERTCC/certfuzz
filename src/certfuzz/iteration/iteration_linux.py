@@ -54,7 +54,7 @@ class LinuxIteration(IterationBase3):
     def __enter__(self):
         IterationBase3.__enter__(self)
         check_ppid()
-        return self
+        return self.go
 
     def __exit__(self, etype, value, traceback):
         handled = IterationBase3.__exit__(self, etype, value, traceback)

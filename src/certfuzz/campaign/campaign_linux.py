@@ -220,4 +220,4 @@ class LinuxCampaign(CampaignBase):
             sf_set=self.seedfile_set,
             rf=seedfile.rangefinder,
             outdir=self.outdir) as iteration:
-            iteration.go()
+            iteration()

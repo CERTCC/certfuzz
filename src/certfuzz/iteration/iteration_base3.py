@@ -63,7 +63,7 @@ class IterationBase3(object):
                                             dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
 #        self._setup_analysis_pipeline()
-        return self
+        return self.go
 
     def __exit__(self, etype, value, traceback):
         handled = False
