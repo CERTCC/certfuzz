@@ -135,13 +135,12 @@ class IterationBase3(object):
 
     def process_testcases(self):
         # hand it off to our pipeline class
-        pipeline = self.tcpipeline_cls(testcases=self.testcases,
+        with self.tcpipeline_cls(testcases=self.testcases,
                                        uniq_func=self.uniq_func,
                                        cfg=self.cfg,
                                        options=self.pipeline_options,
                                        outdir=self.outdir,
-                                       workdirbase=self.working_dir)
-        with pipeline:
+                                       workdirbase=self.working_dir) as pipeline:
             pipeline()
 
     def go(self):
