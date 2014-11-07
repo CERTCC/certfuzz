@@ -24,6 +24,7 @@ class TestCasePipelineBase(object):
     Implements a pipeline for filtering and processing a testcase
     '''
     __metaclass__ = abc.ABCMeta
+    pipes = ['verify', 'minimize', 'analyze', 'report']
 
     def __init__(self, testcases=None, uniq_func=None, cfg=None, options=None,
                  outdir=None, workdirbase=None):
@@ -63,11 +64,21 @@ class TestCasePipelineBase(object):
     def _setup_analysis_pipeline(self):
         # build up the pipeline:
         # verify | minimize | analyze | report
-        r = self.report()
-        a = self.analyze(r)
-        m = self.minimize(a)
 
-        self.analysis_pipeline = self.verify(m)
+        logger.debug('Construct analysis pipeline')
+        setup_order = list(self.pipes).reverse()
+
+        pipeline = self.analysis_pipeline
+
+        for pipe_name in setup_order:
+            pipe_method = getattr(self, pipe_name)
+            logger.debug('Add {}() to pipeline'.format(pipe_name))
+            if pipeline is None:
+                # we haven't initialized it yet
+                pipeline = pipe_method()
+            else:
+                # prepend pipe_method upstream of pipeline
+                pipeline = pipe_method(target=pipeline)
 
     @coroutine
     def verify(self, *targets):
