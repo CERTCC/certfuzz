@@ -22,7 +22,7 @@ from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.iteration_linux import LinuxIteration
-from certfuzz.campaign.config.bff_config import read_config_options
+from certfuzz.campaign.config.config_linux import LinuxConfig
 
 
 logger = logging.getLogger(__name__)
@@ -83,7 +83,11 @@ class LinuxCampaign(CampaignBase):
 
     def _read_config_file(self):
         CampaignBase._read_config_file(self)
-        self.config = read_config_options(self.config_file)
+
+        with LinuxConfig(self.config_file) as cfgobj:
+            self.config = cfgobj.config
+            self.configdate = cfgobj.configdate
+
 
     def _pre_enter(self):
         self._start_process_killer()
