@@ -142,7 +142,7 @@ class IterationBase3(object):
                                        outdir=self.outdir,
                                        workdirbase=self.working_dir)
         with pipeline:
-            pipeline.go()
+            pipeline()
 
     def go(self):
         logger.debug('go')

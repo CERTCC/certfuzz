@@ -51,7 +51,7 @@ class TestCasePipelineBase(object):
 
     def __enter__(self):
         self._setup_analysis_pipeline()
-        return self
+        return self.go
 
     def __exit__(self, etype, value, traceback):
         pass
