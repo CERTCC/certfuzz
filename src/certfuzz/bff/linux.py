@@ -20,4 +20,4 @@ def main():
     cfg = os.path.abspath(os.path.join(os.getcwd(), 'conf.d', 'bff.cfg'))
 
     with BFF(config_path=cfg, campaign_class=LinuxCampaign) as bff:
-        bff.go()
+        bff()

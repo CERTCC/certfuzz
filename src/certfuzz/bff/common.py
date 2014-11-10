@@ -59,8 +59,8 @@ class BFF(object):
         if self.args.debug:
             setup_debugging()
 
-        return self
-
+        return self.go
+    
     def __exit__(self, etype, value, traceback):
         pass
 

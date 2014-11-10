@@ -19,4 +19,4 @@ def main():
     cfg = os.path.abspath(os.path.join(os.getcwd(), 'configs', 'bff.yaml'))
 
     with BFF(config_path=cfg, campaign_class=WindowsCampaign) as bff:
-        bff.go()
+        bff()
