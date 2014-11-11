@@ -5,17 +5,17 @@ Provides basic file system tools for creating directories, copying files, writin
 
 @organization: cert.org
 '''
-import os
+import StringIO
 import errno
-import time
-import shutil
+import fnmatch
 import hashlib
 import logging
-import tempfile
-import fnmatch
+import os
+import shutil
 import stat
+import tempfile
+import time
 import zipfile
-import StringIO
 
 
 MAXDEPTH = 5
