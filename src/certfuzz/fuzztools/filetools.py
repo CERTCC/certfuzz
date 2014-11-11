@@ -214,8 +214,7 @@ def copy_file2(src=None, targets=[]):
 
 
 def mkdtemp(base_dir=None):
-    path = tempfile.mkdtemp(prefix='BFF-', dir=base_dir)
-    return path
+    return tempfile.mkdtemp(prefix='BFF-', dir=base_dir)
 
 
 def write_oneline_to_file(line, dst, mode):
