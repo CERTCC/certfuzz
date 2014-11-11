@@ -33,7 +33,7 @@ class WatchDog:
 
     def __enter__(self):
         self._set_cmdline()
-        return self
+        return self.go
 
     def __exit__(self, etype, value, traceback):
         handled = False

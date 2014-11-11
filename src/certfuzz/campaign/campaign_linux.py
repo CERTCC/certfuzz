@@ -140,7 +140,7 @@ class LinuxCampaign(CampaignBase):
 
         # set up the watchdog timeout within the VM and restart the daemon
         with WatchDog(self.config.watchdogfile, self.config.watchdogtimeout) as watchdog:
-            watchdog.go()
+            watchdog()
 
     def _check_for_script(self):
         logger.debug('check for script')
