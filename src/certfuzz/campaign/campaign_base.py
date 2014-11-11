@@ -97,7 +97,7 @@ class CampaignBase(object):
         if result_dir:
             self.outdir_base = os.path.abspath(result_dir)
 
-        self._read_config_file(self.config_file)
+        self._read_config_file()
 
     @abc.abstractmethod
     def _read_config_file(self):
