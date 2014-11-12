@@ -7,18 +7,20 @@ import logging
 import os
 import sys
 
+from certfuzz import debuggers
+from certfuzz.campaign.config.config_linux import LinuxConfig
+from certfuzz.crash.bff_crash import BffCrash
+from certfuzz.debuggers import crashwrangler  # @UnusedImport
+from certfuzz.debuggers import gdb  # @UnusedImport
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.fuzztools import filetools, text
+from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
+
+
 mydir = os.path.dirname(os.path.abspath(__file__))
 parentdir = os.path.abspath(os.path.join(mydir, '..'))
 sys.path.append(parentdir)
 
-from certfuzz import debuggers
-from certfuzz.fuzztools import filetools, text
-from certfuzz.file_handlers.basicfile import BasicFile
-from certfuzz.campaign.config.bff_config import read_config_options
-from certfuzz.crash.bff_crash import BffCrash
-from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
-from certfuzz.debuggers import gdb  # @UnusedImport
-from certfuzz.debuggers import crashwrangler  # @UnusedImport
 
 logger = logging.getLogger()
 
@@ -123,7 +125,9 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    cfg = read_config_options(cfg_file)
+    cfg = LinuxConfig(cfg_file)
+    with cfg:
+        pass
 
     if options.target:
         seedfile = BasicFile(options.target)
@@ -160,11 +164,11 @@ def main():
                 logger.debug('x character substitution')
                 length = len(minimize.fuzzed_content)
                 if options.prefer_x_target:
-                    #We minimized to 'x', so we attempt to get metasploit as a freebie
+                    # We minimized to 'x', so we attempt to get metasploit as a freebie
                     targetstring = list(text.metasploit_pattern_orig(length))
                     filename_modifier = '-mtsp'
                 else:
-                    #We minimized to metasploit, so we attempt to get 'x' as a freebie
+                    # We minimized to metasploit, so we attempt to get 'x' as a freebie
                     targetstring = list('x' * length)
                     filename_modifier = '-x'
 

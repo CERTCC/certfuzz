@@ -6,15 +6,12 @@
 ################################################################
 # FUZZ CAMPAIGN SETTINGS
 ################################################################
-[campaign]
-# A string that uniquely identifies this campaign
-id=Default BFF Campaign
-
+campaign:
+    id: convert v5.2.0
 
 ################################################################
 # TARGET APPLICATION INVOCATION OPTIONS:
 ################################################################
-[target]
 #
 # Command-line arguments will be split using python shlex.split() so
 # be sure to add quotes where needed
@@ -22,8 +19,6 @@ id=Default BFF Campaign
 # seed file name.
 # Use quotes if the target application has spaces in the path
 # examples:
-cmdline=~/convert $SEEDFILE /dev/null
-
 # Name of process to monitor for hangs. This is done by greping the 
 # process list, so choose carefully! Usually the same name as "program" 
 # will suffice, but in cases where the program is started from a script 
@@ -31,42 +26,42 @@ cmdline=~/convert $SEEDFILE /dev/null
 # This process name is also used to kill the target process when BFF 
 # launches the target application from an analyzer, such as gdb or valgrind
 # Use quotes if the target application has spaces in its name
-killprocname=convert
-
+target:
+    cmdline: ~/convert $SEEDFILE /dev/null
+    killprocname: convert
 
 ################################################################
 # LOCATIONS FOR FUZZ RUN FILES:
 # Output files are placed in [outputdir]/[seedfile]
 ################################################################
-[directories]
 # Location of the fuzzing scripts
 # (VMware shared directory if using UbuFuzz VM)
-remote_dir=~/bff
 
 # The location of the seed files
-seedfile_origin_dir=%(remote_dir)s/seedfiles/examples
 
 # location of debugger templates
-debugger_template_dir=%(remote_dir)s/certfuzz/debuggers/templates
 
 # location of results:
 # If results are stored in a shared location, 
 # this directory needs to be unique for each fuzzing machine
-output_dir=~/results
 
 # dirs local to the fuzzing machine
 # Local directory for fuzzing run mutated files.
-local_dir=~/fuzzing
 
 # Location of file used checked by Linux watchdog to determine
 # if fuzzer is still running
-watchdog_file=/tmp/bff_watchdog
 
+directories:
+    remote_dir: ~/bff &remote_dir
+    seedfile_origin_dir: ~/bff/seedfiles/examples
+    debugger_template_dir: ~/bff/certfuzz/debuggers/templates
+    output_dir: ~/results
+    local_dir: ~/fuzzing
+    watchdog_file: /tmp/bff_watchdog
 
 ################################################################
 # ZZUF FUZZER PARAMETERS
 ################################################################
-[zzuf]
 # Use zzuf's "copy" mode, which creates a temporary fuzzed file
 # Default is 1, where zzuf will determine the file to fuzz, mangle it as
 # a randomly-named file in $TMPDIR and then open that with the target app.
@@ -76,50 +71,44 @@ watchdog_file=/tmp/bff_watchdog
 # than creating a temporary file. Note that this mode can interfere with
 # some target applications.
 # OSX Cocoa applications require copymode=1
-copymode=1
 
 # The zzuf seed number to start with
-start_seed=0
 
 # How many iterations you want zzuf to try per seedfile/range selection
 # If you have a large number of seed files and/or the target application
 # is slow, you may wish to make this value smaller to get better coverage
 # in a reasonable amount of time.
-seed_interval=20
 
+zzuf:
+    copymode: 1
+    start_seed: 0
+    seed_interval: 20
 
 ################################################################
 # VERIFIER PARAMETERS
 ################################################################
-[verifier]
 #
 # number of backtrace levels to hash for uniqueness.
 # Increase this number for more crash uniqueness granularity.
 # Decrease this number if you think that you are getting too many
 # duplicate crashes.
-backtracelevels=5
 
 # Include backtrace frames that aren't part of a loaded library?
 # Set this value to False if you wish to consider unmapped stack
 # frames in the crash hashes. This can be useful for target application
 # that perform JIT compilation
-exclude_unmapped_frames=True
 
 # Save cases that cause failed ASSERTs?  If set to 1, then __assert_fail termination, 
 # e.g. via assert(), it will be considered a crash.
-savefailedasserts=False
 
 # Use valgrind (and callgrind)
 # Note that valgrind can be slow. Disabling this option can improve throughput
-use_valgrind=True
 
 # Use PIN to get call traces for every crash, as opposed to just those
 # that result in total stack corruption.
 # PIN is even slower than valgrind
-use_pin_calltrace=False
 
 # Obtain minimally-different testcase for each unique crash
-minimizecrashers=True
 
 # Minimize to a metasploit string
 # Note: this is in addition to minimize to seedfile if minimize_crashers=True
@@ -127,13 +116,21 @@ minimizecrashers=True
 # for all subsequent analyses (i.e., valgrind, callgrind, etc.)
 # Disabled by default due to amount of time that the minimization takes.
 # Stand-alone string minimization can be done using tools/minimize.py.
-minimize_to_string = False
 
 # Recycle crashing testcases as seed files for further fuzzing.
 # This can improve the number of unique crash hashes found, however this may
 # just demonstrate weaknesses in backtrace-based uniqueness determination
 # rather than finding new underlying vulnerabilities.
-recycle_crashers = False
+
+verifier:
+    backtracelevels: 5
+    exclude_unmapped_frames: True
+    savefailedasserts: False
+    use_valgrind: True
+    use_pin_calltrace: False
+    minimizecrashers: True
+    minimize_to_string: False
+    recycle_crashers: False
 
 # Save crashes even when they are unique?  If set to True, all
 # crashing inputs are saved, even when their backtraces are not
@@ -143,33 +140,34 @@ keep_duplicates = False
 ################################################################
 # APPLICATION TIMEOUTS
 ################################################################
-[timeouts]
 #
 # maximum program execution time (seconds) that BFF will allow:
-progtimeout=5
 
 # maximum time (seconds) that process specified by "killprocname" option 
 # can run before it's killed via killproc.sh, 
 # which is used to kill stray processes.  Normally, zzuf will kill
 # the target process if the above timeout is reached.
-killproctimeout=130
 
 # maximum time (seconds) to let the program run to capture debugger and
 # CERT Triage Tools exploitable output.
-debugger_timeout=60
 
 # maximum time (seconds) to let the program run to capture valgrind output:
-valgrindtimeout=120
 
 # Set value for the Linux watchdog timer. If watchdog_file is not touched 
 # for a period longer than this value (seconds), then the vm is rebooted 
 # by the watchdog.
 # Set to 0 to disable watchdog functionality.
-watchdogtimeout=3600
 
 # Minimization can sometimes take a long time, and time spent minimizing
 # is time not spent fuzzing. If a minimization run exceeds this time
 # (in seconds) the minimization will terminate (keeping whatever progress
 # it has made at that point) and return to fuzzing.
-minimizertimeout=3600
+
+timeouts:
+    progtimeout: 5
+    killproctimeout: 130
+    debugger_timeout: 60
+    valgrindtimeout: 120
+    watchdogtimeout: 3600
+    minimizertimeout: 3600
 

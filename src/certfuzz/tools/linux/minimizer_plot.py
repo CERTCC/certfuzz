@@ -4,17 +4,18 @@ Created on Jan 13, 2011
 @organization: cert.org
 '''
 
-from optparse import OptionParser
 import logging
-import sys
+from optparse import OptionParser
 import os
 import re
+import sys
+
+from certfuzz.campaign.config.config_linux import LinuxConfig
 import matplotlib.pyplot as plt
+
 
 parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, parent_path)
-
-from certfuzz.campaign.config.bff_config import read_config_options
 
 logger = logging.getLogger(__name__)
 # set default logging level (override with command line options)
@@ -147,7 +148,10 @@ def main():
         result_dir = options.dir
     else:
         logger.info('Using config file: %s', cfg_file)
-        cfg = read_config_options(cfg_file)
+        cfg = LinuxConfig(cfg_file)
+        with cfg:
+            pass
+
         result_dir = cfg.crashers_dir
         logger.info('Reading results from %s', result_dir)
 

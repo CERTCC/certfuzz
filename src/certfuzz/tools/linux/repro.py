@@ -7,12 +7,12 @@ import logging
 import os
 import re
 from subprocess import Popen
+from certfuzz.campaign.config.config_linux import LinuxConfig
 
 try:
     from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.campaign.config.bff_config import ConfigHelper, read_config_options
     from certfuzz.debuggers import gdb, crashwrangler  # @UnusedImport
 except ImportError:
     # if we got here, we probably don't have .. in our PYTHONPATH
@@ -23,7 +23,6 @@ except ImportError:
     from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
     from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.campaign.config.bff_config import ConfigHelper, read_config_options
     from certfuzz.debuggers import gdb, crashwrangler  # @UnusedImport
 
 logger = logging.getLogger()
@@ -104,7 +103,9 @@ def main():
                       os.path.join(iterationdir, iterationfile))
             fullpath_fuzzed_file = iterationpath
 
-    config = read_config_options(cfg_file)
+    config = LinuxConfig(cfg_file)
+    with config:
+        pass
 
     cmd_as_args = config.get_command_list(fullpath_fuzzed_file)
     program = cmd_as_args[0]

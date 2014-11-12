@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    cfg = os.path.abspath(os.path.join(os.getcwd(), 'conf.d', 'bff.cfg'))
+    cfg = os.path.abspath(os.path.join(os.getcwd(), 'conf.d', 'bff.yaml'))
 
     with BFF(config_path=cfg, campaign_class=LinuxCampaign) as bff:
         bff()
