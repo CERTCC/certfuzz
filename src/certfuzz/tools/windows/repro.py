@@ -5,15 +5,15 @@ Created on Feb 4, 2013
 '''
 import logging
 import os
-import string
 import re
+import string
 from subprocess import Popen
 
-from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
 from certfuzz import debuggers
-from certfuzz.file_handlers.basicfile import BasicFile
-from certfuzz.campaign.config.config_windows import WindowsConfig, get_command_args_list
+from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
 from certfuzz.debuggers import msec  # @UnusedImport
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
 
 
 logger = logging.getLogger()

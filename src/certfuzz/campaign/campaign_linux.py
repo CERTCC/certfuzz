@@ -12,17 +12,17 @@ import time
 
 from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.campaign.errors import CampaignScriptError
-from certfuzz.debuggers import crashwrangler  #@UnusedImport
-from certfuzz.debuggers import gdb  #@UnusedImport
+from certfuzz.config.config_linux import LinuxConfig
+from certfuzz.debuggers import crashwrangler  # @UnusedImport
+from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.debuggers.registration import verify_supported_platform
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
+from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools import subprocess_helper as subp
+from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.watchdog import WatchDog
-from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
-from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.iteration.iteration_linux import LinuxIteration
-from certfuzz.campaign.config.config_linux import LinuxConfig
 
 
 logger = logging.getLogger(__name__)

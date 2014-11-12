@@ -7,7 +7,7 @@ import logging
 import os
 import re
 from subprocess import Popen
-from certfuzz.campaign.config.config_linux import LinuxConfig
+from certfuzz.config.config_linux import LinuxConfig
 
 try:
     from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file

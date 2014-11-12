@@ -10,7 +10,7 @@ import os
 import re
 import sys
 
-from certfuzz.campaign.config.config_linux import LinuxConfig
+from certfuzz.config.config_linux import LinuxConfig
 import matplotlib.pyplot as plt
 
 

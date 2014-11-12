@@ -4,14 +4,17 @@ Created on Apr 10, 2012
 @organization: cert.org
 '''
 
-import unittest
-import tempfile
-import shutil
-import yaml
 import os
-from certfuzz.campaign import config
 import pprint
-from certfuzz.campaign.config.errors import ConfigError
+import shutil
+import tempfile
+import unittest
+
+import yaml
+
+from certfuzz import config
+from certfuzz.config.errors import ConfigError
+
 
 _count = 0
 def _counter():
@@ -92,5 +95,5 @@ class Test(unittest.TestCase):
             self.assertEqual(c.__getattribute__(k), v)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

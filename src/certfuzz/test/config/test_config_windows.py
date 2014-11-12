@@ -3,14 +3,17 @@ Created on Apr 2, 2012
 
 @organization: cert.org
 '''
-import unittest
-from certfuzz.campaign.config.config_windows import WindowsConfig
-import os
-import yaml
-import tempfile
-import shutil
-from certfuzz.campaign.config.errors import ConfigError
 import logging
+import os
+import shutil
+import tempfile
+import unittest
+
+import yaml
+
+from certfuzz.config.config_windows import WindowsConfig
+from certfuzz.config.errors import ConfigError
+
 
 logger = logging.getLogger()
 hdlr = logging.FileHandler(os.devnull)
@@ -89,5 +92,5 @@ class Test(unittest.TestCase):
         self.assertEqual(10, self.counter)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

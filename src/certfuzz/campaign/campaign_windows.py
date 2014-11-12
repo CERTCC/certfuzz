@@ -11,11 +11,11 @@ import sys
 from threading import Timer
 
 from certfuzz.campaign.campaign_base import CampaignBase
+from certfuzz.config.config_windows import WindowsConfig
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
-from certfuzz.runners.killableprocess import Popen
-from certfuzz.campaign.config.config_windows import WindowsConfig
 from certfuzz.iteration.iteration_windows import WindowsIteration
+from certfuzz.runners.killableprocess import Popen
 
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ class WindowsCampaign(CampaignBase):
     def _read_config_file(self):
         CampaignBase._read_config_file(self)
 
-        #read configs
+        # read configs
         with WindowsConfig(self.config_file) as cfgobj:
             self.config = cfgobj.config
             self.configdate = cfgobj.configdate

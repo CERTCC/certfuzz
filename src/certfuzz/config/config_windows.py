@@ -7,8 +7,8 @@ import logging
 import shlex
 from string import Template
 
-from certfuzz.campaign.config.config_base import ConfigBase
-from certfuzz.campaign.config.errors import ConfigError
+from certfuzz.config.config_base import ConfigBase
+from certfuzz.config.errors import ConfigError
 from certfuzz.helpers import quoted
 
 

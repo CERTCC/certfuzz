@@ -10,7 +10,7 @@ import re
 import shlex
 import shutil
 
-from certfuzz.campaign.config.config_base import ConfigBase
+from certfuzz.config.config_base import ConfigBase
 from certfuzz.fuzztools import filetools
 
 

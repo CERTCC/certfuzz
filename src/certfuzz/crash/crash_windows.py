@@ -7,7 +7,7 @@ import hashlib
 import logging
 import os
 
-from certfuzz.campaign.config.config_windows import get_command_args_list
+from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.crash.crash_base import Testcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
@@ -159,9 +159,9 @@ class WindowsCrash(Testcase):
             # add debugger results to our own attributes
             self.is_crash = self.parsed_outputs[0].is_crash
             self.dbg_type = self.parsed_outputs[0]._key
-            #self.exp = self.parsed_outputs[0].exp
+            # self.exp = self.parsed_outputs[0].exp
             self.faddr = self.parsed_outputs[0].faddr
-            #self.crash_hash = self.parsed_outputs[0].crash_hash
+            # self.crash_hash = self.parsed_outputs[0].crash_hash
 
     def get_signature(self):
         self.signature = self.crash_hash

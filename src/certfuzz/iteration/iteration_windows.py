@@ -8,7 +8,7 @@ import logging
 import os
 import string
 
-from certfuzz.campaign.config.config_windows import get_command_args_list
+from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.crash.crash_windows import WindowsCrash
 from certfuzz.debuggers.output_parsers import DebuggerFileError
 from certfuzz.file_handlers.basicfile import BasicFile
@@ -22,7 +22,7 @@ from certfuzz.runners.errors import RunnerRegistryError
 from certfuzz.testcase_pipeline.tc_pipeline_windows import WindowsTestCasePipeline
 
 
-#from certfuzz.iteration.iteration_base import IterationBase2
+# from certfuzz.iteration.iteration_base import IterationBase2
 logger = logging.getLogger(__name__)
 
 IOERROR_COUNT = 0

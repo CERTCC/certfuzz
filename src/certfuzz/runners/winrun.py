@@ -19,7 +19,7 @@ import wmi
 import time
 from certfuzz.runners.errors import RunnerArchitectureError, RunnerRegistryError
 from certfuzz.runners.errors import RunnerError
-from certfuzz.campaign.config.config_windows import get_command_args_list
+from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.fuzztools.filetools import find_or_create_dir
 
 logger = logging.getLogger(__name__)

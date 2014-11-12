@@ -7,7 +7,7 @@ import logging
 import os.path
 
 import yaml
-from certfuzz.campaign.config.errors import ConfigError
+from certfuzz.config.errors import ConfigError
 
 
 logger = logging.getLogger(__name__)

@@ -10,7 +10,7 @@ from optparse import OptionParser
 import os
 import re
 import sys
-from certfuzz.campaign.config.config_linux import LinuxConfig
+from certfuzz.config.config_linux import LinuxConfig
 
 
 parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))

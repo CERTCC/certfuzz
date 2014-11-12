@@ -6,15 +6,16 @@ Created on Apr 9, 2012
 
 import logging
 import os
-import sys
 import string
+import sys
+
 
 try:
     from certfuzz import debuggers
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.campaign.config.config_windows import WindowsConfig, get_command_args_list
+    from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 except ImportError:
@@ -27,7 +28,7 @@ except ImportError:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.campaign.config.config_windows import WindowsConfig, get_command_args_list
+    from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 

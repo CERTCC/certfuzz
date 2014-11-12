@@ -8,7 +8,7 @@ import os
 import sys
 
 from certfuzz import debuggers
-from certfuzz.campaign.config.config_linux import LinuxConfig
+from certfuzz.config.config_linux import LinuxConfig
 from certfuzz.crash.bff_crash import BffCrash
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport

@@ -11,9 +11,9 @@ import unittest
 
 import yaml
 
-from certfuzz.campaign.config.config_linux import LinuxConfig, MINIMIZED_EXT
-import certfuzz.campaign.config.config_linux as cl
-from certfuzz.campaign.config.errors import ConfigError
+from certfuzz.config.config_linux import LinuxConfig, MINIMIZED_EXT
+import certfuzz.config.config_linux as cl
+from certfuzz.config.errors import ConfigError
 
 
 CFG = '''

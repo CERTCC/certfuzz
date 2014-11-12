@@ -8,12 +8,12 @@ import os
 import shutil
 
 from certfuzz import debuggers
-from certfuzz.campaign.config.config_windows import get_command_args_list
+from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.fuzztools import filetools
 from certfuzz.iteration.errors import IterationError
 from certfuzz.minimizer import WindowsMinimizer as Minimizer
-from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.testcase_pipeline.errors import TestCasePipelineError
+from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 
 
 logger = logging.getLogger(__name__)
