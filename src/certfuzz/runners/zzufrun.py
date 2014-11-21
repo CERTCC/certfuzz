@@ -22,7 +22,7 @@ class ZzufRunner(Runner):
         self._zzuf_args = None
         self._zzuf_log_basename = 'zzuf_log.txt'
         self._zzuf_log = os.path.join(self.workingdir, self._zzuf_log_basename)
-        self._quiet = options.get('quiet', True)
+        self._quiet = options.get('hideoutput', True)
         self._zzuf_basename = 'zzuf'
 
     def _get_zzuf_args(self):
