@@ -15,6 +15,7 @@ from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 from certfuzz.runners.zzufrun import ZzufRunner
 from certfuzz.fuzzers.zzuf import ZzufFuzzer
+from certfuzz.fuzzers.bytemut import ByteMutFuzzer
 
 
 logger = logging.getLogger(__name__)
@@ -58,7 +59,7 @@ class LinuxIteration(IterationBase3):
 
     def _pre_fuzz(self):
         fuzz_opts = self.cfg.config['fuzzer']
-        self.fuzzer = ZzufFuzzer(self.seedfile,
+        self.fuzzer = ByteMutFuzzer(self.seedfile,
                                  self.working_dir,
                                  self.seednum,
                                  fuzz_opts)
