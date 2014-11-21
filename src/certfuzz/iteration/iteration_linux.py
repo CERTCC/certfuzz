@@ -72,10 +72,10 @@ class LinuxIteration(IterationBase3):
         # decide if we can minimize this case later
         # do this here (and not sooner) because the fuzzer could
         # decide at runtime whether it is or is not minimizable
-        self.minimizable = self.fuzzer.is_minimizable and self.config['runoptions']['minimize']
+        self.minimizable = self.fuzzer.is_minimizable and self.cfg.config['runoptions']['minimize']
 
     def _pre_run(self):
-        options = self.options
+        options = self.cfg.config['runner']
         cmd_template = ''
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
