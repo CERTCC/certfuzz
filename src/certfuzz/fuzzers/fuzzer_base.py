@@ -52,12 +52,11 @@ class Fuzzer(object):
     # child classes that are can set it themselves
     is_minimizable = False
 
-    def __init__(self, seedfile_obj, outdir_base, rng_seed, iteration, options):
+    def __init__(self, seedfile_obj, outdir_base, iteration, options):
         '''
         Parameters get converted to attributes.
         @param local_seed_path:
         @param fuzz_output_path:
-        @param rng_seed:
         @param iteration:
         @param options:
         '''
@@ -65,7 +64,7 @@ class Fuzzer(object):
         self.sf = seedfile_obj
         # TODO: rename tmpdir -> working_dir
         self.tmpdir = outdir_base
-        self.rng_seed = rng_seed
+        self.rng_seed = int(self.sf.md5, 16)
         self.iteration = iteration
         self.options = options
 

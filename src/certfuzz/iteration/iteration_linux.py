@@ -27,6 +27,7 @@ class LinuxIteration(IterationBase3):
                  sf_set=None, rf=None, outdir=None):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
                                 sf_set, rf, uniq_func, cfg, r)
+
         self.quiet_flag = quiet
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
@@ -56,19 +57,12 @@ class LinuxIteration(IterationBase3):
         check_ppid()
         return self.go
 
-    def __exit__(self, etype, value, traceback):
-        handled = IterationBase3.__exit__(self, etype, value, traceback)
-
-        self.cfg.clean_tmpdir()
-        return handled
-
     def _pre_fuzz(self):
-        fuzz_opts = self.config['fuzzer']
-        self.fuzzer = ZzufFuzzer(self.sf,
-                        self.working_dir,
-                        self.rng_seed,
-                        self.current_seed,
-                        fuzz_opts)
+        fuzz_opts = self.cfg.config['fuzzer']
+        self.fuzzer = ZzufFuzzer(self.seedfile,
+                                 self.working_dir,
+                                 self.seednum,
+                                 fuzz_opts)
 
     def _post_fuzz(self):
         self.r = self.fuzzer.range

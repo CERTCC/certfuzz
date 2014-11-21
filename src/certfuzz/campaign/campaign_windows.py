@@ -190,7 +190,6 @@ class WindowsCampaign(CampaignBase):
         sf = self.seedfile_set.next_item()
 
         logger.info('Selected seedfile: %s', sf.basename)
-        rng_seed = int(sf.md5, 16)
 
         if self.current_seed % self.status_interval == 0:
             # cache our current state
@@ -202,7 +201,7 @@ class WindowsCampaign(CampaignBase):
         # note that range does not include interval_limit
         logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
         for seednum in xrange(self.current_seed, interval_limit):
-            self._do_iteration(sf, rng_seed, seednum)
+            self._do_iteration(sf, seednum)
 
         del sf
         # manually collect garbage
@@ -211,11 +210,11 @@ class WindowsCampaign(CampaignBase):
         self.current_seed = interval_limit
         self.first_chunk = False
 
-    def _do_iteration(self, sf, rng_seed, seednum):
+    def _do_iteration(self, sf, seednum):
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
         # newly created WindowsIteration()
-        with WindowsIteration(sf, rng_seed, seednum, self.config, self.fuzzer_cls,
+        with WindowsIteration(sf, seednum, self.config, self.fuzzer_cls,
                      self.runner, self.debugger_module, self.dbg_class,
                      self.keep_heisenbugs, self.keep_duplicates,
                      self.cmd_template, self._crash_is_unique,

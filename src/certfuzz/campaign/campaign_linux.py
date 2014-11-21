@@ -201,6 +201,8 @@ class LinuxCampaign(CampaignBase):
         r = sf.rangefinder.next_item()
         qf = not self.first_chunk
 
+        rng_seed = int(sf.md5, 16)
+
         interval_limit = self.current_seed + self.seed_interval
 
         # start an iteration interval

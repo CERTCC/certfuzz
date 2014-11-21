@@ -32,13 +32,12 @@ MAX_IOERRORS = 5
 class WindowsIteration(IterationBase3):
     tcpipeline_cls = WindowsTestCasePipeline
 
-    def __init__(self, seedfile, rng_seed, seednum, config, fuzzer_cls,
+    def __init__(self, seedfile, seednum, config, fuzzer_cls,
                  runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
                  cmd_template, uniq_func, workdirbase, outdir, debug,
                  sf_set, rf):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
                                 sf_set, rf, uniq_func, config, None)
-        self.rng_seed = rng_seed
         self.fuzzer_cls = fuzzer_cls
         self.runner = runner
         self.debugger_module = debugger
@@ -131,7 +130,6 @@ class WindowsIteration(IterationBase3):
         fuzz_opts = self.cfg['fuzzer']
         self.fuzzer = self.fuzzer_cls(self.seedfile,
                              self.working_dir,
-                             self.rng_seed,
                              self.seednum, fuzz_opts)
 
     def _post_fuzz(self):
