@@ -147,4 +147,5 @@ class IterationBase3(object):
         logger.debug('go')
         self.fuzz()
         self.run()
-        self.process_testcases()
+        if len(self.testcases):
+            self.process_testcases()
