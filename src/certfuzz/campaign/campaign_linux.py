@@ -85,7 +85,7 @@ class LinuxCampaign(CampaignBase):
         CampaignBase._read_config_file(self)
 
         with LinuxConfig(self.config_file) as cfgobj:
-            self.config = cfgobj.config
+            self.config = cfgobj
             self.configdate = cfgobj.configdate
 
 

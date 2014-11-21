@@ -99,6 +99,9 @@ class LinuxConfig(ConfigBase):
         self._cmd = self.cmd_list
         self._args = self.cmd_list[1:]
 
+        # for backwards compatibility
+        self.watchdogfile = self.watchdog_file
+
         # derived properties
         self.program_basename = os.path.basename(self.program).replace('"', '')
         self.uniq_log = os.path.join(self.output_dir, UNIQ_LOG)
@@ -154,25 +157,6 @@ class LinuxConfig(ConfigBase):
         (root, ext) = os.path.splitext(tail)
         new_filename = '%s-%s%s' % (root, MINIMIZED_EXT, ext)
         return os.path.join(head, new_filename)
-
-    def create_tmpdir(self):
-        # TODO: this should become part of campaign object
-        if not self.tmpdir:
-            self.tmpdir = filetools.mkdtemp(self.testscase_tmp_dir)
-            logger.debug("Created temp dir %s", self.tmpdir)
-        assert os.path.isdir(self.tmpdir)
-
-    def clean_tmpdir(self):
-        # TODO: this should become part of campaign object
-        if self.tmpdir is None:
-            return
-
-        if os.path.exists(self.tmpdir):
-            shutil.rmtree(self.tmpdir)
-            logger.debug("Removed temp dir %s", self.tmpdir)
-            assert not os.path.exists(self.tmpdir)
-            self.tmpdir = None
-        self.create_tmpdir()
 
     def get_testcase_outfile(self, seedfile, s1):
         # TODO: this should become part of campaign object

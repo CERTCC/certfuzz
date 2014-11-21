@@ -42,8 +42,7 @@ class LinuxIteration(IterationBase3):
 
         self._analysis_needed = True
 
-        self.pipeline_options = {
-                                 'use_valgrind': self.cfg.use_valgrind,
+        self.pipeline_options = {'use_valgrind': self.cfg.use_valgrind,
                                  'use_pin_calltrace': self.cfg.use_pin_calltrace,
                                  'minimize_crashers': self.cfg.minimizecrashers,
                                  'minimize_to_string': self.cfg.minimize_to_string,

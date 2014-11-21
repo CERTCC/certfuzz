@@ -171,3 +171,13 @@ timeouts:
     watchdogtimeout: 3600
     minimizertimeout: 3600
 
+# adding these sections for compatibility with FOE config style
+fuzzer:
+    fuzzer: zzuf
+    fuzz_zip_container: False
+runner:
+    runner: zzufrun
+    runtimeout: 5
+debugger:
+    debugger: gdb
+    runtimeout: 60
