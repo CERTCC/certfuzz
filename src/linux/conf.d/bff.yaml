@@ -172,6 +172,15 @@ timeouts:
     minimizertimeout: 3600
 
 # adding these sections for compatibility with FOE config style
+
+runoptions:
+#    first_iteration: 0
+#    seed_interval: 1
+    minimize: True
+#    minimizer_timeout: 3600
+#    keep_unique_faddr: False
+#    keep_all_duplicates: False
+#    recycle_crashers: False
 fuzzer:
     fuzzer: zzuf
     fuzz_zip_container: False
