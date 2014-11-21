@@ -66,7 +66,8 @@ class TestCasePipelineBase(object):
         # verify | minimize | analyze | report
 
         logger.debug('Construct analysis pipeline')
-        setup_order = list(self.pipes).reverse()
+        setup_order = list(self.pipes)
+        setup_order.reverse()
 
         pipeline = self.analysis_pipeline
 
@@ -78,7 +79,8 @@ class TestCasePipelineBase(object):
                 pipeline = pipe_method()
             else:
                 # prepend pipe_method upstream of pipeline
-                pipeline = pipe_method(target=pipeline)
+                targets = [pipeline]
+                pipeline = pipe_method(*targets)
 
     @coroutine
     def verify(self, *targets):
