@@ -35,7 +35,9 @@
 </choice>
 <choice title="Python 2.7 Hcluster" id="choice65" starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.hcluster-0.2.0.tar.pkg" />
+<choice-reqs>
 <requirement id="sosv" operator="ge" value="'10.10.0'" selected="no" enabled="no" hidden="unchanged" startSelected="unchanged" startEnabled="unchanged" startHidden="unchanged" />
+</choice-reqs>
 </choice>
 <choice title="zzuf" id="choice66" description="zzuf is the fuzzer that performs file mangling." starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.zzuf.pkg" />
