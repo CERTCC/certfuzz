@@ -49,6 +49,7 @@
 <pkgref id="com.cert.cc.certBff.exc_handler_mountain_lion.pkg" />
 <pkgref id="com.cert.cc.certBff.exc_handler_lion.pkg" />
 <pkgref id="com.cert.cc.certBff.exc_handler_snowleopard.pkg" />
+<pkgref id="com.cert.cc.certBff.exc_handler_yosemite.pkg" />
 </choice>
 <choice title="ImageMagick 5.5.7 fuzz target" id="choice69" description="Old version of convert from ImageMagick 5.5.7 to use as a default fuzzing target." starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.convert.pkg" />
@@ -109,6 +110,7 @@
 <item type="file">26callgrind.xml</item>
 <item type="file">27pyyaml.xml</item>
 <item type="file">28exc.xml</item>
+<item type="file">29exc.xml</item>
 <mod>properties.customizeOption</mod>
 <mod>properties.title</mod>
 </pkmkdoc>
