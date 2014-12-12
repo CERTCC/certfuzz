@@ -114,22 +114,22 @@ class LinuxIteration(IterationBase3):
 
     def _construct_testcase(self):
         with ZzufTestCase(seedfile=self.seedfile, seed=self.seednum,
-                           range=self._zzuf_range,
-                           working_dir=self.working_dir) as ztc:
+                          range=self._zzuf_range,
+                          working_dir=self.working_dir) as ztc:
             ztc.generate()
         fuzzedfile = BasicFile(ztc.outfile)
 
         logger.info('Building testcase object')
         with BffCrash(cfg=self.cfg,
-                            seedfile=self.seedfile,
-                            fuzzedfile=fuzzedfile,
-                            program=self.cfg.program,
-                            debugger_timeout=self.cfg.debugger_timeout,
-                            killprocname=self.cfg.killprocname,
-                            backtrace_lines=self.cfg.backtracelevels,
-                            crashers_dir=self.testcase_base_dir,
-                            workdir_base=self.working_dir,
-                            seednum=self.seednum,
-                            range=self.r) as testcase:
+                      seedfile=self.seedfile,
+                      fuzzedfile=fuzzedfile,
+                      program=self.cfg.program,
+                      debugger_timeout=self.cfg.debugger_timeout,
+                      killprocname=self.cfg.killprocname,
+                      backtrace_lines=self.cfg.backtracelevels,
+                      crashers_dir=self.testcase_base_dir,
+                      workdir_base=self.working_dir,
+                      seednum=self.seednum,
+                      range=self.r) as testcase:
             # put it on the list for the analysis pipeline
             self.testcases.append(testcase)
