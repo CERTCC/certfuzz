@@ -61,9 +61,9 @@ class LinuxIteration(IterationBase3):
     def _pre_fuzz(self):
         fuzz_opts = self.cfg.config['fuzzer']
         self.fuzzer = ByteMutFuzzer(self.seedfile,
-                                 self.working_dir,
-                                 self.seednum,
-                                 fuzz_opts)
+                                    self.working_dir,
+                                    self.seednum,
+                                    fuzz_opts)
 
     def _post_fuzz(self):
         self.r = self.fuzzer.range
