@@ -69,8 +69,7 @@ class TestCasePipelineBase(object):
         setup_order = list(self.pipes)
         setup_order.reverse()
 
-        pipeline = self.analysis_pipeline
-
+        pipeline = None
         for pipe_name in setup_order:
             pipe_method = getattr(self, pipe_name)
             logger.debug('Add {}() to pipeline'.format(pipe_name))
@@ -81,6 +80,8 @@ class TestCasePipelineBase(object):
                 # prepend pipe_method upstream of pipeline
                 targets = [pipeline]
                 pipeline = pipe_method(*targets)
+
+        self.analysis_pipeline = pipeline
 
     @coroutine
     def verify(self, *targets):
@@ -215,6 +216,7 @@ class TestCasePipelineBase(object):
     def go(self):
         while not self.tc_candidate_q.empty():
             testcase = self.tc_candidate_q.get()
+            logger.debug('Sending testcase %s to pipeline', testcase.signature)
             self.analysis_pipeline.send(testcase)
 
     def _copy_files(self, testcase):
