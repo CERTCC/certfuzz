@@ -77,9 +77,11 @@ class LinuxIteration(IterationBase3):
 
     def _pre_run(self):
         options = self.cfg.config['runner']
-        cmd_template = ''
+        cmd_template = self.cfg.config['target']['cmdline']
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
+        from pprint import pformat
+        logger.debug(pformat(self.__dict__))
         self.runner = ZzufRunner(options, cmd_template, fuzzed_file, workingdir_base)
 
     def _run(self):
