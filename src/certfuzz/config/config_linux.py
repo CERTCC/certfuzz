@@ -12,6 +12,7 @@ import shutil
 
 from certfuzz.config.config_base import ConfigBase
 from certfuzz.fuzztools import filetools
+from certfuzz.helpers.misc import quoted
 
 
 logger = logging.getLogger(__name__)
@@ -94,7 +95,7 @@ class LinuxConfig(ConfigBase):
         for index, cmd_part in enumerate(self.cmd_list):
             self.cmd_list[index] = os.path.expanduser(cmd_part)
         if re.search(' ', self.cmd_list[0]):
-            self.cmd_list[0] = '"' + self.cmd_list[0] + '"'
+            self.cmd_list[0] = quoted(self.cmd_list[0])
         self.program = self.cmd_list[0]
         self._cmd = self.cmd_list
         self._args = self.cmd_list[1:]
