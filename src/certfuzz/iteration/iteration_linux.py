@@ -16,6 +16,7 @@ from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 from certfuzz.runners.zzufrun import ZzufRunner
 from certfuzz.fuzzers.zzuf import ZzufFuzzer
 from certfuzz.fuzzers.bytemut import ByteMutFuzzer
+from pprint import pformat
 
 
 logger = logging.getLogger(__name__)
@@ -80,8 +81,9 @@ class LinuxIteration(IterationBase3):
         cmd_template = self.cfg.config['target']['cmdline']
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
-        from pprint import pformat
-        logger.debug(pformat(self.__dict__))
+
+        for line in pformat(self.__dict__).splitlines():
+            logger.debug(line)
         self.runner = ZzufRunner(options, cmd_template, fuzzed_file, workingdir_base)
 
     def _run(self):
