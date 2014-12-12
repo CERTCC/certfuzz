@@ -132,8 +132,6 @@ class LinuxConfig(ConfigBase):
             arglist.append(re.sub(SEEDFILE_REPLACE_STRING, seedfile, arg))
         return arglist
 
-    def zzuf_log_out(self, mydir):
-        return os.path.join(mydir, ZZUF_LOG_FILE)
 
     def full_path_local_fuzz_dir(self, seedfile):
         '''

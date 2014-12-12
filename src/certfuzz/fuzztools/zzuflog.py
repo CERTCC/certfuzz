@@ -6,7 +6,6 @@ Provides support for analyzing zzuf log files.
 @organization: cert.org
 '''
 import logging
-import os
 import re
 
 import filetools
@@ -17,13 +16,12 @@ logger.setLevel(logging.WARNING)
 
 
 class ZzufLog:
-    def __init__(self, infile, outfile):
+    def __init__(self, infile):
         '''
         Reads in <logfile> and parses *the last line*.
         @param logfile: the zzuf log file to analyze
         '''
         self.infile = infile
-        self.outfile = outfile
         self.line = self._get_last_line()
 
         # parsed will get set True in _parse_line if we successfully parse the line
@@ -32,17 +30,7 @@ class ZzufLog:
 
         self.was_killed = self._was_killed()
         self.was_out_of_memory = self._was_out_of_memory()
-
-        try:
-            fp = open(self.outfile, 'a')
-            fp.write("%s\n" % self.line)
-        except Exception, e:
-            logger.warning('Error writing to %s: %s', self.outfile, e)
-        finally:
-            fp.close()
-
         filetools.delete_files(self.infile)
-        assert not os.path.exists(self.infile)
 
         self.exitcode = ''
         self._set_exitcode()

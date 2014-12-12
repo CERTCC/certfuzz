@@ -99,7 +99,7 @@ class LinuxIteration(IterationBase3):
 
         # we must have seen a crash
         # get the results
-        zzuf_log = ZzufLog(self.cfg.zzuf_log_file, self.cfg.zzuf_log_out(self.seedfile.output_dir))
+        zzuf_log = ZzufLog(self.runner.zzuf_log_path)
 
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
