@@ -56,13 +56,9 @@ else
     mypython="python"
 fi
 
-if [[ "$platform" =~ "Darwin" ]]; then
-    # This doesn't actually do anything
-    # Maybe Apple will eventually fix it?
-    launchctl limit filesize 1048576
-else
-    ulimit -f 1048576
-fi
+
+# Prevent creation of huge files
+ulimit -f 1048576
 
 if [[ "$platform" =~ "Linux" ]]; then
     if [[ ! -f ~/pin/pin ]]; then
