@@ -117,6 +117,10 @@ zzuf:
 # Disabled by default due to amount of time that the minimization takes.
 # Stand-alone string minimization can be done using tools/minimize.py.
 
+# Save crashes even when they are unique?  If set to True, all
+# crashing inputs are saved, even when their backtraces are not
+# unique.
+
 # Recycle crashing testcases as seed files for further fuzzing.
 # This can improve the number of unique crash hashes found, however this may
 # just demonstrate weaknesses in backtrace-based uniqueness determination
@@ -131,11 +135,8 @@ verifier:
     minimizecrashers: True
     minimize_to_string: False
     recycle_crashers: False
+    keep_duplicates: False
 
-# Save crashes even when they are unique?  If set to True, all
-# crashing inputs are saved, even when their backtraces are not
-# unique.
-keep_duplicates = False
 
 ################################################################
 # APPLICATION TIMEOUTS
