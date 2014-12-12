@@ -134,6 +134,10 @@ class IterationBase3(object):
         self.rf.record_tries(key=self.r.id, tries=1)
 
     def process_testcases(self):
+        if not len(self.testcases):
+            # short circuit if nothing to do
+            return
+
         # hand it off to our pipeline class
         with self.tcpipeline_cls(testcases=self.testcases,
                                  uniq_func=self.uniq_func,
@@ -147,5 +151,4 @@ class IterationBase3(object):
         logger.debug('go')
         self.fuzz()
         self.run()
-        if len(self.testcases):
-            self.process_testcases()
+        self.process_testcases()
