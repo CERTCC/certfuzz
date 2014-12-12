@@ -36,12 +36,11 @@ class LinuxIteration(IterationBase3):
 
         self._zzuf_range = None
         self._zzuf_line = None
+
         # analysis is required in two cases:
         # 1) runner is not defined (self.runner == None)
         # 2) runner is defined, and detects crash (runner.saw_crash == True)
         # this takes care of case 1 by default
-        analysis_needed = True
-
         self._analysis_needed = True
 
         self.pipeline_options = {'use_valgrind': self.cfg.use_valgrind,
@@ -70,7 +69,6 @@ class LinuxIteration(IterationBase3):
         if self.r:
             logger.info('Selected r: %s', self.r)
 
-        fuzzed_file_full_path = self.fuzzer.output_file_path
         # decide if we can minimize this case later
         # do this here (and not sooner) because the fuzzer could
         # decide at runtime whether it is or is not minimizable
@@ -106,7 +104,7 @@ class LinuxIteration(IterationBase3):
         # report the exit code in its output log.  The exit code is 128 + the signal number.
         self._analysis_needed = zzuf_log.crash_logged(self.cfg.copymode)
 
-        if not self.analysis_needed:
+        if not self._analysis_needed:
             return
 
         # store a few things for use downstream
