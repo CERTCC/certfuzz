@@ -200,10 +200,11 @@ class Iteration(IterationBase3):
 
                 tc.is_unique = is_new_to_campaign and not crash_dir_found
 
+                self.dbg_out_file_orig = testcase.dbg.file
+                logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
+
                 if tc.is_unique:
                     logger.info('%s first seen at %d', tc.signature, tc.seednum)
-                    self.dbg_out_file_orig = testcase.dbg.file
-                    logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
 
                     self._minimize(tc)
 
@@ -212,6 +213,9 @@ class Iteration(IterationBase3):
                     self.verified.append(tc)
                 else:
                     logger.debug('%s was found, not unique', tc.signature)
+                    if self.cfg.keep_duplicates:
+                        logger.debug('Analyzing %s anyway because keep_duplicates is set', tc.signature)
+                        self.verified.append(tc)
 
     def _minimize(self, testcase):
         if self.cfg.minimizecrashers:
