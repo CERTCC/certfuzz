@@ -11,53 +11,68 @@ import subprocess
 import logging
 from collections import deque
 from certfuzz.runners.errors import RunnerNotFoundError
+import cmd
+import shlex
+from string import Template
+from certfuzz.helpers.misc import quoted
 
 logger = logging.getLogger(__name__)
+
+
+_zzuf_basename = 'zzuf'
+_zzuf_loc = None
+
+
+def _find_zzuf():
+    global _zzuf_loc
+    _zzuf_loc = find_executable(_zzuf_basename)
 
 
 class ZzufRunner(Runner):
     def __init__(self, options, cmd_template, fuzzed_file, workingdir_base):
         Runner.__init__(self, options, cmd_template, fuzzed_file, workingdir_base)
-        self._zzuf_loc = None
-        self._zzuf_args = None
+
         self._zzuf_log_basename = 'zzuf_log.txt'
-        self._zzuf_log = os.path.join(self.workingdir, self._zzuf_log_basename)
+        self.zzuf_log_path = os.path.join(self.workingdir, self._zzuf_log_basename)
         self._quiet = options.get('hideoutput', True)
-        self._zzuf_basename = 'zzuf'
 
-    def _get_zzuf_args(self):
-        self._zzuf_args = deque(['--signal',
-                          '--ratio=0.0',
-                          '--seed=0',
-                          '--max-crashes=1',
-                          '--max-usertime=5.00',
-                          ])
+        self._cmd_template = Template(cmd_template)
+        self._cmd = self._cmd_template.substitute(SEEDFILE=quoted(fuzzed_file))
+        self._cmd_parts = shlex.split(self._cmd)
+        self._cmd_parts[0] = os.path.expanduser(self._cmd_parts[0])
 
-        if self._quiet:
-            self._zzuf_args.appendleft('--quiet')
-
-    def _find_zzuf(self):
-        self._zzuf_loc = find_executable(self._zzuf_basename)
-        if self._zzuf_loc is None:
-            raise RunnerNotFoundError('Unable to locate {}, $PATH={}'.format(self._zzuf_basename, os.environ['PATH']))
-
-    def __enter__(self):
-        self = Runner.__enter__(self)
-
-        self._find_zzuf()
-        self._get_zzuf_args()
-        self._zzuf_args.appendleft(self._zzuf_loc)
+        self._zzuf_args = None
+        self._construct_zzuf_args()
         logger.debug('_zzuf_args=%s', self._zzuf_args)
 
-        return self
+    def _construct_zzuf_args(self):
+        if _zzuf_loc is None:
+            _find_zzuf()
+        # if it's still None, we have a problem
+        if _zzuf_loc is None:
+            raise RunnerNotFoundError('Unable to locate {}, $PATH={}'.format(_zzuf_basename, os.environ['PATH']))
+
+        args = [_zzuf_loc]
+        if self._quiet:
+            args.append('--quiet')
+        args.extend(['--signal',
+                     '--ratio=0.0',
+                     '--seed=0',
+                     '--max-crashes=1',
+                     '--max-usertime=5.00',
+                     ])
+        self._zzuf_args = args
 
     def _run(self):
         if not len(self._zzuf_args):
             raise RunnerError('_zzuf_args is empty')
 
-        with open(self.fuzzed_file, 'rb') as ff, open(self._zzuf_log, 'ab') as zo:
-            p = subprocess.Popen(self._zzuf_args, cwd=self.workingdir, stdin=ff, stderr=zo)
+        with open(self.fuzzed_file, 'rb') as ff, open(self.zzuf_log_path, 'wb') as zo:
+            cmd2run = self._zzuf_args + self._cmd_parts
+            logger.debug('RUN_CMD: {}'.format(' '.join(cmd2run)))
+            p = subprocess.Popen(cmd2run, cwd=self.workingdir, stdin=ff, stderr=zo)
             rc = p.wait()
 
             if rc != 0:
-                raise RunnerError('zzuf returncode: {}'.format(rc))
+                self.saw_crash = True
+#                 raise RunnerError('zzuf returncode: {}'.format(rc))

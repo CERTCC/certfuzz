@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
 
     def test_get_zzuf_args(self):
 
-        zzuf_args = self.z._get_zzuf_args()
+        zzuf_args = self.z._construct_zzuf_args()
 
         splitparts = lambda L: [re.sub('^--', '', s) for s in L.split(' ')]
 
@@ -79,9 +79,9 @@ class Test(unittest.TestCase):
         max_usertime = max_usertime_item.split('=')[1]
         self.assertEqual(float(max_usertime), 100.00)
 
-        # call _get_zzuf_args() again with copymode=False
+        # call _construct_zzuf_args() again with copymode=False
         self.z.copymode = False
-        zzuf_args = self.z._get_zzuf_args()
+        zzuf_args = self.z._construct_zzuf_args()
 
         # strip out the leading '--' from args to make it easier to verify
         parts = splitparts(zzuf_args)
@@ -92,7 +92,7 @@ class Test(unittest.TestCase):
         # check case where quiet is False
         self.z.quiet = False
         # strip out the leading '--' from args to make it easier to verify
-        parts = splitparts(self.z._get_zzuf_args())
+        parts = splitparts(self.z._construct_zzuf_args())
         self.assertFalse('quiet' in parts)
 
 if __name__ == "__main__":

@@ -79,7 +79,7 @@ class Zzuf:
         self.timeout = timeout
         self.quiet = quiet
 
-        self.zzuf_args = self._get_zzuf_args()
+        self.zzuf_args = self._construct_zzuf_args()
         self.saw_crash = False
 
     def _get_go_fuzz_cmdline(self):
@@ -108,7 +108,7 @@ class Zzuf:
 
         return self.saw_crash
 
-    def _get_zzuf_args(self):
+    def _construct_zzuf_args(self):
         '''
         Builds an argument string for zzuf based on the passed parameters.
         @rtype: string
