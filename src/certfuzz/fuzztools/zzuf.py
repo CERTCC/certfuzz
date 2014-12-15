@@ -29,10 +29,10 @@ class ZzufTestCase:
         self.range = range
         self.working_dir = working_dir
         self.outfile = None
-
-    def __enter__(self):
         self._set_outfile()
         self._set_cmdline()
+
+    def __enter__(self):
         return self
 
     def __exit__(self, etype, value, traceback):
