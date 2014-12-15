@@ -99,10 +99,10 @@ class TestCasePipelineBase(object):
             self._verify(testcase)
             self._post_verify(testcase)
 
-            for target in targets:
-                if testcase.should_proceed_with_analysis:
-                    # we're ready to proceed with this testcase
-                    # so send it downstream
+            if testcase.should_proceed_with_analysis:
+                # we're ready to proceed with this testcase
+                # so send it downstream
+                for target in targets:
                     target.send(testcase)
 
     @coroutine
