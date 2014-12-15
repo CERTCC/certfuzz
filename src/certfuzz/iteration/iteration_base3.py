@@ -74,13 +74,14 @@ class IterationBase3(object):
         else:
             self.record_failure()
 
-        if etype and self.debug:
+        if self.debug and etype:
             # leave it behind if we're in debug mode
             # and there's a problem
             logger.debug('Skipping cleanup since we are in debug mode.')
-        else:
-            rm_rf(self.working_dir)
+            return handled
 
+        # clean up
+        rm_rf(self.working_dir)
         return handled
 
     def _pre_fuzz(self):
