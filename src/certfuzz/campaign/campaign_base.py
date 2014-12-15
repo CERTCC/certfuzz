@@ -225,12 +225,14 @@ class CampaignBase(object):
             # if you got here, nothing has handled the error
             # so log it and keep going
             self._log_unhandled_exception(etype, value, mytraceback)
-            if self.debug:
-                cleanup = False
-                logger.debug('Skipping cleanup since we are in debug mode.')
 
-        if cleanup:
-            self._cleanup_workdir()
+        if self.debug and etype:
+            # short out if in debug mode and an error occurred
+            logger.debug('Skipping cleanup since we are in debug mode.')
+            return handled
+
+        # debug not set, so we should clean up
+        self._cleanup_workdir()
 
         return handled
 
