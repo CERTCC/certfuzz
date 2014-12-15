@@ -9,14 +9,11 @@ import os
 from certfuzz.crash.bff_crash import BffCrash
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.fuzztools.zzuf import ZzufTestCase
 from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 from certfuzz.runners.zzufrun import ZzufRunner
-from certfuzz.fuzzers.zzuf import ZzufFuzzer
 from certfuzz.fuzzers.bytemut import ByteMutFuzzer
-from pprint import pformat
 
 
 logger = logging.getLogger(__name__)
@@ -80,8 +77,6 @@ class LinuxIteration(IterationBase3):
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
 
-        for line in pformat(self.__dict__).splitlines():
-            logger.debug(line)
         self.runner = ZzufRunner(options, cmd_template, fuzzed_file, workingdir_base)
 
     def _run(self):
@@ -98,6 +93,10 @@ class LinuxIteration(IterationBase3):
         # we must have seen a crash
         # get the results
         zzuf_log = ZzufLog(self.runner.zzuf_log_path)
+        logger.debug("ZzufLog:")
+        from pprint import pformat
+        for line in pformat(zzuf_log.__dict__).splitlines():
+            logger.debug(line)
 
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
@@ -113,16 +112,12 @@ class LinuxIteration(IterationBase3):
         self._construct_testcase()
 
     def _construct_testcase(self):
-        with ZzufTestCase(seedfile=self.seedfile, seed=self.seednum,
-                          range=self._zzuf_range,
-                          working_dir=self.working_dir) as ztc:
-            ztc.generate()
-        fuzzedfile = BasicFile(ztc.outfile)
+        fuzzed_file = BasicFile(self.fuzzer.output_file_path)
 
         logger.info('Building testcase object')
         with BffCrash(cfg=self.cfg,
                       seedfile=self.seedfile,
-                      fuzzedfile=fuzzedfile,
+                      fuzzedfile=fuzzed_file,
                       program=self.cfg.program,
                       debugger_timeout=self.cfg.debugger_timeout,
                       killprocname=self.cfg.killprocname,

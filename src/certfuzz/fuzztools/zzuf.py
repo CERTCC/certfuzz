@@ -9,48 +9,9 @@ import logging
 
 import subprocess
 from subprocess import CalledProcessError
-import os
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
-
-class ZzufTestCase:
-    def __init__(self, seedfile, seed, range, working_dir):
-        '''
-        @param seedfile: The original seed file to use
-        @param seed: The zzuf seed number to use
-        @param range:
-        @param outfile:
-        '''
-        self.seedfile = seedfile
-        self.seed = seed
-        self.range = range
-        self.working_dir = working_dir
-        self.outfile = None
-        self._set_outfile()
-        self._set_cmdline()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, etype, value, traceback):
-        return
-
-    def _set_outfile(self):
-        # generate the test case file name
-        (root, ext) = os.path.splitext(self.seedfile.basename)
-        new_root = '{}-{}'.format(root, self.seed)
-        new_basename = new_root + ext
-        self.outfile = os.path.join(self.working_dir, new_basename)
-        logger.debug('Output file is %s', self.outfile)
-
-    def _set_cmdline(self):
-        self.cmdline = 'cat %s | zzuf -s%s -r%s > %s' % (self.seedfile.path, self.seed, self.range, self.outfile)
-
-    def generate(self):
-        subprocess.check_call(self.cmdline, shell=True)
 
 
 class Zzuf:
