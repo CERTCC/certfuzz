@@ -6,14 +6,14 @@ Created on Jul 16, 2014
 import Queue
 import abc
 import logging
+import os
+import shutil
 
 from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
+from certfuzz.fuzztools import filetools
 from certfuzz.helpers.coroutine import coroutine
 from certfuzz.testcase_pipeline.errors import TestCasePipelineError
-import os
-from certfuzz.fuzztools import filetools
-import shutil
 
 
 logger = logging.getLogger(__name__)
