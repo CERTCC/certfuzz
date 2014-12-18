@@ -140,13 +140,12 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
         logger.info('%s first seen at %d', testcase.signature, testcase.seednum)
 
+    def _report(self, testcase):
+        self._copy_files(testcase)
         # whether it was unique or not, record some details for posterity
         # record the details of this crash so we can regenerate it later if needed
         testcase.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', testcase.seedfile.basename, testcase.seednum, testcase.range, testcase.fuzzedfile.path)
         testcase.logger.info('PC=%s', testcase.pc)
-
-    def _report(self, testcase):
-        self._copy_files(testcase)
 
     def _post_report(self, testcase):
         # always clean up after yourself
