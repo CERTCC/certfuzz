@@ -8,6 +8,7 @@ import shutil
 import tempfile
 
 from certfuzz.fuzztools import hamming
+from pprint import pformat
 
 
 logger = logging.getLogger(__name__)
@@ -43,6 +44,9 @@ class TestCaseBase(object):
         self.working_dir = tempfile.mkdtemp(suffix=self._tmp_sfx,
                                     prefix=self._tmp_pfx,
                                     dir=self.workdir_base)
+
+    def __repr__(self):
+        return pformat(self.__dict__)
 
     def _teardown_workdir(self):
         shutil.rmtree(self.working_dir)
