@@ -293,13 +293,15 @@ class CampaignBase(object):
             logger.debug('Removed campaign working dir: %s', self.working_dir)
 
     def _create_seedfile_set(self):
+        if self.seedfile_set is not None:
+            return
+
         logger.info('Building seedfile set')
-        if self.seedfile_set is None:
-            with SeedfileSet(campaign_id=self.campaign_id,
-                             originpath=self.seed_dir_in,
-                             localpath=self.seed_dir_local,
-                             outputpath=self.sf_set_out) as sfset:
-                self.seedfile_set = sfset
+        with SeedfileSet(campaign_id=self.campaign_id,
+                         originpath=self.seed_dir_in,
+                         localpath=self.seed_dir_local,
+                         outputpath=self.sf_set_out) as sfset:
+            self.seedfile_set = sfset
 
     @abc.abstractmethod
     def __getstate__(self):
