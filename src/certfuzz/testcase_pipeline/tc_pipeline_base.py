@@ -35,6 +35,7 @@ class TestCasePipelineBase(object):
         self.options = options
         self.uniq_func = uniq_func
         self.outdir = outdir
+        self.tc_dir = os.path.join(self.outdir, 'crashers')
 
         self.working_dir = workdirbase
 
@@ -52,6 +53,7 @@ class TestCasePipelineBase(object):
 
     def __enter__(self):
         self._setup_analysis_pipeline()
+        filetools.mkdir_p(self.tc_dir)
         return self.go
 
     def __exit__(self, etype, value, traceback):
@@ -98,6 +100,10 @@ class TestCasePipelineBase(object):
             self._pre_verify(testcase)
             self._verify(testcase)
             self._post_verify(testcase)
+
+            logger.debug('Testcase data:')
+            for line in testcase.__repr__().splitlines():
+                logger.debug(line)
 
             if testcase.should_proceed_with_analysis:
                 # we're ready to proceed with this testcase
@@ -208,7 +214,9 @@ class TestCasePipelineBase(object):
 
     @abc.abstractmethod
     def _report(self, testcase):
-        pass
+        logger.debug('Testcase contents:')
+        for line in testcase.__repr__().splitlines():
+            logger.debug(line)
 
     def _post_report(self, testcase):
         pass
@@ -220,21 +228,16 @@ class TestCasePipelineBase(object):
             self.analysis_pipeline.send(testcase)
 
     def _copy_files(self, testcase):
-        if not self.outdir:
-            raise TestCasePipelineError('No outdir set')
+        dst_dir = os.path.join(self.tc_dir, testcase.signature)
+        # ensure target dir exists already (it might because of crash logging)
+        filetools.mkdir_p(dst_dir)
 
-        logger.debug('target_base=%s', self.outdir)
+        src_dir = testcase.tempdir
+        if not os.path.exists(src_dir):
+            raise TestCasePipelineError('Testcase tempdir not found: %s', src_dir)
 
-        target_dir = testcase.result_dir
+        src_paths = [os.path.join(src_dir, f) for f in os.listdir(src_dir)]
 
-        if os.path.exists(target_dir):
-            logger.debug('Repeat crash, will not copy to %s', target_dir)
-            return
-
-        # make sure target_base exists already
-        filetools.find_or_create_dir(self.outdir)
-        logger.debug('Copying to %s', target_dir)
-        shutil.copytree(testcase.tempdir, target_dir)
-
-        if not os.path.exists(target_dir):
-            raise TestCasePipelineError('Failed to create target dir %s', target_dir)
+        for f in src_paths:
+            logger.debug('Copy %s -> %s', f, dst_dir)
+            shutil.copy2(f, dst_dir)
