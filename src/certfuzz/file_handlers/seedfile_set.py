@@ -94,7 +94,6 @@ class SeedfileSet(MultiArmedBandit):
         filetools.copy_file(f.path, *targets)
         for target in targets:
             filetools.make_writable(target)
-        return 1
 
     def paths(self):
         for x in self.things.values():
@@ -138,7 +137,7 @@ class SeedfileSet(MultiArmedBandit):
 #        for k, old_sf in oldthings.iteritems():
 #            # update the seedfiles for ones that are still present
 #            if k in self.things:
-##                print "%s in things..." % k
+# #                print "%s in things..." % k
 #                self.things[k].__setstate__(old_sf)
 #                self.sfcount += 1
 

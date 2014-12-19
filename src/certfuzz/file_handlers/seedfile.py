@@ -38,7 +38,6 @@ class SeedFile(BasicFile):
         if not self.len > 0:
             raise SeedFileError('You cannot do bitwise fuzzing on a zero-length file: %s' % self.path)
 
-        self.output_dir = os.path.join(output_base_dir, self.md5)
         # use len for bytewise, bitlen for bitwise
         if self.len > 1:
             self.range_min = 1.0 / self.len
@@ -47,15 +46,7 @@ class SeedFile(BasicFile):
             self.range_min = 0
             self.range_max = 1
 
-        # output_dir might not exist, so create it
-        if not os.path.exists(self.output_dir):
-            filetools.make_directories(self.output_dir)
-
-        self.rangefinder = self._get_rangefinder()
-
-    def _get_rangefinder(self):
-        rf_log = os.path.join(self.output_dir, 'rangefinder.log')
-        return RangeFinder(self.range_min, self.range_max, rf_log)
+        self.rangefinder = RangeFinder(self.range_min, self.range_max)
 
     def __getstate__(self):
         '''
