@@ -16,7 +16,6 @@ from certfuzz.config.config_linux import LinuxConfig
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.debuggers.registration import verify_supported_platform
-from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools import subprocess_helper as subp
 from certfuzz.fuzztools.ppid_observer import check_ppid
@@ -188,30 +187,6 @@ class LinuxCampaign(CampaignBase):
         Overrides parent class
         '''
         pass
-
-    def _do_interval(self):
-        # wipe the tmp dir clean to try to avoid filling the VM disk
-        TmpReaper().clean_tmp()
-
-        # choose seedfile
-        sf = self.seedfile_set.next_item()
-        logger.info('Selected seedfile: %s', sf.basename)
-
-        r = sf.rangefinder.next_item()
-        qf = not self.first_chunk
-
-#         rng_seed = int(sf.md5, 16)
-
-        interval_limit = self.current_seed + self.seed_interval
-
-        # start an iteration interval
-        # note that range does not include interval_limit
-        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
-        for seednum in xrange(self.current_seed, interval_limit):
-            self._do_iteration(sf, r, qf, seednum)
-
-        self.current_seed = interval_limit
-        self.first_chunk = False
 
     def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
         # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot

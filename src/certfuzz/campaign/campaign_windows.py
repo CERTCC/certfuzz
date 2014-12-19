@@ -3,7 +3,6 @@ Created on Jan 10, 2014
 
 @author: adh
 '''
-import gc
 import logging
 import os
 import platform
@@ -185,32 +184,7 @@ class WindowsCampaign(CampaignBase):
         if self.use_buttonclicker:
             os.system('taskkill /im buttonclicker.exe')
 
-    def _do_interval(self):
-        # choose seedfile
-        sf = self.seedfile_set.next_item()
-
-        logger.info('Selected seedfile: %s', sf.basename)
-
-        if self.current_seed % self.status_interval == 0:
-            # cache our current state
-            self._save_state()
-
-        interval_limit = self.current_seed + self.seed_interval
-
-        # start an iteration interval
-        # note that range does not include interval_limit
-        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
-        for seednum in xrange(self.current_seed, interval_limit):
-            self._do_iteration(sf, seednum)
-
-        del sf
-        # manually collect garbage
-        gc.collect()
-
-        self.current_seed = interval_limit
-        self.first_chunk = False
-
-    def _do_iteration(self, sf, seednum):
+    def _do_iteration(self, sf, range_obj, quiet_flag, seednum):
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
         # newly created WindowsIteration()

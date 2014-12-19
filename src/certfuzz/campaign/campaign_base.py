@@ -21,6 +21,8 @@ from certfuzz.fuzztools import filetools
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
 from certfuzz.version import __version__
+from certfuzz.file_handlers.tmp_reaper import TmpReaper
+import gc
 
 
 logger = logging.getLogger(__name__)
@@ -365,11 +367,41 @@ class CampaignBase(object):
         '''
         return True
 
-    @abc.abstractmethod
     def _do_interval(self):
         '''
         Implements a loop over a set of iterations
         '''
+        # wipe the tmp dir clean to try to avoid filling the VM disk
+        TmpReaper().clean_tmp()
+
+        # choose seedfile
+        sf = self.seedfile_set.next_item()
+        logger.info('Selected seedfile: %s', sf.basename)
+
+# TODO: restore this
+#         if self.current_seed % self.status_interval == 0:
+#             # cache our current state
+#             self._save_state()
+
+        r = sf.rangefinder.next_item()
+        qf = not self.first_chunk
+
+#         rng_seed = int(sf.md5, 16)
+
+        interval_limit = self.current_seed + self.seed_interval
+
+        # start an iteration interval
+        # note that range does not include interval_limit
+        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
+        for seednum in xrange(self.current_seed, interval_limit):
+            self._do_iteration(sf, r, qf, seednum)
+
+        del sf
+        # manually collect garbage
+        gc.collect()
+
+        self.current_seed = interval_limit
+        self.first_chunk = False
 
     @abc.abstractmethod
     def _do_iteration(self):
