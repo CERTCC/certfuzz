@@ -88,7 +88,6 @@ class LinuxCampaign(CampaignBase):
             self.config = cfgobj
             self.configdate = cfgobj.configdate
 
-
     def _pre_enter(self):
         self._start_process_killer()
         self._set_unbuffered_stdout()
@@ -201,7 +200,7 @@ class LinuxCampaign(CampaignBase):
         r = sf.rangefinder.next_item()
         qf = not self.first_chunk
 
-        rng_seed = int(sf.md5, 16)
+#         rng_seed = int(sf.md5, 16)
 
         interval_limit = self.current_seed + self.seed_interval
 
@@ -217,9 +216,14 @@ class LinuxCampaign(CampaignBase):
     def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
         # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
         touch_watchdog_file()
-        with LinuxIteration(cfg=self.config, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
-            uniq_func=self._crash_is_unique,
-            sf_set=self.seedfile_set,
-            rf=seedfile.rangefinder,
-            outdir=self.outdir) as iteration:
+        with LinuxIteration(cfg=self.config,
+                            seednum=seednum,
+                            seedfile=seedfile,
+                            r=range_obj,
+                            workdirbase=self.working_dir,
+                            quiet=quiet_flag,
+                            uniq_func=self._crash_is_unique,
+                            sf_set=self.seedfile_set,
+                            rf=seedfile.rangefinder,
+                            outdir=self.outdir) as iteration:
             iteration()
