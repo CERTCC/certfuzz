@@ -43,6 +43,10 @@ def main():
             g = GDBfile(f)
         elif debugger == '.cw':
             g = CWfile(f)
+        elif debugger == '':
+            parser.error('No file suffix found, but \'.gdb\' or \'.cw\' expected')
+        else:
+            parser.error('Unknown file suffix \'%s\' found, but \'.gdb\' or \'.cw\' expected' % debugger)
         print 'Signature=%s' % g.get_crash_signature(5)
         if g.registers_hex.get(g.pc_name):
             print 'PC=%s' % g.registers_hex[g.pc_name]
