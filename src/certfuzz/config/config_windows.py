@@ -36,8 +36,7 @@ class WindowsConfig(ConfigBase):
         self.validations.append(self._validate_new_options)
 
     def _set_derived_options(self):
-        if self.config is None:
-            raise ConfigError('No config found (or config file empty?)')
+        ConfigBase._set_derived_options(self)
 
         # interpolate program name
         # add quotes around $SEEDFILE

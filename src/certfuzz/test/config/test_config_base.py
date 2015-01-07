@@ -80,6 +80,11 @@ class Test(unittest.TestCase):
             self.assertTrue(hasattr(c, k))
             self.assertEqual(c.__getattribute__(k), v)
 
+    def test_set_derived_options(self):
+        c = config.ConfigBase('foo')
+        self.assertEqual(None, c.config)
+        self.assertRaises(ConfigError, c._set_derived_options)
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

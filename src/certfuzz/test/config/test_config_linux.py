@@ -35,6 +35,7 @@ zzuf:
     seed_interval: 20
 verifier:
     backtracelevels: 5
+    keep_duplicates: False
     exclude_unmapped_frames: True
     savefailedasserts: False
     use_valgrind: True
@@ -60,7 +61,7 @@ class Test(unittest.TestCase):
         os.close(fd)
         with open(self.yamlfile, 'w') as stream:
             yaml.dump(self.c, stream)
-            
+
         self.cfg = LinuxConfig(self.yamlfile)
 
     def tearDown(self):
@@ -99,7 +100,6 @@ class Test(unittest.TestCase):
             self.assertTrue(self.cfg.uniq_log.endswith(cl.UNIQ_LOG))
             self.assertTrue(self.cfg.crashexitcodesfile.endswith(cl.CRASH_EXIT_CODE_FILE))
             self.assertTrue(self.cfg.zzuf_log_file.endswith(cl.ZZUF_LOG_FILE))
-            self.assertEqual(self.cfg.zzuf_log_out('seedfile'), os.path.join('seedfile', 'zzuf_log.txt'))
 
     def test_get_command(self):
         with self.cfg:
@@ -118,13 +118,6 @@ class Test(unittest.TestCase):
             self.assertEqual(result[0], 'foo')
             self.assertEqual(result[1], '/dev/null')
 
-    def test_zzuf_log_out(self):
-        with self.cfg:
-            result = self.cfg.zzuf_log_out('foo')
-            self.assertEqual(str, type(result))
-            self.assertTrue(result.startswith('foo'))
-            self.assertTrue(result.endswith(cl.ZZUF_LOG_FILE))
-
     def test_full_path_local_fuzz_dir(self):
         with self.cfg:
             result = self.cfg.full_path_local_fuzz_dir('foo')
@@ -141,13 +134,6 @@ class Test(unittest.TestCase):
         with self.cfg:
             self.assertEqual(self.cfg.get_minimized_file('foo.txt'), 'foo-%s.txt' % MINIMIZED_EXT)
 
-    def test_get_filenames(self):
-        with self.cfg:
-            result = self.cfg.get_filenames('foo.bar.baz', use_minimized_as_root=True)
-
-            print result
-            result = self.cfg.get_filenames('foo.bar.baz', use_minimized_as_root=False)
-            print result
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

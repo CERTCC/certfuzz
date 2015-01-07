@@ -56,7 +56,8 @@ class ConfigBase(object):
             validation()
 
     def _set_derived_options(self):
-        pass
+        if self.config is None:
+            raise ConfigError('No config found (or config file empty?)')
 
     def _add_validations(self):
         pass
