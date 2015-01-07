@@ -12,7 +12,7 @@ import unittest
 
 import yaml
 
-from certfuzz import config
+import certfuzz.config.config_base as config
 from certfuzz.config.errors import ConfigError
 
 
@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
 
     def _write_yaml(self, thing=None):
         if thing is None:
-            thing = dict(a=1, b=2, c=3, d=4)
+            thing = dict([(y, x) for x, y in enumerate("abcd")])
         fd, f = tempfile.mkstemp(suffix='yaml', dir=self.tempdir)
         os.close(fd)
         with open(f, 'wb') as fd:
@@ -49,10 +49,9 @@ class Test(unittest.TestCase):
         self.assertEqual(thing, from_yaml)
 
     def test_config_init(self):
-        thing, f = self._write_yaml()
+        _junk, f = self._write_yaml()
         c = config.ConfigBase(f)
         self.assertEqual(f, c.file)
-        self.assertEqual(thing, c.config)
 
     def test_validate(self):
         dummy, f = self._write_yaml()
@@ -67,26 +66,13 @@ class Test(unittest.TestCase):
         c.validate()
         self.assertEqual(3, _count)
 
-    def test_init_fails_if_load_fails(self):
-        dummy, f = self._write_yaml()
-        os.remove(f)
-        self.assertRaises(ConfigError, config.ConfigBase, f)
-
-    def test_verify_load(self):
-        # write another yaml file
-        _thing, f = self._write_yaml()
-        # sub the new file name
-        c = config.ConfigBase(f)
-        c.config = None
-        self.assertRaises(ConfigError, c._verify_load)
-
     def test_load(self):
         # write another yaml file
         thing, f = self._write_yaml()
         # sub the new file name
-        c = config.ConfigBase(f)
-        # we should get the thing back again
-        self.assertEqual(thing, c.config)
+        with config.ConfigBase(f) as c:
+            # we should get the thing back again
+            self.assertEqual(thing, c.config)
 
         # load should add each of the things as
         # config attributes

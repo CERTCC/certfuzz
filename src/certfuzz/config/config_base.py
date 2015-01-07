@@ -14,7 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 def parse_yaml(yaml_file):
-    return yaml.load(open(yaml_file, 'r'))
+    with open(yaml_file, 'r') as f:
+        stuff = yaml.load(f)
+    return stuff
 
 
 class ConfigBase(object):
@@ -30,7 +32,6 @@ class ConfigBase(object):
 
     def __enter__(self):
         self.load()
-        self._verify_load()
         self._set_derived_options()
         self._add_validations()
         self.validate()
@@ -49,10 +50,6 @@ class ConfigBase(object):
 
         if self.config:
             self.__dict__.update(self.config)
-
-    def _verify_load(self):
-        if self.config is None:
-            raise ConfigError('ConfigBase load failed for {}'.format(self.file))
 
     def validate(self):
         for validation in self.validations:
