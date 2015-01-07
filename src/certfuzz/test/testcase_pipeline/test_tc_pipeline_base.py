@@ -43,16 +43,19 @@ class Test(unittest.TestCase):
         self.assertRaises(TypeError, cls)
 
         try:
-            TCPL_Impl()
+            TCPL_Impl(outdir=self.tmpdir)
         except TypeError as e:
             self.fail('Dummy implementation class failed to instantiate: {}'.format(e))
 
     def test_pipeline_coroutines(self):
-        tcpl = TCPL_Impl()
+        tcpl = TCPL_Impl(outdir=self.tmpdir)
         results = []
 
         def func(tc):
             results.append(tc)
+
+        class MockTestCase(object):
+            should_proceed_with_analysis = True
 
         tcpl._verify = func
         tcpl._minimize = func
@@ -64,23 +67,26 @@ class Test(unittest.TestCase):
                        tcpl.report,
                        ]
 
+        tc = MockTestCase()
         # if this test works, results will get [0,1,2,...]
         # because each of the above functions will call
         # its corresponding _function which will append
         # i to results
         for i, plfunc in enumerate(funcs2check):
-            #setup the pipeline coroutine
+            # setup the pipeline coroutine
             testfunc = plfunc()
             self.assertEqual(i, len(results))
-            testfunc.send(i)
+            testfunc.send(tc)
             self.assertEqual(i + 1, len(results))
-            self.assertEqual(i, results[-1])
+            self.assertEqual(tc, results[-1])
 
     def test_copy_files(self):
-        tcpl = TCPL_Impl()
+        tcpl = TCPL_Impl(outdir=self.tmpdir)
 
         class MockTestCase(object):
-            result_dir = tempfile.mkdtemp(dir=self.tmpdir)
+            result_dir = tempfile.mkdtemp(prefix="tc_out_", dir=self.tmpdir)
+            signature = "tcsignature"
+            tempdir = tempfile.mkdtemp(prefix="tc_in_", dir=self.tmpdir)
 
         tc = MockTestCase()
         fd, fname = tempfile.mkstemp(dir=tc.result_dir)
@@ -102,7 +108,7 @@ class Test(unittest.TestCase):
             def _analyze(self, testcase):
                 certfuzz.testcase_pipeline.tc_pipeline_base.TestCasePipelineBase._analyze(self, testcase)
 
-        tcpl = TCPL_Impl2()
+        tcpl = TCPL_Impl2(outdir=self.tmpdir)
 
         class MockTestCase(object):
             pass
@@ -132,5 +138,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
