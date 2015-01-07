@@ -17,11 +17,9 @@ class Test(unittest.TestCase):
         self.tempdir = tempfile.mkdtemp()
         self.outdir = outdir_base = tempfile.mkdtemp(prefix='outdir_base',
                                                      dir=self.tempdir)
-        rng_seed = 0
         iteration = 0
         self.options = {}
-#        self.options = {'min_ratio': 0.1, 'max_ratio': 0.2}
-        self.args = (seedfile_obj, outdir_base, rng_seed, iteration, self.options)
+        self.args = (seedfile_obj, outdir_base, iteration, self.options)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
@@ -50,5 +48,5 @@ class Test(unittest.TestCase):
 #                self.assertAlmostEqual(f.ratio, f.fuzzed_bit_ratio(), 2)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

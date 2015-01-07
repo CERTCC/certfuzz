@@ -18,10 +18,9 @@ class Test(unittest.TestCase):
         self.tempdir = tempfile.mkdtemp()
         self.outdir = outdir_base = tempfile.mkdtemp(prefix='outdir_base',
                                                      dir=self.tempdir)
-        rng_seed = 0
         iteration = 0
         options = {}
-        self.args = (seedfile_obj, outdir_base, rng_seed, iteration, options)
+        self.args = (seedfile_obj, outdir_base, iteration, options)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir, ignore_errors=True)
@@ -55,5 +54,5 @@ class Test(unittest.TestCase):
             self.assertRaises(FuzzerExhaustedError, f._fuzz)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
