@@ -31,7 +31,8 @@ class Test(unittest.TestCase):
         with open(f, 'w') as fd:
             yaml.dump(self.cfg_in, fd)
 
-        return WindowsConfig(f)
+        with WindowsConfig(f) as wcfg:
+            return wcfg
 
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
@@ -46,7 +47,8 @@ class Test(unittest.TestCase):
         with open(f, 'w') as fd:
             yaml.dump(self.cfg_in, fd)
 
-        self.assertRaises(KeyError, WindowsConfig, f)
+        wcfg = WindowsConfig(f)
+        self.assertRaises(ConfigError, wcfg._set_derived_options)
 
     def test_minimal_config(self):
         try:
