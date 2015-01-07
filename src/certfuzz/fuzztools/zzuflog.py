@@ -55,10 +55,13 @@ class ZzufLog:
         range, result, and complete line from the last line of the file.
         @return: string, string, string, string
         '''
-        with open(self.infile, 'r') as f:
-            for line in f:
-                # don't do anything, just iterate through until we're done with lines
-                pass
+        try:
+            with open(self.infile, 'r') as f:
+                line = list(f)[-1]
+        except IndexError:
+            # e.g., if infile is empty
+            line = ''
+
         # when you get here line contains the last line read from the file
         return line.strip()
 
