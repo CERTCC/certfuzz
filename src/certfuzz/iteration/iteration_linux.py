@@ -64,7 +64,7 @@ class LinuxIteration(IterationBase3):
     def _post_fuzz(self):
         self.r = self.fuzzer.range
         if self.r:
-            logger.info('Selected r: %s', self.r)
+            logger.debug('Selected r: %s', self.r)
 
         # decide if we can minimize this case later
         # do this here (and not sooner) because the fuzzer could
