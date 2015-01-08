@@ -4,6 +4,7 @@ Created on Oct 22, 2014
 @organization: cert.org
 '''
 import unittest
+import certfuzz.runners.zzufrun
 from certfuzz.runners.zzufrun import ZzufRunner
 import shutil
 import tempfile
@@ -31,46 +32,44 @@ class Test(unittest.TestCase):
 
         self.ff = fname
 
+        self._basename_saved = certfuzz.runners.zzufrun._zzuf_basename
+
+
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
+        certfuzz.runners.zzufrun._zzuf_basename = self._basename_saved
 
     def test_quiet_flag(self):
-        zr = ZzufRunner(options={'quiet': True}, cmd_template=None,
+        cmd_template = 'foo bar'
+        zr = ZzufRunner(options={'hideoutput': True}, cmd_template=cmd_template,
                         fuzzed_file=None, workingdir_base=self.tmpdir)
         self.assertTrue(zr._quiet)
         with zr:
             self.assertTrue('--quiet' in zr._zzuf_args)
 
-        zr = ZzufRunner(options={'quiet': False}, cmd_template=None,
+        zr = ZzufRunner(options={'hideoutput': False}, cmd_template=cmd_template,
                         fuzzed_file=None, workingdir_base=self.tmpdir)
         self.assertFalse(zr._quiet)
         with zr:
             self.assertFalse('--quiet' in zr._zzuf_args)
 
     def test_find_zzuf(self):
+        cmd_template = 'foo bar'
         (fd, fname) = tempfile.mkstemp(prefix='zzufrun_test_', dir=self.tmpdir)
         os.close(fd)
         os.remove(fname)
         self.assertFalse(os.path.exists(fname))
 
-        for exe in ['/bin/ls', fname]:
-            zr = ZzufRunner(options={}, cmd_template=None,
-                            fuzzed_file=None, workingdir_base=self.tmpdir)
-            self.assertEqual(zr._zzuf_basename, 'zzuf')
-
-            _basename = os.path.basename(exe)
-            zr._zzuf_basename = _basename
-
-            self.assertEqual(None, zr._zzuf_loc)
-            if os.path.exists(exe):
-                zr._find_zzuf()
-                self.assertEqual(exe, zr._zzuf_loc)
-            else:
-                self.assertRaises(RunnerNotFoundError, zr._find_zzuf)
+        certfuzz.runners.zzufrun._zzuf_basename = '/bin/ls'
+        if os.path.exists(certfuzz.runners.zzufrun._zzuf_basename):
+            certfuzz.runners.zzufrun._find_zzuf()
+            self.assertEqual(certfuzz.runners.zzufrun._zzuf_basename, certfuzz.runners.zzufrun._zzuf_loc)
+        else:
+            self.assertRaises(RunnerNotFoundError, certfuzz.runners.zzufrun._find_zzuf)
 
     def test_run(self):
         options = {}
-        cmd_template = ''
+        cmd_template = 'foo bar'
 
         touch = '/usr/bin/touch'
         if not os.path.exists(touch):
@@ -92,5 +91,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
