@@ -35,7 +35,7 @@ class ABRTfile(DebuggerFile):
         self.crashing_thread = False
         self.has_proc_map = False
 
-        super(self.__class__, self).__init__(path, exclude_unmapped_frames)
+        DebuggerFile.__init__(self, path, exclude_unmapped_frames)
 
     def backtrace_line(self, idx, l):
         self._look_for_crashing_thread(l)

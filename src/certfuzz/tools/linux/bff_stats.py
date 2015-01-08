@@ -4,12 +4,13 @@ Created on Jan 12, 2011
 @organization: cert.org
 
 '''
-import os
 import logging
-import sys
-import re
 from optparse import OptionParser
-from certfuzz.campaign.config.bff_config import read_config_options
+import os
+import re
+import sys
+from certfuzz.config.config_linux import LinuxConfig
+
 
 parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, parent_path)
@@ -100,7 +101,9 @@ def main():
         cfg_file = os.path.join(parent_path, 'conf.d', 'bff.cfg')
 
     logger.debug('Using config file: %s', cfg_file)
-    cfg = read_config_options(cfg_file)
+    cfg = LinuxConfig(cfg_file)
+    with cfg:
+        pass
 
     result_dir = cfg.crashers_dir
     logger.debug('Reading results from %s', result_dir)

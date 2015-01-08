@@ -11,19 +11,17 @@ import sys
 import time
 
 from certfuzz.campaign.campaign_base import CampaignBase
-from certfuzz.campaign.config import bff_config as cfg_helper
 from certfuzz.campaign.errors import CampaignScriptError
-from certfuzz.debuggers import crashwrangler  #@UnusedImport
-from certfuzz.debuggers import gdb  #@UnusedImport
+from certfuzz.config.config_linux import LinuxConfig
+from certfuzz.debuggers import crashwrangler  # @UnusedImport
+from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.debuggers.registration import verify_supported_platform
-from certfuzz.file_handlers.tmp_reaper import TmpReaper
-from certfuzz.fuzztools import subprocess_helper as subp
-from certfuzz.fuzztools.process_killer import ProcessKiller
-from certfuzz.fuzztools.state_timer import STATE_TIMER
-from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
+from certfuzz.fuzztools import subprocess_helper as subp
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.iteration.iteration_linux import Iteration
+from certfuzz.fuzztools.process_killer import ProcessKiller
+from certfuzz.fuzztools.watchdog import WatchDog
+from certfuzz.iteration.iteration_linux import LinuxIteration
 
 
 logger = logging.getLogger(__name__)
@@ -57,12 +55,9 @@ class LinuxCampaign(CampaignBase):
     '''
     Extends CampaignBase to add linux-specific features.
     '''
+
     def __init__(self, config_file=None, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
-
-        # read configs
-        logger.info('Reading config from %s', self.config_file)
-        self.config = cfg_helper.read_config_options(self.config_file)
 
         # pull stuff out of configs
         self.campaign_id = self.config.campaign_id
@@ -80,12 +75,20 @@ class LinuxCampaign(CampaignBase):
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
 
+
+    def _read_config_file(self):
+        CampaignBase._read_config_file(self)
+
+        with LinuxConfig(self.config_file) as cfgobj:
+            self.config = cfgobj
+            self.configdate = cfgobj.configdate
+
+    def _pre_enter(self):
         # give up if we don't have a debugger
         verify_supported_platform()
         # give up if prog is a script
         self._check_for_script()
 
-    def _pre_enter(self):
         self._start_process_killer()
         self._set_unbuffered_stdout()
         self._check_for_script()
@@ -136,7 +139,7 @@ class LinuxCampaign(CampaignBase):
 
         # set up the watchdog timeout within the VM and restart the daemon
         with WatchDog(self.config.watchdogfile, self.config.watchdogtimeout) as watchdog:
-            watchdog.go()
+            watchdog()
 
     def _check_for_script(self):
         logger.debug('check for script')
@@ -186,36 +189,17 @@ class LinuxCampaign(CampaignBase):
         '''
         pass
 
-    def _do_interval(self):
-        # wipe the tmp dir clean to try to avoid filling the VM disk
-        TmpReaper().clean_tmp()
-
-        # choose seedfile
-        sf = self.seedfile_set.next_item()
-        logger.info('Selected seedfile: %s', sf.basename)
-
-        r = sf.rangefinder.next_item()
-        qf = not self.first_chunk
-
-        logger.info(STATE_TIMER)
-
-        interval_limit = self.current_seed + self.seed_interval
-
-        # start an iteration interval
-        # note that range does not include interval_limit
-        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
-        for seednum in xrange(self.current_seed, interval_limit):
-            self._do_iteration(sf, r, qf, seednum)
-
-        self.current_seed = interval_limit
-        self.first_chunk = False
-
     def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
         # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
         touch_watchdog_file()
-        with Iteration(cfg=self.config, seednum=seednum, seedfile=seedfile, r=range_obj, workdirbase=self.working_dir, quiet=quiet_flag,
-            uniq_func=self._crash_is_unique,
-            sf_set=self.seedfile_set,
-            rf=seedfile.rangefinder,
-            outdir=self.outdir) as iteration:
-            iteration.go()
+        with LinuxIteration(cfg=self.config,
+                            seednum=seednum,
+                            seedfile=seedfile,
+                            r=range_obj,
+                            workdirbase=self.working_dir,
+                            quiet=quiet_flag,
+                            uniq_func=self._crash_is_unique,
+                            sf_set=self.seedfile_set,
+                            rf=seedfile.rangefinder,
+                            outdir=self.outdir) as iteration:
+            iteration()

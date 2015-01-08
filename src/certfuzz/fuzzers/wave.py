@@ -36,6 +36,6 @@ class WaveFuzzer(MinimizableFuzzer):
 
         logger.debug('%s - set byte 0x%02x to 0x%02x', self.sf.basename, q, r)
 
-        self.fuzzed = self.input
+        self.output = self.input
 
 _fuzzer_class = WaveFuzzer

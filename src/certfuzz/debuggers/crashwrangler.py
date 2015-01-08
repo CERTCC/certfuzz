@@ -41,7 +41,7 @@ class CrashWrangler(Debugger):
     _ext = 'cw'
 
     def __init__(self, program, cmd_args, outfile, timeout, killprocname, template=None, exclude_unmapped_frames=True, **options):
-        super(CrashWrangler, self).__init__(program, cmd_args, outfile, timeout, killprocname)
+        Debugger.__init__(self, program, cmd_args, outfile, timeout, killprocname)
 
     def _get_crashwrangler_cmdline(self):
         if (self.program == cwapp):

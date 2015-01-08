@@ -27,10 +27,9 @@ class Test(unittest.TestCase):
         self.tempdir = tempfile.mkdtemp()
         self.outdir = outdir_base = tempfile.mkdtemp(prefix='outdir_base',
                                                      dir=self.tempdir)
-        rng_seed = 0
         iteration = 0
         self.options = {'min_ratio': 0.1, 'max_ratio': 0.2}
-        self.args = (seedfile_obj, outdir_base, rng_seed, iteration, self.options)
+        self.args = (seedfile_obj, outdir_base, iteration, self.options)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
@@ -126,7 +125,7 @@ class Test(unittest.TestCase):
                 f.iteration = i
                 f._fuzz()
                 # same length, different output
-                self.assertEqual(self.sf.len, len(f.fuzzed))
+                self.assertEqual(self.sf.len, len(f.output))
                 self._fail_if_not_fuzzed(f.input)
                 # confirm ratio
 #                self.assertGreaterEqual(f.fuzzed_byte_ratio() / self.chars_inserted, MockRange().min)
@@ -142,9 +141,9 @@ class Test(unittest.TestCase):
                 last_result = None
             last_x = x
             for _ in range(20):
-                with CRMutFuzzer(self.sf, self.outdir, x, x, self.options) as f:
+                with CRMutFuzzer(self.sf, self.outdir, x, self.options) as f:
                     f._fuzz()
-                    result = str(f.fuzzed)
+                    result = str(f.output)
                     if last_result:
                         self.assertEqual(result, last_result)
                     else:

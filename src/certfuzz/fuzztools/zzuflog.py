@@ -6,7 +6,6 @@ Provides support for analyzing zzuf log files.
 @organization: cert.org
 '''
 import logging
-import os
 import re
 
 import filetools
@@ -15,34 +14,24 @@ import filetools
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
+KILL_INDICATORS = ['signal 9', 'SIGXFSZ', 'Killed', 'exit 137']
+OUT_OF_MEMORY_INDICATORS = ['signal 15', 'exit 143']
+
 
 class ZzufLog:
-    def __init__(self, infile, outfile):
+    def __init__(self, infile):
         '''
         Reads in <logfile> and parses *the last line*.
         @param logfile: the zzuf log file to analyze
         '''
         self.infile = infile
-        self.outfile = outfile
         self.line = self._get_last_line()
 
         # parsed will get set True in _parse_line if we successfully parse the line
         self.parsed = False
         (self.seed, self.range, self.result) = self._parse_line()
 
-        self.was_killed = self._was_killed()
-        self.was_out_of_memory = self._was_out_of_memory()
-
-        try:
-            fp = open(self.outfile, 'a')
-            fp.write("%s\n" % self.line)
-        except Exception, e:
-            logger.warning('Error writing to %s: %s', self.outfile, e)
-        finally:
-            fp.close()
-
         filetools.delete_files(self.infile)
-        assert not os.path.exists(self.infile)
 
         self.exitcode = ''
         self._set_exitcode()
@@ -66,15 +55,15 @@ class ZzufLog:
         range, result, and complete line from the last line of the file.
         @return: string, string, string, string
         '''
-        f = open(self.infile, 'r')
-        last_line = ""
         try:
-            for l in f:
-                last_line = l
-        finally:
-            f.close()
+            with open(self.infile, 'r') as f:
+                line = list(f)[-1]
+        except IndexError:
+            # e.g., if infile is empty
+            line = ''
 
-        return last_line.strip()
+        # when you get here line contains the last line read from the file
+        return line.strip()
 
     def _parse_line(self):
         seed = False
@@ -110,14 +99,14 @@ class ZzufLog:
         # if you got here, consider it a crash
         return True
 
-    def _was_killed(self):
-        for kill_indicator in ['signal 9', 'SIGXFSZ', 'Killed', 'exit 137']:
-            if kill_indicator in self.result:
-                return True
-        return False
 
-    def _was_out_of_memory(self):
-        for out_of_memory_indicator in ['signal 15', 'exit 143']:
-            if out_of_memory_indicator in self.result:
-                return True
-        return False
+    @property
+    def was_killed(self):
+        return self._any_indicators_in_result(KILL_INDICATORS)
+
+    @property
+    def was_out_of_memory(self):
+        return self._any_indicators_in_result(OUT_OF_MEMORY_INDICATORS)
+
+    def _any_indicators_in_result(self, indicator_list):
+        return(any(indicator in self.result for indicator in indicator_list))

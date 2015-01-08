@@ -21,7 +21,7 @@ class StdErr(Analyzer):
         outfile = get_file(crash.fuzzedfile.path)
         timeout = cfg.progtimeout
 
-        super(StdErr, self).__init__(cfg, crash, outfile, timeout, stderr=outfile)
+        Analyzer.__init__(self, cfg, crash, outfile, timeout, stderr=outfile)
         # need to set the stderr_redirect flag on the base class
         self.empty_output_ok = True
 

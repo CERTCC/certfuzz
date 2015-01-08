@@ -3,14 +3,17 @@ Created on Apr 2, 2012
 
 @organization: cert.org
 '''
-import unittest
-from certfuzz.campaign.config.config_windows import Config
-import os
-import yaml
-import tempfile
-import shutil
-from certfuzz.campaign.config.errors import ConfigError
 import logging
+import os
+import shutil
+import tempfile
+import unittest
+
+import yaml
+
+from certfuzz.config.config_windows import WindowsConfig
+from certfuzz.config.errors import ConfigError
+
 
 logger = logging.getLogger()
 hdlr = logging.FileHandler(os.devnull)
@@ -28,7 +31,8 @@ class Test(unittest.TestCase):
         with open(f, 'w') as fd:
             yaml.dump(self.cfg_in, fd)
 
-        return Config(f)
+        with WindowsConfig(f) as wcfg:
+            return wcfg
 
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
@@ -43,7 +47,8 @@ class Test(unittest.TestCase):
         with open(f, 'w') as fd:
             yaml.dump(self.cfg_in, fd)
 
-        self.assertRaises(KeyError, Config, f)
+        wcfg = WindowsConfig(f)
+        self.assertRaises(ConfigError, wcfg._set_derived_options)
 
     def test_minimal_config(self):
         try:
@@ -89,5 +94,5 @@ class Test(unittest.TestCase):
         self.assertEqual(10, self.counter)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

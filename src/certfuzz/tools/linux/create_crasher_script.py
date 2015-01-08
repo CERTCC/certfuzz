@@ -5,16 +5,16 @@ Created on Jan 13, 2011
 
 '''
 
-from optparse import OptionParser
 import logging
-import sys
+from optparse import OptionParser
 import os
 import re
+import sys
+from certfuzz.config.config_linux import LinuxConfig
+
 
 parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, parent_path)
-
-from certfuzz.campaign.config.bff_config import read_config_options
 
 logger = logging.getLogger(__name__)
 # set default logging level (override with command line options)
@@ -73,7 +73,10 @@ def main():
         cfg_file = os.path.join(parent_path, 'conf.d', 'bff.cfg')
 
     logger.debug('Using config file: %s', cfg_file)
-    cfg = read_config_options(cfg_file)
+
+    cfg = LinuxConfig(cfg_file)
+    with cfg:
+        pass
 
     result_dir = cfg.crashers_dir
     logger.debug('Reading results from %s', result_dir)

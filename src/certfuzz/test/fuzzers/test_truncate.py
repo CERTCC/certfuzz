@@ -23,10 +23,9 @@ class Test(unittest.TestCase):
         self.tempdir = tempfile.mkdtemp()
         self.outdir = outdir_base = tempfile.mkdtemp(prefix='outdir_base',
                                                      dir=self.tempdir)
-        rng_seed = 0
         iteration = 0
         options = {}
-        self.args = (seedfile_obj, outdir_base, rng_seed, iteration, options)
+        self.args = (seedfile_obj, outdir_base, iteration, options)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir, ignore_errors=True)
@@ -40,7 +39,7 @@ class Test(unittest.TestCase):
             with TruncateFuzzer(*self.args) as f:
                 f._fuzz()
                 n_expected = self.sf.len - self.sf.tries - 1
-                self.assertEqual(len(f.fuzzed), n_expected)
+                self.assertEqual(len(f.output), n_expected)
 
     def test_fuzz_out_of_range(self):
         self.sf.tries = self.sf.len + 1
@@ -53,5 +52,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

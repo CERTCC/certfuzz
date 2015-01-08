@@ -8,6 +8,7 @@ import shutil
 import tempfile
 
 from certfuzz.fuzztools import hamming
+from pprint import pformat
 
 
 logger = logging.getLogger(__name__)
@@ -44,6 +45,9 @@ class TestCaseBase(object):
                                     prefix=self._tmp_pfx,
                                     dir=self.workdir_base)
 
+    def __repr__(self):
+        return pformat(self.__dict__)
+
     def _teardown_workdir(self):
         shutil.rmtree(self.working_dir)
         self.working_dir = None
@@ -64,14 +68,3 @@ class TestCaseBase(object):
 
         self.hd_bits = hamming.bitwise_hd(a_string, fuzzed)
         self.hd_bytes = hamming.bytewise_hd(a_string, fuzzed)
-
-    def to_TestCaseDoc(self):
-        from ..db.couchdb.datatypes import TestCaseDoc
-
-        doc = TestCaseDoc()
-        doc.crash_signature = self.signature
-        doc.fuzzed_file = self.fuzzedfile.to_FileDoc().id
-        doc.seed_file = self.seedfile.to_FileDoc().id
-        doc.bitwise_hd = self.hd_bits
-        doc.bytewise_hd = self.hd_bytes
-        return doc

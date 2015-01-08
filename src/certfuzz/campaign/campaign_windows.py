@@ -3,7 +3,6 @@ Created on Jan 10, 2014
 
 @author: adh
 '''
-import gc
 import logging
 import os
 import platform
@@ -11,11 +10,11 @@ import sys
 from threading import Timer
 
 from certfuzz.campaign.campaign_base import CampaignBase
+from certfuzz.config.config_windows import WindowsConfig
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
+from certfuzz.iteration.iteration_windows import WindowsIteration
 from certfuzz.runners.killableprocess import Popen
-from certfuzz.campaign.config.config_windows import Config
-from certfuzz.iteration.iteration_windows import Iteration
 
 
 logger = logging.getLogger(__name__)
@@ -29,12 +28,6 @@ class WindowsCampaign(CampaignBase):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
         self.gui_app = False
-
-        #read configs
-        logger.info('Reading config from %s', self.config_file)
-        cfgobj = Config(self.config_file)
-        self.config = cfgobj.config
-        self.configdate = cfgobj.configdate
 
         # pull stuff out of configs
         self.campaign_id = self.config['campaign']['id']
@@ -69,6 +62,15 @@ class WindowsCampaign(CampaignBase):
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
 
+    def _read_config_file(self):
+        CampaignBase._read_config_file(self)
+
+        # read configs
+        with WindowsConfig(self.config_file) as cfgobj:
+            self.config = cfgobj.config
+            self.configdate = cfgobj.configdate
+
+
     def __getstate__(self):
         state = self.__dict__.copy()
 
@@ -79,7 +81,7 @@ class WindowsCampaign(CampaignBase):
         # for attributes that are modules,
         # we can safely delete them as they will be
         # reconstituted when we __enter__ a context
-        for key in ['fuzzer_module', 'fuzzer',
+        for key in ['fuzzer_module', 'fuzzer_cls',
                     'runner_module', 'runner',
                     'debugger_module', 'dbg_class'
                     ]:
@@ -182,43 +184,18 @@ class WindowsCampaign(CampaignBase):
         if self.use_buttonclicker:
             os.system('taskkill /im buttonclicker.exe')
 
-    def _do_interval(self):
-        # choose seedfile
-        sf = self.seedfile_set.next_item()
-
-        logger.info('Selected seedfile: %s', sf.basename)
-        rng_seed = int(sf.md5, 16)
-
-        if self.current_seed % self.status_interval == 0:
-            # cache our current state
-            self._save_state()
-
-        interval_limit = self.current_seed + self.seed_interval
-
-        # start an iteration interval
-        # note that range does not include interval_limit
-        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
-        for seednum in xrange(self.current_seed, interval_limit):
-            self._do_iteration(sf, rng_seed, seednum)
-
-        del sf
-        # manually collect garbage
-        gc.collect()
-
-        self.current_seed = interval_limit
-        self.first_chunk = False
-
-    def _do_iteration(self, sf, rng_seed, seednum):
+    def _do_iteration(self, sf, range_obj, quiet_flag, seednum):
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
-        # newly created Iteration()
-        with Iteration(sf, rng_seed, seednum, self.config, self.fuzzer,
+        # newly created WindowsIteration()
+        with WindowsIteration(sf, seednum, self.config, self.fuzzer_cls,
                      self.runner, self.debugger_module, self.dbg_class,
                      self.keep_heisenbugs, self.keep_duplicates,
                      self.cmd_template, self._crash_is_unique,
-                     self.working_dir, self.outdir, self.debug) as iteration:
+                     self.working_dir, self.outdir, self.debug, self.seedfile_set,
+                     sf.rangefinder) as iteration:
             try:
-                iteration.go()
+                iteration()
             except FuzzerExhaustedError:
                 # Some fuzzers run out of things to do. They should
                 # raise a FuzzerExhaustedError when that happens.

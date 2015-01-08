@@ -16,11 +16,11 @@ from certfuzz.fuzztools import filetools
 logger = logging.getLogger(__name__)
 
 
-class Crash(TestCaseBase):
+class Testcase(TestCaseBase):
     tmpdir_pfx = 'crash-'
 
     def __init__(self, seedfile, fuzzedfile, dbg_timeout=30):
-        logger.debug('Inititalize Crash')
+        logger.debug('Inititalize Testcase')
         TestCaseBase.__init__(self, seedfile, fuzzedfile)
 
         self.debugger_timeout = dbg_timeout
@@ -36,6 +36,7 @@ class Crash(TestCaseBase):
         self.is_crash = False
         self.debugger_file = None
         self.is_unique = False
+        self.should_proceed_with_analysis = False
         self.is_corrupt_stack = False
         self.copy_fuzzedfile = True
         self.pc = None
@@ -70,11 +71,6 @@ class Crash(TestCaseBase):
     def _set_attr_from_dbg(self, attrname):
         raise NotImplementedError
 
-    def _temp_output_files(self):
-        t = self.tempdir
-        file_list = [os.path.join(t, f) for f in os.listdir(t)]
-        return file_list
-
     def _verify_crash_base_dir(self):
         raise NotImplementedError
 
@@ -100,19 +96,6 @@ class Crash(TestCaseBase):
 
     def confirm_crash(self):
         raise NotImplementedError
-
-    def copy_files(self, target=None):
-        if not target:
-            target = self.result_dir
-        if not target or not os.path.isdir(target):
-            raise CrashError("Target directory does not exist: %s" % target)
-
-        logger.debug('Copying to %s', target)
-        file_list = self._temp_output_files()
-        for f in file_list:
-            logger.debug('\t...file: %s', f)
-
-        filetools.copy_files(target, *file_list)
 
     def copy_files_to_temp(self):
         if self.fuzzedfile and self.copy_fuzzedfile:

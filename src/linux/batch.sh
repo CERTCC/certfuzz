@@ -94,7 +94,7 @@ cd $scriptlocation
 
 echo "Using python interpreter: $mypython"
 if [[ -f "$scriptlocation/bff.py" ]]; then
-    $mypython $scriptlocation/bff.py --config=$scriptlocation/conf.d/bff.cfg "$@"
+    $mypython $scriptlocation/bff.py --config=$scriptlocation/conf.d/bff.yaml "$@"
 else
     read -p "Cannot find $scriptlocation/bff.py Please verify script locations."
 fi

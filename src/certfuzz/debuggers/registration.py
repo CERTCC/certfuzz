@@ -22,10 +22,9 @@ allowed_exploitability_values = ['UNKNOWN', 'PROBABLY_NOT_EXPLOITABLE',
 system = platform.system()
 
 # the keys for debugger_for should match strings returned by platform.system()
-debugger_for = {
-                # platform: key
-#                'Linux': 'gdb',
-#                'Darwin': 'crashwrangler',
+debugger_for = {  # platform: key
+                 # 'Linux': 'gdb',
+                # 'Darwin': 'crashwrangler',
 #                'Windows': 'msec',
                 }
 

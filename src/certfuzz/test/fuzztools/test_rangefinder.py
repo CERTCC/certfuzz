@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
         (fd, f) = tempfile.mkstemp(text=True)
         os.close(fd)
         self.tmpfile = f
-        self.r = RangeFinder(self.min, self.max, self.tmpfile)
+        self.r = RangeFinder(self.min, self.max)
 
     def tearDown(self):
         self.delete_file(self.tmpfile)
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         # Ranges would be 0.375-0.601, 0.601-0.981, 0.981-0.999
         # if it weren't for the fix that merges the last two
         # so we should only see two ranges
-        r = RangeFinder(0.375, 0.999, self.tmpfile)
+        r = RangeFinder(0.375, 0.999)
         self.assertEqual(len(r.things), 2)
         mins = sorted([thing.min for thing in r.things.itervalues()])
         maxs = sorted([thing.max for thing in r.things.itervalues()])
@@ -98,5 +98,5 @@ class Test(unittest.TestCase):
 #        self.assertEqual(dict, type(state))
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

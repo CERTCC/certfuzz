@@ -32,7 +32,7 @@ class CrashWranglerGmalloc(Analyzer):
         outfile = get_file(crash.fuzzedfile.path)
         timeout = cfg.debugger_timeout
 
-        super(CrashWranglerGmalloc, self).__init__(cfg, crash, outfile, timeout)
+        Analyzer.__init__(self, cfg, crash, outfile, timeout)
 
     def go(self):
         if not _platform_is_supported:

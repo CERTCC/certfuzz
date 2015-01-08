@@ -142,15 +142,15 @@ class Minimizer(object):
 
 #         self.is_zipfile = self.check_zipfile(self.crash.fuzzedfile.path)
 
-        self.fuzzed = self._read_fuzzed()
+        self.fuzzed_content = self._read_fuzzed()
         self.seed = self._read_seed()
 
         # none of this will work if the files are of different size
-        if len(self.seed) != len(self.fuzzed):
-            raise MinimizerError('Minimizer requires seed and fuzzed to have the same length. %d != %d' % (len(self.seed), len(self.fuzzed)))
+        if len(self.seed) != len(self.fuzzed_content):
+            raise MinimizerError('Minimizer requires seed and fuzzed_content to have the same length. %d != %d' % (len(self.seed), len(self.fuzzed_content)))
 
         # initialize the hamming distance
-        self.start_distance = self.hd_func(self.seed, self.fuzzed)
+        self.start_distance = self.hd_func(self.seed, self.fuzzed_content)
         self.min_distance = self.start_distance
 
         # some programs crash differently depending on where the
@@ -214,7 +214,7 @@ class Minimizer(object):
 
     def _read_fuzzed(self):
         '''
-        returns the contents of the fuzzed file
+        returns the contents of the fuzzed_content file
         '''
         return self.crash.fuzzedfile.read()
 
@@ -226,9 +226,9 @@ class Minimizer(object):
         if self.seedfile_as_target:
                 return self.crash.seedfile.read()
         elif self.preferx:
-            return self.minchar * len(self.fuzzed)
+            return self.minchar * len(self.fuzzed_content)
         else:
-            return text.metasploit_pattern_orig(len(self.fuzzed))
+            return text.metasploit_pattern_orig(len(self.fuzzed_content))
 
     def _logger_setup(self):
         dirname = os.path.dirname(self.minimizer_logfile)
@@ -342,7 +342,7 @@ class Minimizer(object):
         filetools.copy_file(self.tempfile, outfile)
 
         newcrash.fuzzedfile = BasicFile(outfile)
-        self.logger.debug('\tNew fuzzed file: %s %s', newcrash.fuzzedfile.path, newcrash.fuzzedfile.md5)
+        self.logger.debug('\tNew fuzzed_content file: %s %s', newcrash.fuzzedfile.path, newcrash.fuzzedfile.md5)
 
         # clear out the copied crash signature so that it will be regenerated
         newcrash.signature = None
@@ -505,7 +505,7 @@ class Minimizer(object):
         write_file(''.join(self.newfuzzed), self.tempfile)
 
     def go(self):
-        # start by copying the fuzzed file since as of now it's our best fit
+        # start by copying the fuzzed_content file since as of now it's our best fit
         filetools.copy_file(self.crash.fuzzedfile.path, self.outputfile)
 
         # replace the fuzzedfile object in crash with the minimized copy
@@ -602,7 +602,7 @@ class Minimizer(object):
 
                 # we have a better match, write it to a file
                 if not len(self.newfuzzed):
-                    raise MinimizerError('New fuzzed content is empty.')
+                    raise MinimizerError('New fuzzed_content content is empty.')
 
                 self._write_file()
 
@@ -610,10 +610,10 @@ class Minimizer(object):
                     # record the result
                     # 1. copy the tempfile
                     filetools.best_effort_move(self.tempfile, self.outputfile)
-                    # 2. replace the fuzzed file in the crasher with the current one
+                    # 2. replace the fuzzed_content file in the crasher with the current one
                     self.crash.fuzzedfile = BasicFile(self.outputfile)
-                    # 3. replace the current fuzzed with newfuzzed
-                    self.fuzzed = self.newfuzzed
+                    # 3. replace the current fuzzed_content with newfuzzed
+                    self.fuzzed_content = self.newfuzzed
                     self.min_distance = self.newfuzzed_hd
 
                     got_hit = True
@@ -654,8 +654,8 @@ class Minimizer(object):
         self.logger.info('We were looking for [%s] ...', self._crash_hashes_string())
         for (md5, count) in self.crash_sigs_found.items():
             self.logger.info('\t...and found %s\t%d times', md5, count)
-        if self.fuzzed:
-            self.bytemap = hamming.bytemap(self.seed, self.fuzzed)
+        if self.fuzzed_content:
+            self.bytemap = hamming.bytemap(self.seed, self.fuzzed_content)
             self.logger.info('Bytemap: %s', self.bytemap)
 
     def get_mask(self):
@@ -676,7 +676,7 @@ class Minimizer(object):
         # or that we didn't drop any bytes at all
         # so keep trying until both are true
         while not (0 < newfuzzed_hd < self.min_distance):
-            newfuzzed, newfuzzed_hd = self.swap_func(self.seed, self.fuzzed)
+            newfuzzed, newfuzzed_hd = self.swap_func(self.seed, self.fuzzed_content)
 
         # we know our hd is > 0 and < what it was when we started
         self.newfuzzed = newfuzzed

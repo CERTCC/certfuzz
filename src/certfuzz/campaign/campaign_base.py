@@ -21,6 +21,8 @@ from certfuzz.fuzztools import filetools
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
 from certfuzz.version import __version__
+from certfuzz.file_handlers.tmp_reaper import TmpReaper
+import gc
 
 
 logger = logging.getLogger(__name__)
@@ -67,6 +69,7 @@ class CampaignBase(object):
         logger.debug('initialize %s', self.__class__.__name__)
         # Read the cfg file
         self.config_file = config_file
+        self.config = None
         self.cached_state_file = None
         self.debug = debug
         self._version = __version__
@@ -95,6 +98,12 @@ class CampaignBase(object):
         self.sf_set_out = None
         if result_dir:
             self.outdir_base = os.path.abspath(result_dir)
+
+        self._read_config_file()
+
+    @abc.abstractmethod
+    def _read_config_file(self):
+        logger.info('Reading config from %s', self.config_file)
 
     def _common_init(self):
         '''
@@ -218,12 +227,14 @@ class CampaignBase(object):
             # if you got here, nothing has handled the error
             # so log it and keep going
             self._log_unhandled_exception(etype, value, mytraceback)
-            if self.debug:
-                cleanup = False
-                logger.debug('Skipping cleanup since we are in debug mode.')
 
-        if cleanup:
-            self._cleanup_workdir()
+        if self.debug and etype:
+            # short out if in debug mode and an error occurred
+            logger.debug('Skipping cleanup since we are in debug mode.')
+            return handled
+
+        # debug not set, so we should clean up
+        self._cleanup_workdir()
 
         return handled
 
@@ -234,7 +245,7 @@ class CampaignBase(object):
 
     def _set_fuzzer(self):
         self.fuzzer_module = import_module_by_name(self.fuzzer_module_name)
-        self.fuzzer = self.fuzzer_module._fuzzer_class
+        self.fuzzer_cls = self.fuzzer_module._fuzzer_class
 
     def _set_runner(self):
         if self.runner_module_name:
@@ -284,13 +295,15 @@ class CampaignBase(object):
             logger.debug('Removed campaign working dir: %s', self.working_dir)
 
     def _create_seedfile_set(self):
+        if self.seedfile_set is not None:
+            return
+
         logger.info('Building seedfile set')
-        if self.seedfile_set is None:
-            with SeedfileSet(campaign_id=self.campaign_id,
-                             originpath=self.seed_dir_in,
-                             localpath=self.seed_dir_local,
-                             outputpath=self.sf_set_out) as sfset:
-                self.seedfile_set = sfset
+        with SeedfileSet(campaign_id=self.campaign_id,
+                         originpath=self.seed_dir_in,
+                         localpath=self.seed_dir_local,
+                         outputpath=self.sf_set_out) as sfset:
+            self.seedfile_set = sfset
 
     @abc.abstractmethod
     def __getstate__(self):
@@ -354,11 +367,41 @@ class CampaignBase(object):
         '''
         return True
 
-    @abc.abstractmethod
     def _do_interval(self):
         '''
         Implements a loop over a set of iterations
         '''
+        # wipe the tmp dir clean to try to avoid filling the VM disk
+        TmpReaper().clean_tmp()
+
+        # choose seedfile
+        sf = self.seedfile_set.next_item()
+        logger.info('Selected seedfile: %s', sf.basename)
+
+# TODO: restore this
+#         if self.current_seed % self.status_interval == 0:
+#             # cache our current state
+#             self._save_state()
+
+        r = sf.rangefinder.next_item()
+        qf = not self.first_chunk
+
+#         rng_seed = int(sf.md5, 16)
+
+        interval_limit = self.current_seed + self.seed_interval
+
+        # start an iteration interval
+        # note that range does not include interval_limit
+        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
+        for seednum in xrange(self.current_seed, interval_limit):
+            self._do_iteration(sf, r, qf, seednum)
+
+        del sf
+        # manually collect garbage
+        gc.collect()
+
+        self.current_seed = interval_limit
+        self.first_chunk = False
 
     @abc.abstractmethod
     def _do_iteration(self):

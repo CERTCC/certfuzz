@@ -8,6 +8,7 @@ Created on Apr 8, 2011
 '''
 
 import unittest
+import shutil
 
 class Test(unittest.TestCase):
     def delete_file(self, f):
@@ -16,19 +17,15 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(f))
 
     def tearDown(self):
-        self.delete_file(self.infile)
-        self.delete_file(self.outfile)
+        shutil.rmtree(self.tmpdir)
 
     def setUp(self):
-        (fd1, f1) = tempfile.mkstemp(text=True)
+        self.tmpdir = tempfile.mkdtemp(prefix='test_zzuflog_')
+        (fd1, f1) = tempfile.mkstemp(text=True, dir=self.tmpdir)
         os.close(fd1)
         self.infile = f1
 
-        (fd2, f2) = tempfile.mkstemp(text=True)
-        os.close(fd2)
-        self.outfile = f2
-
-        self.log = ZzufLog(self.infile, self.outfile)
+        self.log = ZzufLog(self.infile)
 
     def test_get_last_line(self):
         open(self.infile, 'w')
@@ -40,7 +37,7 @@ class Test(unittest.TestCase):
         os.write(fd, "thirdline\n")
         os.close(fd)
 
-        log = ZzufLog(f, self.outfile)
+        log = ZzufLog(f)
         # log.line gets the result of _get_last_line before the infile is wiped out
         self.assertEqual(log.line, 'thirdline')
         self.delete_file(f)
@@ -72,28 +69,28 @@ class Test(unittest.TestCase):
     def test_was_out_of_memory(self):
         # should be true
         self.log.result = "signal 15"
-        self.assertTrue(self.log._was_out_of_memory())
+        self.assertTrue(self.log.was_out_of_memory)
         self.log.result = "exit 143"
-        self.assertTrue(self.log._was_out_of_memory())
+        self.assertTrue(self.log.was_out_of_memory)
 
         # should be false
         self.log.result = "signal 8"
-        self.assertFalse(self.log._was_out_of_memory())
+        self.assertFalse(self.log.was_out_of_memory)
         self.log.result = "exit 18"
-        self.assertFalse(self.log._was_out_of_memory())
+        self.assertFalse(self.log.was_out_of_memory)
 
     def test_was_killed(self):
         # should be true
         self.log.result = "signal 9"
-        self.assertTrue(self.log._was_killed())
+        self.assertTrue(self.log.was_killed)
         self.log.result = "exit 137"
-        self.assertTrue(self.log._was_killed())
+        self.assertTrue(self.log.was_killed)
 
         # should be false
         self.log.result = "signal 8"
-        self.assertFalse(self.log._was_killed())
+        self.assertFalse(self.log.was_killed)
         self.log.result = "exit 18"
-        self.assertFalse(self.log._was_killed())
+        self.assertFalse(self.log.was_killed)
 
     def test_read_zzuf_log(self):
         (fd, f) = tempfile.mkstemp(text=True)
@@ -102,7 +99,7 @@ class Test(unittest.TestCase):
         os.write(fd, line % (85, "0.01-0.02", "bar"))
         os.close(fd)
 
-        log = ZzufLog(f, self.outfile)
+        log = ZzufLog(f)
 
         self.assertEqual(log.seed, 85)
         self.assertEqual(log.range, "0.01-0.02")
@@ -138,7 +135,7 @@ class Test(unittest.TestCase):
         # should be true
         self.log.result = "a"
         self.log._set_exitcode()
-        self.log.parsed = True # have to fake it since infile is empty
+        self.log.parsed = True  # have to fake it since infile is empty
         self.assertTrue(self.log.crash_logged(False))
 
 #    def test_crash_exit(self):
@@ -169,5 +166,5 @@ class Test(unittest.TestCase):
 #        self.assertFalse(self.log._crash_exit(crash_exit_code_list))
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

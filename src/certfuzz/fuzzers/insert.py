@@ -18,7 +18,7 @@ class InsertFuzzer(Fuzzer):
     '''
     def _fuzz(self):
         '''
-        Insert individual bytes of input and put output in self.fuzzed
+        Insert individual bytes of input and put output in self.output
         '''
 
         # TODO: add range list support to insert fuzzer
@@ -44,6 +44,6 @@ class InsertFuzzer(Fuzzer):
         logger.debug('%s - inserted byte 0x%02x at 0x%02x', self.sf.basename,
                      byte_to_insert, byte_pos)
 
-        self.fuzzed = self.input
+        self.output = self.input
 
 _fuzzer_class = InsertFuzzer

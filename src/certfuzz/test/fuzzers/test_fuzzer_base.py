@@ -20,10 +20,9 @@ class Test(unittest.TestCase):
         self.tempdir = tempfile.mkdtemp()
         self.outdir = outdir_base = tempfile.mkdtemp(prefix='outdir_base',
                                                      dir=self.tempdir)
-        rng_seed = 0
         iteration = 0
         options = {}
-        self.args = (seedfile_obj, outdir_base, rng_seed, iteration, options)
+        self.args = (seedfile_obj, outdir_base, iteration, options)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir, ignore_errors=True)
@@ -35,8 +34,8 @@ class Test(unittest.TestCase):
     def test_no_write_if_not_fuzzed(self):
         with Fuzzer(*self.args) as f:
             self.assertFalse(os.path.exists(f.output_file_path), f.output_file_path)
-            # if we haven't fuzzed, don't write
-            f.fuzzed = None
+            # if we haven't output, don't write
+            f.output = None
             f.write_fuzzed()
             self.assertFalse(os.path.exists(f.output_file_path))
 
@@ -45,14 +44,14 @@ class Test(unittest.TestCase):
 
             self.assertFalse(os.path.exists(f.output_file_path), f.output_file_path)
 
-            # if we have fuzzed, write
-            f.fuzzed = 'abcd'
+            # if we have output, write
+            f.output = 'abcd'
             f.write_fuzzed()
             self.assertTrue(os.path.exists(f.output_file_path))
-            self.assertEqual(os.path.getsize(f.output_file_path), len(f.fuzzed))
+            self.assertEqual(os.path.getsize(f.output_file_path), len(f.output))
             with open(f.output_file_path, 'rb') as fd:
                 written = fd.read()
-                self.assertEqual(written, f.fuzzed)
+                self.assertEqual(written, f.output)
 
     def test_minimizable_attribute(self):
         yes = MinimizableFuzzer(*self.args)

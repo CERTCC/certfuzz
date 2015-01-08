@@ -23,7 +23,7 @@ class RangeFinder(MultiArmedBandit):
         3. a probability distribution across all ranges
     as well as a picker method to randomly choose a range based on the probability distribution.
     '''
-    def __init__(self, low, high, logfile):
+    def __init__(self, low, high):
         MultiArmedBandit.__init__(self)
 
         self.min = low
@@ -33,11 +33,6 @@ class RangeFinder(MultiArmedBandit):
         self.abs_min = 0.000001
         if self.max < self.min:
             raise RangeFinderError('max cannot be less than min')
-
-        self.logfile = logfile
-        logger.debug('Rangefinder log: %s', self.logfile)
-
-        self._set_logger()
 
         self._set_ranges()
 
@@ -54,10 +49,6 @@ class RangeFinder(MultiArmedBandit):
 #            assert type(thing) == Range, 'Type is %s' % type(thing)
 #        # recover the logger we had to drop in __getstate__
 #        self._set_logger()
-
-    def _set_logger(self):
-        self.logger = logging.getLogger(self.logfile)
-        self.logger.setLevel(logging.INFO)
 
     def _exp_range(self, low, factor):
         high = low * factor
@@ -90,8 +81,6 @@ class RangeFinder(MultiArmedBandit):
 
         for r in ranges:
             self.add_item(r.id, r)
-
-        self.logger.debug('Ranges: [%s]', ', '.join([str(r) for r in self.things.keys()]))
 
     def next_item(self):
         return self.next()

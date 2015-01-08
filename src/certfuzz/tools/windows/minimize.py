@@ -6,15 +6,16 @@ Created on Apr 9, 2012
 
 import logging
 import os
-import sys
 import string
+import sys
+
 
 try:
     from certfuzz import debuggers
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.campaign.config.config_windows import Config, get_command_args_list
+    from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 except ImportError:
@@ -27,7 +28,7 @@ except ImportError:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.campaign.config.config_windows import Config, get_command_args_list
+    from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 
@@ -102,7 +103,7 @@ def main():
         cfg_file = options.config
     else:
         cfg_file = "../conf.d/bff.cfg"
-    logger.debug('Config file: %s', cfg_file)
+    logger.debug('WindowsConfig file: %s', cfg_file)
 
     if options.stringmode and options.target:
         parser.error('Options --stringmode and --target are mutually exclusive.')
@@ -143,7 +144,7 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    config = Config(cfg_file).config
+    config = WindowsConfig(cfg_file).config
     cfg = _create_minimizer_cfg(config)
 
     if options.target:
@@ -177,7 +178,7 @@ def main():
 
         if options.stringmode:
             logger.debug('x character substitution')
-            length = len(minimize.fuzzed)
+            length = len(minimize.fuzzed_content)
             if options.prefer_x_target:
                 # We minimized to 'x', so we attempt to get metasploit as a freebie
                 targetstring = list(text.metasploit_pattern_orig(length))
@@ -187,7 +188,7 @@ def main():
                 targetstring = list('x' * length)
                 filename_modifier = '-x'
 
-            fuzzed = list(minimize.fuzzed)
+            fuzzed = list(minimize.fuzzed_content)
             for idx in minimize.bytemap:
                 logger.debug('Swapping index %d', idx)
                 targetstring[idx] = fuzzed[idx]

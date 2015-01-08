@@ -28,6 +28,6 @@ class SwapFuzzer(MinimizableFuzzer):
 
         logger.debug('%s - swap bytes %d <-> %d', self.sf.basename, a, b)
         self.input[b], self.input[a] = self.input[a], self.input[b]
-        self.fuzzed = self.input
+        self.output = self.input
 
 _fuzzer_class = SwapFuzzer

@@ -3,11 +3,12 @@ Created on Oct 24, 2012
 
 @organization: cert.org
 '''
+import logging
 import platform
+from pprint import pformat, pprint
 import random
 import string
-from pprint import pformat, pprint
-import logging
+
 
 my_os = platform.system()
 
@@ -32,7 +33,7 @@ def random_str(length=1):
 
 
 def bitswap(input_byte):
-    bits = [1, 2, 4, 8, 16, 32, 64, 128]
+    bits = [2 ** y for y in range(8)]
     backwards = list(bits)
     backwards.reverse()
     # 1   -> 128

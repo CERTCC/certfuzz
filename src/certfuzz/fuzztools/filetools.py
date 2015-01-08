@@ -5,17 +5,17 @@ Provides basic file system tools for creating directories, copying files, writin
 
 @organization: cert.org
 '''
-import os
+import StringIO
 import errno
-import time
-import shutil
+import fnmatch
 import hashlib
 import logging
-import tempfile
-import fnmatch
+import os
+import shutil
 import stat
+import tempfile
+import time
 import zipfile
-import StringIO
 
 
 MAXDEPTH = 5
@@ -74,12 +74,22 @@ def make_directories(*paths):
             mkdir_p(d)
 
 
+@exponential_backoff
+def rm_rf(path):
+    '''
+    Wraps shutil.rmtree with an exponential backoff to avoid contention with
+    HGFS on some platforms (usually Windows)
+    :param path:
+    '''
+    shutil.rmtree(path)
+
+
 def delete_files(*files):
     delete_files2(files)
 
 
 @exponential_backoff
-def delete_files2(files=[]):
+def delete_files2(files):
     '''
     Deletes <files> given a list of paths
     @return: none
@@ -204,8 +214,7 @@ def copy_file2(src=None, targets=[]):
 
 
 def mkdtemp(base_dir=None):
-    path = tempfile.mkdtemp(prefix='BFF-', dir=base_dir)
-    return path
+    return tempfile.mkdtemp(prefix='BFF-', dir=base_dir)
 
 
 def write_oneline_to_file(line, dst, mode):

@@ -19,7 +19,7 @@ import wmi
 import time
 from certfuzz.runners.errors import RunnerArchitectureError, RunnerRegistryError
 from certfuzz.runners.errors import RunnerError
-from certfuzz.campaign.config.config_windows import get_command_args_list
+from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.fuzztools.filetools import find_or_create_dir
 
 logger = logging.getLogger(__name__)
@@ -60,7 +60,7 @@ def kill(p):
 
 class WinRunner(RunnerBase):
     def __init__(self, options, cmd_template, fuzzed_file, workingdir_base):
-        RunnerBase.__init__(self, options, workingdir_base)
+        RunnerBase.__init__(self, options, cmd_template, fuzzed_file, workingdir_base)
 
         logger.debug('Initialize Runner')
         self.runtimeout = None
@@ -71,11 +71,6 @@ class WinRunner(RunnerBase):
             self.exceptions = options['exceptions']
         except KeyError:
             raise RunnerError('At least one exception code must be specified in runner config.')
-
-#        self._parse_options()
-        self.saw_crash = False
-
-        self.workingdir = workingdir_base
 
         (self.cmd, self.cmdlist) = get_command_args_list(cmd_template, fuzzed_file)
         logger.debug('Command: %s', self.cmd)

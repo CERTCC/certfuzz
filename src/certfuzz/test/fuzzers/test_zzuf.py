@@ -28,11 +28,11 @@ class Test(unittest.TestCase):
         self.tempdir = tempfile.mkdtemp()
         self.outdir = outdir_base = tempfile.mkdtemp(prefix='outdir_base',
                                                      dir=self.tempdir)
-        rng_seed = 0
+
         iteration = 0
         self.options = {}
 #        self.options = {'min_ratio': 0.1, 'max_ratio': 0.2}
-        self.args = (seedfile_obj, outdir_base, rng_seed, iteration, self.options)
+        self.args = (seedfile_obj, outdir_base, iteration, self.options)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
@@ -57,11 +57,11 @@ class Test(unittest.TestCase):
                     f.iteration = i
                     f._fuzz()
                     # same length, different output
-                    self.assertEqual(self.sf.len, len(f.fuzzed))
-                    self._fail_if_not_fuzzed(f.fuzzed)
+                    self.assertEqual(self.sf.len, len(f.output))
+                    self._fail_if_not_fuzzed(f.output)
 
                     # check for no repeats
-                    md5 = hashlib.md5(f.fuzzed).hexdigest()
+                    md5 = hashlib.md5(f.output).hexdigest()
                     if md5 in fuzzed_output_seen:
                         self.fail('Fuzzer repeated output: %s' % md5)
                     else:
@@ -70,5 +70,5 @@ class Test(unittest.TestCase):
             self.skipTest("zzuf not found in path")
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

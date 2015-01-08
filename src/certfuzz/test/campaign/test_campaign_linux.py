@@ -9,26 +9,34 @@ import tempfile
 import os
 import shutil
 from ConfigParser import NoSectionError
+from certfuzz.config.errors import ConfigError
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        _fd, cfgfile = tempfile.mkstemp(suffix=".cfg", dir=self.tmpdir, text=True)
-        try:
-            self.campaign = LinuxCampaign(cfgfile)
-        except TypeError as e:
-            self.fail('LinuxCampaign does not match requirements: {}'.format(e))
-        except NoSectionError as e:
-            pass
+        fd, cfgfile = tempfile.mkstemp(suffix=".yaml", dir=self.tmpdir, text=True)
+        os.close(fd)
+        import yaml
+        data = {'campaign': {'id': 'foo'},
+                'directories': {},
+                'timeouts': {},
+                'zzuf': {},
+                'verifier': {},
+                'target': {'cmdline': 'bar baz quux'},
+                }
+        with open(cfgfile, 'wb') as stream:
+            yaml.dump(data, stream)
+
+        self.campaign = LinuxCampaign(cfgfile)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
 
     def test_init_without_config(self):
-        _fd, cfgfile = tempfile.mkstemp(suffix=".cfg", dir=self.tmpdir, text=True)
-        self.assertRaises(NoSectionError, LinuxCampaign, cfgfile)
+        _fd, cfgfile = tempfile.mkstemp(suffix=".yaml", dir=self.tmpdir, text=True)
+        self.assertRaises(ConfigError, LinuxCampaign, cfgfile)
 
     def test_check_program_file_type(self):
         fd, fname = tempfile.mkstemp(dir=self.tmpdir, text=True)
@@ -37,5 +45,5 @@ class Test(unittest.TestCase):
         self.assertTrue(check_program_file_type('text', fname))
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

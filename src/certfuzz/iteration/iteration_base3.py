@@ -4,52 +4,92 @@ Created on Feb 13, 2014
 @author: adh
 '''
 import logging
-import shutil
 import tempfile
-
-from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
-
-from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
-
+import abc
+from certfuzz.fuzztools.filetools import rm_rf
 
 logger = logging.getLogger(__name__)
 
 
 class IterationBase3(object):
-    def __init__(self, workdirbase):
-        logger.debug('init')
-        self.workdirbase = workdirbase
-        self.working_dir = None
-        self.analyzer_classes = []
+    __metaclass__ = abc.ABCMeta
+    _tmpdir_pfx = 'iteration_'
 
-        self.candidates = []
-        self.verified = []
-        self.analyzed = []
+    def __init__(self,
+                 seedfile=None,
+                 seednum=None,
+                 workdirbase=None,
+                 outdir=None,
+                 sf_set=None,
+                 rf=None,
+                 uniq_func=None,
+                 config=None,
+                 r=None):
+
+        logger.debug('init')
+        self.seedfile = seedfile
+        self.seednum = seednum
+        self.workdirbase = workdirbase
+        self.outdir = outdir
+        self.sf_set = sf_set
+        self.rf = rf
+        self.cfg = config
+        self.r = r
+
+        self.pipeline_options = {}
+
+        if uniq_func is None:
+            self.uniq_func = lambda _tc_id: True
+        else:
+            self.uniq_func = uniq_func
+
+        self.working_dir = None
+
+        self.testcases = []
+
+        # flag that will decide whether we score as a success or failure
+        self.success = False
 
         self.debug = True
 
+    @abc.abstractproperty
+    def tcpipeline_cls(self):
+        '''
+        Defines the class to use as a TestCasePipeline
+        '''
+
     def __enter__(self):
-        self.working_dir = tempfile.mkdtemp(prefix='iteration-', dir=self.workdirbase)
+        self.working_dir = tempfile.mkdtemp(prefix=self._tmpdir_pfx,
+                                            dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
-        return self
+#        self._setup_analysis_pipeline()
+        return self.go
 
     def __exit__(self, etype, value, traceback):
         handled = False
 
-        if etype and self.debug:
+        if self.success:
+            # score it so we can learn
+            self.record_success()
+        else:
+            self.record_failure()
+
+        if self.debug and etype:
             # leave it behind if we're in debug mode
             # and there's a problem
             logger.debug('Skipping cleanup since we are in debug mode.')
-        else:
-            shutil.rmtree(self.working_dir)
+            return handled
 
+        # clean up
+        rm_rf(self.working_dir)
         return handled
 
     def _pre_fuzz(self):
         pass
 
     def _fuzz(self):
-        pass
+        with self.fuzzer:
+            self.fuzzer.fuzz()
 
     def _post_fuzz(self):
         pass
@@ -57,107 +97,59 @@ class IterationBase3(object):
     def _pre_run(self):
         pass
 
+    @abc.abstractmethod
     def _run(self):
         pass
 
     def _post_run(self):
         pass
 
-    def _pre_analyze(self, testcase):
-        pass
-
-    def _analyze(self, testcase):
-        '''
-        Loops through all known analyzer_classes for a given testcase
-        :param testcase:
-        '''
-        for analyzer_class in self.analyzer_classes:
-            touch_watchdog_file()
-
-            analyzer_instance = analyzer_class(self.cfg, testcase)
-            if analyzer_instance:
-                try:
-                    analyzer_instance.go()
-                except AnalyzerEmptyOutputError:
-                    logger.warning('Unexpected empty output from analyzer_class. Continuing')
-
-        self.analyzed.append(testcase)
-
-    def _post_analyze(self, testcase):
-        pass
-
-    def _pre_verify(self, testcase):
-        pass
-
-    def _verify(self, testcase):
-        pass
-
-    def _post_verify(self, testcase):
-        pass
-
-    def _pre_report(self, testcase):
-        pass
-
-    def _report(self, testcase):
-        pass
-
-    def _post_report(self, testcase):
-        pass
-
     def fuzz(self):
+        '''
+        Prepares a test case
+        '''
         logger.debug('fuzz')
         self._pre_fuzz()
         self._fuzz()
         self._post_fuzz()
 
     def run(self):
+        '''
+        Runs a test case. Populates self.tc_candidate_q if it finds anything
+        interesting.
+        '''
         logger.debug('run')
         self._pre_run()
         self._run()
         self._post_run()
 
-    def verify(self, testcase):
-        logger.debug('verify')
-        self._pre_verify(testcase)
-        self._verify(testcase)
-        self._post_verify(testcase)
+    def record_success(self):
+        self.sf_set.record_success(key=self.seedfile.md5)
+        self.rf.record_success(key=self.r.id)
 
-    def analyze(self, testcase):
-        logger.debug('analyze')
-        self._pre_analyze(testcase)
-        self._analyze(testcase)
-        self._post_analyze(testcase)
+    def record_failure(self):
+        self.record_tries()
 
-    def report(self, testcase):
-        logger.debug('report')
-        self._pre_report(testcase)
-        self._report(testcase)
-        self._post_report(testcase)
+    def record_tries(self):
+        self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
+        self.rf.record_tries(key=self.r.id, tries=1)
+
+    def process_testcases(self):
+        if not len(self.testcases):
+            # short circuit if nothing to do
+            return
+
+        # hand it off to our pipeline class
+        with self.tcpipeline_cls(testcases=self.testcases,
+                                 uniq_func=self.uniq_func,
+                                 cfg=self.cfg,
+                                 options=self.pipeline_options,
+                                 outdir=self.outdir,
+                                 workdirbase=self.working_dir) as pipeline:
+            pipeline()
 
     def go(self):
         logger.debug('go')
         self.fuzz()
         self.run()
-
-        # short circuit if nothing found
-        if not self.candidates:
-            return
-
-        # every test case is a candidate until verified
-        # use a while loop so we have the option of adding
-        # candidates during the loop
-        while len(self.candidates) > 0:
-            testcase = self.candidates.pop(0)
-            self.verify(testcase)
-
-        # analyze each verified crash
-        while len(self.verified) > 0:
-            testcase = self.verified.pop(0)
-            self.analyze(testcase)
-
-        # construct output bundle for each analyzed test case
-        while len(self.analyzed) > 0:
-            testcase = self.analyzed.pop(0)
-            self.report(testcase)
-
-
+        self.process_testcases()

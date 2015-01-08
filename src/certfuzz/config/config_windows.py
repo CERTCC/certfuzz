@@ -7,8 +7,8 @@ import logging
 import shlex
 from string import Template
 
-from certfuzz.campaign.config.config_base import Config as ConfigBase
-from certfuzz.campaign.config.errors import ConfigError
+from certfuzz.config.config_base import ConfigBase
+from certfuzz.config.errors import ConfigError
 from certfuzz.helpers import quoted
 
 
@@ -30,12 +30,14 @@ def get_command_args_list(cmd_template, infile, posix=True):
     return cmd, cmdlist
 
 
-class Config(ConfigBase):
+class WindowsConfig(ConfigBase):
     def _add_validations(self):
         self.validations.append(self._validate_debugger_timeout_exceeds_runner)
         self.validations.append(self._validate_new_options)
 
     def _set_derived_options(self):
+        ConfigBase._set_derived_options(self)
+
         # interpolate program name
         # add quotes around $SEEDFILE
         t = Template(self.config['target']['cmdline_template'])
