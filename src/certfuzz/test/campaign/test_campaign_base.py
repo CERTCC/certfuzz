@@ -52,6 +52,8 @@ class ImplementedCampaign(CampaignBase):
     def _set_runner(self):
         pass
 
+    def _read_config_file(self):
+        pass
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -140,5 +142,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

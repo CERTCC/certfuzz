@@ -75,10 +75,6 @@ class LinuxCampaign(CampaignBase):
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
 
-        # give up if we don't have a debugger
-        verify_supported_platform()
-        # give up if prog is a script
-        self._check_for_script()
 
     def _read_config_file(self):
         CampaignBase._read_config_file(self)
@@ -88,6 +84,11 @@ class LinuxCampaign(CampaignBase):
             self.configdate = cfgobj.configdate
 
     def _pre_enter(self):
+        # give up if we don't have a debugger
+        verify_supported_platform()
+        # give up if prog is a script
+        self._check_for_script()
+
         self._start_process_killer()
         self._set_unbuffered_stdout()
         self._check_for_script()
