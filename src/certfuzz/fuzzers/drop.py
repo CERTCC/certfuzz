@@ -2,7 +2,7 @@
 """
 import logging
 
-from certfuzz.fuzzers import Fuzzer
+from certfuzz.fuzzers.fuzzer_base import Fuzzer
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 
 
@@ -34,7 +34,7 @@ class DropFuzzer(Fuzzer):
         if byte_pos < len(bytes_to_fuzz):
             del self.input[byte_pos]
         else:
-            #indicate we didn't fuzz the file for this iteration
+            # indicate we didn't fuzz the file for this iteration
             raise FuzzerExhaustedError('Iteration exceeds available values')
 
         logger.debug('%s - dropped byte 0x%02x', self.sf.basename, byte_pos)

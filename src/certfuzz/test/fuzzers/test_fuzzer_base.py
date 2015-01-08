@@ -6,10 +6,10 @@ Created on Feb 14, 2012
 
 import unittest
 import os
-from certfuzz.fuzzers import Fuzzer
-from certfuzz.test import MockSeedfile
+from certfuzz.fuzzers.fuzzer_base import Fuzzer
+from certfuzz.test.mocks import MockSeedfile
 import shutil
-from certfuzz.fuzzers import MinimizableFuzzer
+from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
 import tempfile
 from certfuzz.fuzzers.fuzzer_base import is_fuzzable as _fuzzable
 

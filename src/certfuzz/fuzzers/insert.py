@@ -3,7 +3,7 @@
 import logging
 from random import getrandbits
 
-from certfuzz.fuzzers import Fuzzer
+from certfuzz.fuzzers.fuzzer_base import Fuzzer
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 
 
@@ -38,7 +38,7 @@ class InsertFuzzer(Fuzzer):
         if byte_pos < len(bytes_to_fuzz):
             self.input.insert(byte_pos, byte_to_insert)
         else:
-            #indicate we didn't fuzz the file for this iteration
+            # indicate we didn't fuzz the file for this iteration
             raise FuzzerExhaustedError('Iteration exceeds available values')
 
         logger.debug('%s - inserted byte 0x%02x at 0x%02x', self.sf.basename,

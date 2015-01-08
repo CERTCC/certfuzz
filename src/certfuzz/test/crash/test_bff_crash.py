@@ -6,7 +6,7 @@ Created on Aug 3, 2011
 
 import unittest
 # from certfuzz.crash.bff_crash import Crash
-from certfuzz.test import Mock
+from certfuzz.test.mocks import Mock
 import tempfile
 import os
 import shutil
