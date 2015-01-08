@@ -10,7 +10,7 @@ import string
 
 from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.crash.crash_windows import WindowsCrash
-from certfuzz.debuggers.output_parsers import DebuggerFileError
+from certfuzz.debuggers.output_parsers.errors import DebuggerFileError
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzzers.errors import FuzzerError

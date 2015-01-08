@@ -5,7 +5,7 @@ Created on Jul 12, 2012
 '''
 import logging
 
-from certfuzz.fuzzers import Fuzzer
+from certfuzz.fuzzers.fuzzer_base import Fuzzer
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 
 

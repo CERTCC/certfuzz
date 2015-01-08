@@ -10,7 +10,7 @@ import certfuzz.fuzzers.drop
 import shutil
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 import logging
-from certfuzz.test import MockSeedfile
+from certfuzz.test.mocks import MockSeedfile
 import tempfile
 
 certfuzz.fuzzers.drop.logger.setLevel(logging.WARNING)

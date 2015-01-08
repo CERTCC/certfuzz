@@ -1,7 +1,7 @@
 import logging
 import random
 
-from certfuzz.fuzzers import MinimizableFuzzer
+from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
 from certfuzz.fuzzers.fuzzer_base import is_fuzzable as _fuzzable
 
 

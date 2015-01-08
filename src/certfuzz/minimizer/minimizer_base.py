@@ -13,7 +13,7 @@ import shutil
 import tempfile
 import time
 
-from certfuzz import debuggers
+from certfuzz.debuggers.registration import get as debugger_get
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzztools import hamming, filetools, probability, text
@@ -108,7 +108,7 @@ class Minimizer(object):
         if not os.path.isdir(self.crash_dst):
             raise MinimizerError("%s is not a directory" % self.crash_dst)
 
-        self.debugger = debuggers.get()
+        self.debugger = debugger_get()
 
         self._logger_setup()
         self.logger.info("Minimizer initializing for %s", self.crash.fuzzedfile.path)
@@ -402,7 +402,7 @@ class Minimizer(object):
             self.crash_sigs_found[newfuzzed_hash] = 1
             self.logger.info('crash=%s signal=%s', newfuzzed_hash, dbg.signal)
 
-            if self.save_others and not newfuzzed_hash in self.crash_hashes:
+            if self.save_others and newfuzzed_hash not in self.crash_hashes:
                 # the crash is not one of the crashes we're looking for
                 # so add it to the other_crashes dict in case our
                 # caller wants to do something with it

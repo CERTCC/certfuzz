@@ -3,7 +3,7 @@ bytes.
 """
 import logging
 
-from certfuzz.fuzzers import MinimizableFuzzer
+from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 
 

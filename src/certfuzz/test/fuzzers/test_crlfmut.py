@@ -9,7 +9,7 @@ import os
 import shutil
 from certfuzz.fuzzers.bytemut import fuzz
 from certfuzz.fuzzers.crlfmut import CRLFMutFuzzer
-from certfuzz.test import MockSeedfile, MockRange
+from certfuzz.test.mocks import MockSeedfile, MockRange
 import tempfile
 from certfuzz.fuzztools.hamming import bytewise_hd
 import copy

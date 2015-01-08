@@ -7,7 +7,7 @@ import os
 import tempfile
 import hashlib
 from certfuzz.debuggers.output_parsers.gdbfile import GDBfile
-from certfuzz.debuggers.output_parsers import registers
+from certfuzz.debuggers.output_parsers.debugger_file_base import registers
 import unittest
 
 class _Test(unittest.TestCase):
@@ -159,7 +159,7 @@ class _Test(unittest.TestCase):
             self.assertEqual(gdbf.registers_hex[r], '0xf00')
             self.assertEqual(gdbf.registers[r], 'bar')
 
-        #TODO: finish writing this test
+        # TODO: finish writing this test
 
     def test_backtrace_without_questionmarks(self):
         (fd, f) = tempfile.mkstemp(text=True)
@@ -201,5 +201,5 @@ class _Test(unittest.TestCase):
         self.delete_file(f)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
