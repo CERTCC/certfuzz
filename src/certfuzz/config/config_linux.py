@@ -108,15 +108,6 @@ class LinuxConfig(ConfigBase):
         self.crashexitcodesfile = os.path.join(self.local_dir, CRASH_EXIT_CODE_FILE)
         self.zzuf_log_file = os.path.join(self.local_dir, ZZUF_LOG_FILE)
 
-        # derived cached paths
-#        self.cached_config_file = os.path.join(self.local_dir, CACHED_CONFIG_OBJECT_FILE)
-#        self.cached_seedrange_file = os.path.join(self.local_dir, CACHED_SEEDRANGE_OBJECT_FILE)
-#        self.cached_rangefinder_file = os.path.join(self.local_dir, CACHED_RANGEFINDER_OBJECT_FILE)
-#        self.cached_seedfile_set = os.path.join(self.local_dir, CACHED_SEEDFILESET_OBJECT_FILE)
-
-
-#         self.tmpdir = None
-
     def get_command(self, filepath):
         return ' '.join(self.get_command_list(filepath))
 
