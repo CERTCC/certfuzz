@@ -6,11 +6,11 @@ Created on Apr 8, 2011
 import os
 import tempfile
 from certfuzz.fuzztools import hamming
-from certfuzz.minimizer import Minimizer
+from certfuzz.minimizer.minimizer_base import Minimizer
 import shutil
 from certfuzz.file_handlers.basicfile import BasicFile
-import certfuzz
 import unittest
+import certfuzz.minimizer.minimizer_base
 
 class Mock(object):
     def __init__(self, *args, **kwargs):
@@ -50,6 +50,9 @@ class MockDebugger(Mock):
     def go(self):
         return MockDbgOut()
 
+def _mock_dbg_get():
+    return MockDebugger
+
 
 class Test(unittest.TestCase):
     def delete_file(self, f):
@@ -59,6 +62,9 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.cfg = MockCfg()
         self.crash = MockCrasher()
+
+        certfuzz.minimizer.minimizer_base.debugger_get = _mock_dbg_get
+
         self.tempdir = tempfile.mkdtemp(prefix='minimizer_test_')
         self.crash_dst_dir = tempfile.mkdtemp(prefix='crash_', dir=self.tempdir)
         (fd, self.logfile) = tempfile.mkstemp(dir=self.tempdir)
@@ -124,5 +130,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
