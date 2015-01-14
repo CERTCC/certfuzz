@@ -81,7 +81,7 @@ class CampaignBase(object):
 
         self.runner_module_name = None
         self.runner_module = None
-        self.runner = None
+        self.runner_cls = None
 
         self.seedfile_set = None
         self.working_dir = None
@@ -258,7 +258,7 @@ class CampaignBase(object):
     def _set_runner(self):
         if self.runner_module_name:
             self.runner_module = import_module_by_name(self.runner_module_name)
-            self.runner = self.runner_module._runner_class
+            self.runner_cls = self.runner_module._runner_class
 
     def _set_debugger(self):
         # this will import the module which registers the debugger
