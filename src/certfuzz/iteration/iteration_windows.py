@@ -40,7 +40,7 @@ class WindowsIteration(IterationBase3):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
                                 sf_set, rf, uniq_func, config, None)
         self.fuzzer_cls = fuzzer_cls
-        self.runner = runner
+        self.runner_cls = runner
         self.debugger_module = debugger
         self.debugger_class = dbg_class
         self.debug = debug
@@ -49,11 +49,11 @@ class WindowsIteration(IterationBase3):
 
         self.cmd_template = string.Template(cmd_template)
 
-        if self.runner is None:
-            # null runner case
+        if self.runner_cls is None:
+            # null runner_cls case
             self.retries = 0
         else:
-            # runner is not null
+            # runner_cls is not null
             self.retries = 4
 
         self.pipeline_options = {
@@ -61,7 +61,7 @@ class WindowsIteration(IterationBase3):
                                  'keep_heisenbugs': keep_heisenbugs,
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,
-                                 'used_runner': self.runner is not None,
+                                 'used_runner': self.runner_cls is not None,
                                  }
 
     def __exit__(self, etype, value, traceback):
@@ -129,12 +129,8 @@ class WindowsIteration(IterationBase3):
         TmpReaper().clean_tmp()
 
     def _pre_fuzz(self):
-        # generated test case (fuzzed input)
-        logger.info('...fuzzing')
         fuzz_opts = self.cfg['fuzzer']
-        self.fuzzer = self.fuzzer_cls(self.seedfile,
-                             self.working_dir,
-                             self.seednum, fuzz_opts)
+        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
 
     def _post_fuzz(self):
         self.r = self.fuzzer.range
@@ -146,21 +142,26 @@ class WindowsIteration(IterationBase3):
         # decide at runtime whether it is or is not minimizable
         self.pipeline_options['minimizable'] = self.fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
 
+    def _pre_run(self):
+        options = self.cfg['runner']
+        cmd_template = self.cmd_template
+        fuzzed_file = self.fuzzer.output_file_path
+        workingdir_base = self.working_dir
+
+        self.runner = self.runner_cls(options, cmd_template, fuzzed_file, workingdir_base)
+
     def _run(self):
         # analysis is required in two cases:
-        # 1) runner is not defined (self.runner == None)
-        # 2) runner is defined, and detects crash (runner.saw_crash == True)
+        # 1) runner_cls is not defined (self.runner_cls == None)
+        # 2) runner_cls is defined, and detects crash (runner_cls.saw_crash == True)
         # this takes care of case 1 by default
+        # TODO: does case 1 ever happen?
         analysis_needed = True
-        if self.runner:
-            logger.info('...running %s', self.runner.__name__)
-            with self.runner(self.cfg['runner'],
-                             self.cmd_template,
-                             self.fuzzer.output_file_path,
-                             self.working_dir) as runner:
-                runner.run()
+        if self.runner_cls:
+            with self.runner:
+                self.runner.run()
                 # this takes care of case 2
-                analysis_needed = runner.saw_crash
+            analysis_needed = self.runner.saw_crash
 
         # is further analysis needed?
         if not analysis_needed:
