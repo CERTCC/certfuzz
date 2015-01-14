@@ -24,6 +24,8 @@ class WindowsCampaign(CampaignBase):
     '''
     Extends CampaignBase to add windows-specific features like ButtonClicker
     '''
+    _config_cls = WindowsConfig
+
     def __init__(self, config_file, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
@@ -66,7 +68,7 @@ class WindowsCampaign(CampaignBase):
         CampaignBase._read_config_file(self)
 
         # read configs
-        with WindowsConfig(self.config_file) as cfgobj:
+        with self._config_cls(self.config_file) as cfgobj:
             self.config = cfgobj.config
             self.configdate = cfgobj.configdate
 

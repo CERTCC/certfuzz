@@ -55,6 +55,7 @@ class LinuxCampaign(CampaignBase):
     '''
     Extends CampaignBase to add linux-specific features.
     '''
+    _config_cls = LinuxConfig
 
     def __init__(self, config_file=None, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
@@ -79,7 +80,7 @@ class LinuxCampaign(CampaignBase):
     def _read_config_file(self):
         CampaignBase._read_config_file(self)
 
-        with LinuxConfig(self.config_file) as cfgobj:
+        with self._config_cls(self.config_file) as cfgobj:
             self.config = cfgobj
             self.configdate = cfgobj.configdate
 
