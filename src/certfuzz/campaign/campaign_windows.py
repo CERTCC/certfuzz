@@ -85,7 +85,7 @@ class WindowsCampaign(CampaignBase):
         # reconstituted when we __enter__ a context
         for key in ['fuzzer_module', 'fuzzer_cls',
                     'runner_module', 'runner_cls',
-                    'debugger_module', 'dbg_class'
+                    'debugger_module'
                     ]:
             if key in state:
                 del state[key]
@@ -191,7 +191,7 @@ class WindowsCampaign(CampaignBase):
         # the __enter__ and __exit__ methods of the
         # newly created WindowsIteration()
         with WindowsIteration(sf, seednum, self.config, self.fuzzer_cls,
-                     self.runner_cls, self.debugger_module, self.dbg_class,
+                     self.runner_cls, self.debugger_module,
                      self.keep_heisenbugs, self.keep_duplicates,
                      self.cmd_template, self._crash_is_unique,
                      self.working_dir, self.outdir, self.debug, self.seedfile_set,

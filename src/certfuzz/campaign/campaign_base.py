@@ -16,7 +16,6 @@ import cPickle as pickle
 import signal
 
 from certfuzz.campaign.errors import CampaignError
-from certfuzz.debuggers import registration
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzztools import filetools
 from certfuzz.runners.errors import RunnerArchitectureError, \
@@ -159,7 +158,6 @@ class CampaignBase(object):
         self._setup_workdir()
         self._set_fuzzer()
         self._set_runner()
-        self._set_debugger()
         self._setup_output()
         self._create_seedfile_set()
 
@@ -259,14 +257,6 @@ class CampaignBase(object):
         if self.runner_module_name:
             self.runner_module = import_module_by_name(self.runner_module_name)
             self.runner_cls = self.runner_module._runner_class
-
-    def _set_debugger(self):
-        # this will import the module which registers the debugger
-        self.debugger_module = import_module_by_name(self.debugger_module_name)
-        # confirm that the registered debugger is compatible
-        registration.verify_supported_platform()
-        # now we have some class
-        self.dbg_class = registration.debug_class
 
     @property
     def _version_file(self):

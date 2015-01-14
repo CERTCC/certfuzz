@@ -10,7 +10,6 @@ import time
 
 from certfuzz.debuggers.debugger_base import Debugger as DebuggerBase
 from certfuzz.debuggers.output_parsers.msec_file import MsecFile
-from certfuzz.debuggers.registration import register
 from certfuzz.helpers import check_os_compatibility
 
 import wmi
@@ -160,6 +159,3 @@ class MsecDebugger(DebuggerBase):
             logger.debug('parsed: %s', l)
         return parsed
 # END MsecDebugger
-
-# register this class as a debugger
-register(MsecDebugger)

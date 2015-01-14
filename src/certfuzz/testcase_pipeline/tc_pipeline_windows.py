@@ -9,7 +9,6 @@ import os
 from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.minimizer import WindowsMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
-from certfuzz.debuggers.registration import verify_supported_platform
 
 
 logger = logging.getLogger(__name__)
@@ -48,12 +47,6 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
 
         config = self._create_minimizer_cfg()
 
-<<<<<<< HEAD
-        debuggers.registration.verify_supported_platform()
-=======
-        verify_supported_platform()
->>>>>>> fix imports
-
         kwargs = {'cfg': config,
                   'crash': testcase,
                   'seedfile_as_target': True,
@@ -63,17 +56,13 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
                   'maxtime': self.cfg['runoptions']['minimizer_timeout']
                   }
 
-        try:
-            with Minimizer(**kwargs) as minimizer:
-                minimizer.go()
+        with Minimizer(**kwargs) as minimizer:
+            minimizer.go()
 
-                # minimzer found other crashes, so we should add them
-                # to our list for subsequent processing
-                for tc in minimizer.other_crashes.values():
-                    self.tc_candidate_q.put(tc)
-        except:
-            # Minimizer failed for some reason. Don't stop campaign!
-            pass
+            # minimzer found other crashes, so we should add them
+            # to our list for subsequent processing
+            for tc in minimizer.other_crashes.values():
+                self.tc_candidate_q.put(tc)
 
     def _post_minimize(self, testcase):
         if self.cfg['runoptions']['recycle_crashers']:

@@ -176,7 +176,7 @@ class WindowsIteration(IterationBase3):
 
         logger.debug('Building testcase object')
         with WindowsCrash(self.cmd_template, self.seedfile, fuzzed_file, cmdlist,
-                          self.fuzzer, self.debugger_class, dbg_opts,
+                          self.fuzzer, dbg_opts,
                           self.working_dir, self.cfg['runoptions']['keep_unique_faddr'],
                           self.cfg['target']['program'],
                           heisenbug_retries=self.retries,

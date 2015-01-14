@@ -13,7 +13,6 @@ import tempfile
 from certfuzz.debuggers.debugger_base import Debugger
 from certfuzz.debuggers.errors import DebuggerError
 from certfuzz.debuggers.output_parsers.gdbfile import GDBfile
-from certfuzz.debuggers.registration import register
 from certfuzz.fuzztools import subprocess_helper as subp
 
 
@@ -110,5 +109,3 @@ class GDB(Debugger):
 
         self._remove_temp_file()
         return GDBfile(self.outfile, self.exclude_unmapped_frames, self.keep_uniq_faddr)
-
-register(GDB)

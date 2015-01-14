@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 class Testcase(TestCaseBase):
     tmpdir_pfx = 'crash-'
+    _debugger_cls = None
 
     def __init__(self, seedfile, fuzzedfile, dbg_timeout=30):
         logger.debug('Inititalize Testcase')

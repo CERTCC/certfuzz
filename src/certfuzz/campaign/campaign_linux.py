@@ -15,7 +15,6 @@ from certfuzz.campaign.errors import CampaignScriptError
 from certfuzz.config.config_linux import LinuxConfig
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
-from certfuzz.debuggers.registration import verify_supported_platform
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools import subprocess_helper as subp
 from certfuzz.fuzztools.ppid_observer import check_ppid
@@ -85,8 +84,6 @@ class LinuxCampaign(CampaignBase):
             self.configdate = cfgobj.configdate
 
     def _pre_enter(self):
-        # give up if we don't have a debugger
-        verify_supported_platform()
         # give up if prog is a script
         self._check_for_script()
 
