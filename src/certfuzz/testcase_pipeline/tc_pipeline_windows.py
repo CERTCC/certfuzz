@@ -5,15 +5,11 @@ Created on Jul 16, 2014
 '''
 import logging
 import os
-import shutil
 
-from certfuzz import debuggers
 from certfuzz.config.config_windows import get_command_args_list
-from certfuzz.fuzztools import filetools
-from certfuzz.iteration.errors import IterationError
 from certfuzz.minimizer import WindowsMinimizer as Minimizer
-from certfuzz.testcase_pipeline.errors import TestCasePipelineError
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
+from certfuzz.debuggers.registration import verify_supported_platform
 
 
 logger = logging.getLogger(__name__)
@@ -52,7 +48,11 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
 
         config = self._create_minimizer_cfg()
 
+<<<<<<< HEAD
         debuggers.registration.verify_supported_platform()
+=======
+        verify_supported_platform()
+>>>>>>> fix imports
 
         kwargs = {'cfg': config,
                   'crash': testcase,
