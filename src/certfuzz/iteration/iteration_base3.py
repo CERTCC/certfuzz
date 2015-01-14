@@ -165,6 +165,8 @@ class IterationBase3(object):
                                  sf_set=self.sf_set) as pipeline:
             pipeline()
 
+        self.success = pipeline.success
+
     def go(self):
         logger.debug('go')
         self.fuzz()
