@@ -22,10 +22,19 @@ logger = logging.getLogger(__name__)
 class LinuxIteration(IterationBase3):
     tcpipeline_cls = LinuxTestCasePipeline
 
-    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
-                 sf_set=None, rf=None, outdir=None):
-        IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf, uniq_func, cfg, r)
+    def __init__(self, seedfile=None, seednum=None, workdirbase=None, outdir=None,
+                 sf_set=None, rf=None, uniq_func=None, cfg=None, r=None, quiet=True,):
+
+        IterationBase3.__init__(self,
+                                seedfile,
+                                seednum,
+                                workdirbase,
+                                outdir,
+                                sf_set,
+                                rf,
+                                uniq_func,
+                                cfg,
+                                r)
 
         self.quiet_flag = quiet
 
