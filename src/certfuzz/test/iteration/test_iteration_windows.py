@@ -16,8 +16,8 @@ class Test(unittest.TestCase):
 #         runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
 #         cmd_template, uniq_func, workdirbase, outdir, debug,
 #         sf_set, rf
-        args = list('0123456789ABCDEF')
-        args[2] = {'runoptions': {'keep_unique_faddr': False}}
+        args = list('0123456789ABCD')
+        args[7] = {'runoptions': {'keep_unique_faddr': False}}
         self.iteration = WindowsIteration(*args)
 
     def tearDown(self):

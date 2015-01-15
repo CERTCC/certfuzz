@@ -50,10 +50,6 @@ class MockDebugger(Mock):
     def go(self):
         return MockDbgOut()
 
-def _mock_dbg_get():
-    return MockDebugger
-
-
 class Test(unittest.TestCase):
     def delete_file(self, f):
         os.remove(f)
@@ -63,7 +59,7 @@ class Test(unittest.TestCase):
         self.cfg = MockCfg()
         self.crash = MockCrasher()
 
-        certfuzz.minimizer.minimizer_base.debugger_get = _mock_dbg_get
+        certfuzz.minimizer.minimizer_base.Minimizer._debugger_cls = MockDebugger
 
         self.tempdir = tempfile.mkdtemp(prefix='minimizer_test_')
         self.crash_dst_dir = tempfile.mkdtemp(prefix='crash_', dir=self.tempdir)
@@ -71,7 +67,6 @@ class Test(unittest.TestCase):
         os.close(fd)
         os.remove(self.logfile)
         self.assertFalse(os.path.exists(self.logfile))
-        certfuzz.minimizer.minimizer_base.debuggers = MockDebugger()
 
         self.m = Minimizer(cfg=self.cfg, crash=self.crash,
                            crash_dst_dir=self.crash_dst_dir,
