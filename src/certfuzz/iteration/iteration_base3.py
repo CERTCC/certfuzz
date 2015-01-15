@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class IterationBase3(object):
     __metaclass__ = abc.ABCMeta
     _tmpdir_pfx = 'iteration_'
+    _iteration_counter = 0
 
     def __init__(self,
                  seedfile=None,
@@ -63,10 +64,14 @@ class IterationBase3(object):
                                             dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
 #        self._setup_analysis_pipeline()
+
         return self.go
 
     def __exit__(self, etype, value, traceback):
         handled = False
+
+        # increment the iteration counter
+        IterationBase3._iteration_counter += 1
 
         if self.success:
             # score it so we can learn

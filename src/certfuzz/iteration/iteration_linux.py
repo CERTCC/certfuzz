@@ -39,6 +39,7 @@ class LinuxIteration(IterationBase3):
         self.fuzzer_cls = ByteMutFuzzer
         self.runner_cls = ZzufRunner
         self.quiet_flag = quiet
+        self.quiet_flag = self._iteration_counter < 2
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 

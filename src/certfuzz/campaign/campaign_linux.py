@@ -186,7 +186,7 @@ class LinuxCampaign(CampaignBase):
         '''
         pass
 
-    def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
+    def _do_iteration(self, seedfile, range_obj, seednum):
         # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
         touch_watchdog_file()
         with LinuxIteration(seedfile=seedfile,
