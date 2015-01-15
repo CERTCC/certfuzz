@@ -1,6 +1,4 @@
-from certfuzz.helpers import check_os_compatibility
 
-check_os_compatibility('Windows')
 
 import platform
 from .errors import RunnerPlatformVersionError

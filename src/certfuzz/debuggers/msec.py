@@ -10,14 +10,15 @@ import time
 
 from certfuzz.debuggers.debugger_base import Debugger as DebuggerBase
 from certfuzz.debuggers.output_parsers.msec_file import MsecFile
-from certfuzz.helpers import check_os_compatibility
 
-import wmi
+import sys
+
+if sys.platform.startswith('win'):
+    import wmi
 
 
 logger = logging.getLogger(__name__)
 
-check_os_compatibility('Windows', __name__)
 
 
 def factory(options):

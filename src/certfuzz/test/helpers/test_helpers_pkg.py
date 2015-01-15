@@ -19,7 +19,6 @@ class Test(unittest.TestCase):
         module = certfuzz.helpers
         api_list = ['quoted',
                     'print_dict',
-                    'check_os_compatibility',
                     'random_str',
                     'bitswap',
                     'log_object',
@@ -29,5 +28,4 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
