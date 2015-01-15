@@ -195,7 +195,6 @@ class WindowsCampaign(CampaignBase):
                               workdirbase=self.working_dir,
                               outdir=self.outdir,
                               sf_set=self.seedfile_set,
-                              rf=sf.rangefinder,
                               uniq_func=self._crash_is_unique,
                               config=self.config,
                               fuzzer_cls=self.fuzzer_cls,

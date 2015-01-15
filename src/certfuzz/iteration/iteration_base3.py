@@ -22,7 +22,6 @@ class IterationBase3(object):
                  workdirbase=None,
                  outdir=None,
                  sf_set=None,
-                 rf=None,
                  uniq_func=None,
                  config=None,
                  fuzzer_cls=None,
@@ -35,7 +34,6 @@ class IterationBase3(object):
         self.workdirbase = workdirbase
         self.outdir = outdir
         self.sf_set = sf_set
-        self.rf = rf
         self.cfg = config
         self.fuzzer_cls = fuzzer_cls
         self.runner_cls = runner_cls
@@ -139,14 +137,14 @@ class IterationBase3(object):
 
     def record_success(self):
         self.sf_set.record_success(key=self.seedfile.md5)
-        self.rf.record_success(key=self.r.id)
+        self.seedfile.rangefinder.record_success(key=self.r.id)
 
     def record_failure(self):
         self.record_tries()
 
     def record_tries(self):
         self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-        self.rf.record_tries(key=self.r.id, tries=1)
+        self.seedfile.rangefinder.record_tries(key=self.r.id, tries=1)
 
     def process_testcases(self):
         if not len(self.testcases):

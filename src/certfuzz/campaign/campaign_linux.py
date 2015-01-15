@@ -197,7 +197,6 @@ class LinuxCampaign(CampaignBase):
                             workdirbase=self.working_dir,
                             outdir=self.outdir,
                             sf_set=self.seedfile_set,
-                            rf=seedfile.rangefinder,
                             uniq_func=self._crash_is_unique,
                             cfg=self.config,
                             fuzzer_cls=ByteMutFuzzer,
