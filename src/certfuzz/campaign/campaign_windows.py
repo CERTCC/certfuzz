@@ -107,13 +107,25 @@ class WindowsCampaign(CampaignBase):
         self.__dict__.update(state)
 
     def _pre_enter(self):
-        if sys.platform == 'win32':
-            winver = sys.getwindowsversion().major
-            machine = platform.machine()
-            hook_incompat = winver > 5 or machine == 'AMD64'
-            if hook_incompat and self.runner_module_name == 'certfuzz.runners.winrun':
-                logger.debug('winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
-                self.runner_module_name = None
+        # check to see if the platform supports winrun
+        # set runner module to none otherwise
+
+        if sys.platform != 'win32':
+            return
+
+        if not self.runner_module_name == 'certfuzz.runners.winrun':
+            return
+
+        # if we got here, we're on win32, and trying to use winrun
+        winver = sys.getwindowsversion().major
+        machine = platform.machine()
+        hook_incompatible = winver > 5 or machine == 'AMD64'
+
+        if not hook_incompatible:
+            return
+
+        logger.debug('winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
+        self.runner_module_name = None
 
     def _post_enter(self):
         self._start_buttonclicker()
