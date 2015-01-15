@@ -7,7 +7,7 @@ import logging
 import os
 
 from certfuzz.config.config_windows import get_command_args_list
-from certfuzz.minimizer import WindowsMinimizer as Minimizer
+from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 
 

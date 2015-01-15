@@ -47,6 +47,8 @@ class TestCasePipelineBase(object):
         self.analyzer_classes = []
         self._setup_analyzers()
 
+        self.success = False
+
         # this gets set up in __enter__
         self.analysis_pipeline = None
 
@@ -57,7 +59,7 @@ class TestCasePipelineBase(object):
     def __enter__(self):
         self._setup_analysis_pipeline()
         filetools.mkdir_p(self.tc_dir)
-        return self.go
+        return self
 
     def __exit__(self, etype, value, traceback):
         TmpReaper().clean_tmp()

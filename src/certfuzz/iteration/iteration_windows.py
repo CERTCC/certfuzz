@@ -33,16 +33,14 @@ MAX_IOERRORS = 5
 class WindowsIteration(IterationBase3):
     tcpipeline_cls = WindowsTestCasePipeline
 
-    def __init__(self, seedfile, seednum, config, fuzzer_cls,
-                 runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
-                 cmd_template, uniq_func, workdirbase, outdir, debug,
-                 sf_set, rf):
+    def __init__(self, seedfile, seednum, workdirbase, outdir, sf_set, rf, uniq_func, config,
+                 fuzzer_cls, runner_cls, keep_heisenbugs, keep_duplicates,
+                 cmd_template, debug,
+                 ):
         IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
                                 sf_set, rf, uniq_func, config, None)
         self.fuzzer_cls = fuzzer_cls
-        self.runner_cls = runner
-        self.debugger_module = debugger
-        self.debugger_class = dbg_class
+        self.runner_cls = runner_cls
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
@@ -56,8 +54,7 @@ class WindowsIteration(IterationBase3):
             # runner_cls is not null
             self.retries = 4
 
-        self.pipeline_options = {
-                                 'keep_duplicates': keep_duplicates,
+        self.pipeline_options = {'keep_duplicates': keep_duplicates,
                                  'keep_heisenbugs': keep_heisenbugs,
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,

@@ -81,12 +81,7 @@ class IterationBase3(object):
             return handled
 
         # clean up
-        try:
-            rm_rf(self.working_dir)
-        except:
-            # TODO: Minimizer may have a log file handle open
-            # If we get here, we've left files behind
-            pass
+        rm_rf(self.working_dir)
         return handled
 
     def _pre_fuzz(self):
@@ -130,24 +125,14 @@ class IterationBase3(object):
 
     def record_success(self):
         self.sf_set.record_success(key=self.seedfile.md5)
-        if self.r is not None:
-            # Fuzzer uses rangefinder
-            self.rf.record_success(key=self.r.id)
-        else:
-            # Fuzzer without rangefinder
-            self.seedfile.tries += 1
+        self.rf.record_success(key=self.r.id)
 
     def record_failure(self):
         self.record_tries()
 
     def record_tries(self):
         self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-        if self.r is not None:
-            # Fuzzer uses rangefinder
-            self.rf.record_tries(key=self.r.id, tries=1)
-        else:
-            # Fuzzer without rangefinder
-            self.seedfile.tries += 1
+        self.rf.record_tries(key=self.r.id, tries=1)
 
     def process_testcases(self):
         if not len(self.testcases):
@@ -163,7 +148,7 @@ class IterationBase3(object):
                                  workdirbase=self.working_dir,
                                  minimizable=self.fuzzer.is_minimizable,
                                  sf_set=self.sf_set) as pipeline:
-            pipeline()
+            pipeline.go()
 
         self.success = pipeline.success
 
