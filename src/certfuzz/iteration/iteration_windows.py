@@ -33,14 +33,35 @@ MAX_IOERRORS = 5
 class WindowsIteration(IterationBase3):
     tcpipeline_cls = WindowsTestCasePipeline
 
-    def __init__(self, seedfile, seednum, workdirbase, outdir, sf_set, rf, uniq_func, config,
-                 fuzzer_cls, runner_cls, keep_heisenbugs, keep_duplicates,
-                 cmd_template, debug,
+    def __init__(self,
+                 seedfile=None,
+                 seednum=None,
+                 workdirbase=None,
+                 outdir=None,
+                 sf_set=None,
+                 rf=None,
+                 uniq_func=None,
+                 config=None,
+                 fuzzer_cls=None,
+                 runner_cls=None,
+                 keep_heisenbugs=None,
+                 keep_duplicates=None,
+                 cmd_template=None,
+                 debug=False,
                  ):
-        IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf, uniq_func, config, None)
-        self.fuzzer_cls = fuzzer_cls
-        self.runner_cls = runner_cls
+        IterationBase3.__init__(self,
+                                seedfile,
+                                seednum,
+                                workdirbase,
+                                outdir,
+                                sf_set,
+                                rf,
+                                uniq_func,
+                                config,
+                                fuzzer_cls,
+                                runner_cls,
+                                )
+
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
@@ -59,6 +80,7 @@ class WindowsIteration(IterationBase3):
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,
                                  'used_runner': self.runner_cls is not None,
+                                 'minimizable': self.fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
                                  }
 
     def __exit__(self, etype, value, traceback):
@@ -128,16 +150,6 @@ class WindowsIteration(IterationBase3):
     def _pre_fuzz(self):
         fuzz_opts = self.cfg['fuzzer']
         self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
-
-    def _post_fuzz(self):
-        self.r = self.fuzzer.range
-        if self.r:
-            logger.info('Selected r: %s', self.r)
-
-        # decide if we can minimize this case later
-        # do this here (and not sooner) because the fuzzer_cls could
-        # decide at runtime whether it is or is not minimizable
-        self.pipeline_options['minimizable'] = self.fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
 
     def _pre_run(self):
         options = self.cfg['runner']

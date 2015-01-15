@@ -22,8 +22,18 @@ logger = logging.getLogger(__name__)
 class LinuxIteration(IterationBase3):
     tcpipeline_cls = LinuxTestCasePipeline
 
-    def __init__(self, seedfile=None, seednum=None, workdirbase=None, outdir=None,
-                 sf_set=None, rf=None, uniq_func=None, cfg=None, r=None, quiet=True,):
+    def __init__(self,
+                 seedfile=None,
+                 seednum=None,
+                 workdirbase=None,
+                 outdir=None,
+                 sf_set=None,
+                 rf=None,
+                 uniq_func=None,
+                 cfg=None,
+                 fuzzer_cls=None,
+                 runner_cls=None,
+                 ):
 
         IterationBase3.__init__(self,
                                 seedfile,
@@ -34,11 +44,10 @@ class LinuxIteration(IterationBase3):
                                 rf,
                                 uniq_func,
                                 cfg,
-                                r)
+                                fuzzer_cls,
+                                runner_cls,
+                                )
 
-        self.fuzzer_cls = ByteMutFuzzer
-        self.runner_cls = ZzufRunner
-        self.quiet_flag = quiet
         self.quiet_flag = self._iteration_counter < 2
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
@@ -59,6 +68,7 @@ class LinuxIteration(IterationBase3):
                                  'uniq_log': self.cfg.uniq_log,
                                  'local_dir': self.cfg.local_dir,
                                  'minimizertimeout': self.cfg.minimizertimeout,
+                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg.config['runoptions']['minimize'],
                                  }
 
     def __enter__(self):
@@ -69,16 +79,6 @@ class LinuxIteration(IterationBase3):
     def _pre_fuzz(self):
         fuzz_opts = self.cfg.config['fuzzer']
         self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
-
-    def _post_fuzz(self):
-        self.r = self.fuzzer.range
-        if self.r:
-            logger.debug('Selected r: %s', self.r)
-
-        # decide if we can minimize this case later
-        # do this here (and not sooner) because the fuzzer could
-        # decide at runtime whether it is or is not minimizable
-        self.pipeline_options['minimizable'] = self.fuzzer.is_minimizable and self.cfg.config['runoptions']['minimize']
 
     def _pre_run(self):
         options = self.cfg.config['runner']

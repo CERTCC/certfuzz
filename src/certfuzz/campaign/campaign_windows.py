@@ -186,16 +186,25 @@ class WindowsCampaign(CampaignBase):
         if self.use_buttonclicker:
             os.system('taskkill /im buttonclicker.exe')
 
-    def _do_iteration(self, sf, range_obj, quiet_flag, seednum):
+    def _do_iteration(self, sf, range_obj, seednum):
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
         # newly created WindowsIteration()
-        with WindowsIteration(sf, seednum, self.config, self.fuzzer_cls,
-                     self.runner_cls, self.debugger_module,
-                     self.keep_heisenbugs, self.keep_duplicates,
-                     self.cmd_template, self._crash_is_unique,
-                     self.working_dir, self.outdir, self.debug, self.seedfile_set,
-                     sf.rangefinder) as iteration:
+        with WindowsIteration(seedfile=sf,
+                              seednum=seednum,
+                              workdirbase=self.working_dir,
+                              outdir=self.outdir,
+                              sf_set=self.seedfile_set,
+                              rf=sf.rangefinder,
+                              uniq_func=self._crash_is_unique,
+                              config=self.config,
+                              fuzzer_cls=self.fuzzer_cls,
+                              runner_cls=self.runner_cls,
+                              keep_heisenbugs=self.keep_heisenbugs,
+                              keep_duplicates=self.keep_duplicates,
+                              cmd_template=self.cmd_template,
+                              debug=self.debug,
+                              ) as iteration:
             try:
                 iteration()
             except FuzzerExhaustedError:

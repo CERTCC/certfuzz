@@ -25,7 +25,9 @@ class IterationBase3(object):
                  rf=None,
                  uniq_func=None,
                  config=None,
-                 r=None):
+                 fuzzer_cls=None,
+                 runner_cls=None,
+                 ):
 
         logger.debug('init')
         self.seedfile = seedfile
@@ -35,7 +37,10 @@ class IterationBase3(object):
         self.sf_set = sf_set
         self.rf = rf
         self.cfg = config
-        self.r = r
+        self.fuzzer_cls = fuzzer_cls
+        self.runner_cls = runner_cls
+
+        self.r = None
 
         self.pipeline_options = {}
 
@@ -95,6 +100,10 @@ class IterationBase3(object):
     def _fuzz(self):
         with self.fuzzer:
             self.fuzzer.fuzz()
+
+        self.r = self.fuzzer.range
+        if self.r is not None:
+            logger.debug('Selected r: %s', self.r)
 
     def _post_fuzz(self):
         pass
