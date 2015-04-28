@@ -1,0 +1,32 @@
+# This is a travis-ci.org configuration script. This script performs 
+# integration tests for the GDB 'exploitable' plugin on x86 and ARM target
+# architectures when the associated git repo is checked into github. 
+# The majority of the testing logic is contained in bash scripts 
+# rather than this configuration file to support running the tests outside
+# of travis-ci.
+#
+# Jonathan Foote
+# jmfoote@loyola.edu
+
+language: python
+python:
+  - "2.7"
+
+# These are AWS keys. See http://docs.travis-ci.com/user/encryption-keys/
+env:
+  global:
+    - secure: "N5Je6PZWWK8Ti2/siLWU3xtLPfvx6VZLwDc+F3Q2YEwNdEs0aNztyMYGJOwVCi0HGBA22biwl5I7lDxfD9kKPRCWCoyqKegTvuLe2kwrSomICnMKNx9OpJFMPdWwgAe+RhuHETusi6i1TJFLvDJ6gfBMtFqTHhiIGGv18KidW30="
+    - secure: "TQ0kydD24Bwssp6ftb1KHh3dizlWFs000W95vi+hEpWPT7IsphWsFLIzH8p6rmqcGop+2iY1UWco1TFZnqn/xLwzwYRIBHhFzwSsizzaTT/9WVnn78CuHNlRNZxuRtwH//kqk4LQMN2LXg1F+RnMckSsTWmnYFXsz9IzY3uRLQs="
+# whitelist
+branches:
+  only:
+    - master
+
+install:
+  pip install boto
+
+# command to run tests
+# Note: the ARM test hack needs some work due to changes in the Travis 
+# environment; disabling for now to support pull requests for x86
+# script: '${TRAVIS_BUILD_DIR}/test/x86.sh && ${TRAVIS_BUILD_DIR}/test/arm.sh'
+script: '${TRAVIS_BUILD_DIR}/test/x86.sh'

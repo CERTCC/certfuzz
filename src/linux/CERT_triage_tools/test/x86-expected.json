@@ -1,0 +1,122 @@
+[
+    [
+        "exploitable/tests/bin/testReturnAv.test",
+        {
+            "short_desc": ["SegFaultOnPc"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testSegFaultOnPc.test",
+        {
+            "short_desc": ["SegFaultOnPc"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testBranchAv.test",
+        {
+            "short_desc": ["BranchAv"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testStackCodeExecution.test",
+        {
+           "short_desc": ["StackCodeExecution"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testPossibleStackCorruption.test",
+        {
+           "short_desc": ["PossibleStackCorruption"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testStackBufferOverflow.test",
+        {
+           "short_desc": ["StackBufferOverflow"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testDestAv.test",
+        {
+           "short_desc": ["DestAv"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testBadInstruction.test",
+        {
+           "short_desc": ["BadInstruction"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testSegFaultOnPcNearNull.test",
+        {
+           "short_desc": ["SegFaultOnPcNearNull"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testBranchAvNearNull.test",
+        {
+           "short_desc": ["BranchAvNearNull"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testBlockMoveAv.test",
+        {
+           "short_desc": ["BlockMoveAv"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testDestAvNearNull.test",
+        {
+           "short_desc": ["DestAvNearNull"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testSourceAvNearNull.test",
+        {
+           "short_desc": ["SourceAvNearNull"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testFloatingPointException.test",
+        {
+           "short_desc": ["FloatingPointException"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testBenignSignal.test",
+        {
+           "short_desc": ["BenignSignal"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testSourceAv.test",
+        {
+           "short_desc": ["SourceAv"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testAbortSignal.test",
+        {
+           "short_desc": ["AbortSignal"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testHeapError.test",
+        {
+           "short_desc": ["HeapError", "AbortSignal"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testUncategorizedSignal.test",
+        {
+           "short_desc": ["UncategorizedSignal"]
+        }
+    ],
+    [
+        "exploitable/tests/bin/testDeepStack.test",
+        {
+           "short_desc": ["PossibleStackCorruption", "BranchAv"]
+        }
+    ]
+]
