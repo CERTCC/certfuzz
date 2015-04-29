@@ -44,7 +44,7 @@ class LinuxTestCaseBundle(TestCaseBundle):
                 start_addr = m.group(1)
                 if len(start_addr) > 10:
                     self._64bit_debugger = True
-                    logger.debug()
+                    logger.debug('Using a 64-bit debugger')
 
     def _64bit_addr_fixup(self, faultaddr, instraddr):
         return faultaddr, instraddr
@@ -83,16 +83,16 @@ class LinuxTestCaseBundle(TestCaseBundle):
         '''
         instraddr = None
         for line in self.reporttext.splitlines():
-            #print 'checking: %s' % line
+            # print 'checking: %s' % line
             n = re.match(RE_CURRENT_INSTR, line)
             if n:
                 instraddr = n.group(1)
-                #print 'Found instruction address: %s' % instraddr
+                # print 'Found instruction address: %s' % instraddr
         if not instraddr:
             for line in self.reporttext.splitlines():
-                #No disassembly. Resort to frame 0 address
+                # No disassembly. Resort to frame 0 address
                 n = re.match(RE_FRAME_0, line)
                 if n:
                     instraddr = n.group(1)
-                    #print 'Found instruction address: %s' % instraddr
+                    # print 'Found instruction address: %s' % instraddr
         return self.format_addr(instraddr)
