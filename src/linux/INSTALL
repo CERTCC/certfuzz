@@ -6,9 +6,10 @@ dependencies are met.
 ===== Dependencies =====
 
 For basic fuzzing functionality, the following packages are required:
-Python (2.6 or 2.7)
+Python 2.7
 Python Numpy
 Python Scipy
+Python Yaml
 gdb 7.1 or later
 zzuf (patched by CERT)
 
@@ -82,10 +83,10 @@ To install BFF on a Fedora 16 32-bit system, for example, the following steps
 can be performed:
 
 1) Install dependencies present in the package system:
-yum install numpy scipy valgrind svn automake libtool gcc-c++ ncurses-devel
+yum install numpy scipy python-yaml valgrind svn automake libtool gcc-c++ ncurses-devel
 
 2) Install libcaca, which is a dependency for building zzuf: 
-svn co svn://svn.zoy.org/caca/libcaca/trunk libcaca
+svn co https://github.com/cacalabs/libcaca/trunk libcaca
 cd libcaca
 ./bootstrap
 ./configure

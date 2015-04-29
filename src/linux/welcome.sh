@@ -13,17 +13,16 @@ echo -e "***** Welcome to the CERT BFF! *****\n\n"
 echo "Working directory: $PWD"
 
 if [[ -f ~/fuzzing/bff.log ]]; then
-  currentcfg=~/bff.cfg
+  currentcfg=~/bff.yaml
   echo -e "\n--- Resuming fuzzing campaign ...  ---"
   echo -e "--- Run ./reset_bff.sh to start a new fuzzing campaign ---\n"
 else
-  currentcfg=conf.d/bff.cfg
+  currentcfg=conf.d/bff.yaml
   echo "Using configuration file: $currentcfg"
 fi
 
-echo "Target commandline: " `egrep -m1 '^cmdline' $currentcfg | sed 's/^cmdline=//'`
-echo "Output directory: " `egrep -m1 '^output_dir' $currentcfg | sed 's/output_dir=//'`
-echo "Please see the README file for details on use.
+echo "Target commandline: " `egrep -m1 '^    cmdline' $currentcfg | sed 's/^    cmdline://'`
+echo "Output directory: " `egrep -m1 '^    output_dir' $currentcfg | sed 's/^    output_dir://'`
 
 "
 

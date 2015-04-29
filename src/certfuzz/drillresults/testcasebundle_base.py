@@ -214,17 +214,17 @@ class TestCaseBundle(object):
                 # pad faultaddr if it's shorter than 64 bits
                 logger.debug('addr < 64 bits: pad')
                 return faultaddr.zfill(16)
+        else:
+            # if faultaddr is longer than 32 bits, truncate it
+            if len(faultaddr) > 8:
+                logger.debug('addr > 32 bits: truncate')
+                return faultaddr[-8:]
 
-        # if faultaddr is longer than 32 bits, truncate it
-        if len(faultaddr) > 8:
-            logger.debug('addr > 32 bits: truncate')
-            return faultaddr[-8:]
-
-        # if faultaddr is shorter than 32 bits, pad it
-        if len(faultaddr) < 8:
-            # pad faultaddr
-            logger.debug('addr < 32 bits: pad')
-            return faultaddr.zfill(8)
+            # if faultaddr is shorter than 32 bits, pad it
+            if len(faultaddr) < 8:
+                # pad faultaddr
+                logger.debug('addr < 32 bits: pad')
+                return faultaddr.zfill(8)
 
         return faultaddr
 
