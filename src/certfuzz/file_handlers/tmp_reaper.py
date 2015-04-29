@@ -42,18 +42,23 @@ class TmpReaper(object):
 
     def clean_tmp_unix(self, extras=[]):
         '''
-        Starts at the top level of tmpdir and deletes files or directories
-        owned by the same uid as the current process.
+        Starts at the top level of tmpdir and deletes files, directories
+        and symlinks owned by the same uid as the current process.
         '''
         my_uid = os.getuid()
 
         for basename in os.listdir(self.tmp_dir):
             path = os.path.join(self.tmp_dir, basename)
             try:
-                path_uid = os.stat(path).st_uid
+                if os.path.islink(path):
+                    path_uid = os.lstat(path).st_uid
+                else:
+                    path_uid = os.stat(path).st_uid
                 if my_uid == path_uid:
                     if os.path.isfile(path):
                         os.remove(path)
+                    elif os.path.islink(path):
+                        os.unlink(path)
                     elif os.path.isdir(path):
                         shutil.rmtree(path)
             except (IOError, OSError):
