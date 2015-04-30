@@ -59,7 +59,7 @@ def main():
                       help='Enable debug messages (overrides --verbose)')
     parser.add_option('', '--verbose', dest='verbose', action='store_true',
                       help='Enable verbose messages')
-    parser.add_option('-c', '--config', default='conf.d/bff.cfg',
+    parser.add_option('-c', '--config', default='conf.d/bff.yaml',
                       dest='config', help='path to the configuration file to use')
     parser.add_option('-e', '--edb', dest='use_edb',
                       action='store_true',
