@@ -124,7 +124,7 @@ class LinuxCampaign(CampaignBase):
         # Run the program once to cache it into memory
         fullpathorig = self.config.full_path_original(sf.path)
         cmdargs = self.config.get_command_list(fullpathorig)
-        subp.run_with_timer(cmdargs, self.config.progtimeout * 8, self.config.killprocname, use_shell=True)
+        subp.run_with_timer(cmdargs, self.config.progtimeout * 8, self.config.killprocname, use_shell=False)
 
         # Give target time to die
         time.sleep(1)
