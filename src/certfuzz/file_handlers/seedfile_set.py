@@ -27,7 +27,7 @@ class SeedfileSet(MultiArmedBandit):
         Constructor
         '''
         MultiArmedBandit.__init__(self)
-        self.campaign_id = campaign_id
+#         self.campaign_id = campaign_id
         self.seedfile_output_base_dir = outputpath
 
         self.originpath = originpath

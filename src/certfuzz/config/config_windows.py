@@ -41,7 +41,6 @@ class WindowsConfig(ConfigBase):
         # interpolate program name
         # add quotes around $SEEDFILE
         t = Template(self.config['target']['cmdline_template'])
-#        self.config['target']['cmdline_template'] = t.safe_substitute(PROGRAM=self.config['target']['program'])
         self.config['target']['cmdline_template'] = t.safe_substitute(PROGRAM=quoted(self.config['target']['program']),
                           SEEDFILE=quoted('$SEEDFILE'))
 

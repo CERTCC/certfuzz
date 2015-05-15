@@ -63,7 +63,7 @@ class LinuxCampaign(CampaignBase):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
         # pull stuff out of configs
-        self.campaign_id = self.config.campaign_id
+        self.campaign_id = self.config.config['campaign']['id']
         self.current_seed = self.config.start_seed
         self.seed_interval = self.config.seed_interval
         self.seed_dir_in = self.config.seedfile_origin_dir
