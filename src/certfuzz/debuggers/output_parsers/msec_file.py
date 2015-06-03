@@ -5,7 +5,7 @@ Created on Mar 14, 2012
 '''
 import logging
 
-from certfuzz.debuggers.output_parsers import DebuggerFile
+from certfuzz.debuggers.output_parsers.debugger_file_base import DebuggerFile
 
 logger = logging.getLogger(__name__)
 

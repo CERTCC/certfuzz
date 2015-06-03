@@ -8,7 +8,7 @@ from subprocess import Popen
 from threading import Timer
 import time
 
-from certfuzz.debuggers import Debugger as DebuggerBase
+from certfuzz.debuggers.debugger_base import Debugger as DebuggerBase
 from certfuzz.debuggers.output_parsers.msec_file import MsecFile
 from certfuzz.debuggers.registration import register
 from certfuzz.helpers import check_os_compatibility

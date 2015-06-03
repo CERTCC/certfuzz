@@ -152,7 +152,7 @@ To install BFF on an Ubuntu 11.10 32-bit system, for example, the following step
 can be performed:
 
 1) Install dependencies present in the package system:
-sudo apt-get install python-numpy python-scipy valgrind subversion automake libtool build-essential libncurses5-dev
+sudo apt-get install python-numpy python-scipy python-yaml valgrind subversion automake libtool build-essential libncurses5-dev
 
 2) Install libcaca, which is a dependency for building zzuf: 
 svn co svn://svn.zoy.org/caca/libcaca/trunk libcaca

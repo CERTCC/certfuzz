@@ -37,7 +37,7 @@ def getiterpath(msecfile):
 
 
 def main():
-    debuggers.verify_supported_platform()
+    debuggers.registration.verify_supported_platform()
 
     from optparse import OptionParser
 
