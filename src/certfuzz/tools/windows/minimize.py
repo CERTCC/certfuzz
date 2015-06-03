@@ -52,7 +52,7 @@ def _create_minimizer_cfg(cfg):
 
 
 def main():
-    debuggers.verify_supported_platform()
+    debuggers.registration.verify_supported_platform()
 
     from optparse import OptionParser
 
@@ -144,7 +144,8 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    config = WindowsConfig(cfg_file).config
+    with WindowsConfig(cfg_file) as configobj:
+        config = configobj.config
     cfg = _create_minimizer_cfg(config)
 
     if options.target:

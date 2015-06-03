@@ -83,7 +83,8 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    config = WindowsConfig(cfg_file).config
+    with WindowsConfig(cfg_file) as configobj:
+        config = configobj.config
 
     iterationpath = ''
     template = string.Template(config['target']['cmdline_template'])
