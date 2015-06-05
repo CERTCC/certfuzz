@@ -31,14 +31,9 @@ class WindowsTestCaseBundle(TestCaseBundle):
                       'PrivilegedInstruction',
                       ]
 
-    def __init__(self, dbg_outfile, testcase_file, crash_hash, re_set,
+    def __init__(self, dbg_outfile, testcase_file, crash_hash,
                  ignore_jit):
-        if self.testcase_file == '':
-            # Old FOE version that didn't do multiple exceptions or rename msec
-            # file with exploitability
-            testcase_file, _junk = os.path.splitext(dbg_outfile)
-
-        TestCaseBundle(self, dbg_outfile, testcase_file, crash_hash, re_set,
+        super(self.__class__, self).__init__(dbg_outfile, testcase_file, crash_hash,
                  ignore_jit)
         self.wow64_app = False
 
@@ -94,7 +89,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
             instraddr = ''.join([instraddr[:8], '`', instraddr[8:]])
             if self.shortdesc != 'DEPViolation':
                 faultaddr = self.fix_efa_bug(instraddr, faultaddr)
-        return instraddr, faultaddr
+        return faultaddr, instraddr
 
     @property
     def _64bit_target_app(self):
@@ -137,7 +132,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
             # of the call
             return faultaddr
 
-        return TestCaseBundle.fix_efa_offset(self, faultaddr)
+        return TestCaseBundle.fix_efa_offset(self, instructionline, faultaddr)
 
     def get_ex_num(self):
         '''

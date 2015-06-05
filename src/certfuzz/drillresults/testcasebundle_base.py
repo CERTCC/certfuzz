@@ -160,7 +160,7 @@ class TestCaseBundle(object):
             self.instructionpieces = instructionline.split()
             faultaddr = self._prefix_0x(faultaddr)
 
-            faultaddr = self.fix_efa_offset(faultaddr)
+            faultaddr = self.fix_efa_offset(instructionline, faultaddr)
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
@@ -369,7 +369,7 @@ class TestCaseBundle(object):
         else:
             return '0x{}'.format(addr)
 
-    def fix_efa_offset(self, faultaddr):
+    def fix_efa_offset(self, instructionline, faultaddr):
         try:
             index = self.instructionpieces.index('call')
         except ValueError:
