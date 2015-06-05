@@ -261,10 +261,13 @@ class Popen(subprocess.Popen):
                 if notdone == -1:
                     # Then check timed out, we have a hung process, attempt
                     # last ditch kill with explosives
-                    self.kill(group)
+                    # WD - Or don't
+                    self.returncode = winprocess.GetExitCodeProcess(self._handle)
 
             else:
-                # The process isn't around anymore.  Get the exit code
+                # In this case waitforsingleobject timed out.  We have to
+                # take the process behind the woodshed and shoot it.
+                # WD - Or don't
                 self.returncode = winprocess.GetExitCodeProcess(self._handle)
 
         else:
