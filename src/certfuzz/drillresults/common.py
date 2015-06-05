@@ -101,7 +101,7 @@ def carve2(string):
         substring = carve(string, token1, token2)
         if len(substring):
             # returns the first matching substring
-            addressarray = substring.split('')
+            addressarray = substring.split(' ')
             # Make sure we get just the address and no symbols
             return addressarray[1]
     # if we got here, no match was found, just return empty string
