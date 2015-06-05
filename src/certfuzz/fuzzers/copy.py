@@ -1,4 +1,4 @@
-from certfuzz.fuzzers import Fuzzer
+from certfuzz.fuzzers.fuzzer_base import Fuzzer
 
 
 class CopyFuzzer(Fuzzer):
