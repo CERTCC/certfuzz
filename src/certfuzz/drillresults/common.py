@@ -101,7 +101,9 @@ def carve2(string):
         substring = carve(string, token1, token2)
         if len(substring):
             # returns the first matching substring
-            return substring
+            addressarray = substring.split('')
+            # Make sure we get just the address and no symbols
+            return addressarray[1]
     # if we got here, no match was found, just return empty string
     return ""
 
@@ -153,7 +155,7 @@ def read_bin_file(inputfile):
     '''
     filebytes = _read_bin_file(inputfile)
 
-    #append decommpressed zip bytes
+    # append decommpressed zip bytes
     zipbytes = _read_zip(filebytes)
 
     # _read_zip returns an empty string on failure, so we can safely
