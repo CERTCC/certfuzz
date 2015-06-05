@@ -47,8 +47,8 @@ def main():
     parser.add_option('', '--debug', dest='debug', action='store_true', default=defaults['debug'])
     options, _args = parser.parse_args()
 
-    cfgobj = ConfigBase(options.configfile)
-    c = cfgobj.config
+    with ConfigBase(options.configfile) as cfgobj:
+        c = cfgobj.config
 
     if options.debug:
         pprint.pprint(c)
