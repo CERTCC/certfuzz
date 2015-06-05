@@ -52,7 +52,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
 
         config = self._create_minimizer_cfg()
 
-        debuggers.debugger_base.verify_supported_platform()
+        debuggers.registration.verify_supported_platform()
 
         kwargs = {'cfg': config,
                   'crash': testcase,
