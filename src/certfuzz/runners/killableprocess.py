@@ -108,7 +108,7 @@ class Popen(subprocess.Popen):
     if mswindows:
         def _execute_child(self, *args_tuple):
             # workaround for bug 958609
-            if sys.hexversion < 0x02070600: # prior to 2.7.6
+            if sys.hexversion < 0x02070600:  # prior to 2.7.6
                 (args, executable, preexec_fn, close_fds,
                     cwd, env, universal_newlines, startupinfo,
                     creationflags, shell,
@@ -116,7 +116,7 @@ class Popen(subprocess.Popen):
                     c2pread, c2pwrite,
                     errread, errwrite) = args_tuple
                 to_close = set()
-            else: # 2.7.6 and later
+            else:  # 2.7.6 and later
                 (args, executable, preexec_fn, close_fds,
                     cwd, env, universal_newlines, startupinfo,
                     creationflags, shell, to_close,
@@ -153,14 +153,14 @@ class Popen(subprocess.Popen):
             creationflags |= winprocess.CREATE_UNICODE_ENVIRONMENT
             if canCreateJob:
                 # Uncomment this line below to discover very useful things about your environment
-                #print "++++ killableprocess: releng twistd patch not applied, we can create job objects"
+                # print "++++ killableprocess: releng twistd patch not applied, we can create job objects"
                 creationflags |= winprocess.CREATE_BREAKAWAY_FROM_JOB
 
             # create the process
             hp, ht, pid, tid = winprocess.CreateProcess(
                 executable, args,
-                None, None, # No special security
-                1, # Must inherit handles!
+                None, None,  # No special security
+                1,  # Must inherit handles!
                 creationflags,
                 winprocess.EnvironmentBlock(env),
                 cwd, startupinfo)
@@ -236,7 +236,7 @@ class Popen(subprocess.Popen):
                 def check():
                     now = datetime.datetime.now()
                     diff = now - starttime
-                    if (diff.seconds * 1000000 + diff.microseconds) < (timeout * 1000):    # (1000*1000)
+                    if (diff.seconds * 1000000 + diff.microseconds) < (timeout * 1000):  # (1000*1000)
                         if self._job:
                             if (winprocess.QueryInformationJobObject(self._job, 8)['BasicInfo']['ActiveProcesses'] > 0):
                                 # Job Object is still containing active processes
@@ -264,9 +264,8 @@ class Popen(subprocess.Popen):
                     self.kill(group)
 
             else:
-                # In this case waitforsingleobject timed out.  We have to
-                # take the process behind the woodshed and shoot it.
-                self.kill(group)
+                # The process isn't around anymore.  Get the exit code
+                self.returncode = winprocess.GetExitCodeProcess(self._handle)
 
         else:
             if sys.platform in ('linux2', 'sunos5', 'solaris') \
@@ -275,14 +274,14 @@ class Popen(subprocess.Popen):
                     try:
                         os.waitpid(self.pid, 0)
                     except OSError, e:
-                        pass # If wait has already been called on this pid, bad things happen
+                        pass  # If wait has already been called on this pid, bad things happen
                     return self.returncode
             elif sys.platform == 'darwin':
                 def group_wait(timeout):
                     try:
                         count = 0
                         if timeout is None and self.kill_called:
-                            timeout = 10 # Have to set some kind of timeout or else this could go on forever
+                            timeout = 10  # Have to set some kind of timeout or else this could go on forever
                         if timeout is None:
                             while 1:
                                 os.killpg(self.pid, signal.SIG_DFL)

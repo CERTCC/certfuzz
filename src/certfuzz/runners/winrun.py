@@ -63,7 +63,6 @@ class WinRunner(RunnerBase):
         RunnerBase.__init__(self, options, cmd_template, fuzzed_file, workingdir_base)
 
         logger.debug('Initialize Runner')
-        self.runtimeout = None
         self.exceptions = []
 
         self.watchcpu = options.get('watchcpu', False)
