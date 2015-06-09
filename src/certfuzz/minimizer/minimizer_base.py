@@ -529,7 +529,8 @@ class Minimizer(object):
             got_hit = False
             while self.consecutive_misses <= self.n_misses_allowed:
                 # clean the /tmp directory so we don't fill up the disk across tries
-                TmpReaper().clean_tmp()
+                # TODO - This cleans up files that we're working with!  (standalone minimizer)
+                # TmpReaper().clean_tmp()
 
                 if self.use_watchdog:
                     # touch the watchdog file so we don't reboot during long minimizations

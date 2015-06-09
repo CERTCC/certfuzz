@@ -38,7 +38,6 @@ class BffCrash(Testcase):
         '''
         Testcase.__init__(self, seedfile, fuzzedfile, debugger_timeout)
         self.cfg = cfg
-        self.workdir_base = workdir_base
         self.program = program
         self.killprocname = killprocname
         self.backtrace_lines = backtrace_lines

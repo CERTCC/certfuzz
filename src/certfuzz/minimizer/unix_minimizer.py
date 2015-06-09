@@ -14,7 +14,7 @@ class UnixMinimizer(MinimizerBase):
         # touch the watchdogfile
         try:
             open(self.cfg.watchdogfile, 'w').close()
-        except IOError as e:
+        except (OSError, IOError) as e:
             # it's okay if we can't, but we should note it
             self.logger.warning('Unable to touch watchdog file %s: %s',
                                 self.cfg.watchdogfile, e)
@@ -27,7 +27,7 @@ class UnixMinimizer(MinimizerBase):
     def __exit__(self, etype, value, traceback):
         try:
             os.remove(self.cfg.watchdogfile)
-        except IOError as e:
+        except (OSError, IOError) as e:
             # it's okay if we can't, but we should note it
             self.logger.warning('Unable to remove watchdog file %s: %s',
                                 self.cfg.watchdogfile, e)

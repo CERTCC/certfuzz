@@ -58,7 +58,7 @@ def main():
                       type='float')
     parser.add_option('-g', '--target-size-guess', dest='initial_target_size',
                       help='A guess at the minimal value (int)', type='int')
-    parser.add_option('', '--config', dest='config',
+    parser.add_option('', '--config', dest='config', default='conf.d/bff.yaml',
                       help='path to the configuration file to use')
     parser.add_option('', '--timeout', dest='timeout',
                       metavar='N', type='int', default=0,

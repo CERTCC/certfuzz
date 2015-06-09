@@ -107,6 +107,13 @@ class Testcase(TestCaseBase):
         new_fuzzedfile = os.path.join(self.tempdir, self.fuzzedfile.basename)
         self.fuzzedfile = BasicFile(new_fuzzedfile)
 
+    def copy_files(self, outdir):
+        crash_files = os.listdir(self.tempdir)
+        for file in crash_files:
+            filepath = os.path.join(self.tempdir, file)
+            if os.path.isfile(filepath):
+                filetools.copy_file(filepath, outdir)
+
     def debug(self, tries_remaining=None):
         raise NotImplementedError
 
