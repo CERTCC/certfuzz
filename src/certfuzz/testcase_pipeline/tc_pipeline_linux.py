@@ -85,7 +85,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
     def _minimize(self, testcase):
         if self.options.get('minimize_crashers'):
             touch_watchdog_file()
-            self._mininimize_to_seedfile(testcase)
+            self._minimize_to_seedfile(testcase)
         if self.options.get('minimize_to_string'):
             touch_watchdog_file()
             self._minimize_to_string(testcase)
@@ -153,7 +153,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         # clean up
         testcase.delete_files()
 
-    def _mininimize_to_seedfile(self, testcase):
+    def _minimize_to_seedfile(self, testcase):
         self._minimize_generic(testcase, sftarget=True, confidence=0.999)
         # calculate the hamming distances for this crash
         # between the original seedfile and the minimized fuzzed file

@@ -8,6 +8,7 @@ import shutil
 import tempfile
 
 from certfuzz.fuzztools import hamming
+from certfuzz.fuzztools.filetools import check_zip_file
 from pprint import pformat
 
 
@@ -30,6 +31,7 @@ class TestCaseBase(object):
         self.hd_bytes = None
         self.signature = None
         self.working_dir = None
+        self.is_zipfile = False
 
     def __enter__(self):
         self._setup_workdir()
@@ -53,9 +55,15 @@ class TestCaseBase(object):
         self.working_dir = None
 
     def calculate_hamming_distances(self):
+        # If the fuzzed file is a valid zip, then we're fuzzing zip contents, not the container
+        self.is_zipfile = check_zip_file(self.fuzzedfile.path)
         try:
-            self.hd_bits = hamming.bitwise_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
-            self.hd_bytes = hamming.bytewise_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
+            if self.is_zipfile:
+                self.hd_bits = hamming.bitwise_zip_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
+                self.hd_bytes = hamming.bytewise_zip_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
+            else:
+                self.hd_bits = hamming.bitwise_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
+                self.hd_bytes = hamming.bytewise_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
         except KeyError:
             # one of the files wasn't defined
             logger.warning('Cannot find either sf_path or minimized file to calculate Hamming Distances')

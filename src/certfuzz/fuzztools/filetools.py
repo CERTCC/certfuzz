@@ -336,6 +336,23 @@ def check_zip_file(filepath):
     with open(filepath, 'rb') as filehandle:
         return check_zip_fh(filehandle)
 
+def get_zipcontents(filepath):
+    # If the file is zip-based, fuzz the contents rather than the container
+    logger.debug('Reading zip file: %s', filepath)
+    tempzip = zipfile.ZipFile(filepath, 'r')
+
+    '''
+    concatentate zip contents
+    '''
+    unzippedbytes = ''
+    logger.debug('Reading files from zip...')
+    for i in tempzip.namelist():
+        data = tempzip.read(i)
+        unzippedbytes += data
+    tempzip.close()
+    return unzippedbytes
+
+
 
 def make_writable(filename):
     mode = os.stat(filename).st_mode

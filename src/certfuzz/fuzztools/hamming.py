@@ -9,6 +9,7 @@ between objects. P
 import itertools
 import os
 
+from certfuzz.fuzztools.filetools import get_zipcontents
 
 def vector_compare(v1, v2):
     '''
@@ -58,16 +59,27 @@ def bytewise_hamming_distance(file1, file2):
     between them. Returns the distance as an int. Throws an AssertionError
     unless file1 and file2 are the same size.
     '''
-    return _file_compare(bytewise_hd, file1, file2)
+    return _file_compare(bytewise_hd, False, file1, file2)
 
+def bytewise_zip_hamming_distance(file1, file2):
+    '''
+    Given the names of two files, compute the byte-wise Hamming Distance
+    between them. Returns the distance as an int. Throws an AssertionError
+    unless file1 and file2 are the same size.
+    '''
+    return _file_compare(bytewise_hd, True, file1, file2)
 
-def _file_compare(distance_function, file1, file2):
-    assert os.path.getsize(file1) == os.path.getsize(file2)
+def _file_compare(distance_function, comparezipcontents, file1, file2):
+    if not comparezipcontents:
+        assert os.path.getsize(file1) == os.path.getsize(file2)
 
-    with open(file1, 'rb') as f1:
-        with open(file2, 'rb') as f2:
-            # find the hamming distance for each byte
-            distance = distance_function(f1.read(), f2.read())
+        with open(file1, 'rb') as f1:
+            with open(file2, 'rb') as f2:
+                # find the hamming distance for each byte
+                distance = distance_function(f1.read(), f2.read())
+    else:
+        # Work with zip contents
+        distance = distance_function(get_zipcontents(file1), get_zipcontents(file2))
     return distance
 
 
@@ -97,4 +109,12 @@ def bitwise_hamming_distance(file1, file2):
     between them. Returns the distance as an int. Throws an AssertionError
     unless file1 and file2 are the same size.
     '''
-    return _file_compare(bitwise_hd, file1, file2)
+    return _file_compare(bitwise_hd, False, file1, file2)
+
+def bitwise_zip_hamming_distance(file1, file2):
+    '''
+    Given the names of two files, compute the bit-wise Hamming Distance
+    between them. Returns the distance as an int. Throws an AssertionError
+    unless file1 and file2 are the same size.
+    '''
+    return _file_compare(bitwise_hd, True, file1, file2)
