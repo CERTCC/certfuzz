@@ -23,7 +23,6 @@ class WindowsResultDriller(ResultDriller):
             # Create dictionary for hashes in results dictionary
             hash_dict = {}
             hash_dict['hash'] = crash_hash
-            self.results[crash_hash] = hash_dict
             crasherfile = ''
             # Check each of the files in the hash directory
             for current_file in files:
