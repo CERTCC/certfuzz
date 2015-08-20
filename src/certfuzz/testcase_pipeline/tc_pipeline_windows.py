@@ -63,13 +63,17 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
                   'maxtime': self.cfg['runoptions']['minimizer_timeout']
                   }
 
-        with Minimizer(**kwargs) as minimizer:
-            minimizer.go()
+        try:
+            with Minimizer(**kwargs) as minimizer:
+                minimizer.go()
 
-            # minimzer found other crashes, so we should add them
-            # to our list for subsequent processing
-            for tc in minimizer.other_crashes.values():
-                self.tc_candidate_q.put(tc)
+                # minimzer found other crashes, so we should add them
+                # to our list for subsequent processing
+                for tc in minimizer.other_crashes.values():
+                    self.tc_candidate_q.put(tc)
+        except:
+            # Minimizer failed for some reason. Don't stop campaign!
+            pass
 
     def _analyze(self, testcase):
         pass

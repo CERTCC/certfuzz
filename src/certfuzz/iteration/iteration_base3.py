@@ -81,7 +81,12 @@ class IterationBase3(object):
             return handled
 
         # clean up
-        rm_rf(self.working_dir)
+        try:
+            rm_rf(self.working_dir)
+        except:
+            # TODO: Minimizer may have a log file handle open
+            # If we get here, we've left files behind
+            pass
         return handled
 
     def _pre_fuzz(self):

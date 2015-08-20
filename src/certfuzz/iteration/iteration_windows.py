@@ -16,6 +16,7 @@ from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzzers.errors import FuzzerError
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 from certfuzz.fuzzers.errors import FuzzerInputMatchesOutputError
+from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.fuzztools.filetools import delete_files_or_dirs
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.runners.errors import RunnerRegistryError
@@ -82,6 +83,9 @@ class WindowsIteration(IterationBase3):
             handled = True
         elif etype is FuzzerError:
             logger.warning('Failed to fuzz, Skipping seed %d.', self.seednum)
+            handled = True
+        elif etype is MinimizerError:
+            logger.warning('Failed to minimize %d, Continuing.', self.seednum)
             handled = True
         elif etype is DebuggerFileError:
             logger.warning('Failed to debug, Skipping seed %d', self.seednum)

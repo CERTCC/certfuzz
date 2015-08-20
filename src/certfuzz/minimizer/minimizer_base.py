@@ -41,9 +41,9 @@ class Minimizer(object):
                  logfile=None, tempdir=None, maxtime=3600, preferx=False, keep_uniq_faddr=False, watchcpu=False):
 
         if not cfg:
-            raise MinimizerError('Config must be specified')
+            self._raise('Config must be specified')
         if not crash:
-            raise MinimizerError('Crasher must be specified')
+            self._raise('Crasher must be specified')
 
         self.cfg = cfg
         self.crash = crash
@@ -88,7 +88,7 @@ class Minimizer(object):
             minf = '%s-minimized%s' % (self.crash.fuzzedfile.root, self.crash.fuzzedfile.ext)
             minlog = os.path.join(self.crash.fuzzedfile.dirname, 'minimizer_log.txt')
             if not os.path.exists(self.crash.seedfile.path):
-                raise MinimizerError('Seedfile not found at %s' %
+                self._raise('Seedfile not found at %s' %
                                      self.crash.seedfile.path)
         elif self.preferx:
             minf = '%s-min-%s%s' % (self.crash.fuzzedfile.root, self.minchar, self.crash.fuzzedfile.ext)
@@ -110,9 +110,9 @@ class Minimizer(object):
             self.crash_dst = self.crash.fuzzedfile.dirname
 
         if not os.path.exists(self.crash_dst):
-            raise MinimizerError("%s does not exist" % self.crash_dst)
+            self._raise("%s does not exist" % self.crash_dst)
         if not os.path.isdir(self.crash_dst):
-            raise MinimizerError("%s is not a directory" % self.crash_dst)
+            self._raise("%s is not a directory" % self.crash_dst)
 
         self.debugger = debugger_get()
 
@@ -120,7 +120,7 @@ class Minimizer(object):
         self.logger.info("Minimizer initializing for %s", self.crash.fuzzedfile.path)
 
         if not os.path.exists(self.crash.fuzzedfile.path):
-            raise MinimizerError("%s does not exist" % self.crash.fuzzedfile.path)
+            self._raise("%s does not exist" % self.crash.fuzzedfile.path)
 
         self.crash.set_debugger_template('bt_only')
 
@@ -153,7 +153,7 @@ class Minimizer(object):
 
         # none of this will work if the files are of different size
         if len(self.seed) != len(self.fuzzed_content):
-            raise MinimizerError('Minimizer requires seed and fuzzed_content to have the same length. %d != %d' % (len(self.seed), len(self.fuzzed_content)))
+            self._raise('Minimizer requires seed and fuzzed_content to have the same length. %d != %d' % (len(self.seed), len(self.fuzzed_content)))
 
         # initialize the hamming distance
         self.start_distance = self.hd_func(self.seed, self.fuzzed_content)
@@ -192,15 +192,15 @@ class Minimizer(object):
         if not self._is_crash_to_minimize():
             msg = 'Unable to minimize: No crash'
             self.logger.info(msg)
-            raise MinimizerError(msg)
+            self._raise(msg)
         if self._is_already_minimized():
             msg = 'Unable to minimize: Already minimized'
             self.logger.info(msg)
-            raise MinimizerError(msg)
+            self._raise(msg)
         if self.crash.debugger_missed_stack_corruption:
             msg = 'Unable to minimize: Stack corruption crash, which the debugger missed.'
             self.logger.info(msg)
-            raise MinimizerError(msg)
+            self._raise(msg)
         # start the timer
         self.start_time = time.time()
         return self
@@ -217,6 +217,13 @@ class Minimizer(object):
 #        except IOError:
 #            # it's okay if we can't
 #            pass
+
+    def _raise(description):
+        # Minimizer has separate logging. Close up handles before
+        # raising any exception
+        self.log_file_hdlr.close()
+        self.logger.removeHandler(self.log_file_hdlr)
+        raise MinimizerError(description)
 
     def _read_fuzzed(self):
         '''
@@ -280,7 +287,7 @@ class Minimizer(object):
         split self.fuzzed
         '''
         if self.saved_arcinfo is None:
-            raise WindowsMinimizerError('_readzip was not called')
+            self._raise('_readzip was not called')
 
         filedata = ''.join(self.newfuzzed)
         filepath = self.tempfile
@@ -307,9 +314,9 @@ class Minimizer(object):
         dirname = os.path.dirname(self.minimizer_logfile)
 
         if not os.path.exists(dirname):
-            raise MinimizerError('Directory should already exist: %s' % dirname)
+            self._raise('Directory should already exist: %s' % dirname)
         if os.path.exists(self.minimizer_logfile):
-            raise MinimizerError('Log file must not already exist: %s' % self.minimizer_logfile)
+            self._raise('Log file must not already exist: %s' % self.minimizer_logfile)
         self.logger = logging.getLogger(__name__)
         self.log_file_hdlr = logging.FileHandler(self.minimizer_logfile)
         self.logger.addHandler(self.log_file_hdlr)
@@ -410,7 +417,7 @@ class Minimizer(object):
         outfile = f
 
         if os.path.exists(outfile):
-            raise MinimizerError('Outfile should not already exist: %s' % outfile)
+            self._raise('Outfile should not already exist: %s' % outfile)
         self.logger.debug('\tCopying %s to %s', self.tempfile, outfile)
         filetools.copy_file(self.tempfile, outfile)
 
