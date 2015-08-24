@@ -98,14 +98,14 @@ def main():
     if options.cfgfile:
         cfg_file = options.cfgfile
     else:
-        cfg_file = os.path.join(parent_path, 'conf.d', 'bff.cfg')
+        cfg_file = os.path.join('conf.d', 'bff.yaml')
 
     logger.debug('Using config file: %s', cfg_file)
     cfg = LinuxConfig(cfg_file)
     with cfg:
         pass
 
-    result_dir = cfg.crashers_dir
+    result_dir = os.path.join(cfg.output_dir, cfg.campaign_id, 'crashers')
     logger.debug('Reading results from %s', result_dir)
 
     counters = {}
