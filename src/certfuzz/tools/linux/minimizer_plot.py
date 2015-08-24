@@ -142,7 +142,7 @@ def main():
     if options.cfgfile:
         cfg_file = options.cfgfile
     else:
-        cfg_file = os.path.join(parent_path, 'conf.d', 'bff.cfg')
+        cfg_file = os.path.join('conf.d', 'bff.yaml')
 
     if options.dir:
         result_dir = options.dir
@@ -152,7 +152,7 @@ def main():
         with cfg:
             pass
 
-        result_dir = cfg.crashers_dir
+        result_dir = os.path.join(cfg.output_dir, cfg.campaign_id, 'crashers')
         logger.info('Reading results from %s', result_dir)
 
     log = None
