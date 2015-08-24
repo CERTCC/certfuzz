@@ -218,11 +218,14 @@ class Minimizer(object):
 #            # it's okay if we can't
 #            pass
 
-    def _raise(description):
+    def _raise(self, description):
         # Minimizer has separate logging. Close up handles before
         # raising any exception
-        self.log_file_hdlr.close()
-        self.logger.removeHandler(self.log_file_hdlr)
+        try:
+            self.log_file_hdlr.close()
+            self.logger.removeHandler(self.log_file_hdlr)
+        except:
+            pass
         raise MinimizerError(description)
 
     def _read_fuzzed(self):
