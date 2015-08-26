@@ -92,6 +92,8 @@ class TestCaseBundle(object):
         return self
 
     def __exit__(self, etype, value, traceback):
+        # Explicitly remove crasherdata to prevent runaway memory usage
+        self.crasherdata = ''
         pass
 
     def _find_testcase_file(self):
