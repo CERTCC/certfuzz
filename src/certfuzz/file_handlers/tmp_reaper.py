@@ -23,6 +23,7 @@ class TmpReaper(object):
         '''
         Constructor
         '''
+        logger.debug('Reaping tmp...')
         self.tmp_dir = tempfile.gettempdir()
         if platform.system() == 'Windows':
             self.clean_tmp = self.clean_tmp_windows

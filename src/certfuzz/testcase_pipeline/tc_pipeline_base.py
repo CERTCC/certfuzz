@@ -14,6 +14,7 @@ from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools import filetools
 from certfuzz.helpers.coroutine import coroutine
 from certfuzz.testcase_pipeline.errors import TestCasePipelineError
+from certfuzz.file_handlers.tmp_reaper import TmpReaper
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +58,7 @@ class TestCasePipelineBase(object):
         return self.go
 
     def __exit__(self, etype, value, traceback):
-        pass
+        TmpReaper().clean_tmp()
 
     @abc.abstractmethod
     def _setup_analyzers(self):
