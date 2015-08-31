@@ -94,7 +94,7 @@ class MsecDebugger(DebuggerBase):
 
         args = self._get_cmdline(self.outfile)
         p = Popen(args, stdout=open(os.devnull), stderr=open(os.devnull),
-                  cwd=targetdir, universal_newlines=True)
+                  universal_newlines=True)
 
         if self.watchcpu == True:
             wmiInterface = wmi.WMI()
