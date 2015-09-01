@@ -63,6 +63,9 @@ def main():
     parser.add_option('', '--timeout', dest='timeout',
                       metavar='N', type='int', default=0,
                       help='Stop minimizing after N seconds (default is 0, never time out).')
+    parser.add_option('-k', '--keepothers', dest='keep_other_crashes',
+                      action='store_true',
+                      help='Keep other crash hashes encountered during minimization')
 
     (options, args) = parser.parse_args()
 
@@ -143,20 +146,23 @@ def main():
                   cfg.debugger_timeout, cfg.killprocname, cfg.backtracelevels,
                   crashers_dir, options.keep_uniq_faddr) as crash:
 
+        crash.tempdir = outdir
         filetools.make_directories(crash.tempdir)
         logger.info('Copying %s to %s', fuzzed_file.path, crash.tempdir)
         filetools.copy_file(fuzzed_file.path, crash.tempdir)
+
+        minlog = os.path.join(outdir, 'min_log.txt')
 
         with Minimizer(cfg=cfg, crash=crash, crash_dst_dir=outdir,
                                  seedfile_as_target=min2seed,
                                  bitwise=options.bitwise,
                                  confidence=confidence,
-                                 logfile='./min_log.txt',
-                                 tempdir=crash.tempdir,
+                                 logfile=minlog,
+                                 tempdir=outdir,
                                  maxtime=options.timeout,
                                  preferx=options.prefer_x_target,
                                  keep_uniq_faddr=options.keep_uniq_faddr) as minimize:
-            minimize.save_others = False
+            minimize.save_others = options.keep_other_crashes
             minimize.target_size_guess = int(options.initial_target_size)
             minimize.go()
 
@@ -181,9 +187,12 @@ def main():
 
                 with open(metasploit_file, 'wb') as f:
                     f.writelines(targetstring)
-
-        crash.copy_files(outdir)
-        crash.clean_tmpdir()
+        raw_input('attach debugger')
+        for othercrash in minimize.other_crashes:
+            othercrashdir = os.path.join(outdir, minimize.other_crashes[othercrash].tempdir)
+            outcrashdir = os.path.join(outdir, os.path.basename(othercrashdir))
+            filetools.mkdir_p(outcrashdir)
+            minimize.other_crashes[othercrash].copy_files(outcrashdir)
 
 if __name__ == '__main__':
     main()

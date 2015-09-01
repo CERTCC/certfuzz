@@ -87,7 +87,7 @@ class ResultDriller(object):
         try:
             with open(self.pickle_file, 'rb') as pkl_file:
                 self.cached_testcases = pickle.load(pkl_file)
-        except IOError:
+        except (IOError, EOFError):
             # No cached results
             pass
 

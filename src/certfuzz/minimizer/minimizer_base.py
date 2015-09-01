@@ -17,7 +17,6 @@ import collections
 
 from certfuzz.debuggers.registration import get as debugger_get
 from certfuzz.file_handlers.basicfile import BasicFile
-from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzztools import hamming, filetools, probability, text
 from certfuzz.fuzztools.filetools import delete_files, write_file, check_zip_file
 from certfuzz.fuzztools.filetools import exponential_backoff
@@ -218,11 +217,14 @@ class Minimizer(object):
 #            # it's okay if we can't
 #            pass
 
-    def _raise(description):
+    def _raise(self, description):
         # Minimizer has separate logging. Close up handles before
         # raising any exception
-        self.log_file_hdlr.close()
-        self.logger.removeHandler(self.log_file_hdlr)
+        try:
+            self.log_file_hdlr.close()
+            self.logger.removeHandler(self.log_file_hdlr)
+        except:
+            pass
         raise MinimizerError(description)
 
     def _read_fuzzed(self):
@@ -611,9 +613,6 @@ class Minimizer(object):
 
             got_hit = False
             while self.consecutive_misses <= self.n_misses_allowed:
-                # clean the /tmp directory so we don't fill up the disk across tries
-                # TODO - This cleans up files that we're working with!  (standalone minimizer)
-                # TmpReaper().clean_tmp()
 
                 if self.use_watchdog:
                     # touch the watchdog file so we don't reboot during long minimizations
