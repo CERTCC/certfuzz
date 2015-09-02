@@ -28,7 +28,7 @@ class TestCasePipelineBase(object):
     pipes = ['verify', 'minimize', 'analyze', 'report']
 
     def __init__(self, testcases=None, uniq_func=None, cfg=None, options=None,
-                 outdir=None, workdirbase=None):
+                 outdir=None, workdirbase=None, minimizable=None):
         '''
         Constructor
         '''
@@ -39,6 +39,7 @@ class TestCasePipelineBase(object):
         self.tc_dir = os.path.join(self.outdir, 'crashers')
 
         self.working_dir = workdirbase
+        self.minimizable = minimizable
 
         self.tc_candidate_q = Queue.Queue()
 
@@ -70,6 +71,8 @@ class TestCasePipelineBase(object):
 
         logger.debug('Construct analysis pipeline')
         setup_order = list(self.pipes)
+        if not self.minimizable:
+            setup_order.remove('minimize')
         setup_order.reverse()
 
         pipeline = None

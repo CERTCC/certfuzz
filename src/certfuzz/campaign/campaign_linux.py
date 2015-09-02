@@ -132,7 +132,6 @@ class LinuxCampaign(CampaignBase):
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
         # setup our watchdog file toucher
-        TWDF.remote_d = self.config.remote_dir
         TWDF.wdf = self.config.watchdogfile
         TWDF.enable()
         touch_watchdog_file()

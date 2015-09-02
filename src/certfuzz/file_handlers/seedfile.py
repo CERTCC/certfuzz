@@ -46,6 +46,8 @@ class SeedFile(BasicFile):
             self.range_min = 0
             self.range_max = 1
 
+        self.tries = 0
+
         self.rangefinder = RangeFinder(self.range_min, self.range_max)
 
     def __getstate__(self):

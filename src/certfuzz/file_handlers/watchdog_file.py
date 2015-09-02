@@ -23,8 +23,7 @@ class Twdf(object):
         pass
 
     def _twdf(self):
-        if os.access(self.remote_d, os.W_OK):
-            open(self.wdf, 'w').close()
+        open(self.wdf, 'w').close()
 
 TWDF = Twdf()
 

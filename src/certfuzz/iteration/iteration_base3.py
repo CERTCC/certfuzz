@@ -130,14 +130,24 @@ class IterationBase3(object):
 
     def record_success(self):
         self.sf_set.record_success(key=self.seedfile.md5)
-        self.rf.record_success(key=self.r.id)
+        if self.r is not None:
+            # Fuzzer uses rangefinder
+            self.rf.record_success(key=self.r.id)
+        else:
+            # Fuzzer without rangefinder
+            self.seedfile.tries += 1
 
     def record_failure(self):
         self.record_tries()
 
     def record_tries(self):
         self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-        self.rf.record_tries(key=self.r.id, tries=1)
+        if self.r is not None:
+            # Fuzzer uses rangefinder
+            self.rf.record_tries(key=self.r.id, tries=1)
+        else:
+            # Fuzzer without rangefinder
+            self.seedfile.tries += 1
 
     def process_testcases(self):
         if not len(self.testcases):
@@ -150,7 +160,8 @@ class IterationBase3(object):
                                  cfg=self.cfg,
                                  options=self.pipeline_options,
                                  outdir=self.outdir,
-                                 workdirbase=self.working_dir) as pipeline:
+                                 workdirbase=self.working_dir,
+                                 minimizable=self.fuzzer.is_minimizable) as pipeline:
             pipeline()
 
     def go(self):
