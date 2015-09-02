@@ -23,7 +23,6 @@ target:
     cmdline: ~/convert $SEEDFILE /dev/null
     killprocname: convert
 directories:
-    remote_dir: ~/bff &remote_dir
     seedfile_origin_dir: ~/bff/seedfiles/examples
     debugger_template_dir: ~/bff/certfuzz/debuggers/templates
     output_dir: ~/results
