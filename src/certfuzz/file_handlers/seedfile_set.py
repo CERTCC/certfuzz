@@ -84,6 +84,10 @@ class SeedfileSet(MultiArmedBandit):
             logger.info('Adding file to set: %s', seedfile.path)
             self.add_item(seedfile.md5, seedfile)
 
+    def remove_file(self, seedfile):
+        logger.info('Removing file from set: %s', seedfile.md5)
+        self.del_item(seedfile.md5)
+
     def copy_file_from_origin(self, f):
         if (os.path.basename(f.path) == '.DS_Store'):
             return 0

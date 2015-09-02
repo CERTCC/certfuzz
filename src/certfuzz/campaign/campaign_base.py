@@ -20,6 +20,8 @@ from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzztools import filetools
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+from certfuzz.file_handlers.errors import SeedfileSetError
 from certfuzz.version import __version__
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 import gc
@@ -96,6 +98,7 @@ class CampaignBase(object):
         self.outdir_base = None
         self.outdir = None
         self.sf_set_out = None
+        self.stopfuzzing = False
         if result_dir:
             self.outdir_base = os.path.abspath(result_dir)
 
@@ -365,7 +368,10 @@ class CampaignBase(object):
         '''
         Returns True if a campaign should proceed. False otherwise.
         '''
-        return True
+        if self.stopfuzzing:
+            return False
+        else:
+            return True
 
     def _do_interval(self):
         '''
@@ -375,7 +381,13 @@ class CampaignBase(object):
         TmpReaper().clean_tmp()
 
         # choose seedfile
-        sf = self.seedfile_set.next_item()
+        try:
+            sf = self.seedfile_set.next_item()
+        except SeedfileSetError:
+            logger.info('Seedfile set is empty. Terminating')
+            self.stopfuzzing = True
+            return
+
         logger.info('Selected seedfile: %s', sf.basename)
 
 # TODO: restore this
@@ -394,7 +406,12 @@ class CampaignBase(object):
         # note that range does not include interval_limit
         logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
         for seednum in xrange(self.current_seed, interval_limit):
-            self._do_iteration(sf, r, qf, seednum)
+            try:
+                self._do_iteration(sf, r, qf, seednum)
+            except FuzzerExhaustedError:
+                logger.info('Fuzzer exhausted for seedfile %s' % sf.basename)
+                self.seedfile_set.remove_file(sf)
+                break
 
         del sf
         # manually collect garbage
