@@ -187,7 +187,7 @@ def main():
 
                 with open(metasploit_file, 'wb') as f:
                     f.writelines(targetstring)
-        raw_input('attach debugger')
+
         for othercrash in minimize.other_crashes:
             othercrashdir = os.path.join(outdir, minimize.other_crashes[othercrash].tempdir)
             outcrashdir = os.path.join(outdir, os.path.basename(othercrashdir))

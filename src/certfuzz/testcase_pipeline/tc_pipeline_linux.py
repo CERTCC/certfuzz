@@ -126,18 +126,32 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         TestCasePipelineBase._analyze(self, testcase)
 
     def _post_analyze(self, testcase):
-        logger.info('Annotating callgrind output')
-        try:
-            annotate_callgrind(testcase)
-            annotate_callgrind_tree(testcase)
-        except CallgrindAnnotateEmptyOutputFileError:
-            logger.warning('Unexpected empty output from annotate_callgrind. Continuing')
-        except CallgrindAnnotateMissingInputFileError:
-            logger.warning('Missing callgrind output. Continuing')
+        if self.options.get('use_valgrind'):
+            logger.info('Annotating callgrind output')
+            try:
+                annotate_callgrind(testcase)
+                annotate_callgrind_tree(testcase)
+            except CallgrindAnnotateEmptyOutputFileError:
+                logger.warning('Unexpected empty output from annotate_callgrind. Continuing')
+            except CallgrindAnnotateMissingInputFileError:
+                logger.warning('Missing callgrind output. Continuing')
 
     def _pre_report(self, testcase):
         uniqlogger = get_uniq_logger(self.options.get('uniq_log'))
-        uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
+        if testcase.hd_bits is not None:
+            # We know HD info, since we minimized
+            if testcase.range is not None:
+                # Fuzzer specifies a range
+                uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
+            else:
+                uniqlogger.info('%s crash_id=%s seed=%d bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.hd_bits, testcase.hd_bytes)
+        else:
+            # We don't know the HD info        
+            if testcase.range is not None:
+                # We have a fuzzer that uses a range
+                uniqlogger.info('%s crash_id=%s seed=%d range=%s', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range)
+            else:
+                uniqlogger.info('%s crash_id=%s seed=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum)
         logger.info('%s first seen at %d', testcase.signature, testcase.seednum)
 
     def _report(self, testcase):
