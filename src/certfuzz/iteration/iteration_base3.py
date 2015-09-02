@@ -150,7 +150,8 @@ class IterationBase3(object):
                                  cfg=self.cfg,
                                  options=self.pipeline_options,
                                  outdir=self.outdir,
-                                 workdirbase=self.working_dir) as pipeline:
+                                 workdirbase=self.working_dir,
+                                 minimizable=self.fuzzer.is_minimizable) as pipeline:
             pipeline()
 
     def go(self):
