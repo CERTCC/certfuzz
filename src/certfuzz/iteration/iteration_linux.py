@@ -84,7 +84,7 @@ class LinuxIteration(IterationBase3):
             self.runner.run()
 
     def _post_run(self):
-        self.record_tries()
+        #self.record_tries()
 
         if not self.runner.saw_crash:
             logger.debug('No crash seen')
