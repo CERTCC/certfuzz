@@ -85,7 +85,7 @@ class SeedfileSet(MultiArmedBandit):
             self.add_item(seedfile.md5, seedfile)
 
     def remove_file(self, seedfile):
-        logger.info('Removing file from set: %s', seedfile.md5)
+        logger.info('Removing file from set: %s', seedfile.basename)
         self.del_item(seedfile.md5)
 
     def copy_file_from_origin(self, f):
