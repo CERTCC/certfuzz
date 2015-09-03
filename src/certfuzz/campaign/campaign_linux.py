@@ -115,7 +115,7 @@ class LinuxCampaign(CampaignBase):
     def _start_process_killer(self):
         logger.debug('start process killer')
         with ProcessKiller(self.config.killprocname, self.config.killproctimeout) as pk:
-            pk.go()
+            self.pk_pid = pk.go()
 
     def _cache_app(self):
         logger.debug('cache program')

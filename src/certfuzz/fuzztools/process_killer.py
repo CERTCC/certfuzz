@@ -48,4 +48,5 @@ class ProcessKiller:
         Spawns a separate process to kill out of control processes.
         '''
         logger.debug('Running [%s]', self.cmdline)
-        subprocess.check_call(self.cmdline, shell=True)
+        pk_pid = subprocess.Popen(self.cmdline, shell=True).pid
+        return pk_pid

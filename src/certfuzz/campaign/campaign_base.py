@@ -13,6 +13,7 @@ import sys
 import tempfile
 import traceback
 import cPickle as pickle
+import signal
 
 from certfuzz.campaign.errors import CampaignError
 from certfuzz.debuggers import registration
@@ -99,6 +100,7 @@ class CampaignBase(object):
         self.outdir = None
         self.sf_set_out = None
         self.stopfuzzing = False
+        self.pk_pid = None
         if result_dir:
             self.outdir_base = os.path.abspath(result_dir)
 
@@ -210,6 +212,9 @@ class CampaignBase(object):
         Implements methods to be completed prior to handling errors in the
         __exit__ method. No return value.
         '''
+        # Kill off process killer
+        if self.pk_pid:
+            os.kill(self.pk_pid, signal.SIGTERM)
 
     def __exit__(self, etype, value, mytraceback):
         '''
