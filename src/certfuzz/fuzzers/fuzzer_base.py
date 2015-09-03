@@ -178,7 +178,7 @@ class MinimizableFuzzer(Fuzzer):
         try:
             tempzip = zipfile.ZipFile(inmemseed, 'r')
         except:
-            logger.warning('Bad zip file. Aborting.')
+            logger.warning('Bad zip file. Falling back to mutating container.')
             self.sf.is_zip = False
             inmemseed.close()
             return
@@ -187,14 +187,14 @@ class MinimizableFuzzer(Fuzzer):
         get info on all the archived files and concatentate their contents
         into self.input
         '''
-        self.input = bytearray()
+        self.zipinput = bytearray()
         logger.debug('Reading files from zip...')
         for i in tempzip.namelist():
             try:
                 data = tempzip.read(i)
             except:
                 # BadZipfile or encrypted
-                logger.warning('Bad zip file. Aborting.')
+                logger.warning('Bad zip file. Falling back to mutating container.')
                 self.sf.is_zip = False
                 tempzip.close()
                 inmemseed.close()
@@ -204,11 +204,13 @@ class MinimizableFuzzer(Fuzzer):
             # reconstruction
 
             # save compress type
-            self.saved_arcinfo[i] = (len(self.input), len(data),
+            self.saved_arcinfo[i] = (len(self.zipinput), len(data),
                                     tempzip.getinfo(i).compress_type)
             self.input += data
         tempzip.close()
         inmemseed.close()
+        # Zip processing went fine, so use the zip contents as self.input to fuzzer
+        self.input = self.zipinput
 
     def _postfuzz(self):
         if self.options.get('fuzz_zip_container') or not self.sf.is_zip:
