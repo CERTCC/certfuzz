@@ -28,7 +28,7 @@ def setup_debugging():
     logger.debug('Instantiating embedded rpdb2 debugger with password "bff"...')
     try:
         import rpdb2
-        rpdb2.start_embedded_debugger("bff", timeout=0.0)
+        rpdb2.start_embedded_debugger("bff", timeout=5.0)
     except ImportError:
         logger.debug('Skipping import of rpdb2. Is Winpdb installed?')
 
@@ -60,7 +60,7 @@ class BFF(object):
             setup_debugging()
 
         return self.go
-    
+
     def __exit__(self, etype, value, traceback):
         pass
 
