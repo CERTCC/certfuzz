@@ -13,7 +13,7 @@ from certfuzz.fuzztools import hostinfo, filetools
 
 try:
     from certfuzz.analyzers import pin_calltrace
-    from certfuzz.analyzers import AnalyzerEmptyOutputError
+    from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
     from certfuzz.debuggers.output_parsers.calltracefile import Calltracefile
 except ImportError:
     pass
