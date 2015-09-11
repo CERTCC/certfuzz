@@ -163,8 +163,10 @@ class TestCaseBundle(object):
         if instructionline:
             self.instructionpieces = instructionline.split()
             faultaddr = self._prefix_0x(faultaddr)
-
             faultaddr = self.fix_efa_offset(instructionline, faultaddr)
+            if self.shortdesc == 'ReturnAv':
+                faultaddr = self.fix_return_efa(faultaddr)
+
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
@@ -372,6 +374,24 @@ class TestCaseBundle(object):
             return addr
         else:
             return '0x{}'.format(addr)
+
+    def fix_return_efa(self, faultaddr):
+        '''
+        The faulting address on Linux on a ReturnAV is reported as null
+        We can figure out what it actually is based on the backtrace
+        '''
+        if int(faultaddr, base=16) == 0:
+            derived_faultaddr = self.get_return_addr()
+            logger.debug('New faulting address derived from backtrace: %s' % derived_faultaddr)
+            if derived_faultaddr is not None:
+                faultaddr = derived_faultaddr
+        return faultaddr
+
+    @abc.abstractmethod
+    def get_return_addr(self):
+        '''
+        Get return address based on backtrace
+        '''
 
     def fix_efa_offset(self, instructionline, faultaddr):
         try:

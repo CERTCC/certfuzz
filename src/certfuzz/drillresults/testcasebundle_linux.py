@@ -18,7 +18,7 @@ RE_CURRENT_INSTR = re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)')
 RE_FRAME_0 = re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+')
 RE_MAPPED_FRAME = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(/.+)')
 RE_VDSO = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(\[vdso\])')
-
+RE_RETURN_ADDR = re.compile(r'^#1\s.(0x[0-9a-fA-F]+)\s')
 
 class LinuxTestCaseBundle(TestCaseBundle):
     really_exploitable = [
@@ -74,6 +74,12 @@ class LinuxTestCaseBundle(TestCaseBundle):
     def get_instr(self, instraddr):
         rvfunc = lambda x, l: x.group(3)
         rgx = RE_CURRENT_INSTR
+
+        return self._match_rgx(rgx, rvfunc)
+
+    def get_return_addr(self):
+        rvfunc = lambda x, l: x.group(1)
+        rgx = RE_RETURN_ADDR
 
         return self._match_rgx(rgx, rvfunc)
 

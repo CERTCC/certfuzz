@@ -160,6 +160,9 @@ class WindowsTestCaseBundle(TestCaseBundle):
 
         return self._match_rgx(rgx, rvfunc)
 
+    def get_return_addr(self):
+        return None
+
     def fix_efa_bug(self, instraddr, faultaddr):
         '''
         !exploitable often reports an incorrect EFA for 64-bit targets.
