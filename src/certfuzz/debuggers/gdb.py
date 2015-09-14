@@ -36,7 +36,7 @@ class GDB(Debugger):
         if not os.path.exists(self.input_file):
             raise DebuggerError('Input file does not exist: %s', self.input_file)
 
-        args = [self.debugger_app(), '-batch', '-command', self.input_file]
+        args = [self.debugger_app(), '-n', '-batch', '-command', self.input_file]
         logger.log(5, "GDB command: [%s]", ' '.join(args))
         return args
 
