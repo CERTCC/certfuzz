@@ -94,13 +94,8 @@ class MsecDebugger(DebuggerBase):
         foundpid = False
 
         args = self._get_cmdline(self.outfile)
-        if self.hideoutput:
-            # We're hiding output. Note that this can affect some target
-            # programs, such as python
-            p = Popen(args, stdout=open(os.devnull), stderr=open(os.devnull),
+        p = Popen(args, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'),
                       universal_newlines=True)
-        else:
-            p = Popen(args, universal_newlines=True)
 
         if self.watchcpu == True:
             wmiInterface = wmi.WMI()
