@@ -43,7 +43,7 @@ class WindowsCrash(Testcase):
     # TODO: do we still need fuzzer as an arg?
     def __init__(self, cmd_template, seedfile, fuzzedfile, cmdlist, fuzzer,
                  dbg_class, dbg_opts, workingdir_base, keep_faddr, program,
-                 heisenbug_retries=4, copy_fuzzedfile=True):
+                 heisenbug_retries=4, copy_fuzzedfile=True, hideoutput=False):
 
         dbg_timeout = dbg_opts['runtimeout']
 
@@ -52,6 +52,7 @@ class WindowsCrash(Testcase):
         self.dbg_class = dbg_class
         self.dbg_opts = dbg_opts
         self.copy_fuzzedfile = copy_fuzzedfile
+        self.hideoutput = hideoutput
 
         self.cmdargs = cmdlist
         self.workdir_base = workingdir_base
@@ -120,7 +121,7 @@ class WindowsCrash(Testcase):
                                   killprocname=None,
                                   exception_depth=self.exception_depth,
                                   workingdir=self.tempdir,
-                                  watchcpu=self.watchcpu)
+                                  watchcpu=self.watchcpu, hideoutput=self.hideoutput)
         self.parsed_outputs.append(debugger.go())
 
         self.reached_secondchance = self.parsed_outputs[self.exception_depth].secondchance

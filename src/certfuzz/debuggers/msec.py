@@ -30,10 +30,11 @@ class MsecDebugger(DebuggerBase):
     _key = 'msec'
     _ext = 'msec'
 
-    def __init__(self, program, cmd_args, outfile_base, timeout, killprocname, watchcpu, exception_depth=0, **options):
+    def __init__(self, program, cmd_args, outfile_base, timeout, killprocname, watchcpu, exception_depth=0, hideoutput=False, **options):
         DebuggerBase.__init__(self, program, cmd_args, outfile_base, timeout, killprocname, **options)
         self.exception_depth = exception_depth
         self.watchcpu = watchcpu
+        self.hideoutput = hideoutput
 
     def kill(self, pid, returncode):
         """kill function for Win32"""
@@ -93,8 +94,13 @@ class MsecDebugger(DebuggerBase):
         foundpid = False
 
         args = self._get_cmdline(self.outfile)
-        p = Popen(args, stdout=open(os.devnull), stderr=open(os.devnull),
-                  universal_newlines=True)
+        if self.hideoutput:
+            # We're hiding output. Note that this can affect some target
+            # programs, such as python
+            p = Popen(args, stdout=open(os.devnull), stderr=open(os.devnull),
+                      universal_newlines=True)
+        else:
+            p = Popen(args, universal_newlines=True)
 
         if self.watchcpu == True:
             wmiInterface = wmi.WMI()

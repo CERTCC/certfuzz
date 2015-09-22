@@ -46,6 +46,7 @@ class WindowsIteration(IterationBase3):
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
+        self.hideoutput = config['runner']['hideoutput']
 
         self.cmd_template = string.Template(cmd_template)
 
@@ -179,7 +180,8 @@ class WindowsIteration(IterationBase3):
                           self.working_dir, self.cfg['runoptions']['keep_unique_faddr'],
                           self.cfg['target']['program'],
                           heisenbug_retries=self.retries,
-                          copy_fuzzedfile=self.fuzzer.fuzzed_changes_input) as testcase:
+                          copy_fuzzedfile=self.fuzzer.fuzzed_changes_input,
+                          hideoutput=self.hideoutput) as testcase:
 
             # put it on the list for the analysis pipeline
             self.testcases.append(testcase)
