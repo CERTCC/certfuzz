@@ -39,6 +39,9 @@ class TCB(testcasebundle_base.TestCaseBundle):
     def get_instr_addr(self):
         return '0xdeadbeef'
 
+    def get_return_addr(self):
+        testcasebundle_base.TestCaseBundle.get_return_addr(self)
+
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -226,5 +229,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
