@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
 
     def test_get_gdb_cmdline(self):
         self.gdb._create_input_file()
-        expected = ['gdb', '-batch', '-command', self.gdb.input_file]
+        expected = ['gdb', '-n', '-batch', '-command', self.gdb.input_file]
         self.assertEqual(self.gdb._get_cmdline(), expected)
 
     def test_get_gdb(self):
@@ -39,5 +39,5 @@ class Test(unittest.TestCase):
         pass
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
