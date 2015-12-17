@@ -1,4 +1,6 @@
 set disassembly-flavor intel
+set logging file $OUTFILE
+set logging on
 file $PROGRAM
 run $CMD_ARGS
 info proc map

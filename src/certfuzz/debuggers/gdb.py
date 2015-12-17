@@ -57,7 +57,8 @@ class GDB(Debugger):
         s = Template(template)
 
         cmdargs = ' '.join(self.cmd_args)
-        new_script = s.safe_substitute(PROGRAM=self.program, CMD_ARGS=cmdargs)
+        new_script = s.safe_substitute(PROGRAM=self.program, CMD_ARGS=cmdargs,
+                                       OUTFILE=self.outfile)
 
         (fd, f) = tempfile.mkstemp(text=True)
         try:
@@ -105,7 +106,7 @@ class GDB(Debugger):
         # build the command line in a separate function so we can unit test
         # it without actually running the command
         cmdline = self._get_cmdline()
-        subp.run_with_timer(cmdline, self.timeout, self.killprocname, stdout=self.outfile)
+        subp.run_with_timer(cmdline, self.timeout, self.killprocname, stdout=os.devnull)
 
         self._remove_temp_file()
         return GDBfile(self.outfile, self.exclude_unmapped_frames, self.keep_uniq_faddr)
