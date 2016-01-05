@@ -91,15 +91,13 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             self._minimize_to_string(testcase)
 
     def _post_minimize(self, testcase):
-        pass
-        # TODO
-#        if self.cfg.recycle_crashers:
-#            logger.debug('Recycling crash as seedfile')
-#            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
-#            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-#            crasherseed_path = os.path.join(self.cfg.seedfile_origin_dir, crasherseedname)
-#            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
-#            seedfile_set.add_file(crasherseed_path)
+        if self.cfg.config['verifier']['recycle_crashers']:
+            logger.debug('Recycling crash as seedfile')
+            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
+            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
+            crasherseed_path = os.path.join(self.cfg.config['directories']['seedfile_origin_dir'], crasherseedname)
+            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+            self.sf_set.add_file(crasherseed_path)
 
     def _pre_analyze(self, testcase):
         # get one last debugger output for the newly minimized file

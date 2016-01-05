@@ -28,7 +28,7 @@ class TestCasePipelineBase(object):
     pipes = ['verify', 'minimize', 'analyze', 'report']
 
     def __init__(self, testcases=None, uniq_func=None, cfg=None, options=None,
-                 outdir=None, workdirbase=None, minimizable=None):
+                 outdir=None, workdirbase=None, minimizable=None, sf_set=None):
         '''
         Constructor
         '''
@@ -40,6 +40,7 @@ class TestCasePipelineBase(object):
 
         self.working_dir = workdirbase
         self.minimizable = minimizable
+        self.sf_set = sf_set
 
         self.tc_candidate_q = Queue.Queue()
 
