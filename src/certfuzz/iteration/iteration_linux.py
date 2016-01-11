@@ -50,10 +50,6 @@ class LinuxIteration(IterationBase3):
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
-#         self._zzuf_range = None
-#         self._zzuf_line = None
-
-
         self.pipeline_options = {'use_valgrind': self.cfg.use_valgrind,
                                  'use_pin_calltrace': self.cfg.use_pin_calltrace,
                                  'minimize_crashers': self.cfg.minimizecrashers,
@@ -110,9 +106,6 @@ class LinuxIteration(IterationBase3):
         if not analysis_needed:
             return
 
-        # store a few things for use downstream
-#         self._zzuf_range = zzuf_log.range
-#         self._zzuf_line = zzuf_log.line
         self._construct_testcase()
 
     def _construct_testcase(self):
