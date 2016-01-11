@@ -47,34 +47,33 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         self.success = True
 
     def _minimize(self, testcase):
-        if self.cfg['runoptions']['minimize'] is True:
-            logger.info('Minimizing testcase %s', testcase.signature)
-            logger.debug('config = %s', self.cfg)
+        logger.info('Minimizing testcase %s', testcase.signature)
+        logger.debug('config = %s', self.cfg)
 
-            config = self._create_minimizer_cfg()
+        config = self._create_minimizer_cfg()
 
-            debuggers.registration.verify_supported_platform()
+        debuggers.registration.verify_supported_platform()
 
-            kwargs = {'cfg': config,
-                      'crash': testcase,
-                      'seedfile_as_target': True,
-                      'bitwise': False,
-                      'confidence': 0.999,
-                      'tempdir': self.working_dir,
-                      'maxtime': self.cfg['runoptions']['minimizer_timeout']
-                      }
+        kwargs = {'cfg': config,
+                  'crash': testcase,
+                  'seedfile_as_target': True,
+                  'bitwise': False,
+                  'confidence': 0.999,
+                  'tempdir': self.working_dir,
+                  'maxtime': self.cfg['runoptions']['minimizer_timeout']
+                  }
 
-            try:
-                with Minimizer(**kwargs) as minimizer:
-                    minimizer.go()
+        try:
+            with Minimizer(**kwargs) as minimizer:
+                minimizer.go()
 
-                    # minimzer found other crashes, so we should add them
-                    # to our list for subsequent processing
-                    for tc in minimizer.other_crashes.values():
-                        self.tc_candidate_q.put(tc)
-            except:
-                # Minimizer failed for some reason. Don't stop campaign!
-                pass
+                # minimzer found other crashes, so we should add them
+                # to our list for subsequent processing
+                for tc in minimizer.other_crashes.values():
+                    self.tc_candidate_q.put(tc)
+        except:
+            # Minimizer failed for some reason. Don't stop campaign!
+            pass
 
     def _post_minimize(self, testcase):
         if self.cfg['runoptions']['recycle_crashers']:
