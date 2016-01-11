@@ -7,9 +7,7 @@ import logging
 import os
 
 from certfuzz.crash.crash_base import Testcase, CrashError
-from certfuzz.debuggers import registration
 from certfuzz.fuzztools import hostinfo, filetools
-
 
 try:
     from certfuzz.analyzers import pin_calltrace
@@ -20,8 +18,12 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-debugger = None
 host_info = hostinfo.HostInfo()
+
+if host_info.is_linux():
+    from certfuzz.debuggers.gdb import GDB as debugger_cls
+elif host_info.is_osx():
+    from certfuzz.debuggers.crashwrangler import CrashWrangler as debugger_cls
 
 
 class BffCrash(Testcase):
@@ -29,6 +31,7 @@ class BffCrash(Testcase):
     classdocs
     '''
     tmpdir_pfx = 'bff-crash-'
+    _debugger_cls = debugger_cls
 
     def __init__(self, cfg, seedfile, fuzzedfile, program,
                  debugger_timeout, killprocname, backtrace_lines,
@@ -62,7 +65,7 @@ class BffCrash(Testcase):
 
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_linux():
-            dbg_template_name = '%s_%s_template.txt' % (registration.debugger, option)
+            dbg_template_name = '%s_%s_template.txt' % (self._debugger_cls._key, option)
             self.debugger_template = os.path.join(self.cfg.debugger_template_dir, dbg_template_name)
             logger.debug('Debugger template set to %s', self.debugger_template)
             if not os.path.exists(self.debugger_template):
@@ -94,15 +97,10 @@ class BffCrash(Testcase):
         return self.is_crash
 
     def get_debug_output(self, outfile_base):
-        # FIXME: does this need to be a global?
-        global debugger
-        if not debugger:
-            debugger = registration.get()
-            logger.debug('Got debugger %s', debugger)
         # get debugger output
         logger.debug('Debugger template: %s outfile_base: %s',
                      self.debugger_template, outfile_base)
-        debugger_obj = debugger(self.program,
+        debugger_obj = self._debugger_cls(self.program,
                                 self.cmdargs,
                                 outfile_base,
                                 self.debugger_timeout,

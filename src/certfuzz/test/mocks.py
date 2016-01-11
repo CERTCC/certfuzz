@@ -29,3 +29,6 @@ class MockSeedfile(Mock):
 
     def read(self):
         return self.value
+
+class MockFuzzer(Mock):
+    is_minimizable = False

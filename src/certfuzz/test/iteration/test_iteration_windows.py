@@ -6,18 +6,30 @@ Created on Mar 23, 2012
 
 import unittest
 from certfuzz.iteration.iteration_windows import WindowsIteration
+from certfuzz.test.mocks import MockFuzzer
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
         # args:
-#         seedfile, seednum, config, fuzzer_cls,
-#         runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
-#         cmd_template, uniq_func, workdirbase, outdir, debug,
-#         sf_set, rf
-        args = list('0123456789ABCDEF')
-        args[2] = {'runoptions': {'keep_unique_faddr': False}}
+#                 seedfile=None,
+#                  seednum=None,
+#                  workdirbase=None,
+#                  outdir=None,
+#                  sf_set=None,
+#                  uniq_func=None,
+#                  config=None,
+#                  fuzzer_cls=None,
+#                  runner_cls=None,
+#                  keep_heisenbugs=None,
+#                  keep_duplicates=None,
+#                  cmd_template=None,
+#                  debug=False,
+
+        args = list('ABCDEFGHIJKLM')
+        args[6] = {'runoptions': {'keep_unique_faddr': False}}
+        args[7] = MockFuzzer
         self.iteration = WindowsIteration(*args)
 
     def tearDown(self):

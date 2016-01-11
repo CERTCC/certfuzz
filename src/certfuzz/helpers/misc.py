@@ -21,10 +21,6 @@ def print_dict(d):
     pprint(d)
 
 
-def check_os_compatibility(expected_os, module_name=__name__):
-    if not my_os == expected_os:
-        template = 'Module %s is incompatible with %s (%s expected)'
-        raise ImportError(template % (module_name, my_os, expected_os))
 
 
 def random_str(length=1):

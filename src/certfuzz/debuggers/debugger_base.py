@@ -6,11 +6,13 @@ Created on Oct 23, 2012
 import logging
 
 from certfuzz.debuggers.errors import DebuggerError
-from certfuzz.debuggers.registration import get_debug_file, result_fields, \
-    allowed_exploitability_values
 
 
 logger = logging.getLogger(__name__)
+
+result_fields = 'debug_crash crash_hash exp faddr output dbg_type'.split()
+allowed_exploitability_values = ['UNKNOWN', 'PROBABLY_NOT_EXPLOITABLE',
+                                 'PROBABLY_EXPLOITABLE', 'EXPLOITABLE']
 
 
 class Debugger(object):
@@ -28,7 +30,7 @@ class Debugger(object):
         logger.debug('Initialize Debugger')
         self.program = program
         self.cmd_args = cmd_args
-        self.outfile = get_debug_file(outfile_base, self._ext)
+        self.outfile = '.'.join((outfile_base, self._ext))
         self.timeout = timeout
         self.killprocname = killprocname
         self.input_file = ''

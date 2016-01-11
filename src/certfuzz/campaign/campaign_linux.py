@@ -15,13 +15,15 @@ from certfuzz.campaign.errors import CampaignScriptError
 from certfuzz.config.config_linux import LinuxConfig
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
-from certfuzz.debuggers.registration import verify_supported_platform
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools import subprocess_helper as subp
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
+from certfuzz.fuzzers.zzuf import ZzufFuzzer
+from certfuzz.fuzzers.bytemut import ByteMutFuzzer
+from certfuzz.runners.zzufrun import ZzufRunner
 
 
 logger = logging.getLogger(__name__)
@@ -55,12 +57,13 @@ class LinuxCampaign(CampaignBase):
     '''
     Extends CampaignBase to add linux-specific features.
     '''
+    _config_cls = LinuxConfig
 
     def __init__(self, config_file=None, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
         # pull stuff out of configs
-        self.campaign_id = self.config.campaign_id
+        self.campaign_id = self.config.config['campaign']['id']
         self.current_seed = self.config.start_seed
         self.seed_interval = self.config.seed_interval
         self.seed_dir_in = self.config.seedfile_origin_dir
@@ -79,13 +82,11 @@ class LinuxCampaign(CampaignBase):
     def _read_config_file(self):
         CampaignBase._read_config_file(self)
 
-        with LinuxConfig(self.config_file) as cfgobj:
+        with self._config_cls(self.config_file) as cfgobj:
             self.config = cfgobj
             self.configdate = cfgobj.configdate
 
     def _pre_enter(self):
-        # give up if we don't have a debugger
-        verify_supported_platform()
         # give up if prog is a script
         self._check_for_script()
 
@@ -188,17 +189,17 @@ class LinuxCampaign(CampaignBase):
         '''
         pass
 
-    def _do_iteration(self, seedfile, range_obj, quiet_flag, seednum):
+    def _do_iteration(self, seedfile, range_obj, seednum):
         # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
         touch_watchdog_file()
-        with LinuxIteration(cfg=self.config,
+        with LinuxIteration(seedfile=seedfile,
                             seednum=seednum,
-                            seedfile=seedfile,
-                            r=range_obj,
                             workdirbase=self.working_dir,
-                            quiet=quiet_flag,
-                            uniq_func=self._crash_is_unique,
+                            outdir=self.outdir,
                             sf_set=self.seedfile_set,
-                            rf=seedfile.rangefinder,
-                            outdir=self.outdir) as iteration:
+                            uniq_func=self._crash_is_unique,
+                            cfg=self.config,
+                            fuzzer_cls=ByteMutFuzzer,
+                            runner_cls=ZzufRunner,
+                            ) as iteration:
             iteration()

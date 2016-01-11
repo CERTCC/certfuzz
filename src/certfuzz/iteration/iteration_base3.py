@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class IterationBase3(object):
     __metaclass__ = abc.ABCMeta
     _tmpdir_pfx = 'iteration_'
+    _iteration_counter = 0
 
     def __init__(self,
                  seedfile=None,
@@ -21,10 +22,11 @@ class IterationBase3(object):
                  workdirbase=None,
                  outdir=None,
                  sf_set=None,
-                 rf=None,
                  uniq_func=None,
                  config=None,
-                 r=None):
+                 fuzzer_cls=None,
+                 runner_cls=None,
+                 ):
 
         logger.debug('init')
         self.seedfile = seedfile
@@ -32,9 +34,11 @@ class IterationBase3(object):
         self.workdirbase = workdirbase
         self.outdir = outdir
         self.sf_set = sf_set
-        self.rf = rf
         self.cfg = config
-        self.r = r
+        self.fuzzer_cls = fuzzer_cls
+        self.runner_cls = runner_cls
+
+        self.r = None
 
         self.pipeline_options = {}
 
@@ -63,10 +67,14 @@ class IterationBase3(object):
                                             dir=self.workdirbase)
         logger.debug('workdir=%s', self.working_dir)
 #        self._setup_analysis_pipeline()
+
         return self.go
 
     def __exit__(self, etype, value, traceback):
         handled = False
+
+        # increment the iteration counter
+        IterationBase3._iteration_counter += 1
 
         if self.success:
             # score it so we can learn
@@ -81,12 +89,7 @@ class IterationBase3(object):
             return handled
 
         # clean up
-        try:
-            rm_rf(self.working_dir)
-        except:
-            # TODO: Minimizer may have a log file handle open
-            # If we get here, we've left files behind
-            pass
+        rm_rf(self.working_dir)
         return handled
 
     def _pre_fuzz(self):
@@ -95,6 +98,10 @@ class IterationBase3(object):
     def _fuzz(self):
         with self.fuzzer:
             self.fuzzer.fuzz()
+
+        self.r = self.fuzzer.range
+        if self.r is not None:
+            logger.debug('Selected r: %s', self.r)
 
     def _post_fuzz(self):
         pass
@@ -130,24 +137,14 @@ class IterationBase3(object):
 
     def record_success(self):
         self.sf_set.record_success(key=self.seedfile.md5)
-        if self.r is not None:
-            # Fuzzer uses rangefinder
-            self.rf.record_success(key=self.r.id)
-        else:
-            # Fuzzer without rangefinder
-            self.seedfile.tries += 1
+        self.seedfile.rangefinder.record_success(key=self.r.id)
 
     def record_failure(self):
         self.record_tries()
 
     def record_tries(self):
         self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-        if self.r is not None:
-            # Fuzzer uses rangefinder
-            self.rf.record_tries(key=self.r.id, tries=1)
-        else:
-            # Fuzzer without rangefinder
-            self.seedfile.tries += 1
+        self.seedfile.rangefinder.record_tries(key=self.r.id, tries=1)
 
     def process_testcases(self):
         if not len(self.testcases):
@@ -163,7 +160,9 @@ class IterationBase3(object):
                                  workdirbase=self.working_dir,
                                  minimizable=self.fuzzer.is_minimizable,
                                  sf_set=self.sf_set) as pipeline:
-            pipeline()
+            pipeline.go()
+
+        self.success = pipeline.success
 
     def go(self):
         logger.debug('go')

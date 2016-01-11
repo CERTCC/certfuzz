@@ -72,7 +72,7 @@ class LinuxConfig(ConfigBase):
 
         # [campaign]
         campaign_id = re.sub('\s+', '_', self.config['campaign']['id'])
-        self.campaign_id = campaign_id
+        self.config['campaign']['id'] = campaign_id
 
         # unroll ~ & relative paths
         dir_dict = self.config['directories']

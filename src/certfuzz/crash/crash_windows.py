@@ -12,6 +12,7 @@ from certfuzz.crash.crash_base import Testcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
 from certfuzz.helpers import random_str
+from certfuzz.debuggers.msec import MsecDebugger
 
 
 logger = logging.getLogger(__name__)
@@ -39,17 +40,17 @@ exp_rank = {
 
 class WindowsCrash(Testcase):
     tmpdir_pfx = 'bff-crash-'
+    _debugger_cls = MsecDebugger
 
     # TODO: do we still need fuzzer as an arg?
     def __init__(self, cmd_template, seedfile, fuzzedfile, cmdlist, fuzzer,
-                 dbg_class, dbg_opts, workingdir_base, keep_faddr, program,
+                 dbg_opts, workingdir_base, keep_faddr, program,
                  heisenbug_retries=4, copy_fuzzedfile=True):
 
         dbg_timeout = dbg_opts['runtimeout']
 
         Testcase.__init__(self, seedfile, fuzzedfile, dbg_timeout)
 
-        self.dbg_class = dbg_class
         self.dbg_opts = dbg_opts
         self.copy_fuzzedfile = copy_fuzzedfile
 
@@ -113,7 +114,7 @@ class WindowsCrash(Testcase):
     def debug_once(self):
         outfile_base = os.path.join(self.tempdir, self.fuzzedfile.basename)
 
-        debugger = self.dbg_class(program=self.program,
+        debugger = self._debugger_cls(program=self.program,
                                   cmd_args=self.cmdargs,
                                   outfile_base=outfile_base,
                                   timeout=self.debugger_timeout,

@@ -33,35 +33,52 @@ MAX_IOERRORS = 5
 class WindowsIteration(IterationBase3):
     tcpipeline_cls = WindowsTestCasePipeline
 
-    def __init__(self, seedfile, seednum, config, fuzzer_cls,
-                 runner, debugger, dbg_class, keep_heisenbugs, keep_duplicates,
-                 cmd_template, uniq_func, workdirbase, outdir, debug,
-                 sf_set, rf):
-        IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf, uniq_func, config, None)
-        self.fuzzer_cls = fuzzer_cls
-        self.runner = runner
-        self.debugger_module = debugger
-        self.debugger_class = dbg_class
+    def __init__(self,
+                 seedfile=None,
+                 seednum=None,
+                 workdirbase=None,
+                 outdir=None,
+                 sf_set=None,
+                 uniq_func=None,
+                 config=None,
+                 fuzzer_cls=None,
+                 runner_cls=None,
+                 keep_heisenbugs=None,
+                 keep_duplicates=None,
+                 cmd_template=None,
+                 debug=False,
+                 ):
+        IterationBase3.__init__(self,
+                                seedfile,
+                                seednum,
+                                workdirbase,
+                                outdir,
+                                sf_set,
+                                uniq_func,
+                                config,
+                                fuzzer_cls,
+                                runner_cls,
+                                )
+
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
 
         self.cmd_template = string.Template(cmd_template)
 
-        if self.runner is None:
-            # null runner case
+        if self.runner_cls is None:
+            # null runner_cls case
             self.retries = 0
         else:
-            # runner is not null
+            # runner_cls is not null
             self.retries = 4
 
-        self.pipeline_options = {
-                                 'keep_duplicates': keep_duplicates,
+        self.pipeline_options = {'keep_duplicates': keep_duplicates,
                                  'keep_heisenbugs': keep_heisenbugs,
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,
-                                 'used_runner': self.runner is not None,
+                                 'used_runner': self.runner_cls is not None,
+                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions']['minimize']
                                  }
 
     def __exit__(self, etype, value, traceback):
@@ -129,38 +146,29 @@ class WindowsIteration(IterationBase3):
         TmpReaper().clean_tmp()
 
     def _pre_fuzz(self):
-        # generated test case (fuzzed input)
-        logger.info('...fuzzing')
         fuzz_opts = self.cfg['fuzzer']
-        self.fuzzer = self.fuzzer_cls(self.seedfile,
-                             self.working_dir,
-                             self.seednum, fuzz_opts)
+        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
 
-    def _post_fuzz(self):
-        self.r = self.fuzzer.range
-        if self.r:
-            logger.info('Selected r: %s', self.r)
+    def _pre_run(self):
+        options = self.cfg['runner']
+        cmd_template = self.cmd_template
+        fuzzed_file = self.fuzzer.output_file_path
+        workingdir_base = self.working_dir
 
-        # decide if we can minimize this case later
-        # do this here (and not sooner) because the fuzzer_cls could
-        # decide at runtime whether it is or is not minimizable
-        self.pipeline_options['minimizable'] = self.fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
+        self.runner = self.runner_cls(options, cmd_template, fuzzed_file, workingdir_base)
 
     def _run(self):
         # analysis is required in two cases:
-        # 1) runner is not defined (self.runner == None)
-        # 2) runner is defined, and detects crash (runner.saw_crash == True)
+        # 1) runner_cls is not defined (self.runner_cls == None)
+        # 2) runner_cls is defined, and detects crash (runner_cls.saw_crash == True)
         # this takes care of case 1 by default
+        # TODO: does case 1 ever happen?
         analysis_needed = True
-        if self.runner:
-            logger.info('...running %s', self.runner.__name__)
-            with self.runner(self.cfg['runner'],
-                             self.cmd_template,
-                             self.fuzzer.output_file_path,
-                             self.working_dir) as runner:
-                runner.run()
+        if self.runner_cls:
+            with self.runner:
+                self.runner.run()
                 # this takes care of case 2
-                analysis_needed = runner.saw_crash
+            analysis_needed = self.runner.saw_crash
 
         # is further analysis needed?
         if not analysis_needed:
@@ -175,7 +183,7 @@ class WindowsIteration(IterationBase3):
 
         logger.debug('Building testcase object')
         with WindowsCrash(self.cmd_template, self.seedfile, fuzzed_file, cmdlist,
-                          self.fuzzer, self.debugger_class, dbg_opts,
+                          self.fuzzer, dbg_opts,
                           self.working_dir, self.cfg['runoptions']['keep_unique_faddr'],
                           self.cfg['target']['program'],
                           heisenbug_retries=self.retries,

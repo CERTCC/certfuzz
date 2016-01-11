@@ -13,16 +13,12 @@ import sys
 import tempfile
 import traceback
 import cPickle as pickle
-import signal
 
 from certfuzz.campaign.errors import CampaignError
-from certfuzz.debuggers import registration
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzztools import filetools
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
-from certfuzz.fuzzers.errors import FuzzerExhaustedError
-from certfuzz.file_handlers.errors import SeedfileSetError
 from certfuzz.version import __version__
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 import gc
@@ -81,7 +77,7 @@ class CampaignBase(object):
 
         self.runner_module_name = None
         self.runner_module = None
-        self.runner = None
+        self.runner_cls = None
 
         self.seedfile_set = None
         self.working_dir = None
@@ -99,8 +95,6 @@ class CampaignBase(object):
         self.outdir_base = None
         self.outdir = None
         self.sf_set_out = None
-        self.stopfuzzing = False
-        self.pk_pid = None
         if result_dir:
             self.outdir_base = os.path.abspath(result_dir)
 
@@ -159,7 +153,6 @@ class CampaignBase(object):
         self._setup_workdir()
         self._set_fuzzer()
         self._set_runner()
-        self._set_debugger()
         self._setup_output()
         self._create_seedfile_set()
 
@@ -212,9 +205,6 @@ class CampaignBase(object):
         Implements methods to be completed prior to handling errors in the
         __exit__ method. No return value.
         '''
-        # Kill off process killer
-        if self.pk_pid:
-            os.kill(self.pk_pid, signal.SIGTERM)
 
     def __exit__(self, etype, value, mytraceback):
         '''
@@ -258,15 +248,7 @@ class CampaignBase(object):
     def _set_runner(self):
         if self.runner_module_name:
             self.runner_module = import_module_by_name(self.runner_module_name)
-            self.runner = self.runner_module._runner_class
-
-    def _set_debugger(self):
-        # this will import the module which registers the debugger
-        self.debugger_module = import_module_by_name(self.debugger_module_name)
-        # confirm that the registered debugger is compatible
-        registration.verify_supported_platform()
-        # now we have some class
-        self.dbg_class = registration.debug_class
+            self.runner_cls = self.runner_module._runner_class
 
     @property
     def _version_file(self):
@@ -373,10 +355,7 @@ class CampaignBase(object):
         '''
         Returns True if a campaign should proceed. False otherwise.
         '''
-        if self.stopfuzzing:
-            return False
-        else:
-            return True
+        return True
 
     def _do_interval(self):
         '''
@@ -386,13 +365,7 @@ class CampaignBase(object):
         TmpReaper().clean_tmp()
 
         # choose seedfile
-        try:
-            sf = self.seedfile_set.next_item()
-        except SeedfileSetError:
-            logger.info('Seedfile set is empty. Terminating')
-            self.stopfuzzing = True
-            return
-
+        sf = self.seedfile_set.next_item()
         logger.info('Selected seedfile: %s', sf.basename)
 
 # TODO: restore this
@@ -401,7 +374,6 @@ class CampaignBase(object):
 #             self._save_state()
 
         r = sf.rangefinder.next_item()
-        qf = not self.first_chunk
 
 #         rng_seed = int(sf.md5, 16)
 
@@ -411,12 +383,7 @@ class CampaignBase(object):
         # note that range does not include interval_limit
         logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
         for seednum in xrange(self.current_seed, interval_limit):
-            try:
-                self._do_iteration(sf, r, qf, seednum)
-            except FuzzerExhaustedError:
-                logger.info('Fuzzer exhausted for seedfile %s' % sf.basename)
-                self.seedfile_set.remove_file(sf)
-                break
+            self._do_iteration(sf, r, seednum)
 
         del sf
         # manually collect garbage

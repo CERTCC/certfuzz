@@ -11,7 +11,6 @@ import platform
 import re
 
 from certfuzz.debuggers.debugger_base import Debugger
-from certfuzz.debuggers.registration import register
 from certfuzz.debuggers.output_parsers.cwfile import CWfile
 from certfuzz.fuzztools import subprocess_helper as subp
 
@@ -88,5 +87,3 @@ class CrashWrangler(Debugger):
             open(self.outfile, 'w').close()
 
         return CWfile(self.outfile)
-
-register(CrashWrangler)

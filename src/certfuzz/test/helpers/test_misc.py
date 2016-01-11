@@ -23,15 +23,6 @@ class Test(unittest.TestCase):
             self.assertTrue(s in helpers.quoted(s))
             self.assertEqual('"' + s + '"', helpers.quoted(s))
 
-    def test_check_os_compatibility(self):
-        for expected in list('qwertyuiopasdfghjklzxcvbnm'):
-            self.assertRaises(ImportError, helpers.check_os_compatibility, expected)
-
-        my_sys = platform.system()
-        try:
-            helpers.check_os_compatibility(my_sys)
-        except:
-            self.fail('Unexpected exception on %s' % my_sys)
 
     def test_random_str(self):
         self.assertEqual(1, len(helpers.random_str()))

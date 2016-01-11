@@ -24,6 +24,8 @@ class WindowsCampaign(CampaignBase):
     '''
     Extends CampaignBase to add windows-specific features like ButtonClicker
     '''
+    _config_cls = WindowsConfig
+
     def __init__(self, config_file, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
@@ -66,7 +68,7 @@ class WindowsCampaign(CampaignBase):
         CampaignBase._read_config_file(self)
 
         # read configs
-        with WindowsConfig(self.config_file) as cfgobj:
+        with self._config_cls(self.config_file) as cfgobj:
             self.config = cfgobj.config
             self.configdate = cfgobj.configdate
 
@@ -82,8 +84,8 @@ class WindowsCampaign(CampaignBase):
         # we can safely delete them as they will be
         # reconstituted when we __enter__ a context
         for key in ['fuzzer_module', 'fuzzer_cls',
-                    'runner_module', 'runner',
-                    'debugger_module', 'dbg_class'
+                    'runner_module', 'runner_cls',
+                    'debugger_module'
                     ]:
             if key in state:
                 del state[key]
@@ -105,13 +107,25 @@ class WindowsCampaign(CampaignBase):
         self.__dict__.update(state)
 
     def _pre_enter(self):
-        if sys.platform == 'win32':
-            winver = sys.getwindowsversion().major
-            machine = platform.machine()
-            hook_incompat = winver > 5 or machine == 'AMD64'
-            if hook_incompat and self.runner_module_name == 'certfuzz.runners.winrun':
-                logger.debug('winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
-                self.runner_module_name = None
+        # check to see if the platform supports winrun
+        # set runner module to none otherwise
+
+        if sys.platform != 'win32':
+            return
+
+        if not self.runner_module_name == 'certfuzz.runners.winrun':
+            return
+
+        # if we got here, we're on win32, and trying to use winrun
+        winver = sys.getwindowsversion().major
+        machine = platform.machine()
+        hook_incompatible = winver > 5 or machine == 'AMD64'
+
+        if not hook_incompatible:
+            return
+
+        logger.debug('winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
+        self.runner_module_name = None
 
     def _post_enter(self):
         self._start_buttonclicker()
@@ -184,16 +198,24 @@ class WindowsCampaign(CampaignBase):
         if self.use_buttonclicker:
             os.system('taskkill /im buttonclicker.exe')
 
-    def _do_iteration(self, sf, range_obj, quiet_flag, seednum):
+    def _do_iteration(self, sf, range_obj, seednum):
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
         # newly created WindowsIteration()
-        with WindowsIteration(sf, seednum, self.config, self.fuzzer_cls,
-                     self.runner, self.debugger_module, self.dbg_class,
-                     self.keep_heisenbugs, self.keep_duplicates,
-                     self.cmd_template, self._crash_is_unique,
-                     self.working_dir, self.outdir, self.debug, self.seedfile_set,
-                     sf.rangefinder) as iteration:
+        with WindowsIteration(seedfile=sf,
+                              seednum=seednum,
+                              workdirbase=self.working_dir,
+                              outdir=self.outdir,
+                              sf_set=self.seedfile_set,
+                              uniq_func=self._crash_is_unique,
+                              config=self.config,
+                              fuzzer_cls=self.fuzzer_cls,
+                              runner_cls=self.runner_cls,
+                              keep_heisenbugs=self.keep_heisenbugs,
+                              keep_duplicates=self.keep_duplicates,
+                              cmd_template=self.cmd_template,
+                              debug=self.debug,
+                              ) as iteration:
             try:
                 iteration()
             except FuzzerExhaustedError:

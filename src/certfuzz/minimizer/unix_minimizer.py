@@ -3,12 +3,19 @@ Created on Oct 9, 2012
 
 @organization: cert.org
 '''
-from certfuzz.minimizer import Minimizer as MinimizerBase
+from certfuzz.minimizer.minimizer_base import Minimizer as MinimizerBase
 import os
+from certfuzz.fuzztools.hostinfo import HostInfo
+
+if HostInfo().is_osx():
+    from certfuzz.debuggers.crashwrangler import CrashWrangler as debugger_cls
+else:
+    from certfuzz.debuggers.gdb import GDB as debugger_cls
 
 
 class UnixMinimizer(MinimizerBase):
     use_watchdog = True
+    _debugger_cls = debugger_cls
 
     def __enter__(self):
         # touch the watchdogfile

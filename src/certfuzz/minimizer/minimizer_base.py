@@ -15,7 +15,6 @@ import time
 import zipfile
 import collections
 
-from certfuzz.debuggers.registration import get as debugger_get
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools import hamming, filetools, probability, text
 from certfuzz.fuzztools.filetools import delete_files, write_file, check_zip_file
@@ -34,6 +33,7 @@ MAX_OTHER_CRASHES = 20
 
 class Minimizer(object):
     use_watchdog = False
+    _debugger_cls = None
 
     def __init__(self, cfg=None, crash=None, crash_dst_dir=None,
                  seedfile_as_target=False, bitwise=False, confidence=0.999,
@@ -112,8 +112,6 @@ class Minimizer(object):
             self._raise("%s does not exist" % self.crash_dst)
         if not os.path.isdir(self.crash_dst):
             self._raise("%s is not a directory" % self.crash_dst)
-
-        self.debugger = debugger_get()
 
         self._logger_setup()
         self.logger.info("Minimizer initializing for %s", self.crash.fuzzedfile.path)
@@ -383,7 +381,7 @@ class Minimizer(object):
         self.debugger_runs += 1
         cmd_args = self.cfg.get_command_args_list(infile)
 
-        dbg = self.debugger(self.cfg.program,
+        dbg = self._debugger_cls(self.cfg.program,
                             cmd_args,
                             outfile,
                             self.debugger_timeout,

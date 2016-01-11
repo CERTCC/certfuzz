@@ -13,7 +13,7 @@ from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 from certfuzz.runners.zzufrun import ZzufRunner
-from certfuzz.fuzzers.bytemut import ByteMutFuzzer as Fuzzer
+from certfuzz.fuzzers.bytemut import ByteMutFuzzer
 
 
 logger = logging.getLogger(__name__)
@@ -22,12 +22,31 @@ logger = logging.getLogger(__name__)
 class LinuxIteration(IterationBase3):
     tcpipeline_cls = LinuxTestCasePipeline
 
-    def __init__(self, cfg=None, seednum=None, seedfile=None, r=None, workdirbase=None, quiet=True, uniq_func=None,
-                 sf_set=None, rf=None, outdir=None):
-        IterationBase3.__init__(self, seedfile, seednum, workdirbase, outdir,
-                                sf_set, rf, uniq_func, cfg, r)
+    def __init__(self,
+                 seedfile=None,
+                 seednum=None,
+                 workdirbase=None,
+                 outdir=None,
+                 sf_set=None,
+                 uniq_func=None,
+                 cfg=None,
+                 fuzzer_cls=None,
+                 runner_cls=None,
+                 ):
 
-        self.quiet_flag = quiet
+        IterationBase3.__init__(self,
+                                seedfile,
+                                seednum,
+                                workdirbase,
+                                outdir,
+                                sf_set,
+                                uniq_func,
+                                cfg,
+                                fuzzer_cls,
+                                runner_cls,
+                                )
+
+        self.quiet_flag = self._iteration_counter < 2
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
@@ -35,8 +54,8 @@ class LinuxIteration(IterationBase3):
         self._zzuf_line = None
 
         # analysis is required in two cases:
-        # 1) runner is not defined (self.runner == None)
-        # 2) runner is defined, and detects crash (runner.saw_crash == True)
+        # 1) runner_cls is not defined (self.runner_cls == None)
+        # 2) runner_cls is defined, and detects crash (runner_cls.saw_crash == True)
         # this takes care of case 1 by default
         self._analysis_needed = True
 
@@ -47,6 +66,7 @@ class LinuxIteration(IterationBase3):
                                  'uniq_log': self.cfg.uniq_log,
                                  'local_dir': self.cfg.local_dir,
                                  'minimizertimeout': self.cfg.minimizertimeout,
+                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg.config['runoptions']['minimize'],
                                  }
 
     def __enter__(self):
@@ -56,20 +76,7 @@ class LinuxIteration(IterationBase3):
 
     def _pre_fuzz(self):
         fuzz_opts = self.cfg.config['fuzzer']
-        self.fuzzer = Fuzzer(self.seedfile,
-                                    self.working_dir,
-                                    self.seednum,
-                                    fuzz_opts)
-
-    def _post_fuzz(self):
-        self.r = self.fuzzer.range
-        if self.r:
-            logger.debug('Selected r: %s', self.r)
-
-        # decide if we can minimize this case later
-        # do this here (and not sooner) because the fuzzer could
-        # decide at runtime whether it is or is not minimizable
-        self.minimizable = self.fuzzer.is_minimizable and self.cfg.config['runoptions']['minimize']
+        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
 
     def _pre_run(self):
         options = self.cfg.config['runner']
@@ -77,7 +84,7 @@ class LinuxIteration(IterationBase3):
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
 
-        self.runner = ZzufRunner(options, cmd_template, fuzzed_file, workingdir_base)
+        self.runner = self.runner_cls(options, cmd_template, fuzzed_file, workingdir_base)
 
     def _run(self):
         with self.runner:
@@ -101,7 +108,7 @@ class LinuxIteration(IterationBase3):
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
         # report the exit code in its output log.  The exit code is 128 + the signal number.
-        self._analysis_needed = zzuf_log.crash_logged(self.cfg.copymode)
+        self._analysis_needed = zzuf_log.crash_logged(self.cfg.config['zzuf']['copymode'])
 
         if not self._analysis_needed:
             return
