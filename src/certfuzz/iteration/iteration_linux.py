@@ -50,15 +50,6 @@ class LinuxIteration(IterationBase3):
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
-        self._zzuf_range = None
-        self._zzuf_line = None
-
-        # analysis is required in two cases:
-        # 1) runner_cls is not defined (self.runner_cls == None)
-        # 2) runner_cls is defined, and detects crash (runner_cls.saw_crash == True)
-        # this takes care of case 1 by default
-        self._analysis_needed = True
-
         self.pipeline_options = {'use_valgrind': self.cfg.use_valgrind,
                                  'use_pin_calltrace': self.cfg.use_pin_calltrace,
                                  'minimize_crashers': self.cfg.minimizecrashers,
@@ -75,24 +66,19 @@ class LinuxIteration(IterationBase3):
         return self.go
 
     def _pre_fuzz(self):
-        fuzz_opts = self.cfg.config['fuzzer']
-        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
+        self._fuzz_opts = self.cfg.config['fuzzer']
+        IterationBase3._pre_fuzz(self)
 
     def _pre_run(self):
-        options = self.cfg.config['runner']
-        cmd_template = self.cfg.config['target']['cmdline']
-        fuzzed_file = self.fuzzer.output_file_path
-        workingdir_base = self.working_dir
+        self._runner_options = self.cfg.config['runner']
 
-        self.runner = self.runner_cls(options, cmd_template, fuzzed_file, workingdir_base)
+        if self.quiet_flag:
+            self._runner_options['hideoutput'] = True
+        self._runner_cmd_template = self.cfg.config['target']['cmdline']
 
-    def _run(self):
-        with self.runner:
-            self.runner.run()
+        IterationBase3._pre_run(self)
 
     def _post_run(self):
-        #self.record_tries()
-
         if not self.runner.saw_crash:
             logger.debug('No crash seen')
             return
@@ -105,26 +91,28 @@ class LinuxIteration(IterationBase3):
         for line in pformat(zzuf_log.__dict__).splitlines():
             logger.debug(line)
 
+        # analysis is required in two cases:
+        # 1) runner_cls is not defined (self.runner_cls == None)
+        # 2) runner_cls is defined, and detects crash (runner_cls.saw_crash == True)
+        # this takes care of case 1 by default
+        # TODO: does case 1 ever happen?
+        analysis_needed = True
+
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
         # report the exit code in its output log.  The exit code is 128 + the signal number.
-        self._analysis_needed = zzuf_log.crash_logged(self.cfg.config['zzuf']['copymode'])
+        analysis_needed = zzuf_log.crash_logged(self.cfg.config['zzuf']['copymode'])
 
-        if not self._analysis_needed:
+        if not analysis_needed:
             return
 
-        # store a few things for use downstream
-        self._zzuf_range = zzuf_log.range
-        self._zzuf_line = zzuf_log.line
         self._construct_testcase()
 
     def _construct_testcase(self):
-        fuzzed_file = BasicFile(self.fuzzer.output_file_path)
-
         logger.info('Building testcase object')
         with BffCrash(cfg=self.cfg,
                       seedfile=self.seedfile,
-                      fuzzedfile=fuzzed_file,
+                      fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                       program=self.cfg.program,
                       debugger_timeout=self.cfg.debugger_timeout,
                       killprocname=self.cfg.killprocname,

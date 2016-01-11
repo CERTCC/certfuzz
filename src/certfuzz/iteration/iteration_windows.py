@@ -146,46 +146,42 @@ class WindowsIteration(IterationBase3):
         TmpReaper().clean_tmp()
 
     def _pre_fuzz(self):
-        fuzz_opts = self.cfg['fuzzer']
-        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
+        self._fuzz_opts = self.cfg['fuzzer']
+        IterationBase3._pre_fuzz(self)
 
     def _pre_run(self):
-        options = self.cfg['runner']
-        cmd_template = self.cmd_template
-        fuzzed_file = self.fuzzer.output_file_path
-        workingdir_base = self.working_dir
+        self._runner_options = self.cfg['runner']
+        self._runner_cmd_template = self.cmd_template
 
-        self.runner = self.runner_cls(options, cmd_template, fuzzed_file, workingdir_base)
+        IterationBase3._pre_run(self)
 
-    def _run(self):
+    def _post_run(self):
         # analysis is required in two cases:
         # 1) runner_cls is not defined (self.runner_cls == None)
         # 2) runner_cls is defined, and detects crash (runner_cls.saw_crash == True)
         # this takes care of case 1 by default
         # TODO: does case 1 ever happen?
         analysis_needed = True
+
         if self.runner_cls:
-            with self.runner:
-                self.runner.run()
-                # this takes care of case 2
             analysis_needed = self.runner.saw_crash
 
-        # is further analysis needed?
         if not analysis_needed:
             return
 
         self._construct_testcase()
 
     def _construct_testcase(self):
-        cmdlist = get_command_args_list(self.cmd_template, self.fuzzer.output_file_path)[1]
-        dbg_opts = self.cfg['debugger']
-        fuzzed_file = BasicFile(self.fuzzer.output_file_path)
-
         logger.debug('Building testcase object')
-        with WindowsCrash(self.cmd_template, self.seedfile, fuzzed_file, cmdlist,
-                          self.fuzzer, dbg_opts,
-                          self.working_dir, self.cfg['runoptions']['keep_unique_faddr'],
-                          self.cfg['target']['program'],
+        with WindowsCrash(cmd_template=self.cmd_template,
+                          seedfile=self.seedfile,
+                          fuzzedfile=BasicFile(self.fuzzer.output_file_path),
+                          cmdlist=get_command_args_list(self.cmd_template, self.fuzzer.output_file_path)[1],
+                          fuzzer=self.fuzzer,
+                          dbg_opts=self.cfg['debugger'],
+                          workingdir_base=self.working_dir,
+                          keep_faddr=self.cfg['runoptions']['keep_unique_faddr'],
+                          program=self.cfg['target']['program'],
                           heisenbug_retries=self.retries,
                           copy_fuzzedfile=self.fuzzer.fuzzed_changes_input) as testcase:
 
