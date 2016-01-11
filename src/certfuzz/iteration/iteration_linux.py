@@ -50,8 +50,8 @@ class LinuxIteration(IterationBase3):
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
-        self._zzuf_range = None
-        self._zzuf_line = None
+#         self._zzuf_range = None
+#         self._zzuf_line = None
 
         # analysis is required in two cases:
         # 1) runner_cls is not defined (self.runner_cls == None)
@@ -91,7 +91,7 @@ class LinuxIteration(IterationBase3):
             self.runner.run()
 
     def _post_run(self):
-        #self.record_tries()
+        # self.record_tries()
 
         if not self.runner.saw_crash:
             logger.debug('No crash seen')
@@ -114,8 +114,8 @@ class LinuxIteration(IterationBase3):
             return
 
         # store a few things for use downstream
-        self._zzuf_range = zzuf_log.range
-        self._zzuf_line = zzuf_log.line
+#         self._zzuf_range = zzuf_log.range
+#         self._zzuf_line = zzuf_log.line
         self._construct_testcase()
 
     def _construct_testcase(self):
