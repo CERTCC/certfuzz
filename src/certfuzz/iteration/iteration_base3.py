@@ -107,11 +107,15 @@ class IterationBase3(object):
         pass
 
     def _pre_run(self):
+        fuzzed_file = self.fuzzer.output_file_path
+        workingdir_base = self.working_dir
+        self.runner = self.runner_cls(self._runner_options, self._runner_cmd_template, fuzzed_file, workingdir_base)
+
         pass
 
-    @abc.abstractmethod
     def _run(self):
-        pass
+        with self.runner:
+            self.runner.run()
 
     def _post_run(self):
         pass

@@ -150,27 +150,22 @@ class WindowsIteration(IterationBase3):
         IterationBase3._pre_fuzz(self)
 
     def _pre_run(self):
-        options = self.cfg['runner']
-        cmd_template = self.cmd_template
-        fuzzed_file = self.fuzzer.output_file_path
-        workingdir_base = self.working_dir
+        self._runner_options = self.cfg['runner']
+        self._runner_cmd_template = self.cmd_template
 
-        self.runner = self.runner_cls(options, cmd_template, fuzzed_file, workingdir_base)
+        IterationBase3._pre_run(self)
 
-    def _run(self):
+    def _post_run(self):
         # analysis is required in two cases:
         # 1) runner_cls is not defined (self.runner_cls == None)
         # 2) runner_cls is defined, and detects crash (runner_cls.saw_crash == True)
         # this takes care of case 1 by default
         # TODO: does case 1 ever happen?
         analysis_needed = True
+
         if self.runner_cls:
-            with self.runner:
-                self.runner.run()
-                # this takes care of case 2
             analysis_needed = self.runner.saw_crash
 
-        # is further analysis needed?
         if not analysis_needed:
             return
 
