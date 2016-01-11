@@ -6,7 +6,7 @@ Created on Apr 10, 2012
 import unittest
 import tempfile
 import os
-from certfuzz.test.mocks import MockSeedfile
+from test_certfuzz.mocks import MockSeedfile
 import shutil
 from certfuzz.fuzzers.bitmut import BitMutFuzzer
 

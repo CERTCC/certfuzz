@@ -7,7 +7,7 @@ Created on Feb 14, 2012
 import unittest
 import os
 from certfuzz.fuzzers.fuzzer_base import Fuzzer
-from certfuzz.test.mocks import MockSeedfile
+from test_certfuzz.mocks import MockSeedfile
 import shutil
 from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
 import tempfile

@@ -8,7 +8,7 @@ import unittest
 import os
 import shutil
 from certfuzz.fuzzers.nullmut import NullMutFuzzer
-from certfuzz.test.mocks import MockSeedfile, MockRange
+from test_certfuzz.mocks import MockSeedfile, MockRange
 import tempfile
 from certfuzz.fuzztools.hamming import bytewise_hd
 

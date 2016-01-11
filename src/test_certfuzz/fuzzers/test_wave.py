@@ -10,7 +10,7 @@ import certfuzz.fuzzers.wave
 import shutil
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 import logging
-from certfuzz.test.mocks import MockSeedfile
+from test_certfuzz.mocks import MockSeedfile
 import tempfile
 
 certfuzz.fuzzers.wave.logger.setLevel(logging.WARNING)
