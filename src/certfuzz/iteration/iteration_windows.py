@@ -146,8 +146,8 @@ class WindowsIteration(IterationBase3):
         TmpReaper().clean_tmp()
 
     def _pre_fuzz(self):
-        fuzz_opts = self.cfg['fuzzer']
-        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
+        self._fuzz_opts = self.cfg['fuzzer']
+        IterationBase3._pre_fuzz(self)
 
     def _pre_run(self):
         options = self.cfg['runner']

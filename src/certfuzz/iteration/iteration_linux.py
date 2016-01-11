@@ -75,8 +75,8 @@ class LinuxIteration(IterationBase3):
         return self.go
 
     def _pre_fuzz(self):
-        fuzz_opts = self.cfg.config['fuzzer']
-        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, fuzz_opts)
+        self._fuzz_opts = self.cfg.config['fuzzer']
+        IterationBase3._pre_fuzz(self)
 
     def _pre_run(self):
         options = self.cfg.config['runner']

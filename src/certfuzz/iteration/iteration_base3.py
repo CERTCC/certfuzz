@@ -93,7 +93,7 @@ class IterationBase3(object):
         return handled
 
     def _pre_fuzz(self):
-        pass
+        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, self._fuzz_opts)
 
     def _fuzz(self):
         with self.fuzzer:
