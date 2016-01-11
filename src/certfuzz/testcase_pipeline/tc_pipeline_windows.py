@@ -10,6 +10,7 @@ from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.fuzztools import filetools
+from certfuzz.minimizer.errors import MinimizerError
 
 
 logger = logging.getLogger(__name__)
@@ -57,13 +58,16 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
                   'maxtime': self.cfg['runoptions']['minimizer_timeout']
                   }
 
-        with Minimizer(**kwargs) as minimizer:
-            minimizer.go()
+        try:
+            with Minimizer(**kwargs) as minimizer:
+                minimizer.go()
 
-            # minimzer found other crashes, so we should add them
-            # to our list for subsequent processing
-            for tc in minimizer.other_crashes.values():
-                self.tc_candidate_q.put(tc)
+                # minimizer found other crashes, so we should add them
+                # to our list for subsequent processing
+                for tc in minimizer.other_crashes.values():
+                    self.tc_candidate_q.put(tc)
+        except MinimizerError as e:
+            logger.error('Caught MinimizerError: {}'.format(e))
 
     def _post_minimize(self, testcase):
         if self.cfg['runoptions']['recycle_crashers']:
