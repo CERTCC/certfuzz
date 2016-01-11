@@ -80,6 +80,9 @@ class LinuxIteration(IterationBase3):
 
     def _pre_run(self):
         options = self.cfg.config['runner']
+
+        if self.quiet_flag:
+            options['hideoutput'] = True
         cmd_template = self.cfg.config['target']['cmdline']
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
