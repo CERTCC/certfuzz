@@ -122,12 +122,10 @@ class LinuxIteration(IterationBase3):
         self._construct_testcase()
 
     def _construct_testcase(self):
-        fuzzed_file = BasicFile(self.fuzzer.output_file_path)
-
         logger.info('Building testcase object')
         with BffCrash(cfg=self.cfg,
                       seedfile=self.seedfile,
-                      fuzzedfile=fuzzed_file,
+                      fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                       program=self.cfg.program,
                       debugger_timeout=self.cfg.debugger_timeout,
                       killprocname=self.cfg.killprocname,
