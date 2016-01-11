@@ -8,7 +8,10 @@ import unittest
 import os
 from certfuzz.fuzztools import filetools
 
-basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'certfuzz'))
+test_basedir = os.path.dirname(__file__)
+src_basedir = os.path.abspath(os.path.join(test_basedir, '..'))
+certfuzz_basedir = os.path.join(src_basedir, 'certfuzz')
+
 ignorelist = ['obsolete', 'dist']
 
 
@@ -48,28 +51,30 @@ def find_modules(d):
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.basedir = basedir
+        pass
 
     def tearDown(self):
         pass
 
     def test_each_package_has_a_test_package(self):
-        package_list = find_packages(self.basedir)
+        package_list = [os.path.relpath(x, certfuzz_basedir) for x in find_packages(certfuzz_basedir)]
 
         missing_pkgs = []
         non_pkgs = []
-        for pkg in non_tst_packages(self.basedir):
-            relpath = os.path.relpath(pkg, basedir)
-            test_pkg = os.path.join(basedir, 'test', relpath)
+        for pkg in non_tst_packages(certfuzz_basedir):
+            relpath = os.path.relpath(pkg, certfuzz_basedir)
+            test_pkg = os.path.join(test_basedir, relpath)
             if not os.path.exists(test_pkg):
                 missing_pkgs.append(test_pkg)
-            if not test_pkg in package_list:
+
+            pkgrelpath = os.path.relpath(test_pkg, test_basedir)
+            if pkgrelpath not in package_list:
                 non_pkgs.append(test_pkg)
         self.assertFalse(missing_pkgs, 'Missing test packages:\n  %s' % '\n  '.join(missing_pkgs))
         self.assertFalse(non_pkgs, 'Not a package:\n  %s' % '\n  '.join(non_pkgs))
 
     def test_each_module_has_a_test_module(self):
-        module_list = find_modules(self.basedir)
+        module_list = find_modules(certfuzz_basedir)
         missing_modules = []
         _ignored_modules = set(['errors.py'])
         for m in module_list:
@@ -79,17 +84,17 @@ class Test(unittest.TestCase):
                 continue
 
             test_b = 'test_%s' % b
-            relpath = os.path.relpath(d, basedir)
-            test_path = os.path.join(basedir, 'test', relpath, test_b)
+            relpath = os.path.relpath(d, certfuzz_basedir)
+            test_path = os.path.join(test_basedir, relpath, test_b)
 
             if not os.path.exists(test_path):
-                missing_modules.append((os.path.relpath(m, basedir), os.path.relpath(test_path, basedir)))
+                missing_modules.append((os.path.relpath(m, certfuzz_basedir), os.path.relpath(test_path, certfuzz_basedir)))
         fail_lines = ['Module %s has no corresponding test module %s' % mm for mm in missing_modules]
         fail_string = '\n  '.join(fail_lines)
         self.assertFalse(missing_modules, fail_string)
 
     def test_each_nonempty_init_module_has_a_test_module(self):
-        module_list = filetools.all_files(self.basedir, '__init__.py')
+        module_list = filetools.all_files(certfuzz_basedir, '__init__.py')
         nonempty_mods = [x for x in module_list if os.path.getsize(x)]
 
         missing_mods = []
@@ -102,15 +107,15 @@ class Test(unittest.TestCase):
 
             test_base = os.path.basename(d)
             test_b = 'test_%s_pkg.py' % test_base
-            relpath = os.path.relpath(d, basedir)
+            relpath = os.path.relpath(d, certfuzz_basedir)
 
-            test_path = os.path.join(basedir, 'test', relpath, test_b)
+            test_path = os.path.join(test_basedir, relpath, test_b)
             if not os.path.exists(test_path):
-                missing_mods.append((os.path.relpath(d, basedir), os.path.relpath(test_path, basedir)))
+                missing_mods.append((os.path.relpath(d, certfuzz_basedir), os.path.relpath(test_path, certfuzz_basedir)))
         fail_lines = ['Package %s has no corresponding test module %s' % mm for mm in missing_mods]
         fail_string = '\n'.join(fail_lines)
         self.assertFalse(missing_mods, fail_string)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

@@ -5,15 +5,15 @@ Created on Mar 21, 2012
 '''
 
 import unittest
-from certfuzz.fuzzers.drop import DropFuzzer
-import certfuzz.fuzzers.drop
+from certfuzz.fuzzers.insert import InsertFuzzer
+import certfuzz.fuzzers.insert
 import shutil
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 import logging
-from certfuzz.test.mocks import MockSeedfile
+from test_certfuzz.mocks import MockSeedfile
 import tempfile
 
-certfuzz.fuzzers.drop.logger.setLevel(logging.WARNING)
+certfuzz.fuzzers.insert.logger.setLevel(logging.WARNING)
 
 
 class Test(unittest.TestCase):
@@ -31,26 +31,25 @@ class Test(unittest.TestCase):
         shutil.rmtree(self.tempdir, ignore_errors=True)
 
     def test_fuzzer_class(self):
-        self.assertEqual(certfuzz.fuzzers.drop._fuzzer_class, DropFuzzer)
+        self.assertEqual(certfuzz.fuzzers.insert._fuzzer_class, InsertFuzzer)
 
     def test_fuzz_in_range(self):
         for x in range(self.sf.len):
             self.sf.tries = x
-            with DropFuzzer(*self.args) as f:
+            with InsertFuzzer(*self.args) as f:
                 f._fuzz()
-                self.assertEqual(len(f.output), self.sf.len - 1)
+                self.assertEqual(len(f.output), self.sf.len + 1)
+                self.assertEqual(chr(f.output[x + 1]), self.sf.value[x])
                 if x > 0:
-                    self.assertEqual(chr(f.output[x - 1]), self.sf.value[x])
-                if x < self.sf.len - 1:
-                    self.assertEqual(chr(f.output[x]), self.sf.value[x + 1])
+                    self.assertEqual(chr(f.output[x - 1]), self.sf.value[x - 1])
 
     def test_fuzz_out_of_range(self):
         self.sf.tries = self.sf.len + 1
-        with DropFuzzer(*self.args) as f:
+        with InsertFuzzer(*self.args) as f:
             self.assertRaises(FuzzerExhaustedError, f._fuzz)
 
     def test_is_not_minimizable(self):
-        f = DropFuzzer(*self.args)
+        f = InsertFuzzer(*self.args)
         self.assertFalse(f.is_minimizable)
 
 

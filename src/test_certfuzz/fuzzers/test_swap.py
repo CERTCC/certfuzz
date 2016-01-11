@@ -5,7 +5,7 @@ Created on Apr 10, 2012
 '''
 import unittest
 from certfuzz.fuzzers.swap import SwapFuzzer
-from certfuzz.test.mocks import MockSeedfile
+from test_certfuzz.mocks import MockSeedfile
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 import shutil
 import tempfile

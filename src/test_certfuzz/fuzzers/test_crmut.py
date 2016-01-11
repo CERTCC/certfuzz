@@ -8,25 +8,11 @@ import unittest
 import os
 import shutil
 from certfuzz.fuzzers.bytemut import fuzz
-from certfuzz.fuzzers.crlfmut import CRLFMutFuzzer
-from certfuzz.test.mocks import MockSeedfile, MockRange
+from certfuzz.fuzzers.crmut import CRMutFuzzer
+from test_certfuzz.mocks import MockSeedfile, MockRange
 import tempfile
 from certfuzz.fuzztools.hamming import bytewise_hd
 import copy
-
-def _insert_crlf(buf):
-    chars_inserted = 0
-    for i in xrange(0, len(buf), 10):
-        buf[i] = 0x0D
-        chars_inserted += 1
-        try:
-            buf[i + 1] = 0x0A
-            chars_inserted += 1
-        except IndexError:
-            # just skip it if we're past the end of the buffer
-            pass
-    return buf, chars_inserted
-
 
 class Test(unittest.TestCase):
 
@@ -34,7 +20,10 @@ class Test(unittest.TestCase):
         self.sf = seedfile_obj = MockSeedfile()
         self.sf.value = bytearray(self.sf.value)
         self.chars_inserted = 0
-        self.sf.value, self.chars_inserted = _insert_crlf(bytearray(self.sf.value))
+        for i in xrange(0, len(self.sf.value), 10):
+            self.sf.value[i] = 0x0D
+            self.chars_inserted += 1
+
         self.tempdir = tempfile.mkdtemp()
         self.outdir = outdir_base = tempfile.mkdtemp(prefix='outdir_base',
                                                      dir=self.tempdir)
@@ -47,7 +36,7 @@ class Test(unittest.TestCase):
 
     def _fail_if_not_fuzzed(self, fuzzed):
         for c in fuzzed:
-            if c == 'A' or c == 0x0D or c == 0x0A:
+            if c == 'A' or c == 0x0D:
                 continue
             else:
                 # skip over the else: clause
@@ -56,7 +45,12 @@ class Test(unittest.TestCase):
             self.fail('Input not fuzzed')
 
     def _test_fuzz(self, inputlen=1000, iterations=100, rangelist=None):
-        _input, chars_inserted = _insert_crlf(bytearray('A' * inputlen))
+        _input = bytearray('A' * inputlen)
+        # sub in null chars
+        chars_inserted = 0
+        for i in xrange(0, inputlen, 10):
+            _input[i] = 0x0D
+            chars_inserted += 1
 
         for i in xrange(iterations):
             fuzzed = fuzz(fuzz_input=copy.copy(_input),
@@ -74,7 +68,7 @@ class Test(unittest.TestCase):
             self.assertGreater(hd, 0)
             self.assertLessEqual(hd, chars_inserted)
 
-            actual_ratio = 2 * hd / float(chars_inserted)
+            actual_ratio = hd / float(chars_inserted)
             self.assertGreaterEqual(actual_ratio, 0.1)
             self.assertLessEqual(actual_ratio, 0.3)
 
@@ -91,7 +85,12 @@ class Test(unittest.TestCase):
         inputlen = 10000
         iterations = 100
         r = [(0, 100), (600, 1000), (3000, 10000)]
-        _input, chars_inserted = _insert_crlf(bytearray('A' * inputlen))
+        _input = bytearray('A' * inputlen)
+        # sub in null chars
+        chars_inserted = 0
+        for i in xrange(0, inputlen, 10):
+            _input[i] = 0x0D
+            chars_inserted += 1
 
         for i in xrange(iterations):
             fuzzed = fuzz(fuzz_input=copy.copy(_input),
@@ -122,14 +121,14 @@ class Test(unittest.TestCase):
     def test_nullmutfuzzer_fuzz(self):
         self.assertTrue(self.sf.len > 0)
         for i in xrange(100):
-            with CRLFMutFuzzer(*self.args) as f:
+            with CRMutFuzzer(*self.args) as f:
                 f.iteration = i
                 f._fuzz()
                 # same length, different output
                 self.assertEqual(self.sf.len, len(f.output))
-                self._fail_if_not_fuzzed(f.output)
+                self._fail_if_not_fuzzed(f.input)
                 # confirm ratio
-#                self.assertGreaterEqual(2 * f.fuzzed_byte_ratio() / self.chars_inserted, MockRange().min)
+#                self.assertGreaterEqual(f.fuzzed_byte_ratio() / self.chars_inserted, MockRange().min)
 #                self.assertLessEqual(f.fuzzed_byte_ratio() / self.chars_inserted, MockRange().max)
 
     def test_consistency(self):
@@ -142,7 +141,7 @@ class Test(unittest.TestCase):
                 last_result = None
             last_x = x
             for _ in range(20):
-                with CRLFMutFuzzer(self.sf, self.outdir, x, self.options) as f:
+                with CRMutFuzzer(self.sf, self.outdir, x, self.options) as f:
                     f._fuzz()
                     result = str(f.output)
                     if last_result:
@@ -151,7 +150,7 @@ class Test(unittest.TestCase):
                         last_result = result
 
 #    def test_is_minimizable(self):
-#        f = CRLFMutFuzzer(*self.args)
+#        f = CRMutFuzzer(*self.args)
 #        self.assertTrue(f.is_minimizable)
 
 if __name__ == "__main__":

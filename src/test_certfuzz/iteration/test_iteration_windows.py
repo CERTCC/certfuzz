@@ -6,7 +6,7 @@ Created on Mar 23, 2012
 
 import unittest
 from certfuzz.iteration.iteration_windows import WindowsIteration
-from certfuzz.test.mocks import MockFuzzer
+from test_certfuzz.mocks import MockFuzzer
 
 
 class Test(unittest.TestCase):

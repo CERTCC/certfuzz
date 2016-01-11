@@ -4,7 +4,7 @@ Created on Oct 22, 2014
 @organization: cert.org
 '''
 import unittest
-from certfuzz.test.mocks import MockSeedfile
+from test_certfuzz.mocks import MockSeedfile
 import tempfile
 import shutil
 from certfuzz.fuzzers.zzuf import ZzufFuzzer
