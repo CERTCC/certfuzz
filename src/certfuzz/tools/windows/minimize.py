@@ -14,7 +14,7 @@ try:
     from certfuzz import debuggers
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.minimizer import WindowsMinimizer as Minimizer
+    from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
     from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
@@ -27,7 +27,7 @@ except ImportError:
     from certfuzz import debuggers
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.minimizer import WindowsMinimizer as Minimizer
+    from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
     from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
