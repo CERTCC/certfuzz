@@ -78,7 +78,7 @@ class WindowsIteration(IterationBase3):
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,
                                  'used_runner': self.runner_cls is not None,
-                                 'minimizable': self.fuzzer.is_minimizable and self.cfg['runoptions']['minimize']
+                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions']['minimize']
                                  }
 
     def __exit__(self, etype, value, traceback):
