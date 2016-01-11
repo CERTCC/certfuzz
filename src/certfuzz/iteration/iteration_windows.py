@@ -177,15 +177,16 @@ class WindowsIteration(IterationBase3):
         self._construct_testcase()
 
     def _construct_testcase(self):
-        cmdlist = get_command_args_list(self.cmd_template, self.fuzzer.output_file_path)[1]
-        dbg_opts = self.cfg['debugger']
-        fuzzed_file = BasicFile(self.fuzzer.output_file_path)
-
         logger.debug('Building testcase object')
-        with WindowsCrash(self.cmd_template, self.seedfile, fuzzed_file, cmdlist,
-                          self.fuzzer, dbg_opts,
-                          self.working_dir, self.cfg['runoptions']['keep_unique_faddr'],
-                          self.cfg['target']['program'],
+        with WindowsCrash(cmd_template=self.cmd_template,
+                          seedfile=self.seedfile,
+                          fuzzedfile=BasicFile(self.fuzzer.output_file_path),
+                          cmdlist=get_command_args_list(self.cmd_template, self.fuzzer.output_file_path)[1],
+                          fuzzer=self.fuzzer,
+                          dbg_opts=self.cfg['debugger'],
+                          workingdir_base=self.working_dir,
+                          keep_faddr=self.cfg['runoptions']['keep_unique_faddr'],
+                          program=self.cfg['target']['program'],
                           heisenbug_retries=self.retries,
                           copy_fuzzedfile=self.fuzzer.fuzzed_changes_input) as testcase:
 
