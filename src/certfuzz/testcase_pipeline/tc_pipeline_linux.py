@@ -143,7 +143,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             else:
                 uniqlogger.info('%s crash_id=%s seed=%d bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.hd_bits, testcase.hd_bytes)
         else:
-            # We don't know the HD info        
+            # We don't know the HD info
             if testcase.range is not None:
                 # We have a fuzzer that uses a range
                 uniqlogger.info('%s crash_id=%s seed=%d range=%s', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range)
