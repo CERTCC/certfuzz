@@ -52,8 +52,6 @@ def _create_minimizer_cfg(cfg):
 
 
 def main():
-    debuggers.registration.verify_supported_platform()
-
     from optparse import OptionParser
 
     hdlr = logging.StreamHandler()
