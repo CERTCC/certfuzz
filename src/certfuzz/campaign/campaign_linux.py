@@ -21,7 +21,6 @@ from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
-from certfuzz.fuzzers.zzuf import ZzufFuzzer
 from certfuzz.fuzzers.bytemut import ByteMutFuzzer
 from certfuzz.runners.zzufrun import ZzufRunner
 

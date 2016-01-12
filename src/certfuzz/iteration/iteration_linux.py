@@ -12,8 +12,6 @@ from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
-from certfuzz.runners.zzufrun import ZzufRunner
-from certfuzz.fuzzers.bytemut import ByteMutFuzzer
 
 
 logger = logging.getLogger(__name__)

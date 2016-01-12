@@ -20,8 +20,6 @@ from certfuzz.fuzztools import filetools
 from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
-from certfuzz.testcase_pipeline.errors import TestCasePipelineError
-import shutil
 
 
 logger = logging.getLogger(__name__)

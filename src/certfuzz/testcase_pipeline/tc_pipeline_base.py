@@ -7,13 +7,11 @@ import Queue
 import abc
 import logging
 import os
-import shutil
 
 from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools import filetools
 from certfuzz.helpers.coroutine import coroutine
-from certfuzz.testcase_pipeline.errors import TestCasePipelineError
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 
 
