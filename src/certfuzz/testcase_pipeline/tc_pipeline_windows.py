@@ -11,6 +11,8 @@ from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.fuzztools import filetools
 from certfuzz.minimizer.errors import MinimizerError
+from certfuzz.reporters.copy_files import CopyFilesReporter
+from coverage.report import Reporter
 
 
 logger = logging.getLogger(__name__)
@@ -82,7 +84,8 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         pass
 
     def _report(self, testcase):
-        self._copy_files(testcase)
+        with CopyFilesReporter(testcase, self.tc_dir) as reporter:
+            reporter.go()
 
     def keep_testcase(self, testcase):
         '''Given a testcase, decide whether it is a keeper. Returns a tuple
