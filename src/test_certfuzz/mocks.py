@@ -32,3 +32,6 @@ class MockSeedfile(Mock):
 
 class MockFuzzer(Mock):
     is_minimizable = False
+
+class MockTestcase(Mock):
+    signature = 'ABCDEFGHIJK'

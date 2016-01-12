@@ -231,18 +231,3 @@ class TestCasePipelineBase(object):
             testcase = self.tc_candidate_q.get()
             logger.debug('Sending testcase %s to pipeline', testcase.signature)
             self.analysis_pipeline.send(testcase)
-
-    def _copy_files(self, testcase):
-        dst_dir = os.path.join(self.tc_dir, testcase.signature)
-        # ensure target dir exists already (it might because of crash logging)
-        filetools.mkdir_p(dst_dir)
-
-        src_dir = testcase.tempdir
-        if not os.path.exists(src_dir):
-            raise TestCasePipelineError('Testcase tempdir not found: %s', src_dir)
-
-        src_paths = [os.path.join(src_dir, f) for f in os.listdir(src_dir)]
-
-        for f in src_paths:
-            logger.debug('Copy %s -> %s', f, dst_dir)
-            shutil.copy2(f, dst_dir)

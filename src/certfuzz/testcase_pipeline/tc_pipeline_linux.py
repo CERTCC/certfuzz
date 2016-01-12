@@ -20,6 +20,7 @@ from certfuzz.fuzztools import filetools
 from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
+from certfuzz.reporters.copy_files import CopyFilesReporter
 
 
 logger = logging.getLogger(__name__)
@@ -143,7 +144,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             else:
                 uniqlogger.info('%s crash_id=%s seed=%d bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.hd_bits, testcase.hd_bytes)
         else:
-            # We don't know the HD info        
+            # We don't know the HD info
             if testcase.range is not None:
                 # We have a fuzzer that uses a range
                 uniqlogger.info('%s crash_id=%s seed=%d range=%s', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range)
@@ -152,7 +153,9 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         logger.info('%s first seen at %d', testcase.signature, testcase.seednum)
 
     def _report(self, testcase):
-        self._copy_files(testcase)
+        with CopyFilesReporter(testcase, self.tc_dir) as reporter:
+            reporter.go()
+
         # whether it was unique or not, record some details for posterity
         # record the details of this crash so we can regenerate it later if needed
         testcase.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', testcase.seedfile.basename, testcase.seednum, testcase.range, testcase.fuzzedfile.path)
