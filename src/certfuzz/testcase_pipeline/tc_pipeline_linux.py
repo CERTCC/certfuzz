@@ -21,6 +21,7 @@ from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.reporters.copy_files import CopyFilesReporter
+from certfuzz.reporters.testcase_logger import TestcaseLoggerReporter
 
 
 logger = logging.getLogger(__name__)
@@ -156,10 +157,8 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         with CopyFilesReporter(testcase, self.tc_dir) as reporter:
             reporter.go()
 
-        # whether it was unique or not, record some details for posterity
-        # record the details of this crash so we can regenerate it later if needed
-        testcase.logger.info('seen in seedfile=%s at seed=%d range=%s outfile=%s', testcase.seedfile.basename, testcase.seednum, testcase.range, testcase.fuzzedfile.path)
-        testcase.logger.info('PC=%s', testcase.pc)
+        with TestcaseLoggerReporter(testcase) as reporter:
+            reporter.go()
 
     def _post_report(self, testcase):
         # always clean up after yourself

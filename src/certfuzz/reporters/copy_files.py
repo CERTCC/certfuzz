@@ -28,7 +28,7 @@ class CopyFilesReporter(ReporterBase):
 
         self.target_dir = target_dir
 
-    def _copy_files(self):
+    def go(self):
         dst_dir = os.path.join(self.target_dir, self.testcase.signature)
         # ensure target dir exists already (it might because of crash logging)
         filetools.mkdir_p(dst_dir)
@@ -42,6 +42,3 @@ class CopyFilesReporter(ReporterBase):
         for f in src_paths:
             logger.debug('Copy %s -> %s', f, dst_dir)
             shutil.copy2(f, dst_dir)
-
-    def go(self):
-        self._copy_files()
