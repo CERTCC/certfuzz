@@ -80,29 +80,6 @@ class Test(unittest.TestCase):
             self.assertEqual(i + 1, len(results))
             self.assertEqual(tc, results[-1])
 
-    def test_copy_files(self):
-        tcpl = TCPL_Impl(outdir=self.tmpdir)
-
-        class MockTestCase(object):
-            result_dir = tempfile.mkdtemp(prefix="tc_out_", dir=self.tmpdir)
-            signature = "tcsignature"
-            tempdir = tempfile.mkdtemp(prefix="tc_in_", dir=self.tmpdir)
-
-        tc = MockTestCase()
-        fd, fname = tempfile.mkstemp(dir=tc.result_dir)
-        os.write(fd, fname)
-        os.close(fd)
-
-        self.assertEqual([os.path.basename(fname)],
-                         os.listdir(tc.result_dir))
-        tcpl.outdir = tempfile.mkdtemp(dir=self.tmpdir)
-
-        self.assertEqual([],
-                         os.listdir(tcpl.outdir))
-        tcpl._copy_files(tc)
-        self.assertEqual([os.path.basename(fname)],
-                         os.listdir(tc.result_dir))
-
     def test_analyze(self):
         class TCPL_Impl2(TCPL_Impl):
             def _analyze(self, testcase):
