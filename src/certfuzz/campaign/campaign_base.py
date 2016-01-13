@@ -169,7 +169,6 @@ class CampaignBase(object):
         :param value:
         '''
         handled = False
-    #        self._stop_buttonclicker()
         if etype is KeyboardInterrupt:
             logger.warning('Keyboard interrupt - exiting')
             handled = True
