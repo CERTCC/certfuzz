@@ -1,0 +1,65 @@
+campaign:
+    id: default_imagemagick_convert
+    workdir: ~/fuzzing
+    results_dir: ~/results
+    seedfile_dir: ~/bff/seedfiles/examples
+    use_minimizer: True
+    recycle_crashers: False
+    keep_heisenbugs: False # windows only
+    use_buttonclicker: False # windows only
+debugger:
+    timeout: 60
+    debugger_cls: gdb
+    # template_dir:  ~/bff/certfuzz/debuggers/templates # linux only
+   max_handled_exceptions: 6 # windows only
+   watchcpu: Auto # windows only
+   use_debug_heap: False # windows only
+fuzzer:
+    fuzzer_cls: bytemut
+    fuzz_zip_container: False
+    start_iteration: 0
+    iteration_interval: 1
+    # # TODO: can we eliminate copymode?
+    # copymode: False # linux only
+# killproc: # linux only
+#     killprocname: convert
+#     timeout: 130
+minimizer:
+    timeout: 3600
+    minimize_to_string: False
+runner:
+    timeout: 5
+    runner_cls: zzufrun
+    exceptions:
+        - 0x80000002    # EXCEPTION_DATATYPE_MISALIGNMENT
+        - 0xC0000005    # STATUS_ACCESS_VIOLATION
+        - 0xC000001D    # STATUS_ILLEGAL_INSTRUCTION
+        - 0xC0000025    # EXCEPTION_NONCONTINUABLE_EXCEPTION
+        - 0xC0000026    # EXCEPTION_INVALID_DISPOSITION
+        - 0xC000008C    # EXCEPTION_ARRAY_BOUNDS_EXCEEDED
+        - 0xC000008E    # EXCEPTION_FLT_DIVIDE_BY_ZERO
+        - 0xC0000090    # EXCEPTION_FLT_INVALID_OPERATION
+        - 0xC0000091    # EXCEPTION_FLT_OVERFLOW
+        - 0xC0000092    # EXCEPTION_FLT_STACK_CHECK
+        - 0xC0000093    # EXCEPTION_FLT_UNDERFLOW
+        - 0xC0000094    # STATUS_INTEGER_DIVIDE_BY_ZERO
+        - 0xC0000095    # EXCEPTION_INT_OVERFLOW
+        - 0xC0000096    # STATUS_PRIVILEGED_INSTRUCTION
+        - 0xC00000FD    # STATUS_STACK_OVERFLOW
+    hideoutput: False
+    watchcpu: Auto
+target:
+    program:  ~/convert
+    invocation_template:  $PROGRAM $SEEDFILE /dev/null
+# valgrind: # linux only
+#     timeout: 120
+verifier:
+    keep_unique_faddr: True # windows only
+    # keep_failed_asserts: False # linux only
+    # use_pin_calltrace: True # linux only
+    keep_duplicates: False
+    backtrace_depth: 5
+    # use_valgrind: True #linux only
+# watchdog:
+#     timeout: 3600
+#     file: /tmp/bff_watchdog
