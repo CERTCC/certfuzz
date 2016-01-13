@@ -1,10 +1,10 @@
 This project contains the source code for the CERT Basic Fuzzing Framework (BFF)
-and the CERT Failure Observation Engine (FOE).
+
+BFF for Windows was formerly known as the CERT Failure Observation Engine (FOE).
 
 If you are looking for runnable code, you should download the latest releases at:
 
 * BFF (linux, OSX) [http://www.cert.org/vulnerability-analysis/tools/bff.cfm](http://www.cert.org/vulnerability-analysis/tools/bff.cfm "BFF")
-* FOE (windows) [http://www.cert.org/vulnerability-analysis/tools/foe.cfm](http://www.cert.org/vulnerability-analysis/tools/foe.cfm "FOE")
 
 # Using this code #
 
@@ -12,7 +12,7 @@ Depending on your preferred level of difficulty and experience points, choose fr
 
 ## Easy ##
 
-Most of the BFF and FOE code can be found in the certfuzz package `src/certfuzz`. To try out the certfuzz code in an existing installation of BFF or FOE, replace the `certfuzz` directory in your installation with the `certfuzz` directory found in this repository.
+Most of the BFF code can be found in the certfuzz package `src/certfuzz`. To try out the certfuzz code in an existing installation of BFF, replace the `certfuzz` directory in your installation with the `certfuzz` directory found in this repository.
 
 ## Moderate ##
 
@@ -30,16 +30,16 @@ If all that seems more like a challenge than a warning, go for it.
 
 See `src/experimental/README.md` for some dead ends that might be marginally useful.
 
-# About BFF and FOE #
+# About BFF #
 
-The CERT Basic Fuzzing Framework (BFF) is a software testing tool that finds defects in applications that run on the Linux and Mac OS X platforms. The CERT Failure Observation Engine (FOE) does the same on Windows.
+The CERT Basic Fuzzing Framework (BFF) is a software testing tool that finds defects in applications that run on Linux, Mac OS X and Windows.
 
-BFF and FOE perform mutational fuzzing on software that consumes file input.  They automatically collect test cases that cause software to crash in unique ways, as well as debugging information associated with the crashes. The goal of BFF and FOE is to minimize the effort required for software vendors and security researchers to efficiently discover and analyze security vulnerabilities found via fuzzing.
+BFF performs mutational fuzzing on software that consumes file input.  They automatically collect test cases that cause software to crash in unique ways, as well as debugging information associated with the crashes. The goal of BFF is to minimize the effort required for software vendors and security researchers to efficiently discover and analyze security vulnerabilities found via fuzzing.
 
 ## A brief history of BFF and FOE ##
 
 BFF and FOE started out as two separate but related projects within the CERT/CC
-Vulnerability Analysis team. Over time, they have converged in their architecture to the point where they now share much of their code. While this convergence should eventually lead to feature parity (or nearly so), we are not there yet.
+Vulnerability Analysis team. Over time, they converged in their architecture to the point where BFF 2.7 and FOE 2.1 shared much of their code. As of BFF 2.8, this integration is complete and we have retired the name FOE in favor of BFF.
 
 ## For more information 
 

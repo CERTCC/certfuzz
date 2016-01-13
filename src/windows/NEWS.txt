@@ -1,4 +1,7 @@
-CERT Failure Observation Engine (FOE)
+CERT Basic Fuzzing Framework for Windows (BFF)
+
+BFF for Windows was formerly known as CERT Failure Observation Engine (FOE)
+
 Significant changes
 
 FOE 2.1 (September 23, 2013)

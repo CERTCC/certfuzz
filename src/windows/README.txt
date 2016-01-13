@@ -1,4 +1,4 @@
-Failure Observation Engine (FOE) 2.1 README
+CERT Basic Fuzzing Framework (BFF) for Windows 2.8 README
 
 ===== License =====
 ===================
@@ -17,20 +17,20 @@ See NEWS.txt
 
 Because fuzzing can fill temporary directories, put the target application 
 in an unusable state, or trigger other operating-system-level bugs, we 
-recommend that FOE be used in a virtual machine.
+recommend that BFF be used in a virtual machine.
 
-Run FOE-2.1-setup.exe in a virtual machine to install FOE 2.1.
+Run BFF-2.1-setup.exe in a virtual machine to install BFF 2.1.
 
 The installer should detect and attempt to download prerequisites and 
 configure your environment appropriately.
 
   
-===== Running FOE =====
+===== Running BFF =====
 =======================
 
-1) Click the FOE2 item in the Windows Start menu.
+1) Click the BFF item in the Windows Start menu.
 
-2) Run foe2.py
+2) Run bff.py
 
 3) Run tools\quickstats.py to check fuzzing progress when you wish.
 
@@ -38,14 +38,14 @@ configure your environment appropriately.
 ===== How it works =====
 ========================
 
-When a campaign starts, FOE will gather available seed files and create 
+When a campaign starts, BFF will gather available seed files and create 
 scorable sets:
 1) The seed files themselves
 2) The fuzz percent ranges for each seed file
 
 Each interval of a campaign will choose a seed file, and then for that file, 
 it will choose an percent range to mangle the file. After mangling the file, 
-FOE will launch the target application, using the configured command line to 
+BFF will launch the target application, using the configured command line to 
 have it parse the fuzzed file. If the "winrun" runner is compatible with the
 current platform, this is accomplished by preloading a crash-intercepting hook
 into the target application's process space. This allows crash detection without 
@@ -57,7 +57,7 @@ the Microsoft !exploitable debugger extension. If the crash is determined to
 be unique (by the chain of !exploitable crash hashes), then some additional
 analysis steps are taken:
 1) A !exploitable report is created for each continuable exception.
-2) If configured to do so, FOE will create a minimized test case.
+2) If configured to do so, BFF will create a minimized test case.
 3) The seed file and percent range that were used to fuzz are scored
 
 Seed files that produce more crashes are given a preference over less-
@@ -91,7 +91,7 @@ This is a copy of the config file used for this run. It is stored for
 historical purposes ("Which options did I use for that run?").
 
 version.txt
-This file stores the version of FOE that was used for fuzzing.
+This file stores the version of BFF that was used for fuzzing.
   
 <SEVERITY>
 This is the "Exploitability Classification" assigned to the crash by 
@@ -138,11 +138,11 @@ the target application proceeds without encountering another exception.
 ===== Fuzzing on your own =====
 ===============================
 
-Once you are comfortable with FOE's default ImageMagick fuzz run, you can 
+Once you are comfortable with BFF's default ImageMagick fuzz run, you can 
 try fuzzing an application of your choice. The first step is to place seed 
-files into the FOE seedfiles directory. These are the files that will be 
-mangled and opened by the target application. Next modify the foe.yaml file 
-to suit your needs.  The foe.yaml file is documented to describe what each 
+files into the BFF seedfiles directory. These are the files that will be 
+mangled and opened by the target application. Next modify the bff.yaml file 
+to suit your needs.  The bff.yaml file is documented to describe what each 
 of the features mean. The important parts to modify are: 
 
 campaign: id:
@@ -151,7 +151,7 @@ campaign: id:
 	application name and version.
 	
 campaign: use_buttonclicker:
-	When fuzzing a GUI application, the FOE button clicker can increase 
+	When fuzzing a GUI application, the BFF button clicker can increase 
 	throughput and code coverage. Note that the button clicker is not 
 	configurable, but rather it has a built-in heuristic for determining which 
 	buttons to click.
@@ -163,32 +163,32 @@ target: cmdline_template:
 	This specifies the commandline syntax for invoking the target application.
 
 runner: runtimeout:
-	This value specifies how long FOE should wait before terminating the 
+	This value specifies how long BFF should wait before terminating the 
 	application and moving on to the next iteration.
     Note that this setting only applies to the "winrun" runner (32-bit Windows 
     XP and Server 2003 systems).
 	
 debugger: runtimeout:
-	This value specifies how long FOE should allow the target application to 
+	This value specifies how long BFF should allow the target application to 
 	run when it is invoked from the debugger. On platforms that use the "null" 
 	runner (64-bit Windows or Windows Vista or newer), this is the only 
 	timeout value that is used.
 	
-FOE periodically saves state of a fuzzing campaign, so it will by default 
-continue a cached campaign if foe.yaml has not been modified.
-To clear the FOE cached state, run:
-tools\clean_foe.py
+BFF periodically saves state of a fuzzing campaign, so it will by default 
+continue a cached campaign if bff.yaml has not been modified.
+To clear the BFF cached state, run:
+tools\clean_BFF.py
 For additional options, run:
-tools\clean_foe.py --help
+tools\clean_BFF.py --help
 
 
 ===== Digging deeper into results =====
 =======================================
 
-When FOE has produced results, you may wish to perform some additional steps.
+When BFF has produced results, you may wish to perform some additional steps.
 
 Finding interesting crashes:
-With some target applications, FOE may produce too many uniquely-crashing test 
+With some target applications, BFF may produce too many uniquely-crashing test 
 cases to investigate manually in a reasonable amount of time. We have provided 
 a script called drillresults.py to pick out crashes that are most likely to be 
 exploitable and list those cases in a ranked order (most exploitable first). 
@@ -200,7 +200,7 @@ tools\drillresults.py --help
 
 Reproducing crashes:
 The tools\repro.py script can be used to reproduce a crash by running it in
-the same manner that FOE did.
+the same manner that BFF did.
 For command-line usage, run:
 tools\repro.py --help
 
@@ -224,7 +224,7 @@ tools\minimize.py --help
 To minimize a crashing testcase to the Metasploit string pattern, run:
 tools\minimize.py --stringmode <crashing_testcase>
 
-When minimizing to the Metasploit pattern, FOE will use the resulting byte map
+When minimizing to the Metasploit pattern, BFF will use the resulting byte map
 to create an additional minimized file that uses a string of 'x' characters. 
 Note that this file is not guaranteed to produce the same crash as the 
 original string minimization.
@@ -265,7 +265,7 @@ range_list: byte ranges to be fuzzed. One range per line, hex or decimal
 ===== Verifying crashing results ======
 =======================================
 
-FOE can be used to verify crashing test cases. This can be useful for 
+BFF can be used to verify crashing test cases. This can be useful for 
 when a new version of an application is released or if you are the 
 developer and you want to see how many uniquely-crashing test cases 
 disappear when you fix a bug. To perform a verfification campaign:
@@ -273,19 +273,19 @@ disappear when you fix a bug. To perform a verfification campaign:
 1) Run tools\copycrashers.py to collect all of the crashing cases
 from a campaign. By default it will copy all of the uniquely-crashing 
 test cases to the "seedfiles" directory, which should be empty.
-2) Modify configs\foe.yaml to use the "verify" fuzzer and also specify 
+2) Modify configs\bff.yaml to use the "verify" fuzzer and also specify 
 a new campaign ID.
 
-When you run FOE, it will run each case with the target application, 
+When you run BFF, it will run each case with the target application, 
 and cases that still crash will be placed in the results directory for 
 the new campaign.
 
 
-===== Manually Installing FOE =====
+===== Manually Installing BFF =====
 ===================================
 
-If you have installed FOE using the installer, you can skip this section.
-To install FOE manually, you will need the following prerequisites:
+If you have installed BFF using the installer, you can skip this section.
+To install BFF manually, you will need the following prerequisites:
 
 - Windows XP or Server 2003 32-bit is recommended to allow exception hooking 
   (winrun)
@@ -321,7 +321,7 @@ To install FOE manually, you will need the following prerequisites:
 - Add debugging tools (specifically cdb.exe) to your PATH.
   (probably C:\Program Files\Debugging Tools for Windows (x86)\)
   
-- Copy the foe.yaml config file from configs\examples\ to a configs
+- Copy the bff.yaml config file from configs\examples\ to a configs
   and modify as necessary.
   
 - Copy seed files to the seedfiles directory.
