@@ -22,6 +22,7 @@ from certfuzz.runners.errors import RunnerArchitectureError, \
 from certfuzz.version import __version__
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 import gc
+from certfuzz.config.simple_loader import load_config
 
 
 logger = logging.getLogger(__name__)
@@ -100,9 +101,9 @@ class CampaignBase(object):
 
         self._read_config_file()
 
-    @abc.abstractmethod
     def _read_config_file(self):
         logger.info('Reading config from %s', self.config_file)
+        self.config = load_config(self.config_file)
 
     def _common_init(self):
         '''
@@ -319,7 +320,7 @@ class CampaignBase(object):
 
         if campaign:
             try:
-                if self.configdate != campaign.__dict__['configdate']:
+                if self.config['config_timestamp'] != campaign.__dict__['config_timestamp']:
                     logger.warning('Config file modified. Discarding cached campaign')
                 else:
                     self.__dict__.update(campaign.__dict__)
