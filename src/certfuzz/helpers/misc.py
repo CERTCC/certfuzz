@@ -8,9 +8,18 @@ import platform
 from pprint import pformat, pprint
 import random
 import string
+import os
 
 
 my_os = platform.system()
+
+
+def fixup_path(path):
+    '''
+    Expands tildes and returns absolute path transformation of path
+    :param path:
+    '''
+    return os.path.abspath(os.path.expanduser(path))
 
 
 def quoted(string_to_wrap):
@@ -19,8 +28,6 @@ def quoted(string_to_wrap):
 
 def print_dict(d):
     pprint(d)
-
-
 
 
 def random_str(length=1):

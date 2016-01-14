@@ -18,6 +18,10 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_fixup_path(self):
+        path = '~/foo'
+        self.assertTrue('~' not in helpers.misc.fixup_path(path))
+
     def test_quoted(self):
         for s in list('qwertyuiopasdfghjklzxcvbnm'):
             self.assertTrue(s in helpers.quoted(s))
