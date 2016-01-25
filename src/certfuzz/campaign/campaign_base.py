@@ -23,6 +23,8 @@ from certfuzz.version import __version__
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 import gc
 from certfuzz.config.simple_loader import load_config
+from string import Template
+from certfuzz.helpers.misc import quoted
 
 
 logger = logging.getLogger(__name__)
@@ -100,10 +102,21 @@ class CampaignBase(object):
             self.outdir_base = os.path.abspath(result_dir)
 
         self._read_config_file()
+        self._fixup_config()
 
     def _read_config_file(self):
         logger.info('Reading config from %s', self.config_file)
         self.config = load_config(self.config_file)
+
+    def _fixup_config(self):
+        '''
+        Substitutes program name into command line template
+        '''
+        quoted_prg = quoted(self.config['target']['program'])
+        quoted_sf = quoted('$SEEDFILE')
+        t = Template(self.config['target']['cmdline_template'])
+        t_with_substitution = t.safe_substitute(PROGRAM=quoted_prg, SEEDFILE=quoted_sf)
+        self.config['target']['cmdline_template'] = t_with_substitution
 
     def _common_init(self):
         '''
