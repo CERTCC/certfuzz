@@ -8,6 +8,9 @@ import os.path
 
 import yaml
 from certfuzz.config.errors import ConfigError
+from string import Template
+from certfuzz.helpers.misc import quoted
+import re
 
 
 logger = logging.getLogger(__name__)
@@ -58,6 +61,16 @@ class ConfigBase(object):
     def _set_derived_options(self):
         if self.config is None:
             raise ConfigError('No config found (or config file empty?)')
+        # interpolate program name
+        # add quotes around $SEEDFILE
+        t = Template(self.config['target']['cmdline_template'])
+        self.config['target']['cmdline_template'] = t.safe_substitute(PROGRAM=quoted(self.config['target']['program']),
+                          SEEDFILE=quoted('$SEEDFILE'))
+ 
+        campaign_id = re.sub('\s+', '_', self.config['campaign']['id'])
+        self.config['campaign']['id'] = campaign_id
+
+ 
 
     def _add_validations(self):
         pass
