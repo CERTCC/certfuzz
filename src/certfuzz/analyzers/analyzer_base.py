@@ -8,6 +8,7 @@ import os
 
 from certfuzz.fuzztools import subprocess_helper as subp
 from certfuzz.analyzers.errors import AnalyzerOutputMissingError, AnalyzerEmptyOutputError
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -22,7 +23,7 @@ class Analyzer(object):
         self.cfg = cfg
         self.crash = crash
 
-        self.cmdargs = cfg.get_command_list(crash.fuzzedfile.path)
+        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'],crash.fuzzedfile.path)[1]
         self.outfile = outfile
         self.timeout = float(timeout)
         self.killprocname = crash.killprocname
