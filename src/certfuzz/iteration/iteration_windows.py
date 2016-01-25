@@ -64,7 +64,7 @@ class WindowsIteration(IterationBase3):
         # TODO: do we use keep_uniq_faddr at all?
         self.keep_uniq_faddr = config['runoptions']['keep_unique_faddr']
 
-        self.cmd_template = string.Template(cmd_template)
+        self.cmd_template = cmd_template
 
         if self.runner_cls is None:
             # null runner_cls case

@@ -23,6 +23,7 @@ from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.analyzers import pin_calltrace
 from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 from certfuzz.debuggers.output_parsers.calltracefile import Calltracefile
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 logger = logging.getLogger(__name__)
 
@@ -170,7 +171,7 @@ class Minimizer(object):
         filetools.copy_file(self.crash.fuzzedfile.path, self.tempfile)
 
         # figure out what crash signatures belong to this fuzzedfile
-        self.debugger_timeout = self.cfg.debugger_timeout
+        self.debugger_timeout = self.cfg['timeouts']['debugger_timeout']
         self.crash_hashes = []
         self.measured_dbg_time = None
         self._set_crash_hashes()
@@ -348,7 +349,7 @@ class Minimizer(object):
                 if dbg.is_crash:
                     times.append(delta)
 
-                current_sig = self.get_signature(dbg, self.cfg.backtracelevels)
+                current_sig = self.get_signature(dbg, self.cfg['verifier']['backtracelevels'])
 
                 # ditch the temp file
                 if os.path.exists(f):
@@ -379,15 +380,16 @@ class Minimizer(object):
 
     def run_debugger(self, infile, outfile):
         self.debugger_runs += 1
-        cmd_args = self.cfg.get_command_args_list(infile)
+        cmd_args = get_command_args_list(self.cfg['target']['cmdline_template'],infile)[1]
+#         cmd_args = self.cfg.get_command_args_list(infile)
 
-        dbg = self._debugger_cls(self.cfg.program,
+        dbg = self._debugger_cls(cmd_args[0],
                             cmd_args,
                             outfile,
                             self.debugger_timeout,
-                            self.cfg.killprocname,
+                            self.cfg['target']['killprocname'],
                             template=self.crash.debugger_template,
-                            exclude_unmapped_frames=self.cfg.exclude_unmapped_frames,
+                            exclude_unmapped_frames=self.cfg['verifier']['exclude_unmapped_frames'],
                             keep_uniq_faddr=self.keep_uniq_faddr,
                             workingdir=self.tempdir,
                             watchcpu=self.watchcpu
@@ -468,7 +470,7 @@ class Minimizer(object):
         dbg = self.run_debugger(self.tempfile, f)
 
         if dbg.is_crash:
-            newfuzzed_hash = self.get_signature(dbg, self.cfg.backtracelevels)
+            newfuzzed_hash = self.get_signature(dbg, self.cfg['verifier']['backtracelevels'])
         else:
             newfuzzed_hash = None
         # initialize or increment the counter for this hash
@@ -614,7 +616,7 @@ class Minimizer(object):
 
                 if self.use_watchdog:
                     # touch the watchdog file so we don't reboot during long minimizations
-                    open(self.cfg.watchdogfile, 'w').close()
+                    open(self.cfg['directories']['watchdog_file'], 'w').close()
 
                 # Fix for BFF-208
                 if self._time_exceeded():

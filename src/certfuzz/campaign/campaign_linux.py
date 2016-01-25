@@ -12,7 +12,6 @@ import time
 
 from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.campaign.errors import CampaignScriptError
-from certfuzz.config.config_linux import LinuxConfig
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
@@ -23,8 +22,6 @@ from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
 from certfuzz.fuzzers.bytemut import ByteMutFuzzer
 from certfuzz.runners.zzufrun import ZzufRunner
-import re
-import shlex
 from certfuzz.helpers.misc import fixup_path
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
@@ -78,8 +75,8 @@ class LinuxCampaign(CampaignBase):
         self.work_dir_base = fixup_path(self.config['directories']['local_dir'])
         self.program = fixup_path(self.config['target']['program'])
         self.program_basename = os.path.basename(self.program).replace('"', '')
-        self.cmd_list = shlex.split(self.config['target']['cmdline'])
-        self.cmd_list[0] = fixup_path(self.cmd_list[0])
+#         self.cmd_list = shlex.split(self.config['target']['cmdline'])
+#         self.cmd_list[0] = fixup_path(self.cmd_list[0])
 
 
         # must occur after work_dir_base, outdir_base, and campaign_id are set
@@ -92,8 +89,8 @@ class LinuxCampaign(CampaignBase):
                             seedfile,
                             seedfile)
 
-    def _get_command_list(self, seedfile):
-        return [re.sub(SEEDFILE_REPLACE_STRING, seedfile, item) for item in self.cmd_list]
+#     def _get_command_list(self, seedfile):
+#         return [re.sub(SEEDFILE_REPLACE_STRING, seedfile, item) for item in self.cmd_list]
 
     def _pre_enter(self):
         # give up if prog is a script
@@ -135,8 +132,7 @@ class LinuxCampaign(CampaignBase):
 
         # Run the program once to cache it into memory
         fullpathorig = self._full_path_original(sf.path)
-        cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=fullpathorig)
-#         cmdargs = self._get_command_list(fullpathorig)
+        cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=fullpathorig)[1]
         subp.run_with_timer(cmdargs,
                             self.config['timeouts']['progtimeout'] * 8,
                             self.config['target']['killprocname'],
@@ -148,7 +144,7 @@ class LinuxCampaign(CampaignBase):
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
         # setup our watchdog file toucher
-        wdf = fixup_path(self.config['directories']['watchdog_file'])
+        wdf = self.config['directories']['watchdog_file']
 
         TWDF.wdf = wdf
         TWDF.enable()

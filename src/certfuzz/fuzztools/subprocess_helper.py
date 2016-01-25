@@ -62,6 +62,7 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
     # remove empty args from the list [Fix for BFF-17]
     #    ['a','','b','c'] -> ['a', 'b', 'c']
     args = [arg for arg in args if arg]
+    
     for index, arg in enumerate(args):
         args[index] = string.replace(args[index], '"', '')
 

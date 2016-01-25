@@ -9,7 +9,6 @@ import logging
 import os
 import re
 import shutil
-import sys
 import tempfile
 import traceback
 import cPickle as pickle
@@ -24,24 +23,10 @@ from certfuzz.file_handlers.tmp_reaper import TmpReaper
 import gc
 from certfuzz.config.simple_loader import load_config
 from string import Template
-from certfuzz.helpers.misc import quoted
+from certfuzz.helpers.misc import quoted, import_module_by_name, fixup_path
 
 
 logger = logging.getLogger(__name__)
-
-
-def import_module_by_name(name):
-    '''
-    Imports a module at runtime given the pythonic name of the module
-    e.g., certfuzz.fuzzers.bytemut
-    :param name:
-    :param logger:
-    '''
-    if logger:
-        logger.debug('Importing module %s', name)
-    __import__(name)
-    module = sys.modules[name]
-    return module
 
 
 class CampaignBase(object):
@@ -112,11 +97,18 @@ class CampaignBase(object):
         '''
         Substitutes program name into command line template
         '''
+                # fix target program path
+        self.config['target']['program'] = fixup_path(self.config['target']['program'])
+        logger.info('Using target program: %s',self.config['target']['program'])
+        
         quoted_prg = quoted(self.config['target']['program'])
         quoted_sf = quoted('$SEEDFILE')
         t = Template(self.config['target']['cmdline_template'])
-        t_with_substitution = t.safe_substitute(PROGRAM=quoted_prg, SEEDFILE=quoted_sf)
-        self.config['target']['cmdline_template'] = t_with_substitution
+        intermediate_t = t.safe_substitute(PROGRAM=quoted_prg, SEEDFILE=quoted_sf)
+        self.config['target']['cmdline_template'] = Template(intermediate_t)
+
+        for k,v in self.config['directories'].iteritems():
+            self.config['directories'][k] = fixup_path(v)
 
     def _common_init(self):
         '''

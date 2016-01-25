@@ -36,7 +36,7 @@ class ZzufRunner(Runner):
         self.zzuf_log_path = os.path.join(self.workingdir, self._zzuf_log_basename)
         self._quiet = options.get('hideoutput', True)
 
-        self._cmd_template = Template(cmd_template)
+        self._cmd_template = cmd_template
         self._cmd = self._cmd_template.substitute(SEEDFILE=quoted(fuzzed_file))
         self._cmd_parts = shlex.split(self._cmd)
         self._cmd_parts[0] = os.path.expanduser(self._cmd_parts[0])

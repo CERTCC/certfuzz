@@ -9,10 +9,24 @@ from pprint import pformat, pprint
 import random
 import string
 import os
+import sys
 
+logger=logging.getLogger(__name__)
 
 my_os = platform.system()
 
+def import_module_by_name(name):
+    '''
+    Imports a module at runtime given the pythonic name of the module
+    e.g., certfuzz.fuzzers.bytemut
+    :param name:
+    :param logger:
+    '''
+    if logger:
+        logger.debug('Importing module %s', name)
+    __import__(name)
+    module = sys.modules[name]
+    return module
 
 def fixup_path(path):
     '''

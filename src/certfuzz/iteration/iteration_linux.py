@@ -73,7 +73,7 @@ class LinuxIteration(IterationBase3):
 
         if self.quiet_flag:
             self._runner_options['hideoutput'] = True
-        self._runner_cmd_template = self.cfg['target']['cmdline']
+        self._runner_cmd_template = self.cfg['target']['cmdline_template']
 
         IterationBase3._pre_run(self)
 
