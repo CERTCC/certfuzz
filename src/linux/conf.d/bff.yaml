@@ -27,7 +27,8 @@ campaign:
 # launches the target application from an analyzer, such as gdb or valgrind
 # Use quotes if the target application has spaces in its name
 target:
-    cmdline: ~/convert $SEEDFILE /dev/null
+    program: ~/convert
+    cmdline_template: $PROGRAM $SEEDFILE /dev/null
     killprocname: convert
 
 ################################################################
@@ -182,7 +183,7 @@ runoptions:
 #    keep_all_duplicates: False
 #    recycle_crashers: False
 fuzzer:
-    fuzzer: zzuf
+    fuzzer: bytemut
     fuzz_zip_container: False
 runner:
     runner: zzufrun

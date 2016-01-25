@@ -12,6 +12,7 @@ from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
+from certfuzz.helpers.misc import fixup_path
 
 
 logger = logging.getLogger(__name__)
@@ -48,14 +49,14 @@ class LinuxIteration(IterationBase3):
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
-        self.pipeline_options = {'use_valgrind': self.cfg.use_valgrind,
-                                 'use_pin_calltrace': self.cfg.use_pin_calltrace,
-                                 'minimize_crashers': self.cfg.minimizecrashers,
-                                 'minimize_to_string': self.cfg.minimize_to_string,
-                                 'uniq_log': self.cfg.uniq_log,
-                                 'local_dir': self.cfg.local_dir,
-                                 'minimizertimeout': self.cfg.minimizertimeout,
-                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg.config['runoptions']['minimize'],
+        self.pipeline_options = {'use_valgrind': self.cfg['verifier']['use_valgrind'],
+                                 'use_pin_calltrace': self.cfg['verifier']['use_pin_calltrace'],
+                                 'minimize_crashers': self.cfg['verifier']['minimizecrashers'],
+                                 'minimize_to_string': self.cfg['verifier']['minimize_to_string'],
+                                 'uniq_log': os.path.join(self.cfg['directories']['output_dir'], 'uniquelog.txt'),
+                                 'local_dir': fixup_path(self.cfg['directories']['local_dir']),
+                                 'minimizertimeout': self.cfg['timeouts']['minimizertimeout'],
+                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions']['minimize'],
                                  }
 
     def __enter__(self):
@@ -64,15 +65,15 @@ class LinuxIteration(IterationBase3):
         return self.go
 
     def _pre_fuzz(self):
-        self._fuzz_opts = self.cfg.config['fuzzer']
+        self._fuzz_opts = self.cfg['fuzzer']
         IterationBase3._pre_fuzz(self)
 
     def _pre_run(self):
-        self._runner_options = self.cfg.config['runner']
+        self._runner_options = self.cfg['runner']
 
         if self.quiet_flag:
             self._runner_options['hideoutput'] = True
-        self._runner_cmd_template = self.cfg.config['target']['cmdline']
+        self._runner_cmd_template = self.cfg['target']['cmdline']
 
         IterationBase3._pre_run(self)
 
@@ -99,7 +100,7 @@ class LinuxIteration(IterationBase3):
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
         # report the exit code in its output log.  The exit code is 128 + the signal number.
-        analysis_needed = zzuf_log.crash_logged(self.cfg.config['zzuf']['copymode'])
+        analysis_needed = zzuf_log.crash_logged(self.cfg['zzuf']['copymode'])
 
         if not analysis_needed:
             return
@@ -111,10 +112,10 @@ class LinuxIteration(IterationBase3):
         with BffCrash(cfg=self.cfg,
                       seedfile=self.seedfile,
                       fuzzedfile=BasicFile(self.fuzzer.output_file_path),
-                      program=self.cfg.program,
-                      debugger_timeout=self.cfg.debugger_timeout,
-                      killprocname=self.cfg.killprocname,
-                      backtrace_lines=self.cfg.backtracelevels,
+                      program=fixup_path(self.cfg['target']['program']),
+                      debugger_timeout=self.cfg['timeouts']['debugger_timeout'],
+                      killprocname=self.cfg['target']['killprocname'],
+                      backtrace_lines=self.cfg['verifier']['backtracelevels'],
                       crashers_dir=self.testcase_base_dir,
                       workdir_base=self.working_dir,
                       seednum=self.seednum,
