@@ -9,6 +9,7 @@ import tempfile
 import shutil
 import os
 import yaml
+from certfuzz.config.errors import ConfigError
 
 
 class Test(unittest.TestCase):
@@ -41,6 +42,25 @@ class Test(unittest.TestCase):
         self.assertEqual(os.path.getmtime(f), loaded.pop('config_timestamp'))
 
         self.assertEqual(thing, loaded)
+
+    def test_empty_config(self):
+        fd,fpath=tempfile.mkstemp(suffix='.yaml', prefix='empty_', dir=self.tempdir)
+        os.close(fd)
+        
+        # make sure it exists and is empty
+        self.assertTrue(os.path.exists(fpath))
+        self.assertEqual(0,os.path.getsize(fpath))
+        
+        self.assertRaises(ConfigError,certfuzz.config.simple_loader.load_config,fpath)
+    
+    def test_nonexistent_config(self):
+        fd,fpath=tempfile.mkstemp(suffix='.yaml', prefix='nonexistent_', dir=self.tempdir)
+        os.close(fd)
+        os.unlink(fpath)
+        self.assertFalse(os.path.exists(fpath))
+        
+        self.assertRaises(IOError,certfuzz.config.simple_loader.load_config,fpath)
+        
 
 
 if __name__ == "__main__":
