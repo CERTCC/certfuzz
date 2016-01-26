@@ -6,26 +6,9 @@ Created on Aug 8, 2011
 
 import unittest
 from certfuzz.analyzers.analyzer_base import Analyzer
+from test_certfuzz.mocks import MockCfg, MockCrash
 
-class MockObj(object):
-    def __init__(self, **kwargs):
-        for (kw, arg) in kwargs:
-            self.__setattr__(kw, arg)
 
-class MockCfg(MockObj):
-
-    def get_command_list(self, *args):
-        pass
-
-class MockCrash(MockObj):
-    def __init__(self):
-        self.fuzzedfile = MockFile()
-        self.killprocname = 'killprocname'
-
-class MockFile(MockObj):
-    def __init__(self):
-        self.dirname = 'dirname'
-        self.path = 'path'
 
 class Test(unittest.TestCase):
 

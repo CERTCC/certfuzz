@@ -12,6 +12,8 @@ from certfuzz.fuzztools import filetools
 from certfuzz.campaign.campaign_base import CampaignBase
 import tempfile
 from certfuzz.campaign.errors import CampaignError
+from test_certfuzz.mocks import MockCfg
+import yaml
 
 
 class UnimplementedCampaign(CampaignBase):
@@ -52,17 +54,16 @@ class ImplementedCampaign(CampaignBase):
     def _set_runner(self):
         pass
 
-    def _read_config_file(self):
-        pass
-
 class Test(unittest.TestCase):
     def setUp(self):
         self.tmpdir = mkdtemp()
-        _fd, cfgfile = tempfile.mkstemp(suffix=".cfg", dir=self.tmpdir, text=True)
-        try:
-            self.campaign = ImplementedCampaign(cfgfile)
-        except TypeError as e:
-            self.fail('ImplementedCampaign does not match requirements: {}'.format(e))
+        fd, cfgfile = tempfile.mkstemp(prefix='config_', suffix=".yaml", dir=self.tmpdir)
+        os.close(fd)
+        
+        cfg = MockCfg(templated=False)
+        with open(cfgfile,'wb') as f:
+            yaml.dump(cfg,f)
+        self.campaign = ImplementedCampaign(cfgfile)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)

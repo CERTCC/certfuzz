@@ -97,7 +97,7 @@ class CampaignBase(object):
         '''
         Substitutes program name into command line template
         '''
-                # fix target program path
+        # fix target program path
         self.config['target']['program'] = fixup_path(self.config['target']['program'])
         logger.info('Using target program: %s',self.config['target']['program'])
         

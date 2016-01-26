@@ -24,6 +24,21 @@ class MockCrasher(Mock):
     def set_debugger_template(self, dummy):
         pass
 
+class MockObj(object):
+    def __init__(self, **kwargs):
+        for (kw, arg) in kwargs:
+            self.__setattr__(kw, arg)
+
+class MockCrash(MockObj):
+    def __init__(self):
+        self.fuzzedfile = MockFile()
+        self.killprocname = 'killprocname'
+
+class MockFile(MockObj):
+    def __init__(self):
+        self.dirname = 'dirname'
+        self.path = 'path'
+
 class MockRange(Mock):
     def __init__(self):
         self.min = 0.01
@@ -81,12 +96,14 @@ class MockDebugger(Mock):
         return MockDbgOut()
 
 class MockCfg(dict):
-    def __init__(self):
-        self['timeouts']={'debugger_timeout': 1}
-        self['target']={'cmdline_template': string.Template('a b c d'),
-                        'killprocname': 'a'}
+    def __init__(self,templated=True):
+        self['timeouts']={'debugger_timeout': 1,
+                          'valgrindtimeout': 1}
+        self['target']={'cmdline_template': 'a b c d',
+                        'killprocname': 'a',
+                        'program': 'foo'}
         self['verifier']={'exclude_unmapped_frames': False,
                           'backtracelevels': 5}
-
-    def get_command_args_list(self, dummy):
-        return tuple('abcd')
+        self['directories'] ={}
+        if templated:
+            self['target']['cmdline_template'] = string.Template(self['target']['cmdline_template'])
