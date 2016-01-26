@@ -10,18 +10,20 @@ from certfuzz.minimizer.minimizer_base import Minimizer
 import shutil
 from certfuzz.file_handlers.basicfile import BasicFile
 import unittest
-import certfuzz.minimizer.minimizer_base
+import string
 
 class Mock(object):
     def __init__(self, *args, **kwargs):
         pass
 
-class MockCfg(Mock):
-    program = 'a'
-    debugger_timeout = 1
-    killprocname = 'a'
-    exclude_unmapped_frames = False
-    backtracelevels = 5
+
+class MockCfg(dict):
+    def __init__(self):
+        self['timeouts']={'debugger_timeout': 1}
+        self['target']={'cmdline_template': string.Template('a b c d'),
+                        'killprocname': 'a'}
+        self['verifier']={'exclude_unmapped_frames': False,
+                          'backtracelevels': 5}
 
     def get_command_args_list(self, dummy):
         return tuple('abcd')
@@ -59,7 +61,7 @@ class Test(unittest.TestCase):
         self.cfg = MockCfg()
         self.crash = MockCrasher()
 
-        certfuzz.minimizer.minimizer_base.Minimizer._debugger_cls = MockDebugger
+        Minimizer._debugger_cls = MockDebugger
 
         self.tempdir = tempfile.mkdtemp(prefix='minimizer_test_')
         self.crash_dst_dir = tempfile.mkdtemp(prefix='crash_', dir=self.tempdir)
