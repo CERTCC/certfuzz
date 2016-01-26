@@ -6,12 +6,12 @@ Created on Jul 16, 2014
 import logging
 import os
 
-from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
 from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.fuzztools import filetools
 from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.reporters.copy_files import CopyFilesReporter
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
 logger = logging.getLogger(__name__)
