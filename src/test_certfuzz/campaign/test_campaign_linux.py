@@ -8,8 +8,8 @@ from certfuzz.campaign.campaign_linux import LinuxCampaign, check_program_file_t
 import tempfile
 import os
 import shutil
-from ConfigParser import NoSectionError
 from certfuzz.config.errors import ConfigError
+import yaml
 
 
 class Test(unittest.TestCase):
@@ -18,13 +18,17 @@ class Test(unittest.TestCase):
         self.tmpdir = tempfile.mkdtemp()
         fd, cfgfile = tempfile.mkstemp(suffix=".yaml", dir=self.tmpdir, text=True)
         os.close(fd)
-        import yaml
+
         data = {'campaign': {'id': 'foo'},
-                'directories': {},
+                'directories': {'seedfile_origin_dir': tempfile.mkdtemp(prefix='seedfiles_', dir=self.tmpdir),
+                                'output_dir': tempfile.mkdtemp(prefix='output_', dir=self.tmpdir),
+                                'local_dir': tempfile.mkdtemp(prefix='local_', dir=self.tmpdir)},
                 'timeouts': {},
-                'zzuf': {},
+                'zzuf': {'start_seed': 0,
+                         'seed_interval': 10},
                 'verifier': {},
-                'target': {'cmdline': 'bar baz quux'},
+                'target': {'program': 'foo',
+                           'cmdline_template': 'foo bar baz quux'},
                 }
         with open(cfgfile, 'wb') as stream:
             yaml.dump(data, stream)
@@ -35,8 +39,15 @@ class Test(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
 
     def test_init_without_config(self):
+        # test empty config file
         _fd, cfgfile = tempfile.mkstemp(suffix=".yaml", dir=self.tmpdir, text=True)
         self.assertRaises(ConfigError, LinuxCampaign, cfgfile)
+
+        # test non-existent config file
+        os.unlink(cfgfile)
+        self.assertFalse(os.path.exists(cfgfile))
+        self.assertRaises(IOError,LinuxCampaign,cfgfile)
+
 
     def test_check_program_file_type(self):
         fd, fname = tempfile.mkstemp(dir=self.tmpdir, text=True)
