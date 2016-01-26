@@ -10,7 +10,6 @@ import sys
 from threading import Timer
 
 from certfuzz.campaign.campaign_base import CampaignBase
-from certfuzz.config.config_windows import WindowsConfig
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 from certfuzz.iteration.iteration_windows import WindowsIteration
