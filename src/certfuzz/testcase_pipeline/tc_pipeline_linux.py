@@ -97,7 +97,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             logger.debug('Recycling crash as seedfile')
             iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
             crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-            crasherseed_path = os.path.join(self.cfg['directories']['seedfile_origin_dir'], crasherseedname)
+            crasherseed_path = os.path.join(self.cfg['directories']['seedfile_dir'], crasherseedname)
             filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
             self.sf_set.add_file(crasherseed_path)
 
