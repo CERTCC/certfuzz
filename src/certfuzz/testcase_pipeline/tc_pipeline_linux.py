@@ -93,7 +93,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             self._minimize_to_string(testcase)
 
     def _post_minimize(self, testcase):
-        if self.cfg['verifier']['recycle_crashers']:
+        if self.cfg['runoptions']['recycle_crashers']:
             logger.debug('Recycling crash as seedfile')
             iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
             crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
