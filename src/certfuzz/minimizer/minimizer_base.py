@@ -349,7 +349,7 @@ class Minimizer(object):
                 if dbg.is_crash:
                     times.append(delta)
 
-                current_sig = self.get_signature(dbg, self.cfg['verifier']['backtracelevels'])
+                current_sig = self.get_signature(dbg, self.cfg['debugger']['backtracelevels'])
 
                 # ditch the temp file
                 if os.path.exists(f):
@@ -470,7 +470,7 @@ class Minimizer(object):
         dbg = self.run_debugger(self.tempfile, f)
 
         if dbg.is_crash:
-            newfuzzed_hash = self.get_signature(dbg, self.cfg['verifier']['backtracelevels'])
+            newfuzzed_hash = self.get_signature(dbg, self.cfg['debugger']['backtracelevels'])
         else:
             newfuzzed_hash = None
         # initialize or increment the counter for this hash

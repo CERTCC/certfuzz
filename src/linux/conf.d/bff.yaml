@@ -64,11 +64,6 @@ directories:
 # VERIFIER PARAMETERS
 ################################################################
 #
-# number of backtrace levels to hash for uniqueness.
-# Increase this number for more crash uniqueness granularity.
-# Decrease this number if you think that you are getting too many
-# duplicate crashes.
-
 # Include backtrace frames that aren't part of a loaded library?
 # Set this value to False if you wish to consider unmapped stack
 # frames in the crash hashes. This can be useful for target application
@@ -103,7 +98,6 @@ directories:
 # rather than finding new underlying vulnerabilities.
 
 verifier:
-    backtracelevels: 5
     exclude_unmapped_frames: True
     savefailedasserts: False
     use_valgrind: True
@@ -145,7 +139,16 @@ fuzzer:
     fuzz_zip_container: False
 runner:
     runner: zzufrun
+# maximum program execution time (seconds) that BFF will allow:
     runtimeout: 5
 debugger:
     debugger: gdb
+# maximum time (seconds) to let the program run to capture debugger and
+# CERT Triage Tools exploitable output.
     runtimeout: 60
+# number of backtrace levels to hash for uniqueness.
+# Increase this number for more crash uniqueness granularity.
+# Decrease this number if you think that you are getting too many
+# duplicate crashes.
+    backtracelevels: 5
+    
