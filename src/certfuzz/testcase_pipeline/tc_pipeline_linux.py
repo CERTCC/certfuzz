@@ -78,8 +78,9 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                     logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
                     self.success = True
                 else:
-                    logger.debug('%s was found, not unique', tc.signature)
-
+                    logger.info('Testcase signature %s was already seen, skipping further analysis', tc.signature)
+            else:
+                logger.debug('not a crash, continuing')
     def _post_verify(self, testcase):
         testcase.get_logger()
 
