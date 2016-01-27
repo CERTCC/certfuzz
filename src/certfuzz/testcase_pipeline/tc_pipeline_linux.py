@@ -68,7 +68,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                 #
                 crash_dir_found = filetools.find_or_create_dir(tc.result_dir)
 
-                keep_all = self.cfg.config['verifier'].get('keep_duplicates', False)
+                keep_all = self.cfg['verifier'].get('keep_duplicates', False)
 
                 tc.should_proceed_with_analysis = keep_all or (is_new_to_campaign and not crash_dir_found)
 
@@ -78,8 +78,9 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                     logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
                     self.success = True
                 else:
-                    logger.debug('%s was found, not unique', tc.signature)
-
+                    logger.info('Testcase signature %s was already seen, skipping further analysis', tc.signature)
+            else:
+                logger.debug('not a crash, continuing')
     def _post_verify(self, testcase):
         testcase.get_logger()
 
@@ -92,11 +93,11 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             self._minimize_to_string(testcase)
 
     def _post_minimize(self, testcase):
-        if self.cfg.config['verifier']['recycle_crashers']:
+        if self.cfg['verifier']['recycle_crashers']:
             logger.debug('Recycling crash as seedfile')
             iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
             crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-            crasherseed_path = os.path.join(self.cfg.config['directories']['seedfile_origin_dir'], crasherseedname)
+            crasherseed_path = os.path.join(self.cfg['directories']['seedfile_origin_dir'], crasherseedname)
             filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
             self.sf_set.add_file(crasherseed_path)
 

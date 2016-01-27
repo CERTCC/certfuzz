@@ -7,7 +7,7 @@ import logging
 import random
 
 from certfuzz.debuggers import allowed_exploitability_values, register
-from certfuzz.helpers import random_str
+from certfuzz.helpers.misc import random_str
 
 from . import Debugger
 

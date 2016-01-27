@@ -11,6 +11,7 @@ import tempfile
 import os
 import stat
 from certfuzz.runners.errors import RunnerNotFoundError
+import string
 
 
 class Test(unittest.TestCase):
@@ -34,27 +35,27 @@ class Test(unittest.TestCase):
 
         self._basename_saved = certfuzz.runners.zzufrun._zzuf_basename
 
+        self.cmd_template = string.Template('foo bar')
+
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
         certfuzz.runners.zzufrun._zzuf_basename = self._basename_saved
 
     def test_quiet_flag(self):
-        cmd_template = 'foo bar'
-        zr = ZzufRunner(options={'hideoutput': True}, cmd_template=cmd_template,
+        zr = ZzufRunner(options={'hideoutput': True}, cmd_template=self.cmd_template,
                         fuzzed_file=None, workingdir_base=self.tmpdir)
         self.assertTrue(zr._quiet)
         with zr:
             self.assertTrue('--quiet' in zr._zzuf_args)
 
-        zr = ZzufRunner(options={'hideoutput': False}, cmd_template=cmd_template,
+        zr = ZzufRunner(options={'hideoutput': False}, cmd_template=self.cmd_template,
                         fuzzed_file=None, workingdir_base=self.tmpdir)
         self.assertFalse(zr._quiet)
         with zr:
             self.assertFalse('--quiet' in zr._zzuf_args)
 
     def test_find_zzuf(self):
-        cmd_template = 'foo bar'
         (fd, fname) = tempfile.mkstemp(prefix='zzufrun_test_', dir=self.tmpdir)
         os.close(fd)
         os.remove(fname)
@@ -69,7 +70,6 @@ class Test(unittest.TestCase):
 
     def test_run(self):
         options = {}
-        cmd_template = 'foo bar'
 
         touch = '/usr/bin/touch'
         if not os.path.exists(touch):
@@ -77,7 +77,7 @@ class Test(unittest.TestCase):
             return
 
         for _ in xrange(100):
-            zr = ZzufRunner(options, cmd_template, self.ff, self.tmpdir)
+            zr = ZzufRunner(options, self.cmd_template, self.ff, self.tmpdir)
             fd, fname = tempfile.mkstemp(prefix='zzufrun_test_', dir=self.tmpdir)
             os.close(fd)
             os.remove(fname)

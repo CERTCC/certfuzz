@@ -9,7 +9,6 @@ import logging
 import os
 import re
 import shutil
-import sys
 import tempfile
 import traceback
 import cPickle as pickle
@@ -22,23 +21,12 @@ from certfuzz.runners.errors import RunnerArchitectureError, \
 from certfuzz.version import __version__
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 import gc
+from certfuzz.config.simple_loader import load_config
+from string import Template
+from certfuzz.helpers.misc import quoted, import_module_by_name, fixup_path
 
 
 logger = logging.getLogger(__name__)
-
-
-def import_module_by_name(name):
-    '''
-    Imports a module at runtime given the pythonic name of the module
-    e.g., certfuzz.fuzzers.bytemut
-    :param name:
-    :param logger:
-    '''
-    if logger:
-        logger.debug('Importing module %s', name)
-    __import__(name)
-    module = sys.modules[name]
-    return module
 
 
 class CampaignBase(object):
@@ -99,10 +87,28 @@ class CampaignBase(object):
             self.outdir_base = os.path.abspath(result_dir)
 
         self._read_config_file()
+        self._fixup_config()
 
-    @abc.abstractmethod
     def _read_config_file(self):
         logger.info('Reading config from %s', self.config_file)
+        self.config = load_config(self.config_file)
+
+    def _fixup_config(self):
+        '''
+        Substitutes program name into command line template
+        '''
+        # fix target program path
+        self.config['target']['program'] = fixup_path(self.config['target']['program'])
+        logger.info('Using target program: %s',self.config['target']['program'])
+        
+        quoted_prg = quoted(self.config['target']['program'])
+        quoted_sf = quoted('$SEEDFILE')
+        t = Template(self.config['target']['cmdline_template'])
+        intermediate_t = t.safe_substitute(PROGRAM=quoted_prg, SEEDFILE=quoted_sf)
+        self.config['target']['cmdline_template'] = Template(intermediate_t)
+
+        for k,v in self.config['directories'].iteritems():
+            self.config['directories'][k] = fixup_path(v)
 
     def _common_init(self):
         '''
@@ -319,7 +325,7 @@ class CampaignBase(object):
 
         if campaign:
             try:
-                if self.configdate != campaign.__dict__['configdate']:
+                if self.config['config_timestamp'] != campaign.__dict__['config_timestamp']:
                     logger.warning('Config file modified. Discarding cached campaign')
                 else:
                     self.__dict__.update(campaign.__dict__)

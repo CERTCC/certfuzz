@@ -7,6 +7,7 @@ Created on Apr 8, 2011
 @organization: cert.org
 '''
 import unittest
+from test_certfuzz.mocks import MockCfg
 
 class Mock(object):
     pass
@@ -17,9 +18,7 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(f))
 
     def setUp(self):
-        cfg = Mock()
-        cfg.valgrindtimeout = 1
-        cfg.get_command_list = lambda x: ['x', 'y', 'z']
+        cfg = MockCfg()
 
         crash = Mock()
         crash.fuzzedfile = Mock()
@@ -32,7 +31,7 @@ class Test(unittest.TestCase):
         pass
 
     def test_get_valgrind_cmdline(self):
-        expected = ["valgrind", "--log-file=foo.valgrind", "x", "y", "z"]
+        expected = ["valgrind", "--log-file=foo.valgrind", "a", "b", "c", "d"]
 
         self.assertEqual(self.vg._get_cmdline(), expected)
 

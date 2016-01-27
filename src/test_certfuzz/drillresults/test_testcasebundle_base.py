@@ -119,7 +119,6 @@ class Test(unittest.TestCase):
             else:
                 trunc_faddr = faddr[-len(result):]
                 self.assertTrue(trunc_faddr in result)
-            print faddr, result
 
         # 64 bit padding
         self.tcb._64bit_target_app = True
@@ -129,7 +128,6 @@ class Test(unittest.TestCase):
             result = self.tcb.format_addr(faddr_hex)
             self.assertEqual(16, len(result))
             self.assertTrue(faddr in result)
-            print faddr, result
 
     def test_pc_in_mapped_address(self):
         self.assertEqual('', self.tcb.pc_in_mapped_address(None))
@@ -211,7 +209,6 @@ class Test(unittest.TestCase):
         xc['pcmodule'] = 'something'
         xc['EIF'] = True
         scores = self.tcb._score_less_interesting()
-        print scores
         self.assertTrue(50 in scores)
 
         xc['efa'] = '0x0000'

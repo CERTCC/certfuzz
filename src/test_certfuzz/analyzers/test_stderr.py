@@ -9,6 +9,7 @@ Created on Apr 8, 2011
 '''
 import unittest
 import sys
+import string
 
 class Mock(object):
     pass
@@ -24,12 +25,15 @@ class Test(unittest.TestCase):
         self.delete_file(f)
         self.file = '%s.stderr' % f
 
-        cfg = Mock()
-        cfg.progtimeout = 1
-        if sys.platform == 'win32':
-            cfg.get_command_list = lambda x: ['c:\\cygwin\\bin\\cat.exe', '-a', 'foo']
+        cfg = {'timeouts': {'progtimeout':1},
+               'target': {'cmdline_template': string.Template('PROGRAM $SEEDFILE foo')}
+               }
+        
+        if sys.platform=='win32':
+            cfg['target']['cmdline_tempate']=string.Template('c:\\cygwin\\bin\\cat.exe -a foo')
         else:
-            cfg.get_command_list = lambda x: ['cat', '-a', 'foo']
+            cfg['target']['cmdline_template'] = string.Template('cat -a foo')
+        
 
         crash = Mock()
         crash.fuzzedfile = Mock()

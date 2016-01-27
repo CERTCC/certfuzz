@@ -21,7 +21,7 @@ get_file = lambda x: '%s.%s' % (x, OUTFILE_EXT)
 class Pin_calltrace(Analyzer):
     def __init__(self, cfg, crash):
         outfile = get_file(crash.fuzzedfile.path)
-        timeout = cfg.valgrindtimeout * 10
+        timeout = cfg['timeouts']['valgrindtimeout'] * 10
 
         Analyzer.__init__(self, cfg, crash, outfile, timeout)
         self.empty_output_ok = True

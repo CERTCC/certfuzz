@@ -8,47 +8,8 @@ import tempfile
 from certfuzz.fuzztools import hamming
 from certfuzz.minimizer.minimizer_base import Minimizer
 import shutil
-from certfuzz.file_handlers.basicfile import BasicFile
 import unittest
-import certfuzz.minimizer.minimizer_base
-
-class Mock(object):
-    def __init__(self, *args, **kwargs):
-        pass
-
-class MockCfg(Mock):
-    program = 'a'
-    debugger_timeout = 1
-    killprocname = 'a'
-    exclude_unmapped_frames = False
-    backtracelevels = 5
-
-    def get_command_args_list(self, dummy):
-        return tuple('abcd')
-
-class MockCrasher(Mock):
-    def __init__(self):
-        fd, f = tempfile.mkstemp(suffix='.ext', prefix='fileroot')
-        os.close(fd)
-        self.fuzzedfile = BasicFile(f)
-        self.debugger_template = 'foo'
-
-    def set_debugger_template(self, dummy):
-        pass
-
-class MockDbgOut(Mock):
-    is_crash = False
-    total_stack_corruption = False
-
-    def get_crash_signature(self, *dummyargs):
-        return 'AAAAA'
-
-class MockDebugger(Mock):
-    def get(self):
-        return MockDebugger
-
-    def go(self):
-        return MockDbgOut()
+from test_certfuzz.mocks import MockCfg, MockDebugger, MockCrasher
 
 class Test(unittest.TestCase):
     def delete_file(self, f):
@@ -59,7 +20,7 @@ class Test(unittest.TestCase):
         self.cfg = MockCfg()
         self.crash = MockCrasher()
 
-        certfuzz.minimizer.minimizer_base.Minimizer._debugger_cls = MockDebugger
+        Minimizer._debugger_cls = MockDebugger
 
         self.tempdir = tempfile.mkdtemp(prefix='minimizer_test_')
         self.crash_dst_dir = tempfile.mkdtemp(prefix='crash_', dir=self.tempdir)

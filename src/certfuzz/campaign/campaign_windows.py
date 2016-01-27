@@ -10,7 +10,6 @@ import sys
 from threading import Timer
 
 from certfuzz.campaign.campaign_base import CampaignBase
-from certfuzz.config.config_windows import WindowsConfig
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 from certfuzz.iteration.iteration_windows import WindowsIteration
@@ -24,7 +23,6 @@ class WindowsCampaign(CampaignBase):
     '''
     Extends CampaignBase to add windows-specific features like ButtonClicker
     '''
-    _config_cls = WindowsConfig
 
     def __init__(self, config_file, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
@@ -63,15 +61,6 @@ class WindowsCampaign(CampaignBase):
 
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
-
-    def _read_config_file(self):
-        CampaignBase._read_config_file(self)
-
-        # read configs
-        with self._config_cls(self.config_file) as cfgobj:
-            self.config = cfgobj.config
-            self.configdate = cfgobj.configdate
-
 
     def __getstate__(self):
         state = self.__dict__.copy()

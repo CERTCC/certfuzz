@@ -9,11 +9,8 @@ from certfuzz.runners.errors import RunnerError
 import os
 import subprocess
 import logging
-from collections import deque
 from certfuzz.runners.errors import RunnerNotFoundError
-import cmd
 import shlex
-from string import Template
 from certfuzz.helpers.misc import quoted
 
 logger = logging.getLogger(__name__)
@@ -36,7 +33,7 @@ class ZzufRunner(Runner):
         self.zzuf_log_path = os.path.join(self.workingdir, self._zzuf_log_basename)
         self._quiet = options.get('hideoutput', True)
 
-        self._cmd_template = Template(cmd_template)
+        self._cmd_template = cmd_template
         self._cmd = self._cmd_template.substitute(SEEDFILE=quoted(fuzzed_file))
         self._cmd_parts = shlex.split(self._cmd)
         self._cmd_parts[0] = os.path.expanduser(self._cmd_parts[0])

@@ -12,7 +12,6 @@ import time
 
 from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.campaign.errors import CampaignScriptError
-from certfuzz.config.config_linux import LinuxConfig
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
@@ -23,9 +22,14 @@ from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
 from certfuzz.fuzzers.bytemut import ByteMutFuzzer
 from certfuzz.runners.zzufrun import ZzufRunner
+from certfuzz.helpers.misc import fixup_path
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
 logger = logging.getLogger(__name__)
+
+
+SEEDFILE_REPLACE_STRING = '\$SEEDFILE'
 
 
 def check_program_file_type(string, program):
@@ -51,39 +55,42 @@ def check_program_file_type(string, program):
     else:
         return False
 
-
 class LinuxCampaign(CampaignBase):
     '''
     Extends CampaignBase to add linux-specific features.
     '''
-    _config_cls = LinuxConfig
-
     def __init__(self, config_file=None, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
         # pull stuff out of configs
-        self.campaign_id = self.config.config['campaign']['id']
-        self.current_seed = self.config.start_seed
-        self.seed_interval = self.config.seed_interval
-        self.seed_dir_in = self.config.seedfile_origin_dir
+        self.campaign_id = self.config['campaign']['id']
+        self.current_seed = self.config['zzuf']['start_seed']
+        self.seed_interval = self.config['zzuf']['seed_interval']
+        self.seed_dir_in = fixup_path(self.config['directories']['seedfile_origin_dir'])
 
         if self.outdir_base is None:
             # it wasn't spec'ed on the command line so use the config
-            self.outdir_base = os.path.abspath(self.config.output_dir)
+            self.outdir_base = fixup_path(self.config['directories']['output_dir'])
 
-        self.work_dir_base = self.config.local_dir
-        self.program = self.config.program
+        self.work_dir_base = fixup_path(self.config['directories']['local_dir'])
+        self.program = fixup_path(self.config['target']['program'])
+        self.program_basename = os.path.basename(self.program).replace('"', '')
+#         self.cmd_list = shlex.split(self.config['target']['cmdline'])
+#         self.cmd_list[0] = fixup_path(self.cmd_list[0])
+
 
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
 
+    def _full_path_original(self, seedfile):
+        # yes, two seedfile mentions are intended - adh
+        return os.path.join(self.work_dir_base,
+                            self.program_basename,
+                            seedfile,
+                            seedfile)
 
-    def _read_config_file(self):
-        CampaignBase._read_config_file(self)
-
-        with self._config_cls(self.config_file) as cfgobj:
-            self.config = cfgobj
-            self.configdate = cfgobj.configdate
+#     def _get_command_list(self, seedfile):
+#         return [re.sub(SEEDFILE_REPLACE_STRING, seedfile, item) for item in self.cmd_list]
 
     def _pre_enter(self):
         # give up if prog is a script
@@ -94,7 +101,7 @@ class LinuxCampaign(CampaignBase):
         self._check_for_script()
 
     def _post_enter(self):
-        if self.config.watchdogtimeout:
+        if self.config['timeouts']['watchdogtimeout']:
             self._setup_watchdog()
         check_ppid()
         self._cache_app()
@@ -114,7 +121,9 @@ class LinuxCampaign(CampaignBase):
 
     def _start_process_killer(self):
         logger.debug('start process killer')
-        with ProcessKiller(self.config.killprocname, self.config.killproctimeout) as pk:
+        with ProcessKiller(self.config['target']['killprocname'],
+                           self.config['timeouts']['killproctimeout']
+                           ) as pk:
             self.pk_pid = pk.go()
 
     def _cache_app(self):
@@ -122,9 +131,12 @@ class LinuxCampaign(CampaignBase):
         sf = self.seedfile_set.next_item()
 
         # Run the program once to cache it into memory
-        fullpathorig = self.config.full_path_original(sf.path)
-        cmdargs = self.config.get_command_list(fullpathorig)
-        subp.run_with_timer(cmdargs, self.config.progtimeout * 8, self.config.killprocname, use_shell=False)
+        fullpathorig = self._full_path_original(sf.path)
+        cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=fullpathorig)[1]
+        subp.run_with_timer(cmdargs,
+                            self.config['timeouts']['progtimeout'] * 8,
+                            self.config['target']['killprocname'],
+                            use_shell=False)
 
         # Give target time to die
         time.sleep(1)
@@ -132,12 +144,14 @@ class LinuxCampaign(CampaignBase):
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
         # setup our watchdog file toucher
-        TWDF.wdf = self.config.watchdogfile
+        wdf = self.config['directories']['watchdog_file']
+
+        TWDF.wdf = wdf
         TWDF.enable()
         touch_watchdog_file()
 
         # set up the watchdog timeout within the VM and restart the daemon
-        with WatchDog(self.config.watchdogfile, self.config.watchdogtimeout) as watchdog:
+        with WatchDog(wdf, self.config['timeouts']['watchdogtimeout']) as watchdog:
             watchdog()
 
     def _check_for_script(self):

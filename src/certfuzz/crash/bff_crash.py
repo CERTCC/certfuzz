@@ -8,6 +8,7 @@ import os
 
 from certfuzz.crash.crash_base import Testcase, CrashError
 from certfuzz.fuzztools import hostinfo, filetools
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 try:
     from certfuzz.analyzers import pin_calltrace
@@ -47,7 +48,7 @@ class BffCrash(Testcase):
         self.crash_base_dir = crashers_dir
         self.seednum = seednum
         self.range = range
-        self.exclude_unmapped_frames = cfg.exclude_unmapped_frames
+        self.exclude_unmapped_frames = cfg['verifier']['exclude_unmapped_frames']
         self.set_debugger_template('bt_only')
         self.keep_uniq_faddr = keep_faddr
 
@@ -66,7 +67,7 @@ class BffCrash(Testcase):
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_linux():
             dbg_template_name = '%s_%s_template.txt' % (self._debugger_cls._key, option)
-            self.debugger_template = os.path.join(self.cfg.debugger_template_dir, dbg_template_name)
+            self.debugger_template = os.path.join(self.cfg['directories']['debugger_template_dir'], dbg_template_name)
             logger.debug('Debugger template set to %s', self.debugger_template)
             if not os.path.exists(self.debugger_template):
                 raise CrashError('Debugger template does not exist at %s' % self.debugger_template)
@@ -74,8 +75,9 @@ class BffCrash(Testcase):
     def update_crash_details(self):
         Testcase.update_crash_details(self)
 
-        self.cmdargs = self.cfg.get_command_args_list(self.fuzzedfile.path)
-#        self.debugger_file = debuggers.get_debug_file(self.fuzzedfile.path)
+        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'],
+                                             infile=self.fuzzedfile.path,
+                                             posix=True)[1]
 
         self.is_crash = self.confirm_crash()
 
@@ -119,7 +121,7 @@ class BffCrash(Testcase):
             raise CrashError('Debug object not found')
 
         logger.debug('is_crash: %s is_assert_fail: %s', self.dbg.is_crash, self.dbg.is_assert_fail)
-        if self.cfg.savefailedasserts:
+        if self.cfg['verifier']['savefailedasserts']:
             return self.dbg.is_crash
         else:
             # only keep real crashes (not failed assertions)

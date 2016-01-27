@@ -7,7 +7,6 @@ import unittest
 import tempfile
 import os
 import shutil
-from pprint import pprint
 
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.file_handlers.directory import Directory
@@ -202,16 +201,8 @@ class Test(unittest.TestCase):
         for k, v in d1.iteritems():
 #            print k
             self.assertTrue(k in d2)
-            if not v == d2[k]:
-                pprint(v)
-                pprint(d2[k])
-
             self.assertEqual(v, d2[k])
 
-#    def test_next_item(self):
-#        self.assertEqual(0, len(self.sfs.things))
-#        self.assertRaises(EmptySetError, self.sfs.next_key)
-#        self.assertRaises(EmptySetError, self.sfs.next_item)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

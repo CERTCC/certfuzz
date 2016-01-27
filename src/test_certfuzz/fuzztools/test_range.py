@@ -5,8 +5,6 @@ Created on Apr 8, 2011
 '''
 import unittest
 from certfuzz.fuzztools.range import Range
-import pprint
-import json
 
 class Test(unittest.TestCase):
     def setUp(self):
