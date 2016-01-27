@@ -7,12 +7,12 @@ import hashlib
 import logging
 import os
 
-from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.crash.crash_base import Testcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
 from certfuzz.helpers.misc import random_str
 from certfuzz.debuggers.msec import MsecDebugger
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
 logger = logging.getLogger(__name__)

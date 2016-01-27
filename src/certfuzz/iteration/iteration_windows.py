@@ -6,9 +6,7 @@ Created on Mar 2, 2012
 import glob
 import logging
 import os
-import string
 
-from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.crash.crash_windows import WindowsCrash
 from certfuzz.debuggers.output_parsers.errors import DebuggerFileError
 from certfuzz.file_handlers.basicfile import BasicFile
@@ -21,6 +19,7 @@ from certfuzz.fuzztools.filetools import delete_files_or_dirs
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.runners.errors import RunnerRegistryError
 from certfuzz.testcase_pipeline.tc_pipeline_windows import WindowsTestCasePipeline
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
 # from certfuzz.iteration.iteration_base import IterationBase2
