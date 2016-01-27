@@ -55,7 +55,7 @@ class LinuxIteration(IterationBase3):
                                  'minimize_to_string': self.cfg['verifier']['minimize_to_string'],
                                  'uniq_log': os.path.join(self.cfg['directories']['output_dir'], 'uniquelog.txt'),
                                  'local_dir': fixup_path(self.cfg['directories']['local_dir']),
-                                 'minimizertimeout': self.cfg['timeouts']['minimizertimeout'],
+                                 'minimizertimeout': self.cfg['runoptions']['minimizer_timeout'],
                                  'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions']['minimize'],
                                  }
 
