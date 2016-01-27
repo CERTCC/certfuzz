@@ -59,28 +59,6 @@ directories:
     local_dir: ~/fuzzing
     watchdog_file: /tmp/bff_watchdog
 
-################################################################
-# ZZUF FUZZER PARAMETERS
-################################################################
-# Use zzuf's "copy" mode, which creates a temporary fuzzed file
-# Default is 1, where zzuf will determine the file to fuzz, mangle it as
-# a randomly-named file in $TMPDIR and then open that with the target app.
-# This mode is compatible with more applications, but it can be slower in
-# some cases, due to the extra file i/o required.
-# If set to 0, zzuf will use LD_PRELOAD to mangle input in memory, rather
-# than creating a temporary file. Note that this mode can interfere with
-# some target applications.
-# OSX Cocoa applications require copymode=1
-
-# The zzuf seed number to start with
-
-# How many iterations you want zzuf to try per seedfile/range selection
-# If you have a large number of seed files and/or the target application
-# is slow, you may wish to make this value smaller to get better coverage
-# in a reasonable amount of time.
-
-zzuf:
-    copymode: 1
 
 ################################################################
 # VERIFIER PARAMETERS
