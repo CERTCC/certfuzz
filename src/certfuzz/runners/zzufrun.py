@@ -9,11 +9,8 @@ from certfuzz.runners.errors import RunnerError
 import os
 import subprocess
 import logging
-from collections import deque
 from certfuzz.runners.errors import RunnerNotFoundError
-import cmd
 import shlex
-from string import Template
 from certfuzz.helpers.misc import quoted
 
 logger = logging.getLogger(__name__)
