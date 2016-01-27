@@ -113,7 +113,7 @@ class LinuxIteration(IterationBase3):
                       seedfile=self.seedfile,
                       fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                       program=fixup_path(self.cfg['target']['program']),
-                      debugger_timeout=self.cfg['timeouts']['debugger_timeout'],
+                      debugger_timeout=self.cfg['debugger']['runtimeout'],
                       killprocname=self.cfg['target']['killprocname'],
                       backtrace_lines=self.cfg['verifier']['backtracelevels'],
                       crashers_dir=self.testcase_base_dir,

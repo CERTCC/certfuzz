@@ -171,7 +171,7 @@ class Minimizer(object):
         filetools.copy_file(self.crash.fuzzedfile.path, self.tempfile)
 
         # figure out what crash signatures belong to this fuzzedfile
-        self.debugger_timeout = self.cfg['timeouts']['debugger_timeout']
+        self.debugger_timeout = self.cfg['debugger']['runtimeout']
         self.crash_hashes = []
         self.measured_dbg_time = None
         self._set_crash_hashes()
