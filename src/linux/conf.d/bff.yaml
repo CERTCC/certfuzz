@@ -129,6 +129,7 @@ verifier:
 # CERT Triage Tools exploitable output.
 
 # maximum time (seconds) to let the program run to capture valgrind output:
+    valgrind_timeout: 120
 
 # Set value for the Linux watchdog timer. If watchdog_file is not touched 
 # for a period longer than this value (seconds), then the vm is rebooted 
@@ -141,7 +142,6 @@ verifier:
 # it has made at that point) and return to fuzzing.
 
 timeouts:
-    valgrindtimeout: 120
     minimizertimeout: 3600
 
 # adding these sections for compatibility with FOE config style
