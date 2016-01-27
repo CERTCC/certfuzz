@@ -55,8 +55,8 @@ target:
 directories:
     seedfile_dir: ~/bff/seedfiles/examples
     debugger_template_dir: ~/bff/certfuzz/debuggers/templates
-    output_dir: ~/results
     working_dir: ~/fuzzing
+    results_dir: ~/results
     watchdog_file: /tmp/bff_watchdog
 
 
