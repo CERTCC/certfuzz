@@ -134,7 +134,7 @@ class LinuxCampaign(CampaignBase):
         fullpathorig = self._full_path_original(sf.path)
         cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=fullpathorig)[1]
         subp.run_with_timer(cmdargs,
-                            self.config['timeouts']['progtimeout'] * 8,
+                            self.config['runner']['runtimeout'] * 8,
                             self.config['target']['killprocname'],
                             use_shell=False)
 
