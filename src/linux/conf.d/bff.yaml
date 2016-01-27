@@ -102,7 +102,6 @@ verifier:
     savefailedasserts: False
     use_valgrind: True
     use_pin_calltrace: False
-    minimizecrashers: True
     minimize_to_string: False
     keep_duplicates: False
 # maximum time (seconds) to let the program run to capture valgrind output:
