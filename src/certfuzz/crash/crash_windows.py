@@ -11,7 +11,7 @@ from certfuzz.config.config_windows import get_command_args_list
 from certfuzz.crash.crash_base import Testcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
-from certfuzz.helpers import random_str
+from certfuzz.helpers.misc import random_str
 from certfuzz.debuggers.msec import MsecDebugger
 
 

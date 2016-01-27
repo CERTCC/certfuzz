@@ -10,7 +10,7 @@ import os
 import zipfile
 
 from certfuzz.fuzztools.filetools import find_or_create_dir, write_file
-from certfuzz.helpers import log_object
+from certfuzz.helpers.misc import log_object
 
 
 MAXDEPTH = 3
