@@ -141,7 +141,6 @@ verifier:
 # it has made at that point) and return to fuzzing.
 
 timeouts:
-    killproctimeout: 130
     debugger_timeout: 60
     valgrindtimeout: 120
     watchdogtimeout: 3600
@@ -159,6 +158,8 @@ runoptions:
 #    keep_unique_faddr: False
 #    keep_all_duplicates: False
 #    recycle_crashers: False
+    killproctimeout: 130
+    
 fuzzer:
     fuzzer: bytemut
     fuzz_zip_container: False

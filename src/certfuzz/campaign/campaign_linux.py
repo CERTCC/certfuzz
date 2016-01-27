@@ -122,7 +122,7 @@ class LinuxCampaign(CampaignBase):
     def _start_process_killer(self):
         logger.debug('start process killer')
         with ProcessKiller(self.config['target']['killprocname'],
-                           self.config['timeouts']['killproctimeout']
+                           self.config['runoptions']['killproctimeout']
                            ) as pk:
             self.pk_pid = pk.go()
 
