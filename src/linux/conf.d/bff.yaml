@@ -81,8 +81,6 @@ directories:
 
 zzuf:
     copymode: 1
-    start_seed: 0
-    seed_interval: 20
 
 ################################################################
 # VERIFIER PARAMETERS
@@ -175,7 +173,9 @@ timeouts:
 # adding these sections for compatibility with FOE config style
 
 runoptions:
+    start_seed: 0
 #    first_iteration: 0
+    seed_interval: 20
 #    seed_interval: 1
     minimize: True
 #    minimizer_timeout: 3600

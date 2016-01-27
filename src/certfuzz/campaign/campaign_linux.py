@@ -64,8 +64,8 @@ class LinuxCampaign(CampaignBase):
 
         # pull stuff out of configs
         self.campaign_id = self.config['campaign']['id']
-        self.current_seed = self.config['zzuf']['start_seed']
-        self.seed_interval = self.config['zzuf']['seed_interval']
+        self.current_seed = self.config['runoptions']['start_seed']
+        self.seed_interval = self.config['runoptions']['seed_interval']
         self.seed_dir_in = fixup_path(self.config['directories']['seedfile_origin_dir'])
 
         if self.outdir_base is None:
