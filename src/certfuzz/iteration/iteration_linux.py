@@ -100,7 +100,7 @@ class LinuxIteration(IterationBase3):
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
         # report the exit code in its output log.  The exit code is 128 + the signal number.
-        analysis_needed = zzuf_log.crash_logged(self.cfg['zzuf']['copymode'])
+        analysis_needed = zzuf_log.crash_logged()
 
         if not analysis_needed:
             return
