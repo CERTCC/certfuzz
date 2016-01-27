@@ -101,7 +101,7 @@ class LinuxCampaign(CampaignBase):
         self._check_for_script()
 
     def _post_enter(self):
-        if self.config['timeouts']['watchdogtimeout']:
+        if self.config['runoptions']['watchdogtimeout']:
             self._setup_watchdog()
         check_ppid()
         self._cache_app()
