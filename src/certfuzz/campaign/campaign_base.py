@@ -114,8 +114,10 @@ class CampaignBase(object):
         '''
         Initializes some additional properties common to all platforms
         '''
+        _campaign_id_no_space=re.sub('\s', '_', self.campaign_id)
         _campaign_id_with_underscores = re.sub('\W', '_', self.campaign_id)
-        self.outdir = os.path.join(self.outdir_base, _campaign_id_with_underscores)
+        
+        self.outdir = os.path.join(self.outdir_base, _campaign_id_no_space)
         logger.debug('outdir=%s', self.outdir)
 
         self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
