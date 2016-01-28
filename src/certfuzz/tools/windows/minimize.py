@@ -7,7 +7,8 @@ Created on Apr 9, 2012
 import logging
 import os
 import string
-import sys
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
+from certfuzz.config.simple_loader import load_config
 
 
 try:
@@ -15,7 +16,6 @@ try:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 except ImportError:
@@ -28,7 +28,6 @@ except ImportError:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
 
@@ -142,9 +141,7 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    with WindowsConfig(cfg_file) as configobj:
-        config = configobj.config
-    cfg = _create_minimizer_cfg(config)
+    cfg = load_config(cfg_file)
 
     if options.target:
         seedfile = BasicFile(options.target)
@@ -155,10 +152,10 @@ def main():
     filename_modifier = ''
     retries = 0
     debugger_class = msec.MsecDebugger
-    template = string.Template(config['target']['cmdline_template'])
+    template = string.Template(cfg['target']['cmdline_template'])
     cmd_as_args = get_command_args_list(template, fuzzed_file.path)[1]
     with WindowsCrash(template, seedfile, fuzzed_file, cmd_as_args, None, debugger_class,
-               config['debugger'], outdir, options.keep_uniq_faddr, config['target']['program'],
+               cfg['debugger'], outdir, options.keep_uniq_faddr, cfg['target']['program'],
                retries) as crash:
         filetools.make_directories(crash.tempdir)
         logger.info('Copying %s to %s', fuzzed_file.path, crash.tempdir)
