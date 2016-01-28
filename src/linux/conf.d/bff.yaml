@@ -97,7 +97,7 @@ directories:
 # just demonstrate weaknesses in backtrace-based uniqueness determination
 # rather than finding new underlying vulnerabilities.
 
-verifier:
+analyzer:
     exclude_unmapped_frames: True
     savefailedasserts: False
     use_valgrind: True

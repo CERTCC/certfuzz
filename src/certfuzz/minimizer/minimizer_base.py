@@ -389,7 +389,7 @@ class Minimizer(object):
                             self.debugger_timeout,
                             self.cfg['target']['killprocname'],
                             template=self.crash.debugger_template,
-                            exclude_unmapped_frames=self.cfg['verifier']['exclude_unmapped_frames'],
+                            exclude_unmapped_frames=self.cfg['analyzer']['exclude_unmapped_frames'],
                             keep_uniq_faddr=self.keep_uniq_faddr,
                             workingdir=self.tempdir,
                             watchcpu=self.watchcpu

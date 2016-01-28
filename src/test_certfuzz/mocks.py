@@ -103,7 +103,7 @@ class MockCfg(dict):
         self['target']={'cmdline_template': 'a b c d',
                         'killprocname': 'a',
                         'program': 'foo'}
-        self['verifier']={'exclude_unmapped_frames': False,
+        self['analyzer']={'exclude_unmapped_frames': False,
                           'valgrind_timeout': 1}
         self['directories'] ={}
         if templated:

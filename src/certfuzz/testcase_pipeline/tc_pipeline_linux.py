@@ -68,7 +68,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                 #
                 crash_dir_found = filetools.find_or_create_dir(tc.result_dir)
 
-                keep_all = self.cfg['verifier'].get('keep_duplicates', False)
+                keep_all = self.cfg['analyzer'].get('keep_duplicates', False)
 
                 tc.should_proceed_with_analysis = keep_all or (is_new_to_campaign and not crash_dir_found)
 

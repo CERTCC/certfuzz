@@ -49,8 +49,8 @@ class LinuxIteration(IterationBase3):
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
-        self.pipeline_options = {'use_valgrind': self.cfg['verifier']['use_valgrind'],
-                                 'use_pin_calltrace': self.cfg['verifier']['use_pin_calltrace'],
+        self.pipeline_options = {'use_valgrind': self.cfg['analyzer']['use_valgrind'],
+                                 'use_pin_calltrace': self.cfg['analyzer']['use_pin_calltrace'],
                                  'minimize_crashers': self.cfg['runoptions']['minimize'],
                                  'minimize_to_string': self.cfg['runoptions']['minimize_to_string'],
                                  'uniq_log': os.path.join(self.cfg['directories']['results_dir'], 'uniquelog.txt'),
