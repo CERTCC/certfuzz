@@ -102,7 +102,7 @@ verifier:
     savefailedasserts: False
     use_valgrind: True
     use_pin_calltrace: False
-    keep_duplicates: False
+    # keep_duplicates: False
 # maximum time (seconds) to let the program run to capture valgrind output:
     valgrind_timeout: 120
 
@@ -117,7 +117,7 @@ runoptions:
     minimizer_timeout: 3600
     minimize_to_string: False
 #    keep_unique_faddr: False
-#    keep_all_duplicates: False
+    keep_all_duplicates: False
     recycle_crashers: False
 
 # maximum time (seconds) that process specified by "killprocname" option 
