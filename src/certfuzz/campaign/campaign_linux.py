@@ -66,13 +66,13 @@ class LinuxCampaign(CampaignBase):
         self.campaign_id = self.config['campaign']['id']
         self.current_seed = self.config['runoptions']['first_iteration']
         self.seed_interval = self.config['runoptions']['seed_interval']
-        self.seed_dir_in = fixup_path(self.config['directories']['seedfile_origin_dir'])
+        self.seed_dir_in = fixup_path(self.config['directories']['seedfile_dir'])
 
         if self.outdir_base is None:
             # it wasn't spec'ed on the command line so use the config
-            self.outdir_base = fixup_path(self.config['directories']['output_dir'])
+            self.outdir_base = fixup_path(self.config['directories']['results_dir'])
 
-        self.work_dir_base = fixup_path(self.config['directories']['local_dir'])
+        self.work_dir_base = fixup_path(self.config['directories']['working_dir'])
         self.program = fixup_path(self.config['target']['program'])
         self.program_basename = os.path.basename(self.program).replace('"', '')
 #         self.cmd_list = shlex.split(self.config['target']['cmdline'])
@@ -151,7 +151,7 @@ class LinuxCampaign(CampaignBase):
         touch_watchdog_file()
 
         # set up the watchdog timeout within the VM and restart the daemon
-        with WatchDog(wdf, self.config['timeouts']['watchdogtimeout']) as watchdog:
+        with WatchDog(wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
             watchdog()
 
     def _check_for_script(self):
