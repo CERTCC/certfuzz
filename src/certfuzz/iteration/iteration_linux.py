@@ -49,13 +49,13 @@ class LinuxIteration(IterationBase3):
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
-        self.pipeline_options = {'use_valgrind': self.cfg['verifier']['use_valgrind'],
-                                 'use_pin_calltrace': self.cfg['verifier']['use_pin_calltrace'],
-                                 'minimize_crashers': self.cfg['verifier']['minimizecrashers'],
-                                 'minimize_to_string': self.cfg['verifier']['minimize_to_string'],
-                                 'uniq_log': os.path.join(self.cfg['directories']['output_dir'], 'uniquelog.txt'),
-                                 'local_dir': fixup_path(self.cfg['directories']['local_dir']),
-                                 'minimizertimeout': self.cfg['timeouts']['minimizertimeout'],
+        self.pipeline_options = {'use_valgrind': self.cfg['analyzer']['use_valgrind'],
+                                 'use_pin_calltrace': self.cfg['analyzer']['use_pin_calltrace'],
+                                 'minimize_crashers': self.cfg['runoptions']['minimize'],
+                                 'minimize_to_string': self.cfg['runoptions']['minimize_to_string'],
+                                 'uniq_log': os.path.join(self.cfg['directories']['results_dir'], 'uniquelog.txt'),
+                                 'local_dir': fixup_path(self.cfg['directories']['working_dir']),
+                                 'minimizertimeout': self.cfg['runoptions']['minimizer_timeout'],
                                  'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions']['minimize'],
                                  }
 
@@ -100,7 +100,7 @@ class LinuxIteration(IterationBase3):
         # Don't generate cases for killed process or out-of-memory
         # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
         # report the exit code in its output log.  The exit code is 128 + the signal number.
-        analysis_needed = zzuf_log.crash_logged(self.cfg['zzuf']['copymode'])
+        analysis_needed = zzuf_log.crash_logged()
 
         if not analysis_needed:
             return
@@ -113,9 +113,9 @@ class LinuxIteration(IterationBase3):
                       seedfile=self.seedfile,
                       fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                       program=fixup_path(self.cfg['target']['program']),
-                      debugger_timeout=self.cfg['timeouts']['debugger_timeout'],
+                      debugger_timeout=self.cfg['debugger']['runtimeout'],
                       killprocname=self.cfg['target']['killprocname'],
-                      backtrace_lines=self.cfg['verifier']['backtracelevels'],
+                      backtrace_lines=self.cfg['debugger']['backtracelevels'],
                       crashers_dir=self.testcase_base_dir,
                       workdir_base=self.working_dir,
                       seednum=self.seednum,

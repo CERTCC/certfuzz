@@ -64,15 +64,15 @@ class LinuxCampaign(CampaignBase):
 
         # pull stuff out of configs
         self.campaign_id = self.config['campaign']['id']
-        self.current_seed = self.config['zzuf']['start_seed']
-        self.seed_interval = self.config['zzuf']['seed_interval']
-        self.seed_dir_in = fixup_path(self.config['directories']['seedfile_origin_dir'])
+        self.current_seed = self.config['runoptions']['first_iteration']
+        self.seed_interval = self.config['runoptions']['seed_interval']
+        self.seed_dir_in = fixup_path(self.config['directories']['seedfile_dir'])
 
         if self.outdir_base is None:
             # it wasn't spec'ed on the command line so use the config
-            self.outdir_base = fixup_path(self.config['directories']['output_dir'])
+            self.outdir_base = fixup_path(self.config['directories']['results_dir'])
 
-        self.work_dir_base = fixup_path(self.config['directories']['local_dir'])
+        self.work_dir_base = fixup_path(self.config['directories']['working_dir'])
         self.program = fixup_path(self.config['target']['program'])
         self.program_basename = os.path.basename(self.program).replace('"', '')
 #         self.cmd_list = shlex.split(self.config['target']['cmdline'])
@@ -101,7 +101,7 @@ class LinuxCampaign(CampaignBase):
         self._check_for_script()
 
     def _post_enter(self):
-        if self.config['timeouts']['watchdogtimeout']:
+        if self.config['runoptions']['watchdogtimeout']:
             self._setup_watchdog()
         check_ppid()
         self._cache_app()
@@ -122,7 +122,7 @@ class LinuxCampaign(CampaignBase):
     def _start_process_killer(self):
         logger.debug('start process killer')
         with ProcessKiller(self.config['target']['killprocname'],
-                           self.config['timeouts']['killproctimeout']
+                           self.config['runoptions']['killproctimeout']
                            ) as pk:
             self.pk_pid = pk.go()
 
@@ -134,7 +134,7 @@ class LinuxCampaign(CampaignBase):
         fullpathorig = self._full_path_original(sf.path)
         cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=fullpathorig)[1]
         subp.run_with_timer(cmdargs,
-                            self.config['timeouts']['progtimeout'] * 8,
+                            self.config['runner']['runtimeout'] * 8,
                             self.config['target']['killprocname'],
                             use_shell=False)
 
@@ -151,7 +151,7 @@ class LinuxCampaign(CampaignBase):
         touch_watchdog_file()
 
         # set up the watchdog timeout within the VM and restart the daemon
-        with WatchDog(wdf, self.config['timeouts']['watchdogtimeout']) as watchdog:
+        with WatchDog(wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
             watchdog()
 
     def _check_for_script(self):

@@ -171,7 +171,7 @@ class Minimizer(object):
         filetools.copy_file(self.crash.fuzzedfile.path, self.tempfile)
 
         # figure out what crash signatures belong to this fuzzedfile
-        self.debugger_timeout = self.cfg['timeouts']['debugger_timeout']
+        self.debugger_timeout = self.cfg['debugger']['runtimeout']
         self.crash_hashes = []
         self.measured_dbg_time = None
         self._set_crash_hashes()
@@ -349,7 +349,7 @@ class Minimizer(object):
                 if dbg.is_crash:
                     times.append(delta)
 
-                current_sig = self.get_signature(dbg, self.cfg['verifier']['backtracelevels'])
+                current_sig = self.get_signature(dbg, self.cfg['debugger']['backtracelevels'])
 
                 # ditch the temp file
                 if os.path.exists(f):
@@ -389,7 +389,7 @@ class Minimizer(object):
                             self.debugger_timeout,
                             self.cfg['target']['killprocname'],
                             template=self.crash.debugger_template,
-                            exclude_unmapped_frames=self.cfg['verifier']['exclude_unmapped_frames'],
+                            exclude_unmapped_frames=self.cfg['analyzer']['exclude_unmapped_frames'],
                             keep_uniq_faddr=self.keep_uniq_faddr,
                             workingdir=self.tempdir,
                             watchcpu=self.watchcpu
@@ -470,7 +470,7 @@ class Minimizer(object):
         dbg = self.run_debugger(self.tempfile, f)
 
         if dbg.is_crash:
-            newfuzzed_hash = self.get_signature(dbg, self.cfg['verifier']['backtracelevels'])
+            newfuzzed_hash = self.get_signature(dbg, self.cfg['debugger']['backtracelevels'])
         else:
             newfuzzed_hash = None
         # initialize or increment the counter for this hash

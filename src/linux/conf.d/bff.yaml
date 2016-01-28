@@ -53,46 +53,17 @@ target:
 # if fuzzer is still running
 
 directories:
-    seedfile_origin_dir: ~/bff/seedfiles/examples
+    seedfile_dir: ~/bff/seedfiles/examples
+    working_dir: ~/fuzzing
+    results_dir: ~/results
     debugger_template_dir: ~/bff/certfuzz/debuggers/templates
-    output_dir: ~/results
-    local_dir: ~/fuzzing
     watchdog_file: /tmp/bff_watchdog
 
-################################################################
-# ZZUF FUZZER PARAMETERS
-################################################################
-# Use zzuf's "copy" mode, which creates a temporary fuzzed file
-# Default is 1, where zzuf will determine the file to fuzz, mangle it as
-# a randomly-named file in $TMPDIR and then open that with the target app.
-# This mode is compatible with more applications, but it can be slower in
-# some cases, due to the extra file i/o required.
-# If set to 0, zzuf will use LD_PRELOAD to mangle input in memory, rather
-# than creating a temporary file. Note that this mode can interfere with
-# some target applications.
-# OSX Cocoa applications require copymode=1
-
-# The zzuf seed number to start with
-
-# How many iterations you want zzuf to try per seedfile/range selection
-# If you have a large number of seed files and/or the target application
-# is slow, you may wish to make this value smaller to get better coverage
-# in a reasonable amount of time.
-
-zzuf:
-    copymode: 1
-    start_seed: 0
-    seed_interval: 20
 
 ################################################################
 # VERIFIER PARAMETERS
 ################################################################
 #
-# number of backtrace levels to hash for uniqueness.
-# Increase this number for more crash uniqueness granularity.
-# Decrease this number if you think that you are getting too many
-# duplicate crashes.
-
 # Include backtrace frames that aren't part of a loaded library?
 # Set this value to False if you wish to consider unmapped stack
 # frames in the crash hashes. This can be useful for target application
@@ -126,68 +97,56 @@ zzuf:
 # just demonstrate weaknesses in backtrace-based uniqueness determination
 # rather than finding new underlying vulnerabilities.
 
-verifier:
-    backtracelevels: 5
+analyzer:
     exclude_unmapped_frames: True
     savefailedasserts: False
     use_valgrind: True
     use_pin_calltrace: False
-    minimizecrashers: True
+    # keep_duplicates: False
+# maximum time (seconds) to let the program run to capture valgrind output:
+    valgrind_timeout: 120
+
+runoptions:
+    first_iteration: 0
+    seed_interval: 20
+    minimize: True
+# Minimization can sometimes take a long time, and time spent minimizing
+# is time not spent fuzzing. If a minimization run exceeds this time
+# (in seconds) the minimization will terminate (keeping whatever progress
+# it has made at that point) and return to fuzzing.
+    minimizer_timeout: 3600
     minimize_to_string: False
+#    keep_unique_faddr: False
+    keep_all_duplicates: False
     recycle_crashers: False
-    keep_duplicates: False
-
-
-################################################################
-# APPLICATION TIMEOUTS
-################################################################
-#
-# maximum program execution time (seconds) that BFF will allow:
 
 # maximum time (seconds) that process specified by "killprocname" option 
 # can run before it's killed via killproc.sh, 
 # which is used to kill stray processes.  Normally, zzuf will kill
 # the target process if the above timeout is reached.
-
-# maximum time (seconds) to let the program run to capture debugger and
-# CERT Triage Tools exploitable output.
-
-# maximum time (seconds) to let the program run to capture valgrind output:
-
+    killproctimeout: 130
 # Set value for the Linux watchdog timer. If watchdog_file is not touched 
 # for a period longer than this value (seconds), then the vm is rebooted 
 # by the watchdog.
 # Set to 0 to disable watchdog functionality.
-
-# Minimization can sometimes take a long time, and time spent minimizing
-# is time not spent fuzzing. If a minimization run exceeds this time
-# (in seconds) the minimization will terminate (keeping whatever progress
-# it has made at that point) and return to fuzzing.
-
-timeouts:
-    progtimeout: 5
-    killproctimeout: 130
-    debugger_timeout: 60
-    valgrindtimeout: 120
     watchdogtimeout: 3600
-    minimizertimeout: 3600
-
-# adding these sections for compatibility with FOE config style
-
-runoptions:
-#    first_iteration: 0
-#    seed_interval: 1
-    minimize: True
-#    minimizer_timeout: 3600
-#    keep_unique_faddr: False
-#    keep_all_duplicates: False
-#    recycle_crashers: False
+    
+    
 fuzzer:
     fuzzer: bytemut
     fuzz_zip_container: False
 runner:
     runner: zzufrun
+# maximum program execution time (seconds) that BFF will allow:
     runtimeout: 5
 debugger:
     debugger: gdb
+# maximum time (seconds) to let the program run to capture debugger and
+# CERT Triage Tools exploitable output.
     runtimeout: 60
+# number of backtrace levels to hash for uniqueness.
+# Increase this number for more crash uniqueness granularity.
+# Decrease this number if you think that you are getting too many
+# duplicate crashes.
+    backtracelevels: 5
+    

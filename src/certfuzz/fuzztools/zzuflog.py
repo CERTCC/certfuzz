@@ -75,7 +75,7 @@ class ZzufLog:
             self.parsed = True  # set a flag that we parsed successfully
         return seed, rng, result
 
-    def crash_logged(self, checkexit):
+    def crash_logged(self):
         '''
         Analyzes zzuf output log to figure out if this was a crash.
         Returns 0 if it's not really a crash. 1 if it's a crash we
@@ -83,9 +83,6 @@ class ZzufLog:
         '''
         # if we couldn't parse the log, just skip it and move on
         if not self.parsed:
-            return False
-
-        if checkexit and 'exit' in self.result:
             return False
 
         # not a crash if killed

@@ -57,6 +57,7 @@ class ZzufRunner(Runner):
                      '--seed=0',
                      '--max-crashes=1',
                      '--max-usertime=5.00',
+                     '--opmode=copy',
                      ])
         self._zzuf_args = args
 

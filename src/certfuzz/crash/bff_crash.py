@@ -48,7 +48,7 @@ class BffCrash(Testcase):
         self.crash_base_dir = crashers_dir
         self.seednum = seednum
         self.range = range
-        self.exclude_unmapped_frames = cfg['verifier']['exclude_unmapped_frames']
+        self.exclude_unmapped_frames = cfg['analyzer']['exclude_unmapped_frames']
         self.set_debugger_template('bt_only')
         self.keep_uniq_faddr = keep_faddr
 
@@ -121,7 +121,7 @@ class BffCrash(Testcase):
             raise CrashError('Debug object not found')
 
         logger.debug('is_crash: %s is_assert_fail: %s', self.dbg.is_crash, self.dbg.is_assert_fail)
-        if self.cfg['verifier']['savefailedasserts']:
+        if self.cfg['analyzer']['savefailedasserts']:
             return self.dbg.is_crash
         else:
             # only keep real crashes (not failed assertions)

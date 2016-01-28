@@ -112,31 +112,31 @@ class Test(unittest.TestCase):
     def test_crash_logged(self):
         self.log.result = "a"
         self.log._set_exitcode()
-        self.assertFalse(self.log.crash_logged(False))
+        self.assertFalse(self.log.crash_logged())
 
         # _was_killed => true
         # should be false
         self.log.result = "signal 9"
         self.log._set_exitcode()
-        self.assertFalse(self.log.crash_logged(False))
+        self.assertFalse(self.log.crash_logged())
 
         # _was_out_of_memory => true
         # should be false
         self.log.result = "signal 15"
         self.log._set_exitcode()
-        self.assertFalse(self.log.crash_logged(False))
+        self.assertFalse(self.log.crash_logged())
 
         # should be false since infile is empty
         self.log.result = "a"
         self.log._set_exitcode()
         self.assertFalse(self.log.parsed)
-        self.assertFalse(self.log.crash_logged(False))
+        self.assertFalse(self.log.crash_logged())
 
         # should be true
         self.log.result = "a"
         self.log._set_exitcode()
         self.log.parsed = True  # have to fake it since infile is empty
-        self.assertTrue(self.log.crash_logged(False))
+        self.assertTrue(self.log.crash_logged())
 
 #    def test_crash_exit(self):
 #        crash_exit_code_list = [77, 88, 99]
