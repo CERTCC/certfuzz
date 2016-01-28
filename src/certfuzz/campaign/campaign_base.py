@@ -114,12 +114,13 @@ class CampaignBase(object):
         '''
         Initializes some additional properties common to all platforms
         '''
-        self.outdir = os.path.join(self.outdir_base, self.campaign_id)
+        _campaign_id_with_underscores = re.sub('\W', '_', self.campaign_id)
+        self.outdir = os.path.join(self.outdir_base, _campaign_id_with_underscores)
         logger.debug('outdir=%s', self.outdir)
 
         self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
         if not self.cached_state_file:
-            cachefile = 'campaign_%s.pkl' % re.sub('\W', '_', self.campaign_id)
+            cachefile = 'campaign_%s.pkl' % _campaign_id_with_underscores
             self.cached_state_file = os.path.join(self.work_dir_base, cachefile)
         if not self.seed_interval:
             self.seed_interval = 1
