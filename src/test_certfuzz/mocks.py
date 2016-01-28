@@ -97,13 +97,14 @@ class MockDebugger(Mock):
 
 class MockCfg(dict):
     def __init__(self,templated=True):
-        self['timeouts']={'debugger_timeout': 1,
-                          'valgrindtimeout': 1}
+        self['debugger']={'runtimeout': 1,
+                         'backtracelevels': 5,
+                         }
         self['target']={'cmdline_template': 'a b c d',
                         'killprocname': 'a',
                         'program': 'foo'}
         self['verifier']={'exclude_unmapped_frames': False,
-                          'backtracelevels': 5}
+                          'valgrind_timeout': 1}
         self['directories'] ={}
         if templated:
             self['target']['cmdline_template'] = string.Template(self['target']['cmdline_template'])

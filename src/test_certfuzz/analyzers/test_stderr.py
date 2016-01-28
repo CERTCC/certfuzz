@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
         self.delete_file(f)
         self.file = '%s.stderr' % f
 
-        cfg = {'timeouts': {'progtimeout':1},
+        cfg = {'runner': {'runtimeout':1},
                'target': {'cmdline_template': string.Template('PROGRAM $SEEDFILE foo')}
                }
         

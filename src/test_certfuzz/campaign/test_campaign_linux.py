@@ -20,15 +20,15 @@ class Test(unittest.TestCase):
         os.close(fd)
 
         data = {'campaign': {'id': 'foo'},
-                'directories': {'seedfile_origin_dir': tempfile.mkdtemp(prefix='seedfiles_', dir=self.tmpdir),
-                                'output_dir': tempfile.mkdtemp(prefix='output_', dir=self.tmpdir),
-                                'local_dir': tempfile.mkdtemp(prefix='local_', dir=self.tmpdir)},
+                'directories': {'seedfile_dir': tempfile.mkdtemp(prefix='seedfiles_', dir=self.tmpdir),
+                                'results_dir': tempfile.mkdtemp(prefix='output_', dir=self.tmpdir),
+                                'working_dir': tempfile.mkdtemp(prefix='local_', dir=self.tmpdir)},
                 'timeouts': {},
-                'zzuf': {'start_seed': 0,
-                         'seed_interval': 10},
                 'verifier': {},
                 'target': {'program': 'foo',
                            'cmdline_template': 'foo bar baz quux'},
+                'runoptions':{'first_iteration':0,
+                              'seed_interval': 10}
                 }
         with open(cfgfile, 'wb') as stream:
             yaml.dump(data, stream)
