@@ -22,12 +22,10 @@ else
 fi
 
 echo "Target commandline: " `egrep -m1 '^    cmdline' $currentcfg | sed 's/^    cmdline://'`
-echo "Output directory: " `egrep -m1 '^    output_dir' $currentcfg | sed 's/^    output_dir://'`
-
-"
+echo -e "Output directory: " `egrep -m1 '^    results_dir' $currentcfg | sed 's/^    results_dir://'` "\n\n"
 
 if [[ -n "$xterm" ]]; then
-    echo -e "Run ./batch.sh to begin fuzzing."
+    echo -e "Run ./batch.sh to begin fuzzing.\n"
 elif [[ "$platform" =~ "Darwin" ]]; then
     echo -e "X is not detected. Please install X before running BFF\nSee: https://support.apple.com/kb/HT5293\n"
 fi
