@@ -156,9 +156,17 @@ def main():
     debugger_class = msec.MsecDebugger
     
     cmd_as_args = get_command_args_list(cfg['target']['cmdline_template'], fuzzed_file.path)[1]
-    with WindowsCrash(cfg['target']['cmdline_template'], seedfile, fuzzed_file, cmd_as_args, None, debugger_class,
-               cfg['debugger'], outdir, options.keep_uniq_faddr, cfg['target']['program'],
-               retries) as crash:
+    with WindowsCrash(cmd_template=cfg['target']['cmdline_template'], 
+                      seedfile=seedfile, 
+                      fuzzedfile=fuzzed_file, 
+                      cmdlist=cmd_as_args, 
+                      fuzzer=None, 
+                      dbg_opts=cfg['debugger'], 
+                      workingdir_base=outdir, 
+                      keep_faddr=options.keep_uniq_faddr, 
+                      program=cfg['target']['program'],
+                      heisenbug_retries=retries
+                      ) as crash:
         filetools.make_directories(crash.tempdir)
         logger.info('Copying %s to %s', fuzzed_file.path, crash.tempdir)
         filetools.copy_file(fuzzed_file.path, crash.tempdir)
