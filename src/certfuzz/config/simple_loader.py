@@ -15,6 +15,10 @@ logger = logging.getLogger(__name__)
 
 
 def load_config(yaml_file):
+    '''
+    Reads config from yaml_file, returns dict
+    :param yaml_file: path to a yaml file containing the configuration
+    '''
     with open(yaml_file, 'rb') as f:
         cfg = yaml.load(f)
 
