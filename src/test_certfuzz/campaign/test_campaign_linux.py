@@ -10,6 +10,7 @@ import os
 import shutil
 from certfuzz.config.errors import ConfigError
 import yaml
+from test_certfuzz.mocks import MockCfg
 
 
 class Test(unittest.TestCase):
@@ -19,17 +20,18 @@ class Test(unittest.TestCase):
         fd, cfgfile = tempfile.mkstemp(suffix=".yaml", dir=self.tmpdir, text=True)
         os.close(fd)
 
-        data = {'campaign': {'id': 'foo'},
-                'directories': {'seedfile_dir': tempfile.mkdtemp(prefix='seedfiles_', dir=self.tmpdir),
-                                'results_dir': tempfile.mkdtemp(prefix='output_', dir=self.tmpdir),
-                                'working_dir': tempfile.mkdtemp(prefix='local_', dir=self.tmpdir)},
-                'timeouts': {},
-                'verifier': {},
-                'target': {'program': 'foo',
-                           'cmdline_template': 'foo bar baz quux'},
-                'runoptions':{'first_iteration':0,
-                              'seed_interval': 10}
-                }
+        data = MockCfg(templated=False)
+#         data = {'campaign': {'id': 'foo'},
+#                 'directories': {'seedfile_dir': tempfile.mkdtemp(prefix='seedfiles_', dir=self.tmpdir),
+#                                 'results_dir': tempfile.mkdtemp(prefix='output_', dir=self.tmpdir),
+#                                 'working_dir': tempfile.mkdtemp(prefix='local_', dir=self.tmpdir)},
+#                 'timeouts': {},
+#                 'verifier': {},
+#                 'target': {'program': 'foo',
+#                            'cmdline_template': 'foo bar baz quux'},
+#                 'runoptions':{'first_iteration':0,
+#                               'seed_interval': 10}
+#                 }
         with open(cfgfile, 'wb') as stream:
             yaml.dump(data, stream)
 
