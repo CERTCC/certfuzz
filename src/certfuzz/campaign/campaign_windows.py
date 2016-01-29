@@ -35,11 +35,6 @@ class WindowsCampaign(CampaignBase):
 
 
 
-        self.keep_duplicates = self.config['runoptions']['keep_all_duplicates']
-        self.keep_heisenbugs = self.config['campaign']['keep_heisenbugs']
-        self.should_keep_u_faddr = self.config['runoptions']['keep_unique_faddr']
-
-
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
 
@@ -181,8 +176,6 @@ class WindowsCampaign(CampaignBase):
                               config=self.config,
                               fuzzer_cls=self.fuzzer_cls,
                               runner_cls=self.runner_cls,
-                              keep_heisenbugs=self.keep_heisenbugs,
-                              keep_duplicates=self.keep_duplicates,
                               cmd_template=self.cmd_template,
                               debug=self.debug,
                               ) as iteration:

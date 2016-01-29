@@ -28,21 +28,21 @@ class LinuxIteration(IterationBase3):
                  outdir=None,
                  sf_set=None,
                  uniq_func=None,
-                 cfg=None,
+                 config=None,
                  fuzzer_cls=None,
                  runner_cls=None,
                  ):
 
         IterationBase3.__init__(self,
-                                seedfile,
-                                seednum,
-                                workdirbase,
-                                outdir,
-                                sf_set,
-                                uniq_func,
-                                cfg,
-                                fuzzer_cls,
-                                runner_cls,
+                                seedfile=seedfile,
+                                seednum=seednum,
+                                workdirbase=workdirbase,
+                                outdir=outdir,
+                                sf_set=sf_set,
+                                uniq_func=uniq_func,
+                                config=config,
+                                fuzzer_cls=fuzzer_cls,
+                                runner_cls=runner_cls,
                                 )
 
         self.quiet_flag = self._iteration_counter < 2

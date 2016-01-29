@@ -94,7 +94,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         @return (bool,str)
         '''
         if testcase.is_crash:
-            if self.options['keep_all_duplicates']:
+            if self.options['keep_duplicates']:
                 return (True, 'keep duplicates')
             elif self.uniq_func(testcase.signature):
                 # Check if crasher directory exists already

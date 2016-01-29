@@ -42,21 +42,19 @@ class WindowsIteration(IterationBase3):
                  config=None,
                  fuzzer_cls=None,
                  runner_cls=None,
-                 keep_heisenbugs=None,
-                 keep_duplicates=None,
                  cmd_template=None,
                  debug=False,
                  ):
         IterationBase3.__init__(self,
-                                seedfile,
-                                seednum,
-                                workdirbase,
-                                outdir,
-                                sf_set,
-                                uniq_func,
-                                config,
-                                fuzzer_cls,
-                                runner_cls,
+                                seedfile=seedfile,
+                                seednum=seednum,
+                                workdirbase=workdirbase,
+                                outdir=outdir,
+                                sf_set=sf_set,
+                                uniq_func=uniq_func,
+                                config=config,
+                                fuzzer_cls=fuzzer_cls,
+                                runner_cls=runner_cls,
                                 )
 
         self.debug = debug
@@ -72,8 +70,8 @@ class WindowsIteration(IterationBase3):
             # runner_cls is not null
             self.retries = 4
 
-        self.pipeline_options = {'keep_duplicates': keep_duplicates,
-                                 'keep_heisenbugs': keep_heisenbugs,
+        self.pipeline_options = {'keep_duplicates': self.config['runoptions']['keep_duplicates'],
+                                 'keep_heisenbugs': self.config['runoptions']['keep_heisenbugs'],
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,
                                  'used_runner': self.runner_cls is not None,

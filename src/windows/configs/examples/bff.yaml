@@ -72,7 +72,7 @@ directories:
 #                    a minimization run before giving up
 # keep_unique_faddr: Consider the Exception Faulting Address value as
 #                    part of the crash hash
-# keep_all_duplicates: Keep all duplicate crashing cases
+# keep_duplicates: Keep all duplicate crashing cases
 # recycle_crashers: Recycle uniquely-crashing testcases into the pool
 #                   of available seed files to fuzz
 #####################################################################
@@ -82,7 +82,7 @@ runoptions:
     minimize: True
     minimizer_timeout: 3600
     keep_unique_faddr: False
-    keep_all_duplicates: False
+    keep_duplicates: False
     recycle_crashers: False
 
 #####################################################################
