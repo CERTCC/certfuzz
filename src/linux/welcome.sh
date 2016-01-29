@@ -21,7 +21,8 @@ else
   echo "Using configuration file: $currentcfg"
 fi
 
-echo "Target commandline: " `egrep -m1 '^    cmdline' $currentcfg | sed 's/^    cmdline://'`
+program=`egrep -m1 '^    program:' $currentcfg | sed 's/^    program://'`
+echo "Target commandline: " `egrep -m1 '^    cmdline' $currentcfg | sed 's/^    cmdline_template://' | sed "s|"'$PROGRAM'"|$program|"`
 echo -e "Output directory: " `egrep -m1 '^    results_dir' $currentcfg | sed 's/^    results_dir://'` "\n\n"
 
 if [[ -n "$xterm" ]]; then
