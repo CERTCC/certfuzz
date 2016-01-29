@@ -29,35 +29,16 @@ class WindowsCampaign(CampaignBase):
 
         self.gui_app = False
 
-        # pull stuff out of configs
-        self.campaign_id = self.config['campaign']['id']
-
         self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker')
         if not self.use_buttonclicker:
             self.use_buttonclicker = False
 
-        self.current_seed = self.config['runoptions'].get('first_iteration')
-        self.seed_interval = self.config['runoptions'].get('seed_interval')
 
-        if self.outdir_base is None:
-            # it wasn't spec'ed on the command line so use the config
-            self.outdir_base = os.path.abspath(self.config['directories']['results_dir'])
-
-        self.work_dir_base = os.path.abspath(self.config['directories']['working_dir'])
-
-        self.seed_dir_in = self.config['directories']['seedfile_dir']
 
         self.keep_duplicates = self.config['runoptions']['keep_all_duplicates']
         self.keep_heisenbugs = self.config['campaign']['keep_heisenbugs']
         self.should_keep_u_faddr = self.config['runoptions']['keep_unique_faddr']
 
-        self.program = self.config['target']['program']
-        self.cmd_template = self.config['target']['cmdline_template']
-
-        self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(self.config['fuzzer']['fuzzer'])
-        if self.config['runner']['runner']:
-            self.runner_module_name = 'certfuzz.runners.{}'.format(self.config['runner']['runner'])
-        self.debugger_module_name = 'certfuzz.debuggers.{}'.format(self.config['debugger']['debugger'])
 
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()

@@ -96,6 +96,22 @@ class CampaignBase(object):
         '''
         Initializes some additional properties common to all platforms
         '''
+        # pull stuff out of configs
+        self.campaign_id = self.config['campaign']['id']
+       
+        self.current_seed = self.config['runoptions']['first_iteration']
+        self.seed_interval = self.config['runoptions']['seed_interval']
+
+        self.seed_dir_in = self.config['directories']['seedfile_dir']
+        if self.outdir_base is None:
+            # it wasn't spec'ed on the command line so use the config
+            self.outdir_base = self.config['directories']['results_dir']
+
+        self.work_dir_base = self.config['directories']['working_dir']
+        self.program = self.config['target']['program']
+        self.cmd_template = self.config['target']['cmdline_template']
+
+        
         _campaign_id_no_space=re.sub('\s', '_', self.campaign_id)
         _campaign_id_with_underscores = re.sub('\W', '_', self.campaign_id)
         
@@ -110,6 +126,11 @@ class CampaignBase(object):
             self.seed_interval = 1
         if not self.current_seed:
             self.current_seed = 0
+
+        self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(self.config['fuzzer']['fuzzer'])
+        if self.config['runner']['runner']:
+            self.runner_module_name = 'certfuzz.runners.{}'.format(self.config['runner']['runner'])
+        self.debugger_module_name = 'certfuzz.debuggers.{}'.format(self.config['debugger']['debugger'])
 
     @abc.abstractmethod
     def _pre_enter(self):

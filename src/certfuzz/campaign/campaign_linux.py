@@ -62,22 +62,10 @@ class LinuxCampaign(CampaignBase):
     def __init__(self, config_file=None, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
 
-        # pull stuff out of configs
-        self.campaign_id = self.config['campaign']['id']
-        self.current_seed = self.config['runoptions']['first_iteration']
-        self.seed_interval = self.config['runoptions']['seed_interval']
-        self.seed_dir_in = fixup_path(self.config['directories']['seedfile_dir'])
 
-        if self.outdir_base is None:
-            # it wasn't spec'ed on the command line so use the config
-            self.outdir_base = fixup_path(self.config['directories']['results_dir'])
-
-        self.work_dir_base = fixup_path(self.config['directories']['working_dir'])
-        self.program = fixup_path(self.config['target']['program'])
         self.program_basename = os.path.basename(self.program).replace('"', '')
 #         self.cmd_list = shlex.split(self.config['target']['cmdline'])
 #         self.cmd_list[0] = fixup_path(self.cmd_list[0])
-
 
         # must occur after work_dir_base, outdir_base, and campaign_id are set
         self._common_init()
@@ -159,12 +147,6 @@ class LinuxCampaign(CampaignBase):
         if check_program_file_type('text', self.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
-
-    def _set_fuzzer(self):
-        '''
-        Overrides parent class
-        '''
-        pass
 
     def _set_runner(self):
         '''
