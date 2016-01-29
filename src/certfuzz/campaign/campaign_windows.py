@@ -26,17 +26,7 @@ class WindowsCampaign(CampaignBase):
 
     def __init__(self, config_file, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
-
-        self.gui_app = False
-
-        self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker')
-        if not self.use_buttonclicker:
-            self.use_buttonclicker = False
-
-
-
-        # must occur after work_dir_base, outdir_base, and campaign_id are set
-        self._common_init()
+        self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker',False)
 
     def __getstate__(self):
         state = self.__dict__.copy()

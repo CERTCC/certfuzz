@@ -59,21 +59,12 @@ class LinuxCampaign(CampaignBase):
     '''
     Extends CampaignBase to add linux-specific features.
     '''
-    def __init__(self, config_file=None, result_dir=None, debug=False):
-        CampaignBase.__init__(self, config_file, result_dir, debug)
-
-
-        self.program_basename = os.path.basename(self.program).replace('"', '')
-#         self.cmd_list = shlex.split(self.config['target']['cmdline'])
-#         self.cmd_list[0] = fixup_path(self.cmd_list[0])
-
-        # must occur after work_dir_base, outdir_base, and campaign_id are set
-        self._common_init()
 
     def _full_path_original(self, seedfile):
         # yes, two seedfile mentions are intended - adh
+        program_basename=os.path.basename(self.program).replace('"', '')
         return os.path.join(self.work_dir_base,
-                            self.program_basename,
+                            program_basename,
                             seedfile,
                             seedfile)
 
@@ -193,8 +184,8 @@ class LinuxCampaign(CampaignBase):
                             outdir=self.outdir,
                             sf_set=self.seedfile_set,
                             uniq_func=self._crash_is_unique,
-                            cfg=self.config,
                             fuzzer_cls=ByteMutFuzzer,
+                            config=self.config,
                             runner_cls=ZzufRunner,
                             ) as iteration:
             iteration()
