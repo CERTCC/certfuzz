@@ -24,6 +24,7 @@ from certfuzz.fuzzers.bytemut import ByteMutFuzzer
 from certfuzz.runners.zzufrun import ZzufRunner
 from certfuzz.helpers.misc import fixup_path
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
 
 
 logger = logging.getLogger(__name__)
@@ -188,4 +189,10 @@ class LinuxCampaign(CampaignBase):
                             fuzzer_cls=self.fuzzer_cls,
                             runner_cls=ZzufRunner,
                             ) as iteration:
-            iteration()
+            try:
+                iteration()
+            except FuzzerExhaustedError:
+                # Some fuzzers run out of things to do. They should
+                # raise a FuzzerExhaustedError when that happens.
+                logger.info('Done with %s, removing from set', seedfile.basename)
+                self.seedfile_set.remove_file(seedfile)

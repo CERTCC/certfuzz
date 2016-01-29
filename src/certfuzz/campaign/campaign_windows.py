@@ -153,11 +153,11 @@ class WindowsCampaign(CampaignBase):
         if self.use_buttonclicker:
             os.system('taskkill /im buttonclicker.exe')
 
-    def _do_iteration(self, sf, range_obj, seednum):
+    def _do_iteration(self, seedfile, range_obj, seednum):
         # use a with...as to ensure we always hit
         # the __enter__ and __exit__ methods of the
         # newly created WindowsIteration()
-        with WindowsIteration(seedfile=sf,
+        with WindowsIteration(seedfile=seedfile,
                               seednum=seednum,
                               workdirbase=self.working_dir,
                               outdir=self.outdir,
@@ -174,9 +174,9 @@ class WindowsCampaign(CampaignBase):
             except FuzzerExhaustedError:
                 # Some fuzzers run out of things to do. They should
                 # raise a FuzzerExhaustedError when that happens.
-                logger.info('Done with %s, removing from set', sf.basename)
-                # FIXME
-                # self.seedfile_set.del_item(sf.md5)
+                logger.info('Done with %s, removing from set', seedfile.basename)
+                self.seedfile_set.remove_file(seedfile)
+
         if not seednum % self.status_interval:
             logger.info('Iteration: %d Crashes found: %d', self.current_seed,
                         len(self.crashes_seen))
