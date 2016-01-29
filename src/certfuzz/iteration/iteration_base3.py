@@ -141,14 +141,16 @@ class IterationBase3(object):
 
     def record_success(self):
         self.sf_set.record_success(key=self.seedfile.md5)
-        self.seedfile.rangefinder.record_success(key=self.r.id)
+        if hasattr(self.r, 'id'):
+            self.seedfile.rangefinder.record_success(key=self.r.id)
 
     def record_failure(self):
         self.record_tries()
 
     def record_tries(self):
         self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-        self.seedfile.rangefinder.record_tries(key=self.r.id, tries=1)
+        if hasattr(self.r, 'id'):
+            self.seedfile.rangefinder.record_tries(key=self.r.id, tries=1)
 
     def process_testcases(self):
         if not len(self.testcases):

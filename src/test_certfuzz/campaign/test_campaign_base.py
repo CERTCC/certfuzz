@@ -24,9 +24,6 @@ class ImplementedCampaign(CampaignBase):
     def __getstate__(self):
         pass
 
-    def __init__(self, config_file, result_dir=None):
-        return CampaignBase.__init__(self, config_file, result_dir)
-
     def  __setstate__(self):
         pass
 

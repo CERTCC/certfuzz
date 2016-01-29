@@ -34,7 +34,6 @@ class CampaignBase(object):
     '''
     __metaclass__ = abc.ABCMeta
 
-    @abc.abstractmethod
     def __init__(self, config_file, result_dir=None, debug=False):
         '''
         Typically one would invoke a campaign as follows:
@@ -75,6 +74,7 @@ class CampaignBase(object):
 
         # TODO: consider making this configurable
         self.status_interval = 100
+        self.gui_app = False
 
         self.seed_interval = None
         self.current_seed = None
@@ -87,15 +87,20 @@ class CampaignBase(object):
 
         self._read_config_file()
 
-    def _read_config_file(self):
-        logger.info('Reading config from %s', self.config_file)
-        self.config = load_and_fix_config(self.config_file)
-        logger.info('Using target program: %s',self.config['target']['program'])
+        self.campaign_id = self.config['campaign']['id']
+       
+        self.current_seed = self.config['runoptions']['first_iteration']
+        self.seed_interval = self.config['runoptions']['seed_interval']
 
-    def _common_init(self):
-        '''
-        Initializes some additional properties common to all platforms
-        '''
+        self.seed_dir_in = self.config['directories']['seedfile_dir']
+        if self.outdir_base is None:
+            # it wasn't spec'ed on the command line so use the config
+            self.outdir_base = self.config['directories']['results_dir']
+
+        self.work_dir_base = self.config['directories']['working_dir']
+        self.program = self.config['target']['program']
+        self.cmd_template = self.config['target']['cmdline_template']
+        
         _campaign_id_no_space=re.sub('\s', '_', self.campaign_id)
         _campaign_id_with_underscores = re.sub('\W', '_', self.campaign_id)
         
@@ -110,6 +115,16 @@ class CampaignBase(object):
             self.seed_interval = 1
         if not self.current_seed:
             self.current_seed = 0
+
+        self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(self.config['fuzzer']['fuzzer'])
+        if self.config['runner']['runner']:
+            self.runner_module_name = 'certfuzz.runners.{}'.format(self.config['runner']['runner'])
+        self.debugger_module_name = 'certfuzz.debuggers.{}'.format(self.config['debugger']['debugger'])
+
+    def _read_config_file(self):
+        logger.info('Reading config from %s', self.config_file)
+        self.config = load_and_fix_config(self.config_file)
+        logger.info('Using target program: %s',self.config['target']['program'])
 
     @abc.abstractmethod
     def _pre_enter(self):
