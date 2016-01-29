@@ -13,6 +13,8 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         # args:
+        
+
 #                 seedfile=None,
 #                  seednum=None,
 #                  workdirbase=None,
@@ -22,12 +24,10 @@ class Test(unittest.TestCase):
 #                  config=None,
 #                  fuzzer_cls=None,
 #                  runner_cls=None,
-#                  keep_heisenbugs=None,
-#                  keep_duplicates=None,
 #                  cmd_template=None,
 #                  debug=False,
 
-        args = list('ABCDEFGHIJKLM')
+        args = list('ABCDEFGHILM')
         args[6] = {'runoptions': {'keep_unique_faddr': False}}
         args[7] = MockFuzzer
         self.iteration = WindowsIteration(*args)
