@@ -7,8 +7,6 @@ Created on Apr 9, 2012
 import logging
 import os
 import string
-from certfuzz.fuzztools.command_line_templating import get_command_args_list
-from certfuzz.config.simple_loader import load_config
 
 
 try:
@@ -18,6 +16,8 @@ try:
     from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
+    from certfuzz.fuzztools.command_line_templating import get_command_args_list
+    from certfuzz.config.simple_loader import load_and_fix_config
 except ImportError:
     # if we got here, we probably don't have .. in our PYTHONPATH
     import sys
@@ -30,6 +30,8 @@ except ImportError:
     from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
     from certfuzz.crash.crash_windows import WindowsCrash
     from certfuzz.debuggers import msec  # @UnusedImport
+    from certfuzz.fuzztools.command_line_templating import get_command_args_list
+    from certfuzz.config.simple_loader import load_and_fix_config
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARNING)
@@ -141,7 +143,7 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    cfg = load_config(cfg_file)
+    cfg = load_and_fix_config(cfg_file)
 
     if options.target:
         seedfile = BasicFile(options.target)
@@ -152,9 +154,9 @@ def main():
     filename_modifier = ''
     retries = 0
     debugger_class = msec.MsecDebugger
-    template = string.Template(cfg['target']['cmdline_template'])
-    cmd_as_args = get_command_args_list(template, fuzzed_file.path)[1]
-    with WindowsCrash(template, seedfile, fuzzed_file, cmd_as_args, None, debugger_class,
+    
+    cmd_as_args = get_command_args_list(cfg['target']['cmdline_template'], fuzzed_file.path)[1]
+    with WindowsCrash(cfg['target']['cmdline_template'], seedfile, fuzzed_file, cmd_as_args, None, debugger_class,
                cfg['debugger'], outdir, options.keep_uniq_faddr, cfg['target']['program'],
                retries) as crash:
         filetools.make_directories(crash.tempdir)

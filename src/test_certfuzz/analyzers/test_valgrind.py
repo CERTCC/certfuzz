@@ -7,7 +7,7 @@ Created on Apr 8, 2011
 @organization: cert.org
 '''
 import unittest
-from test_certfuzz.mocks import MockCfg
+from test_certfuzz.mocks import MockFixupCfg
 
 class Mock(object):
     pass
@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(f))
 
     def setUp(self):
-        cfg = MockCfg()
+        cfg = MockFixupCfg()
 
         crash = Mock()
         crash.fuzzedfile = Mock()
@@ -31,9 +31,12 @@ class Test(unittest.TestCase):
         pass
 
     def test_get_valgrind_cmdline(self):
-        expected = ["valgrind", "--log-file=foo.valgrind", "a", "b", "c", "d"]
-
-        self.assertEqual(self.vg._get_cmdline(), expected)
+        result = self.vg._get_cmdline()
+        self.assertTrue('valgrind' in result)
+        self.assertTrue('b' in result)
+        self.assertTrue('c' in result)
+        self.assertTrue('d' in result)
+        self.assertTrue('foo' in result)
 
     def test_get_valgrind(self):
         # cannot test directly, see test_get_valgrind_cmdline

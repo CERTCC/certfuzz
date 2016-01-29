@@ -9,6 +9,7 @@ import string
 import tempfile
 import os
 from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.config.simple_loader import fixup_config
 
 class Mock(object):
     def __init__(self, *args, **kwargs):
@@ -95,16 +96,20 @@ class MockDebugger(Mock):
     def go(self):
         return MockDbgOut()
 
+
 class MockCfg(dict):
     def __init__(self,templated=True):
         self['debugger']={'runtimeout': 1,
                          'backtracelevels': 5,
                          }
-        self['target']={'cmdline_template': 'a b c d',
+        self['target']={'cmdline_template': '$PROGRAM b c d $SEEDFILE',
                         'killprocname': 'a',
-                        'program': 'foo'}
+                        'program': 'a'}
         self['analyzer']={'exclude_unmapped_frames': False,
                           'valgrind_timeout': 1}
         self['directories'] ={}
         if templated:
             self['target']['cmdline_template'] = string.Template(self['target']['cmdline_template'])
+
+def MockFixupCfg():
+    return fixup_config(MockCfg(templated=False))

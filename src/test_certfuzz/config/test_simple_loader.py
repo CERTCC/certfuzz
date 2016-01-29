@@ -10,6 +10,9 @@ import shutil
 import os
 import yaml
 from certfuzz.config.errors import ConfigError
+from certfuzz.config.simple_loader import fixup_config
+from test_certfuzz.mocks import MockCfg
+import string
 
 
 class Test(unittest.TestCase):
@@ -60,7 +63,28 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(fpath))
         
         self.assertRaises(IOError,certfuzz.config.simple_loader.load_config,fpath)
+    
+    def test_fix_config(self):
+        cfgdict = MockCfg(templated=False)
+        cfgdict2 = MockCfg(templated=False)
         
+        # make sure cmdline_template is just a normal string
+        self.assertEqual(type(''),type(cfgdict['target']['cmdline_template']))
+        
+        x = fixup_config(cfgdict)
+        # fixup config should return a different dict
+
+        # make sure cfgdict didn't change
+        self.assertEqual(cfgdict,cfgdict2)
+
+        # fixup_config should not alter cfgdict but return a new dict
+        self.assertNotEqual(cfgdict,x)
+        
+        # make sure cmdline_template is a string.Template
+        y = string.Template('foo')
+        self.assertEqual(type(y),type(x['target']['cmdline_template']))
+
+        self.assertTrue(x['target']['program'].endswith(cfgdict['target']['program']))
 
 
 if __name__ == "__main__":

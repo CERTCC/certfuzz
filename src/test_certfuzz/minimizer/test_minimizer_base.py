@@ -9,7 +9,7 @@ from certfuzz.fuzztools import hamming
 from certfuzz.minimizer.minimizer_base import Minimizer
 import shutil
 import unittest
-from test_certfuzz.mocks import MockCfg, MockDebugger, MockCrasher
+from test_certfuzz.mocks import MockDebugger, MockCrasher, MockFixupCfg
 
 class Test(unittest.TestCase):
     def delete_file(self, f):
@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(f))
 
     def setUp(self):
-        self.cfg = MockCfg()
+        self.cfg = MockFixupCfg()
         self.crash = MockCrasher()
 
         Minimizer._debugger_cls = MockDebugger

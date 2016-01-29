@@ -6,14 +6,13 @@ Created on Aug 8, 2011
 
 import unittest
 from certfuzz.analyzers.analyzer_base import Analyzer
-from test_certfuzz.mocks import MockCfg, MockCrash
-
+from test_certfuzz.mocks import MockCrash, MockFixupCfg
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        cfg = MockCfg()
+        cfg = MockFixupCfg()
         crash = MockCrash()
         self.analyzer = Analyzer(cfg, crash, timeout=0)
         self.assertTrue(self.analyzer, 'Analyzer does not exist')

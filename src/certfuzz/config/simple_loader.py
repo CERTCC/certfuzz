@@ -7,6 +7,9 @@ import logging
 import yaml
 import os
 from errors import ConfigError
+from certfuzz.helpers.misc import fixup_path, quoted
+from string import Template
+from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
@@ -23,3 +26,27 @@ def load_config(yaml_file):
     cfg['config_timestamp'] = os.path.getmtime(yaml_file)
 
     return cfg
+
+def fixup_config(cfg):
+    '''
+    Substitutes program name into command line template
+    returns modified dict
+    '''
+    # copy the dictionary
+    cfgdict = deepcopy(cfg)
+    # fix target program path
+    cfgdict['target']['program'] = fixup_path(cfgdict['target']['program'])
+    
+    quoted_prg = quoted(cfgdict['target']['program'])
+    quoted_sf = quoted('$SEEDFILE')
+    t = Template(cfgdict['target']['cmdline_template'])
+    intermediate_t = t.safe_substitute(PROGRAM=quoted_prg, SEEDFILE=quoted_sf)
+    cfgdict['target']['cmdline_template'] = Template(intermediate_t)
+
+    for k,v in cfgdict['directories'].iteritems():
+        cfgdict['directories'][k] = fixup_path(v)
+
+    return cfgdict
+
+def load_and_fix_config(yaml_file):
+    return fixup_config(load_config(yaml_file))
