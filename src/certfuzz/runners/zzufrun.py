@@ -58,6 +58,7 @@ class ZzufRunner(Runner):
                      '--max-crashes=1',
                      '--max-usertime=5.00',
                      '--opmode=copy',
+                     '--include=%s' % self.fuzzed_file,
                      ])
         self._zzuf_args = args
 
