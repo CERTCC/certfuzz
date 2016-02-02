@@ -6,13 +6,13 @@ Created on Feb 12, 2014
 import logging
 import os
 
-from certfuzz.testcase.testcase_linux import LinuxTestcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.tc_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 from certfuzz.helpers.misc import fixup_path
+from certfuzz.testcase.testcase_linux import LinuxTestcase
 
 
 logger = logging.getLogger(__name__)
@@ -112,7 +112,7 @@ class LinuxIteration(IterationBase3):
         with LinuxTestcase(cfg=self.cfg,
                       seedfile=self.seedfile,
                       fuzzedfile=BasicFile(self.fuzzer.output_file_path),
-                      program=fixup_path(self.cfg['target']['program']),
+                      program=self.cfg['target']['program'],
                       debugger_timeout=self.cfg['debugger']['runtimeout'],
                       killprocname=self.cfg['target']['killprocname'],
                       backtrace_lines=self.cfg['debugger']['backtracelevels'],
