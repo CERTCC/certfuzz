@@ -63,7 +63,7 @@ class LinuxCampaign(CampaignBase):
 
     def _full_path_original(self, seedfile):
         # yes, two seedfile mentions are intended - adh
-        program_basename=os.path.basename(self.program).replace('"', '')
+        program_basename = os.path.basename(self.program).replace('"', '')
         return os.path.join(self.work_dir_base,
                             program_basename,
                             seedfile,
@@ -139,12 +139,6 @@ class LinuxCampaign(CampaignBase):
         if check_program_file_type('text', self.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
-
-    def _set_runner(self):
-        '''
-        Overrides parent class
-        '''
-        pass
 
     def _set_debugger(self):
         '''
