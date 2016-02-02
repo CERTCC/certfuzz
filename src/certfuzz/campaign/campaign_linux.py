@@ -187,7 +187,7 @@ class LinuxCampaign(CampaignBase):
                             uniq_func=self._crash_is_unique,
                             config=self.config,
                             fuzzer_cls=self.fuzzer_cls,
-                            runner_cls=ZzufRunner,
+                            runner_cls=self.runner_cls,
                             ) as iteration:
             try:
                 iteration()

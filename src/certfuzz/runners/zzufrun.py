@@ -75,3 +75,5 @@ class ZzufRunner(Runner):
             if rc != 0:
                 self.saw_crash = True
 #                 raise RunnerError('zzuf returncode: {}'.format(rc))
+
+_runner_class=ZzufRunner
