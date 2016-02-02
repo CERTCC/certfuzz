@@ -75,10 +75,10 @@ class BffCrash(Testcase):
     def update_crash_details(self):
         Testcase.update_crash_details(self)
 
-        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'],
+        cmdlist = get_command_args_list(self.cfg['target']['cmdline_template'],
                                              infile=self.fuzzedfile.path,
                                              posix=True)[1]
-
+        self.cmdargs = cmdlist[1:]
         self.is_crash = self.confirm_crash()
 
         if self.is_crash:
