@@ -27,7 +27,7 @@ elif host_info.is_osx():
     from certfuzz.debuggers.crashwrangler import CrashWrangler as debugger_cls
 
 
-class BffCrash(Testcase):
+class LinuxTestcase(Testcase):
     '''
     classdocs
     '''

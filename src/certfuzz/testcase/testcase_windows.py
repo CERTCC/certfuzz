@@ -38,7 +38,7 @@ exp_rank = {
             }
 
 
-class WindowsCrash(Testcase):
+class WindowsTestcase(Testcase):
     tmpdir_pfx = 'bff-crash-'
     _debugger_cls = MsecDebugger
 
