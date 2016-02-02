@@ -8,13 +8,13 @@ import os
 import sys
 
 from certfuzz import debuggers
-from certfuzz.config.config_linux import LinuxConfig
 from certfuzz.testcase.testcase_linux import LinuxTestcase
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools import filetools, text
 from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
+from certfuzz.config.simple_loader import load_and_fix_config
 
 
 mydir = os.path.dirname(os.path.abspath(__file__))
@@ -123,9 +123,6 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    cfg = LinuxConfig(cfg_file)
-    with cfg:
-        pass
 
     if options.target:
         seedfile = BasicFile(options.target)
@@ -137,9 +134,18 @@ def main():
 
     crashers_dir = '.'
 
-    with LinuxTestcase(cfg, seedfile, fuzzed_file, cfg.program,
-                  cfg.debugger_timeout, cfg.killprocname, cfg.backtracelevels,
-                  crashers_dir, options.keep_uniq_faddr) as crash:
+    cfg = load_and_fix_config(cfg_file)
+
+    with LinuxTestcase(cfg=cfg, 
+                       seedfile=seedfile, 
+                       fuzzedfile=fuzzed_file, 
+                       program=cfg['target']['program'],
+                       debugger_timeout=cfg['debugger']['runtimeout'], 
+                       killprocname=cfg['target']['killprocname'], 
+                       backtrace_lines=cfg['debugger']['backtracelevels'],
+                       crashers_dir=crashers_dir, 
+                       workdir_base=None,
+                       keep_faddr=options.keep_uniq_faddr) as crash:
 
         filetools.make_directories(crash.tempdir)
         logger.info('Copying %s to %s', fuzzed_file.path, crash.tempdir)

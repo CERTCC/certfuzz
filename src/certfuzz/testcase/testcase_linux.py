@@ -6,7 +6,7 @@ Created on Jul 19, 2011
 import logging
 import os
 
-from certfuzz.testcase.crash_base import Testcase, CrashError
+from certfuzz.testcase.testcase_base2 import Testcase, CrashError
 from certfuzz.fuzztools import hostinfo, filetools
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
