@@ -22,9 +22,13 @@ _zzuf_loc = None
 _use_cert_version_of_zzuf=False
 
 def check_cert_zzuf():
+    result = ''
     #zzuf --help
-    # if 'null' in result
-    return True
+    
+    if 'null' in result:
+        _use_cert_version_of_zzuf=True
+    
+    _use_cert_version_of_zzuf=False
 
 def _find_zzuf():
     global _zzuf_loc
