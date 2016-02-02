@@ -19,6 +19,12 @@ logger = logging.getLogger(__name__)
 _zzuf_basename = 'zzuf'
 _zzuf_loc = None
 
+_use_cert_version_of_zzuf=False
+
+def check_cert_zzuf():
+    #zzuf --help
+    # if 'null' in result
+    return True
 
 def _find_zzuf():
     global _zzuf_loc
@@ -52,14 +58,21 @@ class ZzufRunner(Runner):
         args = [_zzuf_loc]
         if self._quiet:
             args.append('--quiet')
+            
+        _opmode='copy'
+        if _use_cert_version_of_zzuf:
+            _opmode='null'
+        
         args.extend(['--signal',
                      '--ratio=0.0',
                      '--seed=0',
                      '--max-crashes=1',
                      '--max-usertime=5.00',
-                     '--opmode=copy',
+                     '--opmode=%s' % _opmode,
                      '--include=%s' % self.fuzzed_file,
                      ])
+        
+        
         self._zzuf_args = args
 
     def _run(self):
