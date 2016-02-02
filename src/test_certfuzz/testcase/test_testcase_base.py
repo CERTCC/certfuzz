@@ -1,10 +1,10 @@
 '''
-Created on Apr 10, 2012
+Created on Oct 7, 2013
 
 @organization: cert.org
 '''
 import unittest
-#import certfuzz.crash.crash_windows
+import certfuzz.testcase.testcase_base
 
 class Test(unittest.TestCase):
 
@@ -18,5 +18,5 @@ class Test(unittest.TestCase):
         pass
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

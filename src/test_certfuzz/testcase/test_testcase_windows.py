@@ -4,6 +4,7 @@ Created on Apr 10, 2012
 @organization: cert.org
 '''
 import unittest
+import certfuzz.testcase.testcase_windows
 
 class Test(unittest.TestCase):
 

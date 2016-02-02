@@ -9,7 +9,7 @@ import sys
 
 from certfuzz import debuggers
 from certfuzz.config.config_linux import LinuxConfig
-from certfuzz.crash.bff_crash import BffCrash
+from certfuzz.testcase.testcase_linux import LinuxTestcase
 from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.file_handlers.basicfile import BasicFile
@@ -137,7 +137,7 @@ def main():
 
     crashers_dir = '.'
 
-    with BffCrash(cfg, seedfile, fuzzed_file, cfg.program,
+    with LinuxTestcase(cfg, seedfile, fuzzed_file, cfg.program,
                   cfg.debugger_timeout, cfg.killprocname, cfg.backtracelevels,
                   crashers_dir, options.keep_uniq_faddr) as crash:
 

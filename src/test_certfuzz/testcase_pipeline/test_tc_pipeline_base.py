@@ -4,14 +4,14 @@ Created on Oct 29, 2014
 @organization: cert.org
 '''
 import unittest
-import certfuzz.testcase_pipeline.tc_pipeline_base
+import certfuzz.tc_pipeline.tc_pipeline_base
 import tempfile
 import shutil
 import os
-import certfuzz.testcase_pipeline.tc_pipeline_base
+import certfuzz.tc_pipeline.tc_pipeline_base
 
 
-class TCPL_Impl(certfuzz.testcase_pipeline.tc_pipeline_base.TestCasePipelineBase):
+class TCPL_Impl(certfuzz.tc_pipeline.tc_pipeline_base.TestCasePipelineBase):
     def _setup_analyzers(self):
         pass
 
@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
 
     def test_abstract_class(self):
-        cls = certfuzz.testcase_pipeline.tc_pipeline_base.TestCasePipelineBase
+        cls = certfuzz.tc_pipeline.tc_pipeline_base.TestCasePipelineBase
 
         # should fail since we haven't implemented the abc methods
         self.assertRaises(TypeError, cls)
@@ -83,7 +83,7 @@ class Test(unittest.TestCase):
     def test_analyze(self):
         class TCPL_Impl2(TCPL_Impl):
             def _analyze(self, testcase):
-                certfuzz.testcase_pipeline.tc_pipeline_base.TestCasePipelineBase._analyze(self, testcase)
+                certfuzz.tc_pipeline.tc_pipeline_base.TestCasePipelineBase._analyze(self, testcase)
 
         tcpl = TCPL_Impl2(outdir=self.tmpdir)
 
@@ -105,7 +105,7 @@ class Test(unittest.TestCase):
             touch_watchdog_call_count.append(1)
 
         # monkey patch touch_watchdog_file
-        certfuzz.testcase_pipeline.tc_pipeline_base.touch_watchdog_file = inc_cc
+        certfuzz.tc_pipeline.tc_pipeline_base.touch_watchdog_file = inc_cc
 
         tc = MockTestCase()
         tcpl.analyzer_classes = [MockAnalyzer for _ in xrange(5)]

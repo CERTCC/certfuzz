@@ -7,7 +7,7 @@ import glob
 import logging
 import os
 
-from certfuzz.crash.crash_windows import WindowsCrash
+from certfuzz.testcase.testcase_windows import WindowsTestcase
 from certfuzz.debuggers.output_parsers.errors import DebuggerFileError
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
@@ -18,7 +18,7 @@ from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.fuzztools.filetools import delete_files_or_dirs
 from certfuzz.iteration.iteration_base3 import IterationBase3
 from certfuzz.runners.errors import RunnerRegistryError
-from certfuzz.testcase_pipeline.tc_pipeline_windows import WindowsTestCasePipeline
+from certfuzz.tc_pipeline.tc_pipeline_windows import WindowsTestCasePipeline
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
@@ -170,7 +170,7 @@ class WindowsIteration(IterationBase3):
 
     def _construct_testcase(self):
         logger.debug('Building testcase object')
-        with WindowsCrash(cmd_template=self.cmd_template,
+        with WindowsTestcase(cmd_template=self.cmd_template,
                           seedfile=self.seedfile,
                           fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                           cmdlist=get_command_args_list(self.cmd_template, self.fuzzer.output_file_path)[1],

@@ -14,7 +14,7 @@ try:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.crash.crash_windows import WindowsCrash
+    from certfuzz.testcase.testcase_windows import WindowsTestcase
     from certfuzz.debuggers import msec  # @UnusedImport
     from certfuzz.fuzztools.command_line_templating import get_command_args_list
     from certfuzz.config.simple_loader import load_and_fix_config
@@ -28,7 +28,7 @@ except ImportError:
     from certfuzz.fuzztools import filetools, text
     from certfuzz.file_handlers.basicfile import BasicFile
     from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
-    from certfuzz.crash.crash_windows import WindowsCrash
+    from certfuzz.testcase.testcase_windows import WindowsTestcase
     from certfuzz.debuggers import msec  # @UnusedImport
     from certfuzz.fuzztools.command_line_templating import get_command_args_list
     from certfuzz.config.simple_loader import load_and_fix_config
@@ -156,7 +156,7 @@ def main():
     debugger_class = msec.MsecDebugger
     
     cmd_as_args = get_command_args_list(cfg['target']['cmdline_template'], fuzzed_file.path)[1]
-    with WindowsCrash(cmd_template=cfg['target']['cmdline_template'], 
+    with WindowsTestcase(cmd_template=cfg['target']['cmdline_template'], 
                       seedfile=seedfile, 
                       fuzzedfile=fuzzed_file, 
                       cmdlist=cmd_as_args, 

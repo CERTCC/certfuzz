@@ -7,8 +7,8 @@ import logging
 import os
 import tempfile
 
-from certfuzz.crash.errors import CrashError
-from certfuzz.crash.testcase_base import TestCaseBase
+from certfuzz.testcase.errors import CrashError
+from certfuzz.testcase.testcase_base import TestCaseBase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools import filetools
 

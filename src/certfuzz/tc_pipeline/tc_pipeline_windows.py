@@ -7,7 +7,7 @@ import logging
 import os
 
 from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
-from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
+from certfuzz.tc_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.fuzztools import filetools
 from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.reporters.copy_files import CopyFilesReporter

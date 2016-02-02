@@ -6,7 +6,7 @@ Created on Jul 19, 2011
 import logging
 import os
 
-from certfuzz.crash.crash_base import Testcase, CrashError
+from certfuzz.testcase.testcase_base2 import Testcase, CrashError
 from certfuzz.fuzztools import hostinfo, filetools
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
@@ -27,7 +27,7 @@ elif host_info.is_osx():
     from certfuzz.debuggers.crashwrangler import CrashWrangler as debugger_cls
 
 
-class BffCrash(Testcase):
+class LinuxTestcase(Testcase):
     '''
     classdocs
     '''
@@ -75,10 +75,10 @@ class BffCrash(Testcase):
     def update_crash_details(self):
         Testcase.update_crash_details(self)
 
-        cmdlist = get_command_args_list(self.cfg['target']['cmdline_template'],
+        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'],
                                              infile=self.fuzzedfile.path,
                                              posix=True)[1]
-        self.cmdargs = cmdlist[1:]
+
         self.is_crash = self.confirm_crash()
 
         if self.is_crash:

@@ -7,7 +7,7 @@ import hashlib
 import logging
 import os
 
-from certfuzz.crash.crash_base import Testcase
+from certfuzz.testcase.testcase_base2 import Testcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
 from certfuzz.helpers.misc import random_str

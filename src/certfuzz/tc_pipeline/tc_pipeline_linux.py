@@ -19,7 +19,7 @@ from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools import filetools
 from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
-from certfuzz.testcase_pipeline.tc_pipeline_base import TestCasePipelineBase
+from certfuzz.tc_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.reporters.copy_files import CopyFilesReporter
 from certfuzz.reporters.testcase_logger import TestcaseLoggerReporter
 

@@ -5,11 +5,11 @@ Created on Aug 3, 2011
 '''
 
 import unittest
-# from certfuzz.crash.bff_crash import Crash
 from test_certfuzz.mocks import Mock
 import tempfile
 import os
 import shutil
+import certfuzz.testcase.testcase_linux
 
 class MockConfig(Mock):
     def __init__(self, tmpdir):

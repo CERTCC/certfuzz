@@ -4,7 +4,7 @@ Created on Oct 29, 2014
 @organization: cert.org
 '''
 import unittest
-import certfuzz.testcase_pipeline.tc_pipeline_linux
+import certfuzz.tc_pipeline.tc_pipeline_linux
 
 class Test(unittest.TestCase):
 

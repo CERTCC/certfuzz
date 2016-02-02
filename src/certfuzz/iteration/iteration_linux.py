@@ -6,12 +6,12 @@ Created on Feb 12, 2014
 import logging
 import os
 
-from certfuzz.crash.bff_crash import BffCrash
+from certfuzz.testcase.testcase_linux import LinuxTestcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.zzuflog import ZzufLog
 from certfuzz.iteration.iteration_base3 import IterationBase3
-from certfuzz.testcase_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
+from certfuzz.tc_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 from certfuzz.helpers.misc import fixup_path
 
 
@@ -109,7 +109,7 @@ class LinuxIteration(IterationBase3):
 
     def _construct_testcase(self):
         logger.info('Building testcase object')
-        with BffCrash(cfg=self.cfg,
+        with LinuxTestcase(cfg=self.cfg,
                       seedfile=self.seedfile,
                       fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                       program=fixup_path(self.cfg['target']['program']),
