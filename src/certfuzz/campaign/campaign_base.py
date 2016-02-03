@@ -159,6 +159,7 @@ class CampaignBase(object):
         self._setup_workdir()
         self._set_fuzzer()
         self._set_runner()
+        self._check_runner()
         self._setup_output()
         self._create_seedfile_set()
 
@@ -254,6 +255,14 @@ class CampaignBase(object):
         if self.runner_module_name:
             self.runner_module = import_module_by_name(self.runner_module_name)
             self.runner_cls = self.runner_module._runner_class
+
+    def _check_runner(self):
+        # try to run the runner module's check_runner method
+        try:
+            self.runner_module.check_runner()
+        except AttributeError:
+            # not a big deal if it's not there, just note it and keep going.
+            logger.warn('Runner module %s has no check_runner method. Skipping runner check.')
 
     @property
     def _version_file(self):
