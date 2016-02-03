@@ -108,4 +108,7 @@ class GDB(Debugger):
         subp.run_with_timer(cmdline, self.timeout, self.killprocname, stdout=os.devnull)
 
         self._remove_temp_file()
+        if not os.path.exists(self.outfile):
+            # touch it if it doesn't exist
+            open(self.outfile, 'w').close()
         return GDBfile(self.outfile, self.exclude_unmapped_frames, self.keep_uniq_faddr)
