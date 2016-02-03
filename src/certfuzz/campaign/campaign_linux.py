@@ -110,13 +110,17 @@ class LinuxCampaign(CampaignBase):
         # Run the program once to cache it into memory
         fullpathorig = self._full_path_original(sf.path)
         cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=fullpathorig)[1]
+        logger.info('Invoking %s' % cmdargs)
         subp.run_with_timer(cmdargs,
                             self.config['runner']['runtimeout'] * 8,
                             self.config['target']['killprocname'],
-                            use_shell=False)
+                            use_shell=False,
+                            seeoutput=True,
+                            )
 
         # Give target time to die
-        time.sleep(1)
+        logger.info('Please ensure that the target program has just executed successfully')
+        time.sleep(10)
 
     def _setup_watchdog(self):
         logger.debug('setup watchdog')

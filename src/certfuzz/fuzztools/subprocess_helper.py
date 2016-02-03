@@ -42,6 +42,9 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
     @return: none
     '''
     output = ''
+    _seeoutput = False
+    if options and options.get('seeoutput'):
+        _seeoutput = True
     if options and options.get('stdout'):
         output = open(options['stdout'], 'w')
     else:
@@ -49,7 +52,7 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
 
     errors = ''
     if options and options.get('stderr'):
-        errors = open(options['stderr'], 'w')
+       errors = open(options['stderr'], 'w')
     else:
         errors = open(os.devnull, 'w')
 
@@ -62,12 +65,15 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
     # remove empty args from the list [Fix for BFF-17]
     #    ['a','','b','c'] -> ['a', 'b', 'c']
     args = [arg for arg in args if arg]
-    
+
     for index, arg in enumerate(args):
         args[index] = string.replace(args[index], '"', '')
 
     try:
-        p = subprocess.Popen(args, stdout=output, stderr=errors, env=env, shell=use_shell)
+        if _seeoutput:
+            p = subprocess.Popen(args, env=env, shell=use_shell)
+        else:
+            p = subprocess.Popen(args, stdout=output, stderr=errors, env=env, shell=use_shell)
     except:
         print "Failed to run [%s]" % ' '.join(args)
         sys.exit(-1)
@@ -80,7 +86,9 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
     t.cancel()
 
     # close our stdout and stderr filehandles
-    [fh.close() for fh in (output, errors)]
+
+    if not _seeoutput:
+        [fh.close() for fh in (output, errors)]
     return p
 
 
