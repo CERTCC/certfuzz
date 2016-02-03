@@ -36,17 +36,17 @@ def _verify_zzuf_installed():
 
 
 def check_cert_zzuf():
-    sawnullmode = False
     global _use_cert_version_of_zzuf
+
     _verify_zzuf_installed()
+
     result = subprocess.check_output(['zzuf', '-h'])
+    
     for line in result.split(os.linesep):
-        if '  -O, --opmode <mode>' and 'null' in line:
-            sawnullmode = True
-    if sawnullmode:
-        _use_cert_version_of_zzuf = True
-    else:
-        _use_cert_version_of_zzuf = False
+        check_for=('--opmode <mode>', 'null')
+        
+        if all(x in line for x in check_for):
+            _use_cert_version_of_zzuf = True
 
 class ZzufRunner(Runner):
     def __init__(self, options, cmd_template, fuzzed_file, workingdir_base):
