@@ -35,7 +35,7 @@ def _verify_zzuf_installed():
         raise RunnerNotFoundError('Unable to locate {}, $PATH={}'.format(_zzuf_basename, os.environ['PATH']))
 
 
-def check_cert_zzuf():
+def check_runner():
     global _use_cert_version_of_zzuf
 
     _verify_zzuf_installed()

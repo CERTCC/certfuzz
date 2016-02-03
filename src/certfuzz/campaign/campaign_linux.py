@@ -81,7 +81,6 @@ class LinuxCampaign(CampaignBase):
         if self.config['runoptions']['watchdogtimeout']:
             self._setup_watchdog()
         check_ppid()
-        self.runner_module.check_cert_zzuf()
         self._cache_app()
 
     def _pre_exit(self):
