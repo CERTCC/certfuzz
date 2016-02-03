@@ -36,8 +36,8 @@ def main():
         print a.__dict__
 
 
-def annotate_callgrind(crash, file_ext='annotated', options=None):
-    infile = callgrind.get_file(crash.fuzzedfile.path)
+def annotate_callgrind(testcase, file_ext='annotated', options=None):
+    infile = callgrind.get_file(testcase.fuzzedfile.path)
 
     if options is None:
         options = {}
@@ -46,11 +46,11 @@ def annotate_callgrind(crash, file_ext='annotated', options=None):
     CallgrindAnnotate(infile, file_ext, options)
 
 
-def annotate_callgrind_tree(crash):
+def annotate_callgrind_tree(testcase):
     options = {'tree': 'calling'}
     file_ext = 'calltree'
 
-    annotate_callgrind(crash, file_ext, options)
+    annotate_callgrind(testcase, file_ext, options)
 
 
 class CallgrindAnnotate(object):

@@ -18,19 +18,19 @@ class Analyzer(object):
     '''
     classdocs
     '''
-    def __init__(self, cfg, crash, outfile=None, timeout=None, **options):
+    def __init__(self, cfg, testcase, outfile=None, timeout=None, **options):
         logger.debug('Initializing %s', self.__class__.__name__)
         self.cfg = cfg
-        self.crash = crash
+        self.testcase = testcase
 
-        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'], crash.fuzzedfile.path)[1]
+        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'], testcase.fuzzedfile.path)[1]
         self.outfile = outfile
         self.timeout = float(timeout)
         self.progname = self.cmdargs[1]
         self.options = options
 
         self.preserve_stderr = False
-        self.tmpdir = crash.fuzzedfile.dirname
+        self.tmpdir = testcase.fuzzedfile.dirname
 
         # child classes should explicitly set this to True if they need it:
         self.empty_output_ok = False

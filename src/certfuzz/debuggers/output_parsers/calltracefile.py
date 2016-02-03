@@ -26,7 +26,7 @@ class Calltracefile:
         '''
         Create a GDB file object from the gdb output file <file>
         @param lines: The lines of the gdb file
-        @param is_crash: True if gdb file represents a crash
+        @param is_crash: True if gdb file represents a testcase
         @param is_assert_fail: True if gdb file represents an assert_fail
         @param is_debugbuild: True if gdb file contains source code lines
         '''

@@ -214,7 +214,7 @@ class LinuxCampaign(CampaignBase):
                             workdirbase=self.working_dir,
                             outdir=self.outdir,
                             sf_set=self.seedfile_set,
-                            uniq_func=self._crash_is_unique,
+                            uniq_func=self._testcase_is_unique,
                             config=self.config,
                             fuzzer_cls=self.fuzzer_cls,
                             runner_cls=self.runner_cls,

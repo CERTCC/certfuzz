@@ -18,11 +18,11 @@ get_file = lambda x: '%s.%s' % (x, OUTFILE_EXT)
 
 
 class Valgrind(Analyzer):
-    def __init__(self, cfg, crash):
-        outfile = get_file(crash.fuzzedfile.path)
+    def __init__(self, cfg, testcase):
+        outfile = get_file(testcase.fuzzedfile.path)
         timeout = cfg['analyzer']['valgrind_timeout']
 
-        Analyzer.__init__(self, cfg, crash, outfile, timeout)
+        Analyzer.__init__(self, cfg, testcase, outfile, timeout)
         self.empty_output_ok = True
         self.missing_output_ok = True
 

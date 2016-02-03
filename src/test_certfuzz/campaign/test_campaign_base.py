@@ -121,18 +121,18 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(self.campaign.working_dir))
 
     def test_crash_is_unique(self):
-        self.assertEqual(0, len(self.campaign.crashes_seen))
-        self.assertTrue(self.campaign._crash_is_unique(1))
-        self.assertEqual(1, len(self.campaign.crashes_seen))
-        self.assertFalse(self.campaign._crash_is_unique(1))
-        self.assertEqual(1, len(self.campaign.crashes_seen))
-        self.assertTrue(self.campaign._crash_is_unique(2))
-        self.assertEqual(2, len(self.campaign.crashes_seen))
-        self.assertFalse(self.campaign._crash_is_unique(2))
-        self.assertEqual(2, len(self.campaign.crashes_seen))
+        self.assertEqual(0, len(self.campaign.testcases_seen))
+        self.assertTrue(self.campaign._testcase_is_unique(1))
+        self.assertEqual(1, len(self.campaign.testcases_seen))
+        self.assertFalse(self.campaign._testcase_is_unique(1))
+        self.assertEqual(1, len(self.campaign.testcases_seen))
+        self.assertTrue(self.campaign._testcase_is_unique(2))
+        self.assertEqual(2, len(self.campaign.testcases_seen))
+        self.assertFalse(self.campaign._testcase_is_unique(2))
+        self.assertEqual(2, len(self.campaign.testcases_seen))
 
         for x in [1, 2]:
-            self.assertTrue(x in self.campaign.crashes_seen)
+            self.assertTrue(x in self.campaign.testcases_seen)
 
     def test_keep_going(self):
         for _x in range(100):
