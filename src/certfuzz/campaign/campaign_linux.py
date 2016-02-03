@@ -20,9 +20,6 @@ from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
-from certfuzz.fuzzers.bytemut import ByteMutFuzzer
-from certfuzz.runners.zzufrun import ZzufRunner
-from certfuzz.helpers.misc import fixup_path
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 
