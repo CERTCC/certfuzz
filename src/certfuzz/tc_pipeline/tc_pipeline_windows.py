@@ -48,9 +48,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         logger.info('Minimizing testcase %s', testcase.signature)
         logger.debug('config = %s', self.cfg)
 
-        config = self._create_minimizer_cfg()
-
-        kwargs = {'cfg': config,
+        kwargs = {'cfg': self.cfg,
                   'crash': testcase,
                   'seedfile_as_target': True,
                   'bitwise': False,
@@ -111,16 +109,3 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
             return (True, 'heisenbug')
         else:
             return (False, 'skip heisenbugs')
-
-    def _create_minimizer_cfg(self):
-        class DummyCfg(object):
-            pass
-        config = DummyCfg()
-        config.backtracelevels = 5  # doesn't matter what this is, we don't use it
-        config.debugger_timeout = self.cfg['debugger']['runtimeout']
-        config.get_command_args_list = lambda x: get_command_args_list(self.options['cmd_template'], x)[1]
-        config.program = self.cfg['target']['program']
-        config.killprocname = None
-        config.exclude_unmapped_frames = False
-        config.watchdogfile = os.devnull
-        return config

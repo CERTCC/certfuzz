@@ -63,6 +63,7 @@ class Minimizer(object):
         self.ext = self.crash.fuzzedfile.ext
         self.logger = None
         self.log_file_hdlr = None
+        self.backtracelevels = 5
 
         logger.setLevel(logging.INFO)
 
@@ -187,6 +188,10 @@ class Minimizer(object):
 
     def __enter__(self):
         # make sure we can actually minimize
+        try:
+            self.backtracelevels = self.cfg['debugger']['backtracelevels']
+        except KeyError:
+            pass
         if not self._is_crash_to_minimize():
             msg = 'Unable to minimize: No crash'
             self.logger.info(msg)
@@ -349,7 +354,7 @@ class Minimizer(object):
                 if dbg.is_crash:
                     times.append(delta)
 
-                current_sig = self.get_signature(dbg, self.cfg['debugger']['backtracelevels'])
+                current_sig = self.get_signature(dbg, self.backtracelevels)
 
                 # ditch the temp file
                 if os.path.exists(f):
@@ -380,16 +385,27 @@ class Minimizer(object):
 
     def run_debugger(self, infile, outfile):
         self.debugger_runs += 1
-        cmd_args = get_command_args_list(self.cfg['target']['cmdline_template'],infile)[1]
+        cmd_args = get_command_args_list(self.cfg['target']['cmdline_template'], infile)[1]
+        cmd = cmd_args[0]
+        args = cmd_args[1:]
 #         cmd_args = self.cfg.get_command_args_list(infile)
+        try:
+            killprocname = self.cfg['target']['killprocname']
+        except KeyError:
+            killprocname = cmd
 
-        dbg = self._debugger_cls(cmd_args[0],
-                            cmd_args,
+        try:
+            exclude_unmapped_frames = self.cfg['analyzer']['exclude_unmapped_frames']
+        except KeyError:
+            exclude_unmapped_frames = True
+
+        dbg = self._debugger_cls(cmd,
+                            args,
                             outfile,
                             self.debugger_timeout,
-                            self.cfg['target']['killprocname'],
+                            killprocname,
                             template=self.crash.debugger_template,
-                            exclude_unmapped_frames=self.cfg['analyzer']['exclude_unmapped_frames'],
+                            exclude_unmapped_frames=exclude_unmapped_frames,
                             keep_uniq_faddr=self.keep_uniq_faddr,
                             workingdir=self.tempdir,
                             watchcpu=self.watchcpu
@@ -470,7 +486,7 @@ class Minimizer(object):
         dbg = self.run_debugger(self.tempfile, f)
 
         if dbg.is_crash:
-            newfuzzed_hash = self.get_signature(dbg, self.cfg['debugger']['backtracelevels'])
+            newfuzzed_hash = self.get_signature(dbg, self.backtracelevels)
         else:
             newfuzzed_hash = None
         # initialize or increment the counter for this hash
