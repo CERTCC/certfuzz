@@ -380,11 +380,13 @@ class Minimizer(object):
 
     def run_debugger(self, infile, outfile):
         self.debugger_runs += 1
-        cmd_args = get_command_args_list(self.cfg['target']['cmdline_template'],infile)[1]
+        cmd_args = get_command_args_list(self.cfg['target']['cmdline_template'], infile)[1]
+        cmd = cmd_args[0]
+        args = cmd_args[1:]
 #         cmd_args = self.cfg.get_command_args_list(infile)
 
-        dbg = self._debugger_cls(cmd_args[0],
-                            cmd_args,
+        dbg = self._debugger_cls(cmd,
+                            args,
                             outfile,
                             self.debugger_timeout,
                             self.cfg['target']['killprocname'],
