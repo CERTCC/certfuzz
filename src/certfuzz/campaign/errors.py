@@ -12,3 +12,6 @@ class CampaignError(CERTFuzzError):
 
 class CampaignScriptError(CampaignError):
     pass
+
+class CmdlineTemplateError(CampaignError):
+    pass
