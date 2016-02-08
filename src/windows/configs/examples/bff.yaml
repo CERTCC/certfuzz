@@ -138,7 +138,7 @@ fuzzer:
 #
 #####################################################################
 runner:
-    # runner: null
+    # runner: nullrun
     runner: winrun
     hideoutput: False
     runtimeout: 5
