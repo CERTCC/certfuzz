@@ -179,8 +179,8 @@ class DarwinBuild(Build):
     def _sync_dependencies(self):
         # Retrieve binary dependecies for building OSX installer
         # TODO: What if rsync fails?
-        subprocess.call(['rsync', '-EaxSv', '--delete', self.SHARED_DEPS, self.LOCAL_DEPS])
-        subprocess.call(['rsync', '-EaxSv', self.LOCAL_DEPS, self.INSTALLER_BASE])
+        subprocess.check_call(['rsync', '-EaxSv', '--delete', self.SHARED_DEPS, self.LOCAL_DEPS])
+        subprocess.check_call(['rsync', '-EaxSv', self.LOCAL_DEPS, self.INSTALLER_BASE])
 
     def package(self):
         self._sync_dependencies()
