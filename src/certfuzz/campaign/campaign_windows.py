@@ -26,7 +26,7 @@ class WindowsCampaign(CampaignBase):
 
     def __init__(self, config_file, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
-        self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker',False)
+        self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker', False)
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -80,7 +80,7 @@ class WindowsCampaign(CampaignBase):
             return
 
         logger.debug('winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
-        self.runner_module_name = None
+        self.runner_module_name = 'certfuzz.runners.nullrun'
 
     def _post_enter(self):
         self._start_buttonclicker()
