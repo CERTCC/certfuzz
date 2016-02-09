@@ -59,23 +59,23 @@ class WindowsIteration(IterationBase3):
 
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
-        self.keep_uniq_faddr = config['runoptions'].get('keep_unique_faddr',False)
+        self.keep_uniq_faddr = config['runoptions'].get('keep_unique_faddr', False)
 
         self.cmd_template = cmd_template
 
-        if self.runner_cls is None:
+        if self.runner_cls.is_nullrunner:
             # null runner_cls case
             self.retries = 0
         else:
             # runner_cls is not null
             self.retries = 4
 
-        self.pipeline_options = {'keep_duplicates': self.cfg['runoptions'].get('keep_duplicates',False),
-                                 'keep_heisenbugs': self.cfg['runoptions'].get('keep_heisenbugs',False),
+        self.pipeline_options = {'keep_duplicates': self.cfg['runoptions'].get('keep_duplicates', False),
+                                 'keep_heisenbugs': self.cfg['runoptions'].get('keep_heisenbugs', False),
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,
-                                 'used_runner': self.runner_cls is not None,
-                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions'].get('minimize',False)
+                                 'null_runner': self.runner_cls.is_nullrunner,
+                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions'].get('minimize', False)
                                  }
 
     def __exit__(self, etype, value, traceback):
