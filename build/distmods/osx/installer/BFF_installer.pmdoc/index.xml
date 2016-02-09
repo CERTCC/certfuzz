@@ -17,15 +17,27 @@
 </choice>
 <choice title="Python 2.7" id="choice59" starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.Python2.7.pkg" />
+<choice-reqs>
+<requirement id="sosv" operator="lt" value="'10.11.0'" selected="no" enabled="no" hidden="unchanged" startSelected="unchanged" startEnabled="unchanged" startHidden="unchanged" />
+</choice-reqs>
 </choice>
 <choice title="Python 2.7 Numpy" id="choice60" starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.Python2.7_numpy.pkg" />
+<choice-reqs>
+<requirement id="sosv" operator="lt" value="'10.11.0'" selected="no" enabled="no" hidden="unchanged" startSelected="unchanged" startEnabled="unchanged" startHidden="unchanged" />
+</choice-reqs>
 </choice>
 <choice title="Python 2.7 Scipy" id="choice61" starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.Python2.7_scipy.pkg" />
+<choice-reqs>
+<requirement id="sosv" operator="lt" value="'10.11.0'" selected="no" enabled="no" hidden="unchanged" startSelected="unchanged" startEnabled="unchanged" startHidden="unchanged" />
+</choice-reqs>
 </choice>
 <choice title="Python 2.7 Matplotlib" id="choice62" starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.Python2.7_matplotlib.pkg" />
+<choice-reqs>
+<requirement id="sosv" operator="lt" value="'10.11.0'" selected="no" enabled="no" hidden="unchanged" startSelected="unchanged" startEnabled="unchanged" startHidden="unchanged" />
+</choice-reqs>
 </choice>
 <choice title="Python 2.7 Setuptools" id="choice63" starts_selected="true" starts_enabled="true" starts_hidden="false">
 <pkgref id="com.cert.cc.certBff.setuptools-0.6c11-py2.7.pkg" />
