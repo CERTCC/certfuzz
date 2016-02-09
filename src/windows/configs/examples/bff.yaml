@@ -3,7 +3,7 @@
 #
 # id: used for identifying campaign, placement of results
 # keep_heisenbugs: Keep crashing testcases detected by hook, but
-# not when run via the debugger.
+#                  not when run via the debugger.
 # use_buttonclicker: Spawn program to click buttons
 #####################################################################
 campaign:
@@ -16,7 +16,7 @@ campaign:
 #
 # program: Path to fuzzing target executable
 # cmdline_template: Used to specify the command-line invocation of
-# the target
+#                   the target
 #####################################################################
 target:
     program: C:\BFF\imagemagick\convert.exe
@@ -47,7 +47,7 @@ target:
 #
 # seedfile_dir: Location of seed files (relative to bff.py)
 # working_dir: Temporary directory used by BFF. Use a ramdisk to
-# reduce disk activity
+#              reduce disk activity
 # results_dir: Location of fuzzing results (relative to bff.py)
 #####################################################################
 directories:
@@ -103,7 +103,7 @@ runoptions:
 # verify: do not mutate file. Used for verifying crashing testcases
 # range_list: byte ranges to be fuzzed. One range per line, hex or decimal
 # fuzz_zip_container: rather than fuzzing zip file contents, fuzz the
-# zip container itself
+#                     zip container itself
 # 
 #####################################################################
 fuzzer:
@@ -126,19 +126,17 @@ fuzzer:
 # Runner options
 #
 # runner:
-# winrun: Use hook.dll to detect exceptions. Investigate exceptions 
-# with a debugger. Only compatible with 32-bit Windows XP and 2003.
-# nullrun: Investigate each iteration with the debugger.
+# winrun: Use hook.dll to detect exceptions on 32-bit Windows XP and 2003.
+#         Fall back to using debugger for each iteration on others. 
 # hideoutput: Hide stdout of target application
 # runtimeout: Number of seconds to allow target application to execute
-# when run with the hook (winrun)
+#             when run with the hook (winrun)
 # watchcpu: Kill target process when its CPU usage drops towards zero 
-# when run with the hook (winrun). (Auto, True, False)
+#           when run with the hook (winrun). (Auto, True, False)
 # exceptions: List of exceptions to save
 #
 #####################################################################
 runner:
-    # runner: nullrun
     runner: winrun
     hideoutput: False
     runtimeout: 5
@@ -166,9 +164,9 @@ runner:
 # debugger:
 # msec: Use the msec !exploitable extension for cdb
 # runtimeout: Number of seconds to allow target application to execute
-# when run via the debugger
+#             when run via the debugger
 # watchcpu: Kill target process when its CPU usage drops towards zero 
-# when run with the debugger (null runner). (Auto, True, False)
+#           when run with the debugger (null runner). (Auto, True, False)
 # debugheap: Use the debug heap for the target application
 # max_handled_exceptions: Maximum number of times to continue exceptions
 #####################################################################
