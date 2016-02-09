@@ -23,10 +23,13 @@ class Analyzer(object):
         self.cfg = cfg
         self.crash = crash
 
-        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'],crash.fuzzedfile.path)[1]
+        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'], crash.fuzzedfile.path)[1]
         self.outfile = outfile
         self.timeout = float(timeout)
-        self.killprocname = crash.killprocname
+        try:
+            self.killprocname = crash.killprocname
+        except AttributeError:
+            self.killprocname = self.cmdargs[1]
         self.options = options
 
         self.preserve_stderr = False

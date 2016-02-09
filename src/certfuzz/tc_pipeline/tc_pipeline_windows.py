@@ -12,6 +12,8 @@ from certfuzz.fuzztools import filetools
 from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.reporters.copy_files import CopyFilesReporter
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
+from certfuzz.analyzers import stderr
+from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 
 
 logger = logging.getLogger(__name__)
@@ -20,6 +22,7 @@ logger = logging.getLogger(__name__)
 class WindowsTestCasePipeline(TestCasePipelineBase):
     def _setup_analyzers(self):
         pass
+        #self.analyzer_classes.append(stderr.StdErr)
 
     def _pre_verify(self, testcase):
         # pretty-print the testcase for debugging
@@ -82,7 +85,18 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
             self.sf_set.add_file(crasherseed_path)
 
     def _analyze(self, testcase):
-        pass
+        '''
+        Loops through all known analyzer_classes for a given testcase
+        :param testcase:
+        '''
+
+        for analyzer_class in self.analyzer_classes:
+            analyzer_instance = analyzer_class(self.cfg, testcase)
+            if analyzer_instance:
+                try:
+                    analyzer_instance.go()
+                except AnalyzerEmptyOutputError:
+                    logger.warning('Unexpected empty output from analyzer_class. Continuing')
 
     def _report(self, testcase):
         with CopyFilesReporter(testcase, self.tc_dir) as reporter:
