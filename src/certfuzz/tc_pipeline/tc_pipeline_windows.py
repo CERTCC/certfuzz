@@ -33,7 +33,11 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         keep_it, reason = self.keep_testcase(testcase)
 
         if not keep_it:
-            logger.info('Candidate testcase rejected: %s', reason)
+            if self.options['null_runner'] and reason == 'not a crash':
+                # Don't be too chatty about rejecting a null runner crash
+                pass
+            else:
+                logger.info('Candidate testcase rejected: %s', reason)
             testcase.should_proceed_with_analysis = False
             return
 
@@ -103,7 +107,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
                     return (True, 'unique')
             else:
                 return (False, 'skip duplicate %s' % testcase.signature)
-        elif not self.options['used_runner']:
+        elif self.options['null_runner']:
             return (False, 'not a crash')
         elif self.options['keep_heisenbugs']:
             return (True, 'heisenbug')

@@ -7,7 +7,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class Runner(object):
+    is_nullrunner = False
+
     '''
     classdocs
     '''

@@ -63,7 +63,7 @@ class WindowsIteration(IterationBase3):
 
         self.cmd_template = cmd_template
 
-        if self.runner_cls is None:
+        if self.runner_cls.is_nullrunner:
             # null runner_cls case
             self.retries = 0
         else:
@@ -74,7 +74,7 @@ class WindowsIteration(IterationBase3):
                                  'keep_heisenbugs': self.cfg['runoptions'].get('keep_heisenbugs', False),
                                  'minimizable': False,
                                  'cmd_template': self.cmd_template,
-                                 'used_runner': self.runner_cls is not None,
+                                 'null_runner': self.runner_cls.is_nullrunner,
                                  'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions'].get('minimize', False)
                                  }
 
