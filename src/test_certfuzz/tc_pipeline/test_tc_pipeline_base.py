@@ -21,9 +21,6 @@ class TCPL_Impl(certfuzz.tc_pipeline.tc_pipeline_base.TestCasePipelineBase):
     def _verify(self, testcase):
         pass
 
-    def _analyze(self, testcase):
-        pass
-
     def _report(self, testcase):
         pass
 
