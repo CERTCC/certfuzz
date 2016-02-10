@@ -145,10 +145,6 @@ class WindowsIteration(IterationBase3):
         # wipe them out, all of them
         TmpReaper().clean_tmp()
 
-    def _pre_fuzz(self):
-        self._fuzz_opts = self.cfg['fuzzer']
-        IterationBase3._pre_fuzz(self)
-
     def _pre_run(self):
         self._runner_options = self.cfg['runner']
         self._runner_cmd_template = self.cmd_template

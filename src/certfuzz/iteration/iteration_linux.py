@@ -63,10 +63,6 @@ class LinuxIteration(IterationBase3):
         check_ppid()
         return self.go
 
-    def _pre_fuzz(self):
-        self._fuzz_opts = self.cfg['fuzzer']
-        IterationBase3._pre_fuzz(self)
-
     def _pre_run(self):
         self._runner_options = self.cfg['runner']
 
