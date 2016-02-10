@@ -6,21 +6,22 @@ Created on Jul 16, 2014
 import logging
 import os
 
-from certfuzz.minimizer.win_minimizer import WindowsMinimizer
+from certfuzz.minimizer.win_minimizer import WindowsMinimizer as Minimizer
 from certfuzz.tc_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.fuzztools import filetools
+from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.reporters.copy_files import CopyFilesReporter
+from certfuzz.analyzers import stderr
 
+from certfuzz.analyzers import drillresults
 
 logger = logging.getLogger(__name__)
 
 
 class WindowsTestCasePipeline(TestCasePipelineBase):
-    _minimizer_cls = WindowsMinimizer
-
     def _setup_analyzers(self):
-        pass
-        # self.analyzer_classes.append(stderr.StdErr)
+        self.analyzer_classes.append(stderr.StdErr)
+        self.analyzer_classes.append(drillresults.WindowsDrillResults)
 
     def _pre_verify(self, testcase):
         # pretty-print the testcase for debugging
@@ -48,6 +49,39 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         if self.options['minimizable']:
             testcase.should_proceed_with_analysis = True
         self.success = True
+
+    def _minimize(self, testcase):
+        logger.info('Minimizing testcase %s', testcase.signature)
+        logger.debug('config = %s', self.cfg)
+
+        kwargs = {'cfg': self.cfg,
+                  'crash': testcase,
+                  'seedfile_as_target': True,
+                  'bitwise': False,
+                  'confidence': 0.999,
+                  'tempdir': self.working_dir,
+                  'maxtime': self.cfg['runoptions']['minimizer_timeout']
+                  }
+
+        try:
+            with Minimizer(**kwargs) as minimizer:
+                minimizer.go()
+
+                # minimizer found other crashes, so we should add them
+                # to our list for subsequent processing
+                for tc in minimizer.other_crashes.values():
+                    self.tc_candidate_q.put(tc)
+        except MinimizerError as e:
+            logger.error('Caught MinimizerError: {}'.format(e))
+
+    def _post_minimize(self, testcase):
+        if self.cfg['runoptions']['recycle_crashers']:
+            logger.debug('Recycling crash as seedfile')
+            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
+            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
+            crasherseed_path = os.path.join(self.cfg['directories']['seedfile_dir'], crasherseedname)
+            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+            self.sf_set.add_file(crasherseed_path)
 
     def _report(self, testcase):
         with CopyFilesReporter(testcase, self.tc_dir) as reporter:

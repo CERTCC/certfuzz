@@ -30,7 +30,7 @@ class Debugger(object):
         logger.debug('Initialize Debugger')
         self.program = program
         self.cmd_args = cmd_args
-        self.outfile = '.'.join((outfile_base, self._ext))
+        self.outfile = '.'.join((outfile_base, self.extension))
         self.timeout = timeout
         self.input_file = ''
         self.debugger_output = None
@@ -95,3 +95,7 @@ class Debugger(object):
 
     def __exit__(self, etype, value, traceback):
         pass
+
+    @property
+    def extension(self):
+        return self._ext

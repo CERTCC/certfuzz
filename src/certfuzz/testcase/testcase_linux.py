@@ -59,6 +59,10 @@ class LinuxTestcase(Testcase):
         self.pc = None
         self.result_dir = None
 
+    @property
+    def debugger_extension(self):
+        return self._debugger_cls.extension
+
     def __exit__(self, etype, value, traceback):
         pass
 #        self.clean_tmpdir()
