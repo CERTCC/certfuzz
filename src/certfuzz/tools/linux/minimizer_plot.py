@@ -10,7 +10,7 @@ import os
 import re
 import sys
 
-from certfuzz.config.config_linux import LinuxConfig
+from certfuzz.config.simple_loader import load_and_fix_config
 import matplotlib.pyplot as plt
 
 
@@ -148,11 +148,10 @@ def main():
         result_dir = options.dir
     else:
         logger.info('Using config file: %s', cfg_file)
-        cfg = LinuxConfig(cfg_file)
-        with cfg:
-            pass
-
-        result_dir = os.path.join(cfg.output_dir, cfg.campaign_id, 'crashers')
+        cfg = load_and_fix_config(cfg_file)
+        _campaign_id = cfg['campaign']['id']
+        _campaign_id_no_space = re.sub('\s', '_', _campaign_id)
+        result_dir = os.path.join(cfg['directories']['results_dir'], _campaign_id_no_space, 'crashers')
         logger.info('Reading results from %s', result_dir)
 
     log = None

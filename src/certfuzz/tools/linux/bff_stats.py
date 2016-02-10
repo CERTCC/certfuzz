@@ -9,7 +9,7 @@ from optparse import OptionParser
 import os
 import re
 import sys
-from certfuzz.config.config_linux import LinuxConfig
+from certfuzz.config.simple_loader import load_and_fix_config
 
 
 parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -101,11 +101,12 @@ def main():
         cfg_file = os.path.join('conf.d', 'bff.yaml')
 
     logger.debug('Using config file: %s', cfg_file)
-    cfg = LinuxConfig(cfg_file)
-    with cfg:
-        pass
+    cfg = load_and_fix_config(cfg_file)
 
-    result_dir = os.path.join(cfg.output_dir, cfg.campaign_id, 'crashers')
+    _campaign_id = cfg['campaign']['id']
+    _campaign_id_no_space = re.sub('\s', '_', _campaign_id)
+
+    result_dir = os.path.join(cfg['directories']['results_dir'], _campaign_id_no_space, 'crashers')
     logger.debug('Reading results from %s', result_dir)
 
     counters = {}

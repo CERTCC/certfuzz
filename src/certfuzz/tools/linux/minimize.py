@@ -72,10 +72,10 @@ def main():
     if options.config:
         cfg_file = os.path.expanduser(options.config)
     else:
-        if os.path.isfile("../conf.d/bff.cfg"):
+        if os.path.isfile("../conf.d/bff.yaml"):
             cfg_file = "../conf.d/bff.cfg"
-        elif os.path.isfile("conf.d/bff.cfg"):
-            cfg_file = "conf.d/bff.cfg"
+        elif os.path.isfile("conf.d/bff.yaml"):
+            cfg_file = "conf.d/bff.yaml"
         else:
             parser.error('Configuration file (--config) option must be specified.')
     logger.debug('Config file: %s', cfg_file)
@@ -136,14 +136,14 @@ def main():
 
     cfg = load_and_fix_config(cfg_file)
 
-    with LinuxTestcase(cfg=cfg, 
-                       seedfile=seedfile, 
-                       fuzzedfile=fuzzed_file, 
+    with LinuxTestcase(cfg=cfg,
+                       seedfile=seedfile,
+                       fuzzedfile=fuzzed_file,
                        program=cfg['target']['program'],
-                       debugger_timeout=cfg['debugger']['runtimeout'], 
-                       killprocname=cfg['target']['killprocname'], 
+                       debugger_timeout=cfg['debugger']['runtimeout'],
+                       killprocname=cfg['target']['killprocname'],
                        backtrace_lines=cfg['debugger']['backtracelevels'],
-                       crashers_dir=crashers_dir, 
+                       crashers_dir=crashers_dir,
                        workdir_base=None,
                        keep_faddr=options.keep_uniq_faddr) as crash:
 

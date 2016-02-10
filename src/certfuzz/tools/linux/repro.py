@@ -7,7 +7,8 @@ import logging
 import os
 import re
 from subprocess import Popen
-from certfuzz.config.config_linux import LinuxConfig
+from certfuzz.config.simple_loader import load_and_fix_config
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 try:
     from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
@@ -57,7 +58,7 @@ def main():
                       help='Enable debug messages (overrides --verbose)')
     parser.add_option('', '--verbose', dest='verbose', action='store_true',
                       help='Enable verbose messages')
-    parser.add_option('-c', '--config', default='conf.d/bff.cfg',
+    parser.add_option('-c', '--config', default='conf.d/bff.yaml',
                       dest='config', help='path to the configuration file to use')
     parser.add_option('-e', '--edb', dest='use_edb',
                       action='store_true',
@@ -101,23 +102,9 @@ def main():
                       os.path.join(iterationdir, iterationfile))
             fullpath_fuzzed_file = iterationpath
 
-    config = LinuxConfig(cfg_file)
-    with config:
-        pass
+    config = load_and_fix_config(cfg_file)
 
-    cmd_as_args = config.get_command_list(fullpath_fuzzed_file)
-    program = cmd_as_args[0]
-    if not os.path.exists(program):
-        # edb wants a full path to the target app, so let's find it
-        for path in os.environ["PATH"].split(":"):
-                if os.path.exists(os.path.join(path, program)):
-                    program = os.path.join(path, program)
-
-    # Recreate command args list with full path to target
-    cmd_as_args = []
-    cmd_as_args.append(program)
-    cmd_as_args.extend(config.get_command_args_list(fullpath_fuzzed_file))
-
+    cmd_as_args = get_command_args_list(config['target']['cmdline_template'], fullpath_fuzzed_file)[1]
     args = []
 
     if options.use_edb and options.debugger:
