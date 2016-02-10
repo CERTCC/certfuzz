@@ -6,7 +6,7 @@ Created on Mar 23, 2012
 
 import unittest
 from certfuzz.iteration.iteration_windows import WindowsIteration
-from test_certfuzz.mocks import MockFuzzer, MockSeedfile, MockRunner
+from test_certfuzz.mocks import MockFuzzer, MockSeedfile, MockRunner, MockCfg
 import tempfile
 import shutil
 
@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
         self.workdirbase = tempfile.mkdtemp(prefix='workdirbase_', dir=self.tmpdir)
         self.outdir = tempfile.mkdtemp(prefix='outdir_', dir=self.tmpdir)
         
-        _cfg={'runoptions': {'keep_unique_faddr': False}}
+        _cfg=MockCfg()
         
         kwargs={'seedfile': MockSeedfile(),
                  'seednum':0,

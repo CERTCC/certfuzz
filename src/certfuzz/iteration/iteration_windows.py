@@ -146,7 +146,6 @@ class WindowsIteration(IterationBase3):
         TmpReaper().clean_tmp()
 
     def _pre_run(self):
-        self._runner_options = self.cfg['runner']
         self._runner_cmd_template = self.cmd_template
 
         IterationBase3._pre_run(self)

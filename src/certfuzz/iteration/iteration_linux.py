@@ -64,7 +64,6 @@ class LinuxIteration(IterationBase3):
         return self.go
 
     def _pre_run(self):
-        self._runner_options = self.cfg['runner']
 
         if self.quiet_flag:
             self._runner_options['hideoutput'] = True

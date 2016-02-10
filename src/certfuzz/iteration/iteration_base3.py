@@ -56,6 +56,11 @@ class IterationBase3(object):
 
         self.debug = True
 
+        # extract some parts of the config for fuzzer and runner
+        self._fuzz_opts = self.cfg['fuzzer']
+        self._runner_options = self.cfg['runner']
+
+
     @abc.abstractproperty
     def tcpipeline_cls(self):
         '''
@@ -94,7 +99,6 @@ class IterationBase3(object):
         return handled
 
     def _pre_fuzz(self):
-        self._fuzz_opts = self.cfg['fuzzer']
         self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, self._fuzz_opts)
 
     def _fuzz(self):
