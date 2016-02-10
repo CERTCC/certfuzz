@@ -4,10 +4,8 @@ Created on Oct 29, 2014
 @organization: cert.org
 '''
 import unittest
-import certfuzz.tc_pipeline.tc_pipeline_base
 import tempfile
 import shutil
-import os
 import certfuzz.tc_pipeline.tc_pipeline_base
 
 

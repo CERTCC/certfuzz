@@ -6,34 +6,37 @@ Created on Mar 23, 2012
 
 import unittest
 from certfuzz.iteration.iteration_windows import WindowsIteration
-from test_certfuzz.mocks import MockFuzzer
+from test_certfuzz.mocks import MockFuzzer, MockSeedfile, MockRunner
+import tempfile
+import shutil
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        # args:
+        self.tmpdir = tempfile.mkdtemp(prefix='test_iteration_windows_')
+        self.workdirbase = tempfile.mkdtemp(prefix='workdirbase_', dir=self.tmpdir)
+        self.outdir = tempfile.mkdtemp(prefix='outdir_', dir=self.tmpdir)
         
+        _cfg={'runoptions': {'keep_unique_faddr': False}}
+        
+        kwargs={'seedfile': MockSeedfile(),
+                 'seednum':0,
+                 'workdirbase': self.workdirbase,
+                 'outdir':self.outdir,
+                 'sf_set':'a',
+                 'uniq_func':None,
+                 'config':_cfg,
+                 'fuzzer_cls':MockFuzzer,
+                 'runner_cls':MockRunner,
+                 'cmd_template':'a',
+                 'debug':False,
+                 }
 
-#                 seedfile=None,
-#                  seednum=None,
-#                  workdirbase=None,
-#                  outdir=None,
-#                  sf_set=None,
-#                  uniq_func=None,
-#                  config=None,
-#                  fuzzer_cls=None,
-#                  runner_cls=None,
-#                  cmd_template=None,
-#                  debug=False,
-
-        args = list('ABCDEFGHILM')
-        args[6] = {'runoptions': {'keep_unique_faddr': False}}
-        args[7] = MockFuzzer
-        self.iteration = WindowsIteration(*args)
+        self.iteration = WindowsIteration(**kwargs)
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.tmpdir)
 
     def testName(self):
         pass

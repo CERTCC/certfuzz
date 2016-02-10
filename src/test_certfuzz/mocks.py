@@ -73,6 +73,9 @@ class MockFuzzedFile(Mock):
 class MockFuzzer(Mock):
     is_minimizable = False
 
+class MockRunner(Mock):
+    is_nullrunner=False
+
 class MockTestcase(Mock):
     signature = 'ABCDEFGHIJK'
     logger = logging.getLogger('mocktestcaselogger')
