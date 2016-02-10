@@ -56,6 +56,11 @@ class IterationBase3(object):
 
         self.debug = True
 
+        # extract some parts of the config for fuzzer and runner
+        self._fuzz_opts = self.cfg['fuzzer']
+        self._runner_options = self.cfg['runner']
+
+
     @abc.abstractproperty
     def tcpipeline_cls(self):
         '''
@@ -112,14 +117,27 @@ class IterationBase3(object):
         workingdir_base = self.working_dir
         self.runner = self.runner_cls(self._runner_options, self._runner_cmd_template, fuzzed_file, workingdir_base)
 
-        pass
-
     def _run(self):
         with self.runner:
             self.runner.run()
 
     def _post_run(self):
         pass
+    
+    def construct_testcase(self):
+        '''
+        If the runner saw a crash, construct a test case 
+        and append it to the list of testcases to be analyzed further.
+        '''
+        if not self.runner.saw_crash:
+            return
+        
+        logger.debug('Building testcase object')
+        self._construct_testcase()
+
+    def _construct_testcase(self):
+        # should be implemented by child classes
+        raise NotImplementedError
 
     def fuzz(self):
         '''
@@ -175,4 +193,5 @@ class IterationBase3(object):
         logger.debug('go')
         self.fuzz()
         self.run()
+        self.construct_testcase()
         self.process_testcases()

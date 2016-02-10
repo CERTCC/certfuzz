@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         self.mab = MultiArmedBanditBase()
-        self.keys = 'abcdefghijklmnopqrstuvwxyz'
+        self.keys = u'abcdefghijklmnopqrstuvwxyz'
         for arm in self.keys:
             self.mab.add_item(arm, arm)
 
