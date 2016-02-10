@@ -84,20 +84,6 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
             filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
             self.sf_set.add_file(crasherseed_path)
 
-    def _analyze(self, testcase):
-        '''
-        Loops through all known analyzer_classes for a given testcase
-        :param testcase:
-        '''
-
-        for analyzer_class in self.analyzer_classes:
-            analyzer_instance = analyzer_class(self.cfg, testcase)
-            if analyzer_instance:
-                try:
-                    analyzer_instance.go()
-                except AnalyzerEmptyOutputError:
-                    logger.warning('Unexpected empty output from analyzer_class. Continuing')
-
     def _report(self, testcase):
         with CopyFilesReporter(testcase, self.tc_dir) as reporter:
             reporter.go()

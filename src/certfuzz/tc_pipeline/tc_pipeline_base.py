@@ -195,7 +195,6 @@ class TestCasePipelineBase(object):
     def _pre_analyze(self, testcase):
         pass
 
-    @abc.abstractmethod
     def _analyze(self, testcase):
         '''
         Loops through all known analyzer_classes for a given testcase

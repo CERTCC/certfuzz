@@ -121,10 +121,6 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             else:
                 logger.debug('Removed old debug file %s', self.dbg_out_file_orig)
 
-    def _analyze(self, testcase):
-        # we'll just use the implementation in our parent class
-        TestCasePipelineBase._analyze(self, testcase)
-
     def _post_analyze(self, testcase):
         if self.options.get('use_valgrind'):
             logger.info('Annotating callgrind output')
