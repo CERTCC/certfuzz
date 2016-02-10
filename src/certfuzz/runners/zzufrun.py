@@ -109,7 +109,7 @@ class ZzufRunner(Runner):
 
         # we must have seen a crash
         # get the results
-        zzuf_log = ZzufLog(self.runner.zzuf_log_path)
+        zzuf_log = ZzufLog(self.zzuf_log_path)
         
         # dump zzuflog into our log
         logger.debug("ZzufLog:")
