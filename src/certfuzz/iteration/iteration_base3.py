@@ -185,7 +185,6 @@ class IterationBase3(object):
                                  options=self.pipeline_options,
                                  outdir=self.outdir,
                                  workdirbase=self.working_dir,
-                                 minimizable=self.pipeline_options['minimizable'],
                                  sf_set=self.sf_set) as pipeline:
             pipeline.go()
 

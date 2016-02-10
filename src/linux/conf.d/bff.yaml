@@ -87,7 +87,6 @@ runoptions:
     seed_interval: 20
     minimize: True
     minimizer_timeout: 3600
-    minimize_to_string: False
 #    keep_unique_faddr: False
     keep_duplicates: False
     recycle_crashers: False

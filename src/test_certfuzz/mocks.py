@@ -123,3 +123,6 @@ class MockCfg(dict):
 
 def MockFixupCfg():
     return fixup_config(MockCfg(templated=False))
+
+class MockMinimizer(object):
+    pass

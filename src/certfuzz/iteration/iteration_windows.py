@@ -72,10 +72,9 @@ class WindowsIteration(IterationBase3):
 
         self.pipeline_options = {'keep_duplicates': self.cfg['runoptions'].get('keep_duplicates', False),
                                  'keep_heisenbugs': self.cfg['runoptions'].get('keep_heisenbugs', False),
-                                 'minimizable': False,
                                  'cmd_template': self.cmd_template,
                                  'null_runner': self.runner_cls.is_nullrunner,
-                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions'].get('minimize', False)
+                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions'].get('minimize', False),
                                  }
 
     def __exit__(self, etype, value, traceback):

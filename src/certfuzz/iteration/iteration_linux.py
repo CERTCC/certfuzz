@@ -50,8 +50,6 @@ class LinuxIteration(IterationBase3):
 
         self.pipeline_options = {'use_valgrind': self.cfg['analyzer']['use_valgrind'],
                                  'use_pin_calltrace': self.cfg['analyzer']['use_pin_calltrace'],
-                                 'minimize_crashers': self.cfg['runoptions']['minimize'],
-                                 'minimize_to_string': self.cfg['runoptions']['minimize_to_string'],
                                  'uniq_log': os.path.join(self.cfg['directories']['results_dir'], 'uniquelog.txt'),
                                  'local_dir': fixup_path(self.cfg['directories']['working_dir']),
                                  'minimizertimeout': self.cfg['runoptions']['minimizer_timeout'],

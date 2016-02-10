@@ -13,6 +13,7 @@ from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools import filetools
 from certfuzz.helpers.coroutine import coroutine
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
+from certfuzz.minimizer.errors import MinimizerError
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ class TestCasePipelineBase(object):
     pipes = ['verify', 'minimize', 'analyze', 'report']
 
     def __init__(self, testcases=None, uniq_func=None, cfg=None, options=None,
-                 outdir=None, workdirbase=None, minimizable=None, sf_set=None):
+                 outdir=None, workdirbase=None, sf_set=None):
         '''
         Constructor
         '''
@@ -37,7 +38,6 @@ class TestCasePipelineBase(object):
         self.tc_dir = os.path.join(self.outdir, 'crashers')
 
         self.working_dir = workdirbase
-        self.minimizable = minimizable
         self.sf_set = sf_set
 
         self.tc_candidate_q = Queue.Queue()
@@ -62,6 +62,10 @@ class TestCasePipelineBase(object):
     def __exit__(self, etype, value, traceback):
         TmpReaper().clean_tmp()
 
+    @abc.abstractproperty
+    def _minimizer_cls(self):
+        pass
+
     @abc.abstractmethod
     def _setup_analyzers(self):
         pass
@@ -72,7 +76,7 @@ class TestCasePipelineBase(object):
 
         logger.debug('Construct analysis pipeline')
         setup_order = list(self.pipes)
-        if not self.minimizable:
+        if not self.options['minimizable']:
             setup_order.remove('minimize')
         setup_order.reverse()
 
@@ -179,7 +183,6 @@ class TestCasePipelineBase(object):
     def _pre_minimize(self, testcase):
         pass
 
-    @abc.abstractmethod
     def _minimize(self, testcase):
         '''
         try to reduce the Hamming Distance between the testcase file and the
@@ -188,9 +191,43 @@ class TestCasePipelineBase(object):
 
         :param testcase: the testcase to work on
         '''
+        logger.info('Minimizing testcase %s', testcase.signature)
+        logger.debug('config = %s', self.cfg)
+
+        if not self.options.get('minimizable'):
+            # short-circuit if not minimizing
+            return
+
+        # build arguments for minimizer invocation
+        kwargs = {'cfg': self.cfg,
+                  'crash': testcase,
+                  'seedfile_as_target': False,
+                  'bitwise': False,
+                  'confidence': 0.999,
+                  'tempdir': self.working_dir,
+                  'maxtime': self.cfg['runoptions']['minimizer_timeout'],
+                  }
+
+        try:
+            with self._minimizer_cls(**kwargs) as m:
+                m.go()
+                for new_tc in m.other_crashes.values():
+                    self.tc_candidate_q.put(new_tc)
+        except MinimizerError as e:
+            logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
+
+        # calculate the hamming distances for this crash
+        # between the original seedfile and the minimized fuzzed file
+        testcase.calculate_hamming_distances()
 
     def _post_minimize(self, testcase):
-        pass
+        if self.cfg['runoptions']['recycle_crashers']:
+            logger.debug('Recycling crash as seedfile')
+            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
+            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
+            crasherseed_path = os.path.join(self.cfg['directories']['seedfile_dir'], crasherseedname)
+            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+            self.sf_set.add_file(crasherseed_path)
 
     def _pre_analyze(self, testcase):
         pass

@@ -7,13 +7,20 @@ import unittest
 import tempfile
 import shutil
 import certfuzz.tc_pipeline.tc_pipeline_base
+from test_certfuzz.mocks import MockMinimizer
 
 
 class TCPL_Impl(certfuzz.tc_pipeline.tc_pipeline_base.TestCasePipelineBase):
+    _minimizer_cls = MockMinimizer
+
     def _setup_analyzers(self):
         pass
 
     def _minimize(self, testcase):
+        pass
+
+    def _post_minimize(self, testcase):
+#         certfuzz.tc_pipeline.tc_pipeline_base.TestCasePipelineBase._post_minimize(self, testcase)
         pass
 
     def _verify(self, testcase):
