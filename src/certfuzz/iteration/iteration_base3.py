@@ -89,11 +89,8 @@ class IterationBase3(object):
             return handled
 
         # clean up
-        try:
-            rm_rf(self.working_dir)
-        except WindowsError:
-            # Windows locks in-use files.  No need to kill campaign if we can't delete
-            pass
+        rm_rf(self.working_dir)
+        
         return handled
 
     def _pre_fuzz(self):
