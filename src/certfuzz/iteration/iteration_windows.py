@@ -155,24 +155,7 @@ class WindowsIteration(IterationBase3):
 
         IterationBase3._pre_run(self)
 
-    def _post_run(self):
-        # analysis is required in two cases:
-        # 1) runner_cls is not defined (self.runner_cls == None)
-        # 2) runner_cls is defined, and detects crash (runner_cls.saw_crash == True)
-        # this takes care of case 1 by default
-        # TODO: does case 1 ever happen?
-        analysis_needed = True
-
-        if self.runner_cls:
-            analysis_needed = self.runner.saw_crash
-
-        if not analysis_needed:
-            return
-
-        self._construct_testcase()
-
     def _construct_testcase(self):
-        logger.debug('Building testcase object')
         with WindowsTestcase(cmd_template=self.cmd_template,
                           seedfile=self.seedfile,
                           fuzzedfile=BasicFile(self.fuzzer.output_file_path),

@@ -12,6 +12,7 @@ import logging
 from certfuzz.runners.errors import RunnerNotFoundError
 import shlex
 from certfuzz.helpers.misc import quoted
+from certfuzz.fuzztools.zzuflog import ZzufLog
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,26 @@ class ZzufRunner(Runner):
 
             if rc != 0:
                 self.saw_crash = True
-#                 raise RunnerError('zzuf returncode: {}'.format(rc))
+
+    def _postrun(self):
+        if not self.saw_crash:
+            logger.debug('No crash seen')
+            return
+
+        # we must have seen a crash
+        # get the results
+        zzuf_log = ZzufLog(self.runner.zzuf_log_path)
+        
+        # dump zzuflog into our log
+        logger.debug("ZzufLog:")
+        from pprint import pformat
+        for line in pformat(zzuf_log.__dict__).splitlines():
+            logger.debug(line)
+
+        # Don't generate cases for killed process or out-of-memory
+        # In the default mode, zzuf will report a signal. In copy (and exit code) mode, zzuf will
+        # report the exit code in its output log.  The exit code is 128 + the signal number.
+        self.saw_crash = zzuf_log.crash_logged()
+
 
 _runner_class = ZzufRunner
