@@ -88,7 +88,7 @@ class CampaignBase(object):
         self._read_config_file()
 
         self.campaign_id = self.config['campaign']['id']
-       
+
         self.current_seed = self.config['runoptions']['first_iteration']
         self.seed_interval = self.config['runoptions']['seed_interval']
 
@@ -100,10 +100,10 @@ class CampaignBase(object):
         self.work_dir_base = self.config['directories']['working_dir']
         self.program = self.config['target']['program']
         self.cmd_template = self.config['target']['cmdline_template']
-        
-        _campaign_id_no_space=re.sub('\s', '_', self.campaign_id)
+
+        _campaign_id_no_space = re.sub('\s', '_', self.campaign_id)
         _campaign_id_with_underscores = re.sub('\W', '_', self.campaign_id)
-        
+
         self.outdir = os.path.join(self.outdir_base, _campaign_id_no_space)
         logger.debug('outdir=%s', self.outdir)
 
@@ -117,14 +117,13 @@ class CampaignBase(object):
             self.current_seed = 0
 
         self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(self.config['fuzzer']['fuzzer'])
-        if self.config['runner']['runner']:
-            self.runner_module_name = 'certfuzz.runners.{}'.format(self.config['runner']['runner'])
+        self.runner_module_name = 'certfuzz.runners.zzufrun'
         self.debugger_module_name = 'certfuzz.debuggers.{}'.format(self.config['debugger']['debugger'])
 
     def _read_config_file(self):
         logger.info('Reading config from %s', self.config_file)
         self.config = load_and_fix_config(self.config_file)
-        logger.info('Using target program: %s',self.config['target']['program'])
+        logger.info('Using target program: %s', self.config['target']['program'])
 
     @abc.abstractmethod
     def _pre_enter(self):

@@ -136,7 +136,6 @@ fuzzer:
     fuzzer: bytemut
     fuzz_zip_container: False
 runner:
-    runner: zzufrun
 # maximum program execution time (seconds) that BFF will allow:
     runtimeout: 5
 debugger:
