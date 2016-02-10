@@ -82,8 +82,9 @@ class WindowsIteration(IterationBase3):
         try:
             handled = IterationBase3.__exit__(self, etype, value, traceback)
         except WindowsError as e:
-            logger.warning('Caught WindowsError in iteration exit: %s',e)
-            
+            logger.warning('Caught WindowsError in iteration exit: %s', e)
+            handled = True
+
         global IOERROR_COUNT
 
         # Reset error count every time we do not have an error
