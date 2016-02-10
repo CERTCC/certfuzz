@@ -125,9 +125,6 @@ fuzzer:
 #####################################################################
 # Runner options
 #
-# runner:
-# winrun: Use hook.dll to detect exceptions on 32-bit Windows XP and 2003.
-#         Fall back to using debugger for each iteration on others. 
 # hideoutput: Hide stdout of target application
 # runtimeout: Number of seconds to allow target application to execute
 #             when run with the hook (winrun)
@@ -137,7 +134,6 @@ fuzzer:
 #
 #####################################################################
 runner:
-    runner: winrun
     hideoutput: False
     runtimeout: 5
     watchcpu: Auto
