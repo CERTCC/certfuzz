@@ -8,6 +8,7 @@ import os
 import pprint
 import tempfile
 import time
+import re
 
 
 defaults = {'config': 'configs/bff.yaml',
@@ -26,7 +27,7 @@ def main():
     import optparse
     try:
         from certfuzz.fuzztools.filetools import delete_contents_of
-        from certfuzz.config.config_base import ConfigBase
+        from certfuzz.config.simple_loader import load_and_fix_config
     except ImportError:
         # if we got here, we probably don't have .. in our PYTHONPATH
         import sys
@@ -34,7 +35,7 @@ def main():
         parentdir = os.path.abspath(os.path.join(mydir, '..'))
         sys.path.append(parentdir)
         from certfuzz.fuzztools.filetools import delete_contents_of
-        from certfuzz.config.config_base import ConfigBase
+        from certfuzz.config.simple_loader import load_and_fix_config
         if not os.path.exists(defaults['config']):
             defaults['config'] = '../configs/bff.yaml'
 
@@ -47,21 +48,23 @@ def main():
     parser.add_option('', '--debug', dest='debug', action='store_true', default=defaults['debug'])
     options, _args = parser.parse_args()
 
-    with ConfigBase(options.configfile) as cfgobj:
-        c = cfgobj.config
+    cfg_file = options.configfile
+    config = load_and_fix_config(cfg_file)
 
     if options.debug:
-        pprint.pprint(c)
+        pprint.pprint(config)
 
     dirs = set()
 
     if options.nuke:
         options.remove_results = True
 
-    dirs.add(os.path.abspath(c['directories']['working_dir']))
-    dirs.add(os.path.join(os.path.abspath(c['directories']['results_dir']), c['campaign']['id'], 'seedfiles'))
+    dirs.add(os.path.abspath(config['directories']['working_dir']))
+    campaign_id = config['campaign']['id']
+    campaign_id_no_space = re.sub('\s', '_', campaign_id)
+    dirs.add(os.path.join(os.path.abspath(config['directories']['results_dir']), campaign_id_no_space, 'seedfiles'))
     if options.remove_results:
-        dirs.add(os.path.join(os.path.abspath(c['directories']['results_dir']), c['campaign']['id'],))
+        dirs.add(os.path.join(os.path.abspath(config['directories']['results_dir']), campaign_id_no_space,))
 
     # add temp dir(s) if available
     if tempfile.gettempdir().lower() != os.getcwd().lower():
