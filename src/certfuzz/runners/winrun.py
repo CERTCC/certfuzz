@@ -22,6 +22,7 @@ from certfuzz.fuzztools.filetools import find_or_create_dir
 
 logger = logging.getLogger(__name__)
 
+
 try:
     # if we have win32api, use its GetShortPathName
     from win32api import GetShortPathName  # @UnresolvedImport
@@ -61,14 +62,62 @@ class WinRunner(RunnerBase):
         RunnerBase.__init__(self, options, cmd_template, fuzzed_file, workingdir_base)
 
         logger.debug('Initialize Runner')
-        self.exceptions = []
+
+#    exceptions:
+#        - 0x80000001    # STATUS_GUARD_PAGE_VIOLATION
+#        - 0x80000002    # EXCEPTION_DATATYPE_MISALIGNMENT
+#        - 0x80000005    # STATUS_BUFFER_OVERFLOW
+#        - 0xC0000005    # STATUS_ACCESS_VIOLATION
+#        - 0xC0000009    # STATUS_BAD_INITIAL_STACK
+#        - 0xC000000A    # STATUS_BAD_INITIAL_PC
+#        - 0xC000001D    # STATUS_ILLEGAL_INSTRUCTION
+#        - 0xC0000025    # EXCEPTION_NONCONTINUABLE_EXCEPTION
+#        - 0xC0000026    # EXCEPTION_INVALID_DISPOSITION
+#        - 0xC000008C    # EXCEPTION_ARRAY_BOUNDS_EXCEEDED
+#        - 0xC000008D    # STATUS_FLOAT_DENORMAL_OPERAND
+#        - 0xC000008E    # EXCEPTION_FLT_DIVIDE_BY_ZERO
+#        - 0xC000008F    # EXCEPTION_FLOAT_INEXACT_RESULT
+#        - 0xC0000090    # EXCEPTION_FLT_INVALID_OPERATION
+#        - 0xC0000091    # EXCEPTION_FLT_OVERFLOW
+#        - 0xC0000092    # EXCEPTION_FLT_STACK_CHECK
+#        - 0xC0000093    # EXCEPTION_FLT_UNDERFLOW
+#        - 0xC0000094    # STATUS_INTEGER_DIVIDE_BY_ZERO
+#        - 0xC0000095    # EXCEPTION_INT_OVERFLOW
+#        - 0xC0000096    # STATUS_PRIVILEGED_INSTRUCTION
+#        - 0xC00000FD    # STATUS_STACK_OVERFLOW
+#        - 0xC00002B4    # STATUS_FLOAT_MULTIPLE_FAULTS
+#        - 0xC00002B5    # STATUS_FLOAT_MULTIPLE_TRAPS
+#        - 0xC00002C5    # STATUS_DATATYPE_MISALIGNMENT_ERROR
+#        - 0xC00002C9    # STATUS_REG_NAT_CONSUMPTION
+
+        self.exceptions = [0x80000001,
+                           0x80000002,
+                           0x80000005,
+                           0xC0000005,
+                           0xC0000009,
+                           0xC000000A,
+                           0xC000001D,
+                           0xC0000025,
+                           0xC0000026,
+                           0xC000008C,
+                           0xC000008D,
+                           0xC000008E,
+                           0xC000008F,
+                           0xC0000090,
+                           0xC0000091,
+                           0xC0000092,
+                           0xC0000093,
+                           0xC0000094,
+                           0xC0000095,
+                           0xC0000096,
+                           0xC00000FD,
+                           0xC00002B4,
+                           0xC00002B5,
+                           0xC00002C5,
+                           0xC00002C9,
+                           ]
 
         self.watchcpu = options.get('watchcpu', False)
-        try:
-            self.exceptions = options['exceptions']
-        except KeyError:
-            raise RunnerError('At least one exception code must be specified in runner config.')
-
         (self.cmd, self.cmdlist) = get_command_args_list(cmd_template, fuzzed_file)
         logger.debug('Command: %s', self.cmd)
 
