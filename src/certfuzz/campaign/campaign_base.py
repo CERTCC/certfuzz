@@ -117,8 +117,6 @@ class CampaignBase(object):
             self.current_seed = 0
 
         self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(self.config['fuzzer']['fuzzer'])
-        self.runner_module_name = 'certfuzz.runners.zzufrun'
-        self.debugger_module_name = 'certfuzz.debuggers.{}'.format(self.config['debugger']['debugger'])
 
     def _read_config_file(self):
         logger.info('Reading config from %s', self.config_file)

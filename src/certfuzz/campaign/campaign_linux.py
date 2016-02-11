@@ -58,6 +58,12 @@ class LinuxCampaign(CampaignBase):
     Extends CampaignBase to add linux-specific features.
     '''
 
+    def __init__(self, config_file, result_dir=None, debug=False):
+        CampaignBase.__init__(self, config_file, result_dir, debug)
+        self.runner_module_name = 'certfuzz.runners.zzufrun'
+        self.debugger_module_name = 'certfuzz.debuggers.gdb'
+
+
     def _full_path_original(self, seedfile):
         # yes, two seedfile mentions are intended - adh
         program_basename = os.path.basename(self.program).replace('"', '')

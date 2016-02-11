@@ -137,28 +137,11 @@ runner:
     hideoutput: False
     runtimeout: 5
     watchcpu: Auto
-    exceptions:
-        - 0x80000002    # EXCEPTION_DATATYPE_MISALIGNMENT
-        - 0xC0000005    # STATUS_ACCESS_VIOLATION 
-        - 0xC000001D    # STATUS_ILLEGAL_INSTRUCTION
-        - 0xC0000025    # EXCEPTION_NONCONTINUABLE_EXCEPTION
-        - 0xC0000026    # EXCEPTION_INVALID_DISPOSITION
-        - 0xC000008C    # EXCEPTION_ARRAY_BOUNDS_EXCEEDED
-        - 0xC000008E    # EXCEPTION_FLT_DIVIDE_BY_ZERO
-        - 0xC0000090    # EXCEPTION_FLT_INVALID_OPERATION
-        - 0xC0000091    # EXCEPTION_FLT_OVERFLOW
-        - 0xC0000092    # EXCEPTION_FLT_STACK_CHECK
-        - 0xC0000093    # EXCEPTION_FLT_UNDERFLOW
-        - 0xC0000094    # STATUS_INTEGER_DIVIDE_BY_ZERO
-        - 0xC0000095    # EXCEPTION_INT_OVERFLOW
-        - 0xC0000096    # STATUS_PRIVILEGED_INSTRUCTION
-        - 0xC00000FD    # STATUS_STACK_OVERFLOW
 
 #####################################################################
 # Debugger options
 #
 # debugger:
-# msec: Use the msec !exploitable extension for cdb
 # runtimeout: Number of seconds to allow target application to execute
 #             when run via the debugger
 # watchcpu: Kill target process when its CPU usage drops towards zero 
@@ -167,7 +150,6 @@ runner:
 # max_handled_exceptions: Maximum number of times to continue exceptions
 #####################################################################
 debugger:
-    debugger: msec
     runtimeout: 10
     watchcpu: Auto
     debugheap: False
