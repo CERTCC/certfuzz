@@ -10,11 +10,11 @@ import string
 from subprocess import Popen
 
 from certfuzz import debuggers
-from certfuzz.config.config_windows import WindowsConfig, get_command_args_list
 from certfuzz.debuggers import msec  # @UnusedImport
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
-
+from certfuzz.config.simple_loader import load_and_fix_config
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARNING)
@@ -37,7 +37,6 @@ def getiterpath(msecfile):
 
 
 def main():
-    debuggers.registration.verify_supported_platform()
 
     from optparse import OptionParser
 
@@ -83,11 +82,9 @@ def main():
     else:
         parser.error('fuzzedfile must be specified')
 
-    with WindowsConfig(cfg_file) as configobj:
-        config = configobj.config
+    config = load_and_fix_config(cfg_file)
 
     iterationpath = ''
-    template = string.Template(config['target']['cmdline_template'])
     if options.filepath:
         # Recreate same file path as fuzz iteration
         resultdir = os.path.dirname(fuzzed_file.path)
@@ -104,7 +101,7 @@ def main():
                       os.path.join(iterationdir, iterationfile))
             fuzzed_file.path = iterationpath
 
-    cmd_as_args = get_command_args_list(template, fuzzed_file.path)[1]
+    cmd_as_args = get_command_args_list(config['target']['cmdline_template'], fuzzed_file.path)[1]
     targetdir = os.path.dirname(cmd_as_args[0])
 
     args = []

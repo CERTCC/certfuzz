@@ -215,10 +215,9 @@ class WindowsTestcase(Testcase):
 
     def _get_output_dir(self, target_base):
         logger.debug('target_base: %s', target_base)
-        logger.debug('exp: %s', self.exp)
         logger.debug('signature: %s', self.signature)
 
-        self.target_dir = os.path.join(target_base, self.exp, self.signature)
+        self.target_dir = os.path.join(target_base, 'crashers', self.signature)
         if len(self.target_dir) > 170:
             # Don't make a path too deep.  Windows won't support it
             self.target_dir = self.target_dir[:170] + '__'
