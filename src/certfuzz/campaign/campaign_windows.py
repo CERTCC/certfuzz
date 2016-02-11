@@ -7,13 +7,16 @@ import logging
 import os
 import platform
 import sys
+import time
 from threading import Timer
+
 
 from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
 from certfuzz.iteration.iteration_windows import WindowsIteration
 from certfuzz.runners.killableprocess import Popen
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
 logger = logging.getLogger(__name__)
@@ -92,10 +95,14 @@ class WindowsCampaign(CampaignBase):
 
     def _cache_app(self):
         logger.debug('Caching application %s and determining if we need to watch the CPU...', self.program)
+        sf = self.seedfile_set.next_item()
         targetdir = os.path.dirname(self.program)
+        cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=sf.path)[1]
+        logger.info('Invoking %s' % cmdargs)
+
         # Use overriden Popen that uses a job object to make sure that
         # child processes are killed
-        p = Popen(self.program, cwd=targetdir)
+        p = Popen(cmdargs, cwd=targetdir)
         runtimeout = self.config['runner']['runtimeout']
         logger.debug('...Timer: %f', runtimeout)
         t = Timer(runtimeout, self.kill, args=[p])
@@ -120,6 +127,9 @@ class WindowsCampaign(CampaignBase):
         if debugger_watchcpu == 'auto':
             logger.debug('Disabling debugger CPU monitoring for dynamic timeout')
             self.config['debugger']['watchcpu'] = False
+
+        logger.info('Please ensure that the target program has just executed successfully')
+        time.sleep(10)
 
     def kill(self, p):
         # The app didn't complete within the timeout.  Assume it's a GUI app
