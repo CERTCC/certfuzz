@@ -387,7 +387,6 @@ class Minimizer(object):
         self.debugger_runs += 1
         cmd_args = get_command_args_list(self.cfg['target']['cmdline_template'], infile)[1]
         cmd = cmd_args[0]
-        args = cmd_args[1:]
 #         cmd_args = self.cfg.get_command_args_list(infile)
         try:
             killprocname = self.cfg['target']['killprocname']
@@ -400,7 +399,7 @@ class Minimizer(object):
             exclude_unmapped_frames = True
 
         dbg = self._debugger_cls(cmd,
-                            args,
+                            cmd_args,
                             outfile,
                             self.debugger_timeout,
                             killprocname,
