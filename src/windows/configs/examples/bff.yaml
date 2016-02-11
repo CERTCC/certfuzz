@@ -142,7 +142,6 @@ runner:
 # Debugger options
 #
 # debugger:
-# msec: Use the msec !exploitable extension for cdb
 # runtimeout: Number of seconds to allow target application to execute
 #             when run via the debugger
 # watchcpu: Kill target process when its CPU usage drops towards zero 
@@ -151,7 +150,6 @@ runner:
 # max_handled_exceptions: Maximum number of times to continue exceptions
 #####################################################################
 debugger:
-    debugger: msec
     runtimeout: 10
     watchcpu: Auto
     debugheap: False

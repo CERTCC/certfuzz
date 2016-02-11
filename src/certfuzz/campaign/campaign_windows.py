@@ -31,6 +31,7 @@ class WindowsCampaign(CampaignBase):
         CampaignBase.__init__(self, config_file, result_dir, debug)
         self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker', False)
         self.runner_module_name = 'certfuzz.runners.winrun'
+        self.debugger_module_name = 'certfuzz.debuggers.gdb'
 
     def __getstate__(self):
         state = self.__dict__.copy()
