@@ -19,8 +19,6 @@ if sys.platform.startswith('win'):
 
 logger = logging.getLogger(__name__)
 
-t = None
-
 
 def factory(options):
     return MsecDebugger(options)
@@ -35,6 +33,7 @@ class MsecDebugger(DebuggerBase):
         DebuggerBase.__init__(self, program, cmd_args, outfile_base, timeout, killprocname, **options)
         self.exception_depth = exception_depth
         self.watchcpu = watchcpu
+        self.t = None
 
     def kill(self, pid, returncode):
         """kill function for Win32"""
@@ -83,7 +82,6 @@ class MsecDebugger(DebuggerBase):
 
     def run_with_timer(self):
         # TODO: replace this with subp.run_with_timer()
-        global t
         targetdir = os.path.dirname(self.program)
         exename = os.path.basename(self.program)
         process_info = {}
@@ -116,8 +114,8 @@ class MsecDebugger(DebuggerBase):
                 return
 
         # create a timer that calls kill() when it expires
-        t = Timer(self.timeout, self.kill, args=[p.pid, 99])
-        t.start()
+        self.t = Timer(self.timeout, self.kill, args=[p.pid, 99])
+        self.t.start()
         if self.watchcpu == True:
             # This is a race.  In some cases, a GUI app could be done before we can even measure it
             # TODO: Do something about it
@@ -144,7 +142,7 @@ class MsecDebugger(DebuggerBase):
                     time.sleep(0.2)
         else:
             p.wait()
-        t.cancel()
+        self.t.cancel()
 
     def go(self):
         """run cdb and process output"""
@@ -163,6 +161,8 @@ class MsecDebugger(DebuggerBase):
         return parsed
 
     def __exit__(self, etype, value, traceback):
-        t.cancel()
+        if self.t:
+            logger.debug('Canceling timer...')
+            self.t.cancel()
 
 # END MsecDebugger
