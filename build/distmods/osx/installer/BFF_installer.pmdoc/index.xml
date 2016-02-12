@@ -127,6 +127,7 @@
 <item type="file">27pyyaml.xml</item>
 <item type="file">28exc.xml</item>
 <item type="file">29exc.xml</item>
+<item type="file">30exc.xml</item>
 <mod>properties.customizeOption</mod>
 <mod>properties.title</mod>
 </pkmkdoc>
