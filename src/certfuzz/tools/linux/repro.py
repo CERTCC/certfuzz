@@ -6,6 +6,7 @@ Created on April 28, 2013
 import logging
 import os
 import re
+import platform
 from subprocess import Popen
 from certfuzz.config.simple_loader import load_and_fix_config
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
@@ -114,13 +115,15 @@ def main():
         debugger_app = options.debugger
     elif options.use_edb:
         debugger_app = 'edb'
+    elif platform.system() == 'Darwin':
+        debugger_app = 'lldb'
     else:
         debugger_app = 'gdb'
     args.append(debugger_app)
 
     if options.use_edb:
         args.append('--run')
-    else:
+    elif debugger_app == 'gdb':
         # Using gdb
         args.append('--args')
     args.extend(cmd_as_args)
