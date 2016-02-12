@@ -12,6 +12,7 @@ import shutil
 import tempfile
 import traceback
 import cPickle as pickle
+import signal
 
 from certfuzz.campaign.errors import CampaignError
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
@@ -218,7 +219,6 @@ class CampaignBase(object):
 
         # handle common errors
         handled = self._handle_common_errors(etype, value, mytraceback)
-
         if etype and not handled:
             # call the class-specific error handler
             handled = self._handle_errors(etype, value, mytraceback)
@@ -409,9 +409,14 @@ class CampaignBase(object):
         Implements a single iteration of the fuzzing process.
         '''
 
+    def signal_handler(self, signal, frame):
+        logger.debug('KeyboardInterrupt detected')
+        raise(KeyboardInterrupt)
+
     def go(self):
         '''
         Starts campaign
         '''
+        signal.signal(signal.SIGINT, self.signal_handler)
         while self._keep_going():
             self._do_interval()
