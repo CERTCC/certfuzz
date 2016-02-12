@@ -90,3 +90,9 @@ class Debugger(object):
         to confirm whether the debugger is on the path.
         '''
         raise NotImplementedError
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        pass

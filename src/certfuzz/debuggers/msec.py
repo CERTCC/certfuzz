@@ -19,6 +19,7 @@ if sys.platform.startswith('win'):
 
 logger = logging.getLogger(__name__)
 
+t = None
 
 
 def factory(options):
@@ -82,6 +83,7 @@ class MsecDebugger(DebuggerBase):
 
     def run_with_timer(self):
         # TODO: replace this with subp.run_with_timer()
+        global t
         targetdir = os.path.dirname(self.program)
         exename = os.path.basename(self.program)
         process_info = {}
@@ -159,4 +161,8 @@ class MsecDebugger(DebuggerBase):
         for l in pformat(parsed.__dict__).splitlines():
             logger.debug('parsed: %s', l)
         return parsed
+
+    def __exit__(self, etype, value, traceback):
+        t.cancel()
+
 # END MsecDebugger
