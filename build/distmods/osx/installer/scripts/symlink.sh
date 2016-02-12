@@ -8,8 +8,6 @@ if [ ! -e $homedir/bff ]; then
   ln -s $bffdir $homedir/bff
 fi
 
-rm -rf $bffdir/results
-
 if [ -L ~/results ]; then
   rm $homedir/results
   mkdir $homedir/results
@@ -20,6 +18,7 @@ if [ ! -e $homedir/results ]; then
   chmod g+w $homedir/results
 fi
 
-ln -s $homedir/results $homedir/bff/results
+rmdir $homedir/bff/results 2> /tmp/rm.err
+ln -s $homedir/results $homedir/bff/results 2> /tmp/ln.err
 
 exit 0
