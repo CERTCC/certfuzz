@@ -8,7 +8,7 @@ if [ ! -e $homedir/bff ]; then
   ln -s $bffdir $homedir/bff
 fi
 
-rmdir $bffdir/results
+rm -rf $bffdir/results
 
 if [ -L ~/results ]; then
   rm $homedir/results
