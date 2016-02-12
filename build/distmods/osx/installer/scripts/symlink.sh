@@ -17,6 +17,7 @@ fi
 
 if [ ! -e $homedir/results ]; then
   mkdir $homedir/results
+  chmod g+w $homedir/results
 fi
 
 ln -s $homedir/results $homedir/bff/results
