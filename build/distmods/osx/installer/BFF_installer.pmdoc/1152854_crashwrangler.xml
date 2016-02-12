@@ -1,6 +1,6 @@
-<pkgref spec="1.12" uuid="E95BA960-7F05-11E4-B4A9-0800200C9A66">
+<pkgref spec="1.12" uuid="35E6AA99-7F0E-444B-A6C1-BD348107772D">
 <config>
-<identifier>com.cert.cc.certBff.52854_crashwrangler.pkg</identifier>
+<identifier>com.cert.cc.certBff.56876_crashwrangler.pkg</identifier>
 <version>1.0</version>
 <description></description>
 <post-install type="none" />

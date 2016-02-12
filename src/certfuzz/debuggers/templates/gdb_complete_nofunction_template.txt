@@ -4,7 +4,7 @@ set logging on
 file $PROGRAM
 run $CMD_ARGS
 echo \n
-echo Crash found with CERT BFF 2.7\n
+echo Found_with_CERT_BFF_2.8\n
 echo  Running: $PROGRAM $CMD_ARGS
 echo \n
 source ~/bff/CERT_triage_tools/exploitable/exploitable.py

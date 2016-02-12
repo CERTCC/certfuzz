@@ -78,6 +78,7 @@ class CrashWrangler(Debugger):
         # set up the environment for crashwrangler
         my_env = dict(os.environ)
         my_env['CW_LOG_PATH'] = self.outfile
+        my_env['CW_LOG_INFO'] = 'Found_with_CERT_BFF_2.8'
         my_env['CW_NO_CRASH_REPORTER'] = '1'
         if re.search('gmalloc', self.outfile):
             my_env['CW_USE_GMAL'] = '1'

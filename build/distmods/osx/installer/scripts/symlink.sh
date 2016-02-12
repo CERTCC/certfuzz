@@ -2,22 +2,23 @@
 
 installdir="$2"
 bffdir="$installdir/bff"
+homedir=`cd && pwd`
 
-if [ ! -e ~/bff ]; then
-  ln -s $bffdir ~/bff
+if [ ! -e $homedir/bff ]; then
+  ln -s $bffdir $homedir/bff
 fi
-#if [ ! -e ~/results ]; then
-#  mkdir ~/results
-#fi
-#if [ -d ~/bff/results ]; then
-  rmdir $bffdir/results
-#fi
+
+rmdir $bffdir/results
+
 if [ -L ~/results ]; then
-  rm ~/results
-#  mkdir ~/results
+  rm $homedir/results
+  mkdir $homedir/results
 fi
-#chmod g+w ~/results
-#rmdir ~/bff/results
-#ln -s ~/results ~/bff/results
+
+if [ ! -e $homedir/results ]; then
+  mkdir $homedir/results
+fi
+
+ln -s $homedir/results $homedir/bff/results
 
 exit 0
