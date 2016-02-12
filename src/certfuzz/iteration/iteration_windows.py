@@ -125,8 +125,6 @@ class WindowsIteration(IterationBase3):
         # log something different if we failed to handle an exception
         if etype and not handled:
             logger.warning('WindowsIteration terminating abnormally due to %s: %s', etype.__name__, value)
-        else:
-            logger.info('Done with iteration %d', self.seednum)
 
         if self.debug and etype and not handled:
             # don't clean up if we're in debug mode and have an unhandled exception
