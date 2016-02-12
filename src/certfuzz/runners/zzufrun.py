@@ -42,10 +42,10 @@ def check_runner():
     _verify_zzuf_installed()
 
     result = subprocess.check_output(['zzuf', '-h'])
-    
+
     for line in result.split(os.linesep):
-        check_for=('--opmode <mode>', 'null')
-        
+        check_for = ('--opmode <mode>', 'null')
+
         if all(x in line for x in check_for):
             _use_cert_version_of_zzuf = True
 
@@ -81,7 +81,7 @@ class ZzufRunner(Runner):
                      '--ratio=0.0',
                      '--seed=0',
                      '--max-crashes=1',
-                     '--max-usertime=5.00',
+                     '--max-usertime=%s' % self.runtimeout,
                      '--opmode=%s' % _opmode,
                      '--include=%s' % self.fuzzed_file,
                      ])
@@ -96,8 +96,7 @@ class ZzufRunner(Runner):
         with open(self.fuzzed_file, 'rb') as ff, open(self.zzuf_log_path, 'wb') as zo:
             cmd2run = self._zzuf_args + self._cmd_parts
             logger.debug('RUN_CMD: {}'.format(' '.join(cmd2run)))
-            p = subprocess.Popen(cmd2run, cwd=self.workingdir, stdin=ff, stderr=zo)
-            rc = p.wait()
+            rc = subprocess.call(cmd2run, cwd=self.workingdir, stdin=ff, stderr=zo)
 
             if rc != 0:
                 self.saw_crash = True
@@ -110,7 +109,7 @@ class ZzufRunner(Runner):
         # we must have seen a crash
         # get the results
         zzuf_log = ZzufLog(self.zzuf_log_path)
-        
+
         # dump zzuflog into our log
         logger.debug("ZzufLog:")
         from pprint import pformat
