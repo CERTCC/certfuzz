@@ -64,6 +64,7 @@ class Minimizer(object):
         self.logger = None
         self.log_file_hdlr = None
         self.backtracelevels = 5
+        self.watchdogfile = '/tmp/bff_watchdog'
 
         logger.setLevel(logging.INFO)
 
@@ -625,7 +626,7 @@ class Minimizer(object):
 
                 if self.use_watchdog:
                     # touch the watchdog file so we don't reboot during long minimizations
-                    open(self.cfg['directories']['watchdog_file'], 'w').close()
+                    open(self.watchdogfile, 'w').close()
 
                 # Fix for BFF-208
                 if self._time_exceeded():

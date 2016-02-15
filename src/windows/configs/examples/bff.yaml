@@ -11,6 +11,7 @@ campaign:
     keep_heisenbugs: False
     use_buttonclicker: False
 
+
 #####################################################################
 # Fuzz target options:
 #
@@ -21,6 +22,7 @@ campaign:
 target:
     program: C:\BFF\imagemagick\convert.exe
     cmdline_template: $PROGRAM $SEEDFILE NUL
+    
     # With the default ImageMagick fuzz run, the above target options
     # will result in the following invocation of ImageMagick:
     # C:\BFF\imagemagick\convert.exe <SEEDFILE> NUL
@@ -42,6 +44,7 @@ target:
     # cmdline_template: $PROGRAM -in $SEEDFILE -out c:/some/path/to/file
     # cmdline_template: $PROGRAM -in $SEEDFILE -out "c:\some path\to file"
 
+
 #####################################################################
 # Directories used by BFF
 #
@@ -52,8 +55,9 @@ target:
 #####################################################################
 directories:
     seedfile_dir: seedfiles\examples
-    working_dir:  C:\BFF\fuzzdir
+    working_dir:  fuzzdir
     results_dir:  results
+
 
 #####################################################################
 # Fuzz run options
@@ -84,6 +88,7 @@ runoptions:
     keep_unique_faddr: False
     keep_duplicates: False
     recycle_crashers: False
+
 
 #####################################################################
 # Fuzzer options
@@ -122,6 +127,7 @@ fuzzer:
     #     - [0x1000, 0x100F]
     fuzz_zip_container: False
 
+
 #####################################################################
 # Runner options
 #
@@ -137,6 +143,7 @@ runner:
     hideoutput: False
     runtimeout: 5
     watchcpu: Auto
+
 
 #####################################################################
 # Debugger options

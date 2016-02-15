@@ -122,7 +122,7 @@ class LinuxCampaign(CampaignBase):
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
         # setup our watchdog file toucher
-        wdf = self.config['directories']['watchdog_file']
+        wdf = '/tmp/bff_watchdog'
 
         TWDF.wdf = wdf
         TWDF.enable()

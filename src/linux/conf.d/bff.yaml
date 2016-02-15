@@ -5,138 +5,167 @@
 #
 ################################################################
 # FUZZ CAMPAIGN SETTINGS
+#
+# id:
+# used for identifying campaign, placement of results
 ################################################################
 campaign:
     id: convert v5.2.0
 
+
 ################################################################
 # TARGET APPLICATION INVOCATION OPTIONS:
-################################################################
+#
+# program: 
+# Path to fuzzing target executable
+#
+# cmdline_template: 
+# Used to specify the command-line invocation of the target
 #
 # Command-line arguments will be split using python shlex.split() so
 # be sure to add quotes where needed
 # $SEEDFILE will be replaced at runtime with the appropriate
 # seed file name.
 # Use quotes if the target application has spaces in the path
-# examples:
+################################################################
 target:
     program: ~/convert
     cmdline_template: $PROGRAM $SEEDFILE /dev/null
 
+
 ################################################################
 # LOCATIONS FOR FUZZ RUN FILES:
+#
 # Output files are placed in [outputdir]/[seedfile]
-################################################################
-# Location of the fuzzing scripts
-# (VMware shared directory if using UbuFuzz VM)
-
-# The location of the seed files
-
-# location of debugger templates
-
-# location of results:
+# seedfile_dir: 
+# Location of seed files (relative to bff.py)
+#
+# working_dir: 
+# Temporary directory used by BFF. Use a ramdisk to reduce disk activity
+#
+# results_dir: 
+# Location of fuzzing results (relative to bff.py)
+#
 # If results are stored in a shared location, 
 # this directory needs to be unique for each fuzzing machine
-
-# dirs local to the fuzzing machine
-# Local directory for fuzzing run mutated files.
-
-# Location of file used checked by Linux watchdog to determine
-# if fuzzer is still running
+################################################################
 
 directories:
-    seedfile_dir: ~/bff/seedfiles/examples
+    seedfile_dir: seedfiles/examples
     working_dir: ~/fuzzing
-    results_dir: ~/results
-    debugger_template_dir: ~/bff/certfuzz/debuggers/templates
-    watchdog_file: /tmp/bff_watchdog
+    results_dir: results
 
 
+################################################################
+# FUZZ CAMPAIGN OPTIONS
+#
+# first_iteration:
+# Iteration number to begin campaign on
+#
+# seed_interval:
+# Number of times to mutate a seed file before moving to the next
+#
+# minimize:
+# Create a file that is minimally-different than the seed file, yet crashes
+# with the same hash
+#
+# minimizer_timeout:
+# The maximum amount of time that BFF will spend on a minimization run before
+# giving up
+#
+# recycle_crashers:
+# Recycle uniquely-crashing testcases into the pool of available seed files
+# to fuzz
+#
+# watchdogtimeout:
+# Number of seconds that if exceeded, the watchdog will restart the fuzzing
+# machine. Set to 0 to disable watchdog functionality.
+#
+################################################################
+runoptions:
+    first_iteration: 0
+    seed_interval: 20
+    minimize: True
+    minimizer_timeout: 3600
+    minimize_to_string: False
+#    keep_unique_faddr: False
+    keep_duplicates: False
+    recycle_crashers: False
+    watchdogtimeout: 3600
+    
+    
+################################################################
+# FUZZER OPTIONS
+#
+# fuzzer:
+# Mutator to use
+#
+# fuzz_zip_container:
+# rather than fuzzing zip file contents, fuzz the zip container itself
+################################################################ 
+fuzzer:
+    fuzzer: bytemut
+    fuzz_zip_container: False
+    
+    
+################################################################
+# RUNNER OPTIONS
+#
+# runtimeout:
+# maximum program execution time (seconds) that BFF will the target to execute
+################################################################  
+runner:
+    runtimeout: 5   
+    
+
+################################################################
+# DEBUGGER OPTIONS
+#
+# runtimeout:
+# Maximum time (seconds) to let the program run to capture debugger and
+# CERT Triage Tools exploitable output
+#
+# backtracelevels:
+# Number of backtrace frames to hash for uniqueness
+# Increase this number for more crash uniqueness granularity.
+# Decrease this number if you think that you are getting too many duplicate
+# crashes.
+################################################################  
+debugger:
+    runtimeout: 60
+    backtracelevels: 5
+    
+    
 ################################################################
 # VERIFIER PARAMETERS
-################################################################
 #
+# exclude_unmapped_frames: 
 # Include backtrace frames that aren't part of a loaded library?
 # Set this value to False if you wish to consider unmapped stack
 # frames in the crash hashes. This can be useful for target application
 # that perform JIT compilation
-
+#
+# savefailedasserts: 
 # Save cases that cause failed ASSERTs?  If set to 1, then __assert_fail termination, 
 # e.g. via assert(), it will be considered a crash.
-
+#
+# use_valgrind:
 # Use valgrind (and callgrind)
 # Note that valgrind can be slow. Disabling this option can improve throughput
-
+#
+# use_pin_calltrace:
 # Use PIN to get call traces for every crash, as opposed to just those
 # that result in total stack corruption.
 # PIN is even slower than valgrind
-
-# Obtain minimally-different testcase for each unique crash
-
-# Minimize to a metasploit string
-# Note: this is in addition to minimize to seedfile if minimize_crashers=True
-# Also, if minimize_to_string is true, then its minimized result will be used
-# for all subsequent analyses (i.e., valgrind, callgrind, etc.)
-# Disabled by default due to amount of time that the minimization takes.
-# Stand-alone string minimization can be done using tools/minimize.py.
-
-# Save crashes even when they are unique?  If set to True, all
-# crashing inputs are saved, even when their backtraces are not
-# unique.
-
-# Recycle crashing testcases as seed files for further fuzzing.
-# This can improve the number of unique crash hashes found, however this may
-# just demonstrate weaknesses in backtrace-based uniqueness determination
-# rather than finding new underlying vulnerabilities.
-
+#
+# valgrind_timeout:
+# Number of seconds to allow valgrind to run before giving up on it
+################################################################
 analyzer:
     exclude_unmapped_frames: True
     savefailedasserts: False
     use_valgrind: True
     use_pin_calltrace: False
     # keep_duplicates: False
-# maximum time (seconds) to let the program run to capture valgrind output:
     valgrind_timeout: 120
 
-runoptions:
-    first_iteration: 0
-    seed_interval: 20
-    minimize: True
-# Minimization can sometimes take a long time, and time spent minimizing
-# is time not spent fuzzing. If a minimization run exceeds this time
-# (in seconds) the minimization will terminate (keeping whatever progress
-# it has made at that point) and return to fuzzing.
-    minimizer_timeout: 3600
-    minimize_to_string: False
-#    keep_unique_faddr: False
-    keep_duplicates: False
-    recycle_crashers: False
-
-# maximum time (seconds) that process specified by "killprocname" option 
-# can run before it's killed via killproc.sh, 
-# which is used to kill stray processes.  Normally, zzuf will kill
-# the target process if the above timeout is reached.
-    killproctimeout: 130
-# Set value for the Linux watchdog timer. If watchdog_file is not touched 
-# for a period longer than this value (seconds), then the vm is rebooted 
-# by the watchdog.
-# Set to 0 to disable watchdog functionality.
-    watchdogtimeout: 3600
-    
-    
-fuzzer:
-    fuzzer: bytemut
-    fuzz_zip_container: False
-runner:
-# maximum program execution time (seconds) that BFF will allow:
-    runtimeout: 5
-debugger:
-# maximum time (seconds) to let the program run to capture debugger and
-# CERT Triage Tools exploitable output.
-    runtimeout: 60
-# number of backtrace levels to hash for uniqueness.
-# Increase this number for more crash uniqueness granularity.
-# Decrease this number if you think that you are getting too many
-# duplicate crashes.
-    backtracelevels: 5
-    
