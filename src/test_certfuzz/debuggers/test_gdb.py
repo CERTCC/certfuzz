@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(f))
 
     def setUp(self):
-        (program, cmd_args, gdb_file, timeout) = tuple('abcde')
+        (program, cmd_args, gdb_file, timeout) = tuple('abcd')
         (fd, path) = tempfile.mkstemp()
         os.close(fd)
         self.tempfile = path
