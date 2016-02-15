@@ -66,7 +66,7 @@ class LinuxTestcase(Testcase):
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_linux():
             dbg_template_name = '%s_%s_template.txt' % (self._debugger_cls._key, option)
-            self.debugger_template = os.path.join(self.cfg['directories']['debugger_template_dir'], dbg_template_name)
+            self.debugger_template = os.path.join('certfuzz/debuggers/templates', dbg_template_name)
             logger.debug('Debugger template set to %s', self.debugger_template)
             if not os.path.exists(self.debugger_template):
                 raise CrashError('Debugger template does not exist at %s' % self.debugger_template)
