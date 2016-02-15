@@ -41,8 +41,8 @@ class CrashWrangler(Debugger):
     _key = 'cw'
     _ext = 'cw'
 
-    def __init__(self, program, cmd_args, outfile, timeout, killprocname, template=None, exclude_unmapped_frames=True, **options):
-        Debugger.__init__(self, program, cmd_args, outfile, timeout, killprocname)
+    def __init__(self, program, cmd_args, outfile, timeout, template=None, exclude_unmapped_frames=True, **options):
+        Debugger.__init__(self, program, cmd_args, outfile, timeout)
 
     def _get_crashwrangler_cmdline(self):
         if (self.program == cwapp):
@@ -69,7 +69,7 @@ class CrashWrangler(Debugger):
         '''
         Generates CrashWrangler output for <cmd> into <logfile>.
         If crashwrangler fails to complete before <timeout>,
-        attempt to _kill crashwrangler and <killprocname>.
+        attempt to _kill crashwrangler and program.
         '''
         # build the command line in a separate function so we can unit test
         # it without actually running the command
@@ -83,7 +83,7 @@ class CrashWrangler(Debugger):
         if re.search('gmalloc', self.outfile):
             my_env['CW_USE_GMAL'] = '1'
 
-        subp.run_with_timer(args, self.timeout, self.killprocname, env=my_env)
+        subp.run_with_timer(args, self.timeout, self.program, env=my_env)
 
         # We're not guaranteed that CrashWrangler will create an output file:
         if not os.path.exists(self.outfile):

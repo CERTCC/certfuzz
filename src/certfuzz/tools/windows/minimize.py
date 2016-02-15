@@ -46,7 +46,6 @@ def _create_minimizer_cfg(cfg):
     template = string.Template(cfg['target']['cmdline_template'])
     config.get_command_args_list = lambda x: get_command_args_list(template, x)[1]
     config.program = cfg['target']['program']
-    config.killprocname = None
     config.exclude_unmapped_frames = False
     config.watchdogfile = os.devnull
     return config
@@ -154,16 +153,16 @@ def main():
     filename_modifier = ''
     retries = 0
     debugger_class = msec.MsecDebugger
-    
+
     cmd_as_args = get_command_args_list(cfg['target']['cmdline_template'], fuzzed_file.path)[1]
-    with WindowsTestcase(cmd_template=cfg['target']['cmdline_template'], 
-                      seedfile=seedfile, 
-                      fuzzedfile=fuzzed_file, 
-                      cmdlist=cmd_as_args, 
-                      fuzzer=None, 
-                      dbg_opts=cfg['debugger'], 
-                      workingdir_base=outdir, 
-                      keep_faddr=options.keep_uniq_faddr, 
+    with WindowsTestcase(cmd_template=cfg['target']['cmdline_template'],
+                      seedfile=seedfile,
+                      fuzzedfile=fuzzed_file,
+                      cmdlist=cmd_as_args,
+                      fuzzer=None,
+                      dbg_opts=cfg['debugger'],
+                      workingdir_base=outdir,
+                      keep_faddr=options.keep_uniq_faddr,
                       program=cfg['target']['program'],
                       heisenbug_retries=retries
                       ) as crash:

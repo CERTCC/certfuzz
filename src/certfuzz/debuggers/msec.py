@@ -29,8 +29,8 @@ class MsecDebugger(DebuggerBase):
     _key = 'msec'
     _ext = 'msec'
 
-    def __init__(self, program, cmd_args, outfile_base, timeout, killprocname, watchcpu, exception_depth=0, **options):
-        DebuggerBase.__init__(self, program, cmd_args, outfile_base, timeout, killprocname, **options)
+    def __init__(self, program, cmd_args, outfile_base, timeout, watchcpu, exception_depth=0, **options):
+        DebuggerBase.__init__(self, program, cmd_args, outfile_base, timeout, **options)
         self.exception_depth = exception_depth
         self.watchcpu = watchcpu
         self.t = None

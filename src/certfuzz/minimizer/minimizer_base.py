@@ -387,11 +387,6 @@ class Minimizer(object):
         self.debugger_runs += 1
         cmd_args = get_command_args_list(self.cfg['target']['cmdline_template'], infile)[1]
         cmd = cmd_args[0]
-#         cmd_args = self.cfg.get_command_args_list(infile)
-        try:
-            killprocname = self.cfg['target']['killprocname']
-        except KeyError:
-            killprocname = cmd
 
         try:
             exclude_unmapped_frames = self.cfg['analyzer']['exclude_unmapped_frames']
@@ -402,7 +397,6 @@ class Minimizer(object):
                             cmd_args,
                             outfile,
                             self.debugger_timeout,
-                            killprocname,
                             template=self.crash.debugger_template,
                             exclude_unmapped_frames=exclude_unmapped_frames,
                             keep_uniq_faddr=self.keep_uniq_faddr,

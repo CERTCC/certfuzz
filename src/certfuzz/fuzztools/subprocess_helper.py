@@ -33,11 +33,11 @@ if on_linux():
     signal.signal(signal.SIGTTOU, signal.SIG_IGN)
 
 
-def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
+def run_with_timer(args, timeout, progname, use_shell=False, **options):
     '''
     Runs <command_line>. If it takes longer than <timeout> we'll
     kill <command_line> as well as hunt down any processes named
-    <killprocname>. If you want to redirect stdout and/or stderr,
+    <progname>. If you want to redirect stdout and/or stderr,
     use stdout=<stdout_file> or stderr=<stderr_file> (or both).
     @return: none
     '''
@@ -52,7 +52,7 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
 
     errors = ''
     if options and options.get('stderr'):
-       errors = open(options['stderr'], 'w')
+        errors = open(options['stderr'], 'w')
     else:
         errors = open(os.devnull, 'w')
 
@@ -80,7 +80,7 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
 
     # Set up timeout timer
     # Give extra time for the first invocation of the application
-    t = Timer(timeout, _kill, args=[p, 0x00, killprocname])
+    t = Timer(timeout, _kill, args=[p, 0x00, progname])
     t.start()
     p.wait()
     t.cancel()
@@ -92,7 +92,7 @@ def run_with_timer(args, timeout, killprocname, use_shell=False, **options):
     return p
 
 
-def _kill(p, returncode, killprocname):  #@UnusedVariable
+def _kill(p, returncode, progname):  #@UnusedVariable
     if (on_windows()):
         """_kill function for Win32"""
         kernel32 = ctypes.windll.kernel32
@@ -101,8 +101,8 @@ def _kill(p, returncode, killprocname):  #@UnusedVariable
         kernel32.CloseHandle(handle)
     else:
         ret = p.kill()
-        if(killprocname):
-            killall(killprocname, signal.SIGKILL)
+        if(progname):
+            killall(progname, signal.SIGKILL)
     return (0 != ret)
 
 

@@ -44,4 +44,4 @@ class CrashWranglerGmalloc(Analyzer):
         args = self.cmdargs[1:]
 
         from ..debuggers.crashwrangler import CrashWrangler
-        CrashWrangler(prg, args, self.outfile, self.timeout, self.killprocname).go()
+        CrashWrangler(prg, args, self.outfile, self.timeout, self.progname).go()

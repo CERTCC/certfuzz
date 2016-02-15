@@ -26,10 +26,7 @@ class Analyzer(object):
         self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'], crash.fuzzedfile.path)[1]
         self.outfile = outfile
         self.timeout = float(timeout)
-        try:
-            self.killprocname = crash.killprocname
-        except AttributeError:
-            self.killprocname = self.cmdargs[1]
+        self.progname = self.cmdargs[1]
         self.options = options
 
         self.preserve_stderr = False
@@ -78,7 +75,7 @@ class Analyzer(object):
         '''
         Generates analysis output for <cmd> into <outfile>.
         If analysis process fails to complete before <timeout>,
-        attempt to _kill analyzer and <killprocname>.
+        attempt to _kill analyzer and progname.
         '''
         logger.info('Running %s', self.__class__.__name__)
         # build the command line in a separate function so we can unit test
@@ -92,7 +89,7 @@ class Analyzer(object):
             logger.warning('Skipping analyzer %s: Not found in path.', analyzer)
             return
 
-        subp.run_with_timer(args, self.timeout, self.killprocname, **self.options)
+        subp.run_with_timer(args, self.timeout, self.progname, **self.options)
         if not self.missing_output_ok and not os.path.exists(self.outfile):
             raise AnalyzerOutputMissingError(self.outfile)
         if not self.empty_output_ok and not os.path.getsize(self.outfile):

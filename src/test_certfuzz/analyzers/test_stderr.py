@@ -28,18 +28,17 @@ class Test(unittest.TestCase):
         cfg = {'runner': {'runtimeout':1},
                'target': {'cmdline_template': string.Template('PROGRAM $SEEDFILE foo')}
                }
-        
-        if sys.platform=='win32':
-            cfg['target']['cmdline_tempate']=string.Template('c:\\cygwin\\bin\\cat.exe -a foo')
+
+        if sys.platform == 'win32':
+            cfg['target']['cmdline_tempate'] = string.Template('c:\\cygwin\\bin\\cat.exe -a foo')
         else:
             cfg['target']['cmdline_template'] = string.Template('cat -a foo')
-        
+
 
         crash = Mock()
         crash.fuzzedfile = Mock()
         crash.fuzzedfile.path = f
         crash.fuzzedfile.dirname = os.path.dirname(f)
-        crash.killprocname = 'bar'
 
         self.se = StdErr(cfg, crash)
 

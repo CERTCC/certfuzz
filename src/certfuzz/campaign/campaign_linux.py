@@ -17,7 +17,6 @@ from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools import subprocess_helper as subp
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.fuzztools.process_killer import ProcessKiller
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
@@ -79,7 +78,6 @@ class LinuxCampaign(CampaignBase):
         # give up if prog is a script
         self._check_for_script()
         self._check_for_redirect()
-        self._start_process_killer()
         self._set_unbuffered_stdout()
 
 
@@ -102,13 +100,6 @@ class LinuxCampaign(CampaignBase):
         # and 0 as the buffer size (unbuffered)
         sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
-    def _start_process_killer(self):
-        logger.debug('start process killer')
-        with ProcessKiller(self.config['target']['killprocname'],
-                           self.config['runoptions']['killproctimeout']
-                           ) as pk:
-            self.pk_pid = pk.go()
-
     def _cache_app(self):
         logger.debug('cache program')
         sf = self.seedfile_set.next_item()
@@ -119,7 +110,7 @@ class LinuxCampaign(CampaignBase):
         logger.info('Invoking %s' % cmdargs)
         subp.run_with_timer(cmdargs,
                             self.config['runner']['runtimeout'] * 8,
-                            self.config['target']['killprocname'],
+                            self.config['target']['program'],
                             use_shell=False,
                             seeoutput=True,
                             )

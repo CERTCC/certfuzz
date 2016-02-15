@@ -15,12 +15,12 @@ class Test(unittest.TestCase):
         self.assertFalse(os.path.exists(f))
 
     def setUp(self):
-        (program, cmd_args, gdb_file, timeout, killprocname) = tuple('abcde')
+        (program, cmd_args, gdb_file, timeout) = tuple('abcde')
         (fd, path) = tempfile.mkstemp()
         os.close(fd)
         self.tempfile = path
 
-        self.gdb = GDB(program, cmd_args, gdb_file, timeout, killprocname, template=self.tempfile)
+        self.gdb = GDB(program, cmd_args, gdb_file, timeout, template=self.tempfile)
         self.gdb._create_input_file()
 
     def tearDown(self):

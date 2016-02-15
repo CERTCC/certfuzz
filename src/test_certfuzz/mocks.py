@@ -33,7 +33,6 @@ class MockObj(object):
 class MockCrash(MockObj):
     def __init__(self):
         self.fuzzedfile = MockFile()
-        self.killprocname = 'killprocname'
 
 class MockFile(MockObj):
     def __init__(self):
@@ -74,7 +73,7 @@ class MockFuzzer(Mock):
     is_minimizable = False
 
 class MockRunner(Mock):
-    is_nullrunner=False
+    is_nullrunner = False
 
 class MockTestcase(Mock):
     signature = 'ABCDEFGHIJK'
@@ -101,24 +100,24 @@ class MockDebugger(Mock):
 
 
 class MockCfg(dict):
-    def __init__(self,templated=True):
-        self['debugger']={'runtimeout': 1,
+    def __init__(self, templated=True):
+        self['debugger'] = {'runtimeout': 1,
                          'backtracelevels': 5,
                          'debugger': 'gdb',
                          }
-        self['target']={'cmdline_template': '$PROGRAM b c d $SEEDFILE',
+        self['target'] = {'cmdline_template': '$PROGRAM b c d $SEEDFILE',
                         'killprocname': 'a',
                         'program': 'a'}
-        self['analyzer']={'exclude_unmapped_frames': False,
+        self['analyzer'] = {'exclude_unmapped_frames': False,
                           'valgrind_timeout': 1}
-        self['directories'] ={'seedfile_dir': '',
+        self['directories'] = {'seedfile_dir': '',
                               'results_dir': '',
                               'working_dir': ''}
-        self['fuzzer']={'fuzzer': 'bytemut'}
-        self['campaign']={'id': 'xyz'}
-        self['runoptions']={'first_iteration': 0,
+        self['fuzzer'] = {'fuzzer': 'bytemut'}
+        self['campaign'] = {'id': 'xyz'}
+        self['runoptions'] = {'first_iteration': 0,
                             'seed_interval': 10}
-        self['runner']={'runner': 'zzufrun'}
+        self['runner'] = {'runner': 'zzufrun'}
         if templated:
             self['target']['cmdline_template'] = string.Template(self['target']['cmdline_template'])
 

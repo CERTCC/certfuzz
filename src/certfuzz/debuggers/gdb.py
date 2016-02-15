@@ -24,8 +24,8 @@ class GDB(Debugger):
     _key = 'gdb'
     _ext = 'gdb'
 
-    def __init__(self, program, cmd_args, outfile_base, timeout, killprocname, template=None, exclude_unmapped_frames=True, keep_uniq_faddr=False, **options):
-        Debugger.__init__(self, program, cmd_args, outfile_base, timeout, killprocname, **options)
+    def __init__(self, program, cmd_args, outfile_base, timeout, template=None, exclude_unmapped_frames=True, keep_uniq_faddr=False, **options):
+        Debugger.__init__(self, program, cmd_args, outfile_base, timeout, **options)
         self.template = template
         self.exclude_unmapped_frames = exclude_unmapped_frames
         self.keep_uniq_faddr = keep_uniq_faddr
@@ -98,14 +98,14 @@ class GDB(Debugger):
         '''
         Generates gdb output for <program> <cmd_args> into <outfile>.
         If gdb fails to complete before <timeout>,
-        attempt to _kill gdb and <killprocname>.
+        attempt to _kill gdb and program.
 
         @return: a GDBfile object with the parsed results
         '''
         # build the command line in a separate function so we can unit test
         # it without actually running the command
         cmdline = self._get_cmdline()
-        subp.run_with_timer(cmdline, self.timeout, self.killprocname, stdout=os.devnull)
+        subp.run_with_timer(cmdline, self.timeout, self.program, stdout=os.devnull)
 
         self._remove_temp_file()
         if not os.path.exists(self.outfile):

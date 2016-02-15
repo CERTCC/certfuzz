@@ -35,7 +35,7 @@ class LinuxTestcase(Testcase):
     _debugger_cls = debugger_cls
 
     def __init__(self, cfg, seedfile, fuzzedfile, program,
-                 debugger_timeout, killprocname, backtrace_lines,
+                 debugger_timeout, backtrace_lines,
                  crashers_dir, workdir_base, seednum=None, range=None, keep_faddr=False):
         '''
         Constructor
@@ -43,7 +43,6 @@ class LinuxTestcase(Testcase):
         Testcase.__init__(self, seedfile, fuzzedfile, debugger_timeout)
         self.cfg = cfg
         self.program = program
-        self.killprocname = killprocname
         self.backtrace_lines = backtrace_lines
         self.crash_base_dir = crashers_dir
         self.seednum = seednum
@@ -106,7 +105,6 @@ class LinuxTestcase(Testcase):
                                 self.cmdargs,
                                 outfile_base,
                                 self.debugger_timeout,
-                                self.killprocname,
                                 template=self.debugger_template,
                                 exclude_unmapped_frames=self.exclude_unmapped_frames,
                                 keep_uniq_faddr=self.keep_uniq_faddr

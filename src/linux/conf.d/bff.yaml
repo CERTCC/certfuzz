@@ -19,17 +19,9 @@ campaign:
 # seed file name.
 # Use quotes if the target application has spaces in the path
 # examples:
-# Name of process to monitor for hangs. This is done by greping the 
-# process list, so choose carefully! Usually the same name as "program" 
-# will suffice, but in cases where the program is started from a script 
-# you may want to list the actual process name.
-# This process name is also used to kill the target process when BFF 
-# launches the target application from an analyzer, such as gdb or valgrind
-# Use quotes if the target application has spaces in its name
 target:
     program: ~/convert
     cmdline_template: $PROGRAM $SEEDFILE /dev/null
-    killprocname: convert
 
 ################################################################
 # LOCATIONS FOR FUZZ RUN FILES:

@@ -118,7 +118,6 @@ class WindowsTestcase(Testcase):
                                   cmd_args=self.cmdargs,
                                   outfile_base=outfile_base,
                                   timeout=self.debugger_timeout,
-                                  killprocname=None,
                                   exception_depth=self.exception_depth,
                                   workingdir=self.tempdir,
                                   watchcpu=self.watchcpu) as debugger:

@@ -23,7 +23,7 @@ class Debugger(object):
     _key = 'debugger'
     _ext = 'debug'
 
-    def __init__(self, program=None, cmd_args=None, outfile_base=None, timeout=None, killprocname=None, **options):
+    def __init__(self, program=None, cmd_args=None, outfile_base=None, timeout=None, **options):
         '''
         Default initializer for the base Debugger class.
         '''
@@ -32,7 +32,6 @@ class Debugger(object):
         self.cmd_args = cmd_args
         self.outfile = '.'.join((outfile_base, self._ext))
         self.timeout = timeout
-        self.killprocname = killprocname
         self.input_file = ''
         self.debugger_output = None
         self.result = {}

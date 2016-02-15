@@ -24,7 +24,6 @@ class Test(unittest.TestCase):
         crash.fuzzedfile = Mock()
         crash.fuzzedfile.path = "foo"
         crash.fuzzedfile.dirname = 'foodir'
-        crash.killprocname = 'bar'
         self.vg = Valgrind(cfg, crash)
 
     def tearDown(self):

@@ -77,7 +77,6 @@ class LinuxIteration(IterationBase3):
                       fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                       program=self.cfg['target']['program'],
                       debugger_timeout=self.cfg['debugger']['runtimeout'],
-                      killprocname=self.cfg['target']['killprocname'],
                       backtrace_lines=self.cfg['debugger']['backtracelevels'],
                       crashers_dir=self.testcase_base_dir,
                       workdir_base=self.working_dir,

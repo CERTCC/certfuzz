@@ -141,7 +141,6 @@ def main():
                        fuzzedfile=fuzzed_file,
                        program=cfg['target']['program'],
                        debugger_timeout=cfg['debugger']['runtimeout'],
-                       killprocname=cfg['target']['killprocname'],
                        backtrace_lines=cfg['debugger']['backtracelevels'],
                        crashers_dir=crashers_dir,
                        workdir_base=None,
