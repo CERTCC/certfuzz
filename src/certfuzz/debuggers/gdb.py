@@ -56,8 +56,10 @@ class GDB(Debugger):
         s = Template(template)
 
         cmdargs = ' '.join(self.cmd_args)
+        # Extract the bff directory out of the template location
+        bffdir = self.template.split('/certfuzz/', 1)[0]
         new_script = s.safe_substitute(PROGRAM=self.program, CMD_ARGS=cmdargs,
-                                       OUTFILE=self.outfile)
+                                       OUTFILE=self.outfile, BFFDIR=bffdir)
 
         (fd, f) = tempfile.mkstemp(text=True)
         try:

@@ -7,7 +7,7 @@ echo \n
 echo Found_with_CERT_BFF_2.8\n
 echo  Running: $PROGRAM $CMD_ARGS
 echo \n
-source ~/bff/CERT_triage_tools/exploitable/exploitable.py
+source $BFFDIR/CERT_triage_tools/exploitable/exploitable.py
 echo \n
 exploitable
 echo \n
