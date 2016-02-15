@@ -236,7 +236,7 @@ class CWfile:
         #raw_input('checking exception regex')
         m = re.match(regex['code_type'], line)
         if m:
-            code_type = m.group(1)
+            code_type = m.group(0)
             if 'X86-64' in code_type:
                 self.is_64bit = True
                 logger.debug('Target process is 64-bit')
