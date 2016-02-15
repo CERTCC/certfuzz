@@ -13,19 +13,16 @@ import re
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
 
-# for use with 'info all-registers' in GDB
-#registers = ['eip', 'eax', 'ebx', 'ecx', 'edx', 'esp', 'ebp', 'edi', 'esi',
-#            'eflags', 'cs', 'ss', 'ds', 'es', 'fs', 'gs', 'st0', 'st1', 'st2', 'st3',
-#            'st4', 'st5', 'st6', 'st7', 'fctrl', 'fstat', 'ftag', 'fiseg', 'fioff',
-#            'fooff', 'fop']
-
-# for use with 'info registers' in GDB
 registers = ['eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi',
              'edi', 'eip', 'cs', 'ss', 'ds', 'es', 'fs', 'gs']
+registers64 = ('rax', 'rbx', 'rcx', 'rdx', 'rsi', 'rdi', 'rbp',
+             'rsp', 'r8', 'r9', 'r10', 'r11', 'r12', 'r13', 'r14',
+             'r15', 'rip', 'rfl', 'cr2')
 
 regex = {
+        'code_type': re.compile('Code Type:\s+(.+)'),
+        'exception_line': re.compile('^exception=.+instruction_address=(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
         'bt_thread': re.compile('^Thread.+'),
         'bt_line_basic': re.compile('^\d'),
         'bt_line': re.compile('^\d+\s+(.*)$'),
@@ -38,7 +35,7 @@ regex = {
         'exit_code': re.compile('Program exited with code (\d+)'),
         'bt_line_from': re.compile(r'\bfrom\b'),
         'bt_line_at': re.compile(r'\bat\b'),
-        'register': re.compile('(0x[0-9a-zA-Z]+)\s+(.+)$'),
+        'register': re.compile('\s\s\s?[0-9a-zA-Z]+:\s(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
          }
 
 # There are a number of functions that are typically found in crash backtraces,
@@ -67,6 +64,8 @@ class CWfile:
         self.backtrace = []
         self.backtrace_without_questionmarks = []
         self.registers = {}
+        # make a copy of registers list we're looking for
+        self.registers_sought = list(registers)
         self.registers_hex = {}
         self.hashable_backtrace = []
         self.hashable_backtrace_string = ''
@@ -80,7 +79,7 @@ class CWfile:
         self.is_debugbuild = False
         self.crashing_thread = False
         self.pc_in_function = True
-        self.pc_name = ''
+        self.pc_name = 'eip'
         self.keep_uniq_faddr = False
         self.faddr = None
 
@@ -184,7 +183,7 @@ class CWfile:
         gdb = ""
         if os.path.exists(self.file):
             with open(self.file, 'r') as f:
-                gdb = [s.strip() for s in f.readlines()]
+                gdb = [s.rstrip() for s in f.readlines()]
         return gdb
 
     def _process_lines(self):
@@ -228,6 +227,22 @@ class CWfile:
         elif m:
             self.crashing_thread = False
 
+    def _look_for_64bit(self, line):
+        '''
+        Check for 64-bit process by looking at address of bt frame addresses
+        '''
+        if self.is_64bit:
+            return
+        #raw_input('checking exception regex')
+        m = re.match(regex['code_type'], line)
+        if m:
+            code_type = m.group(1)
+            if 'X86-64' in code_type:
+                self.is_64bit = True
+                logger.debug('Target process is 64-bit')
+                self.pc_name = 'rip'
+                self.registers_sought = list(registers64)
+
     #TODO: CrashWrangler equivalents of the below
     def _look_for_corrupt_stack(self, line):
         if 'corrupt stack' in line:
@@ -260,31 +275,33 @@ class CWfile:
             self.is_debugbuild = True
 
     def _look_for_registers(self, line):
+        '''
+        Look for register name/value pairs in CrashWrangler output.
+        Unlike gdb, CrashWrangler lists more than one register per line
+        '''
         # short-circuit if we're out of registers to look for
-        if not len(registers):
-            return
-
-        parts = line.split()
-
-        # short-circuit if line doesn't split
-        if not len(parts):
+        if not len(self.registers_sought):
             return
         # short-circuit if the first thing in the line isn't a register
-        if not parts[0] in registers:
-            return
-
-        r = parts[0]
-        mystr = ' '.join(parts[1:])
-        m = re.match(regex['register'], mystr)
-
-        # short-circuit when no match
+        m = re.match(regex['register'], line)
         if not m:
             return
-
-        self.registers_hex[r] = m.group(1)
-        self.registers[r] = m.group(2)
-        # once we've found the register, we don't have to look for it anymore
-        registers.remove(r)
+        line = line.lstrip()
+        regpairs = line.split('  ')
+        # short-circuit if line doesn't split
+        if not len(regpairs):
+            logger.debug('Non-splittable line')
+            return
+        # short-circuit if the first thing in the line isn't a register
+        for regpair in regpairs:
+            regpairlist = regpair.split(': ')
+            r = regpairlist[0].strip()
+            if not r in self.registers_sought:
+                continue
+            regval = regpairlist[1]
+            self.registers_hex[r] = regval
+            self.registers_sought.remove(r)
+            logger.debug('Register %s=%s', r, self.registers_hex[r])
 
     def get_crash_signature(self, backtrace_level):
         '''
