@@ -46,7 +46,7 @@
 # contract clause at 252.227.7013.
 ##############################################################################
 
-scriptlocation=~/bff
+scriptlocation=`pwd`
 echo Script location: $scriptlocation/bff.py
 platform=`uname -a`
 PINURL=http://software.intel.com/sites/landingpage/pintool/downloads/pin-2.12-58423-gcc.4.4.7-linux.tar.gz
@@ -94,7 +94,7 @@ cd $scriptlocation
 
 echo "Using python interpreter: $mypython"
 if [[ -f "$scriptlocation/bff.py" ]]; then
-    $mypython $scriptlocation/bff.py --config=$scriptlocation/conf.d/bff.yaml "$@"
+    $mypython $scriptlocation/bff.py "$@"
 else
     read -p "Cannot find $scriptlocation/bff.py Please verify script locations."
 fi
