@@ -107,6 +107,12 @@ def _kill(p, returncode, progname):  #@UnusedVariable
 
 
 def killall(processname, killsignal):
+    '''
+    Python equivalent of the killall command
+    @param processname: process name to kill
+    @param killsignal: signal to send to process
+    '''
+    processname = os.path.basename(processname)
     assert (processname != ''), "Cannot kill a blank process name"
     if (on_osx()):
         os.system('killall -%d %s' % (killsignal, processname))
