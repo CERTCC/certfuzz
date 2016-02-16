@@ -137,7 +137,7 @@ class LinuxCampaign(CampaignBase):
     def _check_hostname(self):
         hostname = 'System'
         try:
-            hostname = read_text_file('/etc/hostname')
+            hostname = read_text_file('/etc/hostname').rstrip()
         except:
             logger.debug('Error determining hostname')
         return hostname
