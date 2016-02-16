@@ -46,7 +46,7 @@
 # contract clause at 252.227.7013.
 ##############################################################################
 
-scriptlocation=`pwd`
+scriptlocation=`echo "$(cd "$(dirname "$0")"; pwd)/"`
 echo Script location: $scriptlocation/bff.py
 platform=`uname -a`
 PINURL=http://software.intel.com/sites/landingpage/pintool/downloads/pin-2.12-58423-gcc.4.4.7-linux.tar.gz
