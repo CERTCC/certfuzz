@@ -21,6 +21,7 @@ from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
+from certfuzz.fuzztools.filetools import read_text_file
 
 
 logger = logging.getLogger(__name__)
@@ -121,16 +122,35 @@ class LinuxCampaign(CampaignBase):
 
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
-        # setup our watchdog file toucher
-        wdf = '/tmp/bff_watchdog'
+        if self._use_watchdog():
+            # setup our watchdog file toucher
+            wdf = '/tmp/bff_watchdog'
 
-        TWDF.wdf = wdf
-        TWDF.enable()
-        touch_watchdog_file()
+            TWDF.wdf = wdf
+            TWDF.enable()
+            touch_watchdog_file()
 
-        # set up the watchdog timeout within the VM and restart the daemon
-        with WatchDog(wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
-            watchdog()
+            # set up the watchdog timeout within the VM and restart the daemon
+            with WatchDog(wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
+                watchdog()
+
+    def _check_hostname(self):
+        hostname = 'System'
+        try:
+            hostname = read_text_file('/etc/hostname')
+        except:
+            logger.debug('Error determining hostname')
+        return hostname
+
+    def _use_watchdog(self):
+        hostname = self._check_hostname()
+        if 'UbuFuzz' in hostname or 'DebianFuzz' in hostname:
+            logger.debug('%s is watchdog compatible' % hostname)
+            return True
+        else:
+            logger.debug('%s is not watchdog compatible' % hostname)
+            return False
+
 
     def _check_for_script(self):
         logger.debug('check for script')
