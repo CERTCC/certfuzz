@@ -62,7 +62,19 @@ class LinuxCampaign(CampaignBase):
         CampaignBase.__init__(self, config_file, result_dir, debug)
         self.runner_module_name = 'certfuzz.runners.zzufrun'
         self.debugger_module_name = 'certfuzz.debuggers.gdb'
+        self.watchdogfile = '/tmp/bff_watchdog'
+        self._use_watchdog = self._check_watchdog_compat()
 
+    def _check_touch_watchdog(self):
+        if self._use_watchdog:
+            touch_watchdog_file()
+
+    def _remove_watchdog_file(self):
+        try:
+            os.remove(self.watchdogfile)
+        except OSError:
+            # No watchdog file to remove
+            pass
 
     def _full_path_original(self, seedfile):
         # yes, two seedfile mentions are intended - adh
@@ -89,7 +101,7 @@ class LinuxCampaign(CampaignBase):
         self._cache_app()
 
     def _pre_exit(self):
-        pass
+        self._remove_watchdog_file()
 
     def _set_unbuffered_stdout(self):
         '''
@@ -122,9 +134,9 @@ class LinuxCampaign(CampaignBase):
 
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
-        if self._use_watchdog():
+        if self._use_watchdog:
             # setup our watchdog file toucher
-            wdf = '/tmp/bff_watchdog'
+            wdf = self.watchdogfile
 
             TWDF.wdf = wdf
             TWDF.enable()
@@ -142,9 +154,9 @@ class LinuxCampaign(CampaignBase):
             logger.debug('Error determining hostname')
         return hostname
 
-    def _use_watchdog(self):
-        hostname = self._check_hostname()
-        if 'UbuFuzz' in hostname or 'DebianFuzz' in hostname:
+    def _check_watchdog_compat(self):
+        hostname = self._check_hostname().lower()
+        if 'ubufuzz' in hostname:
             logger.debug('%s is watchdog compatible' % hostname)
             return True
         else:
