@@ -388,6 +388,7 @@ class Minimizer(object):
         self.debugger_runs += 1
         cmd_args = get_command_args_list(self.cfg['target']['cmdline_template'], infile)[1]
         cmd = cmd_args[0]
+        cmd_args = cmd_args[1:]
 
         try:
             exclude_unmapped_frames = self.cfg['analyzer']['exclude_unmapped_frames']

@@ -71,9 +71,10 @@ def run_with_timer(args, timeout, progname, use_shell=False, **options):
 
     try:
         if _seeoutput:
-            p = subprocess.Popen(args, env=env, shell=use_shell)
+            # os.setsid sets process group
+            p = subprocess.Popen(args, env=env, shell=use_shell, preexec_fn=os.setsid)
         else:
-            p = subprocess.Popen(args, stdout=output, stderr=errors, env=env, shell=use_shell)
+            p = subprocess.Popen(args, stdout=output, stderr=errors, env=env, shell=use_shell, preexec_fn=os.setsid)
     except:
         print "Failed to run [%s]" % ' '.join(args)
         sys.exit(-1)
@@ -100,41 +101,6 @@ def _kill(p, returncode, progname):  #@UnusedVariable
         ret = kernel32.TerminateProcess(handle, returncode)
         kernel32.CloseHandle(handle)
     else:
-        ret = p.kill()
-        if(progname):
-            killall(progname, signal.SIGKILL)
+        # Kill process group
+        ret = os.killpg(os.getpgid(p.pid), signal.SIGKILL)
     return (0 != ret)
-
-
-def killall(processname, killsignal):
-    '''
-    Python equivalent of the killall command
-    @param processname: process name to kill
-    @param killsignal: signal to send to process
-    '''
-    processname = os.path.basename(processname)
-    assert (processname != ''), "Cannot kill a blank process name"
-    if (on_osx()):
-        os.system('killall -%d %s' % (killsignal, processname))
-    else:
-        for folder in os.listdir("/proc"):
-            filename = os.path.join("/proc", folder, "cmdline")
-
-            if not os.access(filename, os.R_OK):
-                # we don't have read access, so skip it
-                continue
-            try:
-                exename = os.path.basename(file(filename).read().split("\x00")[0])
-            except IOError:
-                # just skip it if the filename isn't there anymore
-                continue
-
-            if exename != processname:
-                continue
-            elif (exename.find(processname) == -1):
-                continue
-            try:
-                os.kill(int(folder), killsignal)
-            except OSError:
-                # skip it if the process has gone away on its own
-                continue
