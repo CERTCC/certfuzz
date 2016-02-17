@@ -103,4 +103,39 @@ def _kill(p, returncode, progname):  #@UnusedVariable
     else:
         # Kill process group
         ret = os.killpg(os.getpgid(p.pid), signal.SIGKILL)
+        if progname:
+            killall(progname, signal.SIGKILL)
     return (0 != ret)
+
+
+def killall(processname, killsignal):
+    '''
+    Python equivalent of the killall command
+    @param processname: process name to kill
+    @param killsignal: signal to send to process
+    '''
+    assert (processname != ''), "Cannot kill a blank process name"
+    if (on_osx()):
+        os.system('killall -%d %s' % (killsignal, processname))
+    else:
+        for folder in os.listdir("/proc"):
+            filename = os.path.join("/proc", folder, "cmdline")
+
+            if not os.access(filename, os.R_OK):
+                # we don't have read access, so skip it
+                continue
+            try:
+                exename = file(filename).read().split("\x00")[0]
+            except IOError:
+                # just skip it if the filename isn't there anymore
+                continue
+
+            if exename != processname:
+                continue
+            elif (exename.find(processname) == -1):
+                continue
+            try:
+                os.kill(int(folder), killsignal)
+            except OSError:
+                # skip it if the process has gone away on its own
+                continue
