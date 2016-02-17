@@ -88,7 +88,7 @@ class LinuxCampaign(CampaignBase):
         self._check_for_script()
         self._check_for_redirect()
         self._set_unbuffered_stdout()
-
+        self._setup_environment()
 
     def _post_enter(self):
         if self.config['runoptions']['watchdogtimeout']:
@@ -160,6 +160,8 @@ class LinuxCampaign(CampaignBase):
             logger.debug('%s is not watchdog compatible' % hostname)
             return False
 
+    def _setup_environment(self):
+        os.environ['KDE_DEBUG'] = '1'
 
     def _check_for_script(self):
         logger.debug('check for script')
@@ -204,7 +206,8 @@ class LinuxCampaign(CampaignBase):
         pass
 
     def _do_iteration(self, seedfile, range_obj, seednum):
-        # Prevent watchdog from rebooting VM.  If /tmp/fuzzing exists and is stale, the machine will reboot
+        # Prevent watchdog from rebooting VM.
+        # If /tmp/fuzzing exists and is stale, the machine will reboot
         touch_watchdog_file()
         with LinuxIteration(seedfile=seedfile,
                             seednum=seednum,
