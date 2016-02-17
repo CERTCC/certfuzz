@@ -65,10 +65,6 @@ class LinuxCampaign(CampaignBase):
         self.watchdogfile = '/tmp/bff_watchdog'
         self._use_watchdog = self._check_watchdog_compat()
 
-    def _check_touch_watchdog(self):
-        if self._use_watchdog:
-            touch_watchdog_file()
-
     def _remove_watchdog_file(self):
         try:
             os.remove(self.watchdogfile)
@@ -134,17 +130,18 @@ class LinuxCampaign(CampaignBase):
 
     def _setup_watchdog(self):
         logger.debug('setup watchdog')
+        # setup our watchdog file toucher
+        wdf = self.watchdogfile
+        TWDF.wdf = wdf
         if self._use_watchdog:
-            # setup our watchdog file toucher
-            wdf = self.watchdogfile
-
-            TWDF.wdf = wdf
             TWDF.enable()
             touch_watchdog_file()
 
             # set up the watchdog timeout within the VM and restart the daemon
             with WatchDog(wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
                 watchdog()
+        else:
+            TWDF.disable()
 
     def _check_hostname(self):
         hostname = 'System'
