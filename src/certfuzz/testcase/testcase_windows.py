@@ -241,28 +241,31 @@ class WindowsTestcase(Testcase):
             self.fuzzedfile = BasicFile(new_fuzzed_file)
 
     def _rename_dbg_file(self):
-        if self.faddr:
-            faddr_str = '%s' % self.faddr
-        else:
-            faddr_str = ''
-
         (path, basename) = os.path.split(self.dbg_file)
         (basename, dbgext) = os.path.splitext(basename)
         (root, ext) = os.path.splitext(basename)
+        for exception_num in range(0, self.exception_depth + 1):
+            if exception_num > 0:
+                new_basename = root + ext + '.e%s' % exception_num + dbgext
+                self.dbg_file = os.path.join(path, new_basename)
+            if self.faddr:
+                faddr_str = '%s' % self.parsed_outputs[exception_num].faddr
+            else:
+                faddr_str = ''
 
-        exp_str = short_exp[self.exp]
+            exp_str = short_exp[self.parsed_outputs[exception_num].exp]
 
-        parts = [root]
-        if faddr_str:
-            parts.append(faddr_str)
-        if exp_str:
-            parts.append(exp_str)
-        new_basename = '-'.join(parts) + ext + dbgext
+            parts = [root]
+            if faddr_str:
+                parts.append(faddr_str)
+            if exp_str:
+                parts.append(exp_str)
+            new_basename = '-'.join(parts) + ext + '.e%s' % exception_num + dbgext
 
-        new_dbg_file = os.path.join(path, new_basename)
+            new_dbg_file = os.path.join(path, new_basename)
 
-        # best_effort move returns a tuple of booleans indicating (copied, deleted)
-        # we only care about copied
-        copied = best_effort_move(self.dbg_file, new_dbg_file)[0]
-        if copied:
-            self.dbg_file = new_dbg_file
+            # best_effort move returns a tuple of booleans indicating (copied, deleted)
+            # we only care about copied
+            copied = best_effort_move(self.dbg_file, new_dbg_file)[0]
+            if copied:
+                self.dbg_file = new_dbg_file
