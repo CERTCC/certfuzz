@@ -29,10 +29,6 @@ class TestCaseBundle(object):
         self.dbg_outfile = dbg_outfile
         self.testcase_file = testcase_file
 
-        self._find_testcase_file()
-
-        self._verify_files_exist()
-
         self.crash_hash = crash_hash
         self.ignore_jit = ignore_jit
 
@@ -41,6 +37,8 @@ class TestCaseBundle(object):
         self.regdict = {}
 
         self.reporttext = read_text_file(self.dbg_outfile)
+        self._find_testcase_file()
+        self._verify_files_exist()
         # Read in the fuzzed file
         self.crasherdata = read_bin_file(self.testcase_file)
         self.current_dir = os.path.dirname(self.dbg_outfile)
