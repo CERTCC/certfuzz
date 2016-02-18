@@ -241,6 +241,9 @@ class WindowsTestcase(Testcase):
             self.fuzzedfile = BasicFile(new_fuzzed_file)
 
     def _rename_dbg_file(self):
+        if not self.faddr:
+            return
+
         (path, basename) = os.path.split(self.dbg_file)
         (basename, dbgext) = os.path.splitext(basename)
         (root, ext) = os.path.splitext(basename)
@@ -248,11 +251,11 @@ class WindowsTestcase(Testcase):
             if exception_num > 0:
                 new_basename = root + ext + '.e%s' % exception_num + dbgext
                 self.dbg_file = os.path.join(path, new_basename)
-            if self.faddr:
-                faddr_str = '%s' % self.parsed_outputs[exception_num].faddr
-            else:
-                faddr_str = ''
 
+            if not self.parsed_outputs[exception_num].is_crash:
+                return
+
+            faddr_str = '%s' % self.parsed_outputs[exception_num].faddr
             exp_str = short_exp[self.parsed_outputs[exception_num].exp]
 
             parts = [root]
