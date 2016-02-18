@@ -103,7 +103,7 @@ class WindowsTestcase(Testcase):
         fname = self._get_file_basename()
         outfile_base = os.path.join(self.tempdir, fname)
         # Regenerate target commandline with new crasher file
-        self.cmdargs = get_command_args_list(self.cmd_template, outfile_base)[1]
+        self.cmdargs = get_command_args_list(self.cmd_template, outfile_base)[1][1:]
         self.debug()
         self._rename_fuzzed_file()
         self._rename_dbg_file()
@@ -217,9 +217,9 @@ class WindowsTestcase(Testcase):
         logger.debug('signature: %s', self.signature)
 
         self.target_dir = os.path.join(target_base, 'crashers', self.signature)
-        if len(self.target_dir) > 170:
+        if len(self.target_dir) > 160:
             # Don't make a path too deep.  Windows won't support it
-            self.target_dir = self.target_dir[:170] + '__'
+            self.target_dir = self.target_dir[:160] + '__'
         logger.debug('target_dir: %s', self.target_dir)
         return self.target_dir
 

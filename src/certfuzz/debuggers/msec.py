@@ -75,7 +75,7 @@ class MsecDebugger(DebuggerBase):
             cdb_command = 'g;' + cdb_command
         args.append(cdb_command)
         args.append(self.program)
-        args.extend(self.cmd_args[1:])
+        args.extend(self.cmd_args)
         for l in pformat(args).splitlines():
             logger.debug('dbg_args: %s', l)
         return args
