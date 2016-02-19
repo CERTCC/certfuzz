@@ -95,7 +95,7 @@ class IterationBase3(object):
 
         # clean up
         rm_rf(self.working_dir)
-        
+
         return handled
 
     def _pre_fuzz(self):
@@ -123,7 +123,7 @@ class IterationBase3(object):
 
     def _post_run(self):
         pass
-    
+
     def construct_testcase(self):
         '''
         If the runner saw a crash, construct a test case 
@@ -131,7 +131,7 @@ class IterationBase3(object):
         '''
         if not self.runner.saw_crash:
             return
-        
+
         logger.debug('Building testcase object')
         self._construct_testcase()
 
@@ -167,9 +167,11 @@ class IterationBase3(object):
         self.record_tries()
 
     def record_tries(self):
-        self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-        if hasattr(self.r, 'id'):
-            self.seedfile.rangefinder.record_tries(key=self.r.id, tries=1)
+        if self.seedfile.md5 in self.sf_set.arms:
+            # Only record tries for seedfiles that haven't been removed
+            self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
+            if hasattr(self.r, 'id'):
+                self.seedfile.rangefinder.record_tries(key=self.r.id, tries=1)
 
     def process_testcases(self):
         if not len(self.testcases):
