@@ -103,7 +103,7 @@ class WindowsTestcase(Testcase):
         fname = self._get_file_basename()
         outfile_base = os.path.join(self.tempdir, fname)
         # Regenerate target commandline with new crasher file
-        self.cmdargs = get_command_args_list(self.cmd_template, outfile_base)[1]
+        self.cmdargs = get_command_args_list(self.cmd_template, outfile_base)[1][1:]
         self.debug()
         self._rename_fuzzed_file()
         self._rename_dbg_file()
@@ -217,9 +217,9 @@ class WindowsTestcase(Testcase):
         logger.debug('signature: %s', self.signature)
 
         self.target_dir = os.path.join(target_base, 'crashers', self.signature)
-        if len(self.target_dir) > 170:
+        if len(self.target_dir) > 130:
             # Don't make a path too deep.  Windows won't support it
-            self.target_dir = self.target_dir[:170] + '__'
+            self.target_dir = self.target_dir[:130] + '__'
         logger.debug('target_dir: %s', self.target_dir)
         return self.target_dir
 
@@ -241,28 +241,34 @@ class WindowsTestcase(Testcase):
             self.fuzzedfile = BasicFile(new_fuzzed_file)
 
     def _rename_dbg_file(self):
-        if self.faddr:
-            faddr_str = '%s' % self.faddr
-        else:
-            faddr_str = ''
+        if not self.faddr:
+            return
 
         (path, basename) = os.path.split(self.dbg_file)
         (basename, dbgext) = os.path.splitext(basename)
         (root, ext) = os.path.splitext(basename)
+        for exception_num in range(0, self.exception_depth + 1):
+            if exception_num > 0:
+                new_basename = root + ext + '.e%s' % exception_num + dbgext
+                self.dbg_file = os.path.join(path, new_basename)
 
-        exp_str = short_exp[self.exp]
+            if not self.parsed_outputs[exception_num].is_crash:
+                return
 
-        parts = [root]
-        if faddr_str:
-            parts.append(faddr_str)
-        if exp_str:
-            parts.append(exp_str)
-        new_basename = '-'.join(parts) + ext + dbgext
+            faddr_str = '%s' % self.parsed_outputs[exception_num].faddr
+            exp_str = short_exp[self.parsed_outputs[exception_num].exp]
 
-        new_dbg_file = os.path.join(path, new_basename)
+            parts = [root]
+            if faddr_str:
+                parts.append(faddr_str)
+            if exp_str:
+                parts.append(exp_str)
+            new_basename = '-'.join(parts) + ext + '.e%s' % exception_num + dbgext
 
-        # best_effort move returns a tuple of booleans indicating (copied, deleted)
-        # we only care about copied
-        copied = best_effort_move(self.dbg_file, new_dbg_file)[0]
-        if copied:
-            self.dbg_file = new_dbg_file
+            new_dbg_file = os.path.join(path, new_basename)
+
+            # best_effort move returns a tuple of booleans indicating (copied, deleted)
+            # we only care about copied
+            copied = best_effort_move(self.dbg_file, new_dbg_file)[0]
+            if copied:
+                self.dbg_file = new_dbg_file

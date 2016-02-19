@@ -83,7 +83,10 @@ def run_with_timer(args, timeout, progname, use_shell=False, **options):
     # Give extra time for the first invocation of the application
     t = Timer(timeout, _kill, args=[p, 0x00, progname])
     t.start()
-    p.wait()
+    try:
+        p.wait()
+    except KeyboardInterrupt:
+        raise
     t.cancel()
 
     # close our stdout and stderr filehandles
