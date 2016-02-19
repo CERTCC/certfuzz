@@ -30,6 +30,9 @@ class CopyFilesReporter(ReporterBase):
 
     def go(self):
         dst_dir = os.path.join(self.target_dir, self.testcase.signature)
+        if len(dst_dir) > 130:
+            # Don't make a path too deep.  Windows won't support it
+            dst_dir = dst_dir[:130] + '__'
         # ensure target dir exists already (it might because of crash logging)
         filetools.mkdir_p(dst_dir)
 
