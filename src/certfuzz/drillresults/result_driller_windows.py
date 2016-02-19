@@ -12,7 +12,7 @@ from certfuzz.drillresults.result_driller_base import ResultDriller
 logger = logging.getLogger(__name__)
 
 regex = {
-        'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]'),
+        'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]+.+e0.+'),
         'msec_report': re.compile('.+.msec$'),
         }
 
@@ -34,6 +34,7 @@ class WindowsResultDriller(ResultDriller):
                     crasherfile = crasherfile.replace('-PEX', '')
                     crasherfile = crasherfile.replace('-PNE', '')
                     crasherfile = crasherfile.replace('-UNK', '')
+                    crasherfile = crasherfile.replace('.e0', '')
             for current_file in files:
                 # Go through all of the .msec files and parse them
                 if regex['msec_report'].match(current_file):
@@ -43,4 +44,12 @@ class WindowsResultDriller(ResultDriller):
                     with TestCaseBundle(dbg_file, crasherfile, crash_hash,
                                          self.ignore_jit) as tcb:
                         tcb.go()
-                        self.testcase_bundles.append(tcb)
+                        _updated_existing = False
+                        for index, tcbundle in enumerate(self.testcase_bundles):
+                            if tcbundle.crash_hash == crash_hash:
+                                # This is a new exception for the same crash hash
+                                self.testcase_bundles[index].details['exceptions'].update(tcb.details['exceptions'])
+                                _updated_existing = True
+                        if not _updated_existing:
+                            # This is a new crash hash
+                            self.testcase_bundles.append(tcb)
