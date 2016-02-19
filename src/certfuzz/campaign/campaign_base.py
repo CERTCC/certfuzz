@@ -16,6 +16,7 @@ import signal
 
 from certfuzz.campaign.errors import CampaignError
 from certfuzz.file_handlers.seedfile_set import SeedfileSet
+from certfuzz.file_handlers.errors import SeedfileSetError
 from certfuzz.fuzztools import filetools
 from certfuzz.runners.errors import RunnerArchitectureError, \
     RunnerPlatformVersionError
@@ -183,6 +184,9 @@ class CampaignBase(object):
             handled = True
         elif etype is RunnerPlatformVersionError:
             logger.error('Unsupported platform: %s', value)
+            handled = True
+        elif etype is SeedfileSetError:
+            logger.error('No seedfiles available')
             handled = True
         return handled
 
@@ -420,3 +424,4 @@ class CampaignBase(object):
         signal.signal(signal.SIGINT, self.signal_handler)
         while self._keep_going():
             self._do_interval()
+
