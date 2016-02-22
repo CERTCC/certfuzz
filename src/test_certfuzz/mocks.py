@@ -116,7 +116,8 @@ class MockCfg(dict):
         self['campaign'] = {'id': 'xyz'}
         self['runoptions'] = {'first_iteration': 0,
                             'seed_interval': 10}
-        self['runner'] = {'runner': 'zzufrun'}
+        self['runner'] = {'runner': 'zzufrun',
+                          'runtimeout': 5}
         if templated:
             self['target']['cmdline_template'] = string.Template(self['target']['cmdline_template'])
 
