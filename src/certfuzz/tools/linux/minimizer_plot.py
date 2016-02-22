@@ -142,7 +142,7 @@ def main():
     if options.cfgfile:
         cfg_file = options.cfgfile
     else:
-        cfg_file = os.path.join('conf.d', 'bff.yaml')
+        cfg_file = os.path.join('configs', 'bff.yaml')
 
     if options.dir:
         result_dir = options.dir

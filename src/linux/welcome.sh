@@ -17,7 +17,7 @@ if [[ -f ~/fuzzing/bff.log ]]; then
   echo -e "\n--- Resuming fuzzing campaign ...  ---"
   echo -e "--- Run ./reset_bff.sh to start a new fuzzing campaign ---\n"
 else
-  currentcfg=conf.d/bff.yaml
+  currentcfg=configs/bff.yaml
   echo "Using configuration file: $currentcfg"
 fi
 

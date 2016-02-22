@@ -100,7 +100,7 @@ def main():
     if options.config:
         cfg_file = options.config
     else:
-        cfg_file = "../conf.d/bff.cfg"
+        cfg_file = "../configs/bff.cfg"
     logger.debug('WindowsConfig file: %s', cfg_file)
 
     if options.stringmode and options.target:
