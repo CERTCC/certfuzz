@@ -1,9 +1,9 @@
-################################################################
+##############################################################################
 #
 # This file specifies the options that BFF will use to fuzz
 #   Comments are specified by the "#" character
 #
-######################################################################
+##############################################################################
 # FUZZ CAMPAIGN SETTINGS
 #
 # id: 
@@ -14,14 +14,14 @@
 #
 # use_buttonclicker: 
 # Spawn program to click buttons
-#####################################################################
+##############################################################################
 campaign:
     id: convert v5.5.7
     keep_heisenbugs: False
     use_buttonclicker: False
 
 
-#####################################################################
+##############################################################################
 # Fuzz target options:
 #
 # program:
@@ -29,7 +29,7 @@ campaign:
 #
 # cmdline_template:
 # Used to specify the command-line invocation of the target
-#####################################################################
+##############################################################################
 target:
     program: C:\BFF\imagemagick\convert.exe
     cmdline_template: $PROGRAM $SEEDFILE NUL
@@ -56,7 +56,7 @@ target:
     # cmdline_template: $PROGRAM -in $SEEDFILE -out "c:\some path\to file"
 
 
-#####################################################################
+##############################################################################
 # Directories used by BFF
 #
 # seedfile_dir: 
@@ -67,14 +67,14 @@ target:
 #
 # results_dir: 
 # Location of fuzzing results (relative to bff.py)
-#####################################################################
+##############################################################################
 directories:
     seedfile_dir: seedfiles\examples
     working_dir:  fuzzdir
     results_dir:  results
 
 
-#####################################################################
+##############################################################################
 # Fuzz run options
 #
 # first_iteration: 
@@ -101,7 +101,7 @@ directories:
 # recycle_crashers:
 # Recycle uniquely-crashing testcases into the pool of available seed files
 # to fuzz
-#####################################################################
+##############################################################################
 runoptions:
     first_iteration: 0
     seed_interval: 1
@@ -112,7 +112,7 @@ runoptions:
     recycle_crashers: False
 
 
-#####################################################################
+##############################################################################
 # FUZZER OPTIONS
 #
 # ** Note that only one fuzzer can be selected per campaign **
@@ -155,7 +155,7 @@ runoptions:
 # fuzz_zip_container: 
 # rather than fuzzing zip file contents, fuzz the zip container itself
 # 
-#####################################################################
+##############################################################################
 fuzzer:
     fuzzer: bytemut
     # fuzzer: swap
@@ -173,7 +173,7 @@ fuzzer:
     fuzz_zip_container: False
 
 
-#####################################################################
+##############################################################################
 # Runner options
 #
 # hideoutput:
@@ -187,23 +187,15 @@ fuzzer:
 # Kill target process when its CPU usage drops towards zero when run with
 # the hook (winrun). (Auto, True, False)
 #
-#####################################################################
+##############################################################################
 runner:
     hideoutput: False
     runtimeout: 5
     watchcpu: Auto
 
 
-#####################################################################
+##############################################################################
 # Debugger options
-#
-# runtimeout:
-# Number of seconds to allow target application to execute when run via the
-# debugger
-#
-# watchcpu:
-# Kill target process when its CPU usage drops towards zero when run with the
-# debugger (null runner). (Auto, True, False)
 #
 # debugheap:
 # Use the debug heap for the target application
@@ -211,10 +203,8 @@ runner:
 # max_handled_exceptions:
 # Maximum number of times to continue exceptions
 #
-#####################################################################
+##############################################################################
 debugger:
-    runtimeout: 10
-    watchcpu: Auto
     debugheap: False
     max_handled_exceptions: 6
 

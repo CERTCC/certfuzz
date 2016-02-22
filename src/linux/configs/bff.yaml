@@ -1,19 +1,20 @@
-################################################################
+##############################################################################
 #
 # This file specifies the options that BFF will use to fuzz
 #   Comments are specified by the "#" character
 #
-################################################################
+##############################################################################
 # FUZZ CAMPAIGN SETTINGS
 #
 # id:
 # used for identifying campaign, placement of results
-################################################################
+#
+##############################################################################
 campaign:
     id: convert v5.2.0
 
 
-################################################################
+##############################################################################
 # TARGET APPLICATION INVOCATION OPTIONS:
 #
 # program: 
@@ -27,13 +28,14 @@ campaign:
 # $SEEDFILE will be replaced at runtime with the appropriate
 # seed file name.
 # Use quotes if the target application has spaces in the path
-################################################################
+#
+##############################################################################
 target:
     program: ~/convert
     cmdline_template: $PROGRAM $SEEDFILE /dev/null
 
 
-################################################################
+##############################################################################
 # LOCATIONS FOR FUZZ RUN FILES:
 #
 # Output files are placed in [outputdir]/[seedfile]
@@ -48,7 +50,8 @@ target:
 #
 # If results are stored in a shared location, 
 # this directory needs to be unique for each fuzzing machine
-################################################################
+#
+##############################################################################
 
 directories:
     seedfile_dir: seedfiles/examples
@@ -56,7 +59,7 @@ directories:
     results_dir: results
 
 
-################################################################
+##############################################################################
 # FUZZ CAMPAIGN OPTIONS
 #
 # first_iteration:
@@ -81,7 +84,7 @@ directories:
 # Number of seconds that if exceeded, the watchdog will restart the fuzzing
 # machine. Set to 0 to disable watchdog functionality.
 #
-################################################################
+##############################################################################
 runoptions:
     first_iteration: 0
     seed_interval: 20
@@ -93,7 +96,7 @@ runoptions:
     watchdogtimeout: 3600
     
     
-#####################################################################
+###################################################################################
 # FUZZER OPTIONS
 #
 # ** Note that only one fuzzer can be selected per campaign **
@@ -136,7 +139,7 @@ runoptions:
 # fuzz_zip_container: 
 # rather than fuzzing zip file contents, fuzz the zip container itself
 # 
-#####################################################################
+###################################################################################
 fuzzer:
     fuzzer: bytemut
     # fuzzer: swap
@@ -154,35 +157,32 @@ fuzzer:
     fuzz_zip_container: False
     
     
-################################################################
+##############################################################################
 # RUNNER OPTIONS
 #
 # runtimeout:
 # maximum program execution time (seconds) that BFF will the target to execute
-################################################################  
+#
+##############################################################################
 runner:
     runtimeout: 5
     
 
-################################################################
+##############################################################################
 # DEBUGGER OPTIONS
-#
-# runtimeout:
-# Maximum time (seconds) to let the program run to capture debugger and
-# CERT Triage Tools exploitable output
 #
 # backtracelevels:
 # Number of backtrace frames to hash for uniqueness
 # Increase this number for more crash uniqueness granularity.
 # Decrease this number if you think that you are getting too many duplicate
 # crashes.
-################################################################  
+#
+##############################################################################
 debugger:
-    runtimeout: 60
     backtracelevels: 5
     
     
-################################################################
+##############################################################################
 # VERIFIER PARAMETERS
 #
 # exclude_unmapped_frames: 
@@ -206,7 +206,8 @@ debugger:
 #
 # valgrind_timeout:
 # Number of seconds to allow valgrind to run before giving up on it
-################################################################
+#
+##############################################################################
 analyzer:
     exclude_unmapped_frames: True
     savefailedasserts: False

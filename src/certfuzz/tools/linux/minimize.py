@@ -140,7 +140,7 @@ def main():
                        seedfile=seedfile,
                        fuzzedfile=fuzzed_file,
                        program=cfg['target']['program'],
-                       debugger_timeout=cfg['debugger']['runtimeout'],
+                       debugger_timeout=cfg['runner']['runtimeout'],
                        backtrace_lines=cfg['debugger']['backtracelevels'],
                        crashers_dir=crashers_dir,
                        workdir_base=None,
