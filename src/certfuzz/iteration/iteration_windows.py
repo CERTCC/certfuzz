@@ -77,6 +77,9 @@ class WindowsIteration(IterationBase3):
                                  'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions'].get('minimize', False),
                                  }
 
+        # Windows testcase object needs a timeout, and we only pass debugger options
+        self.cfg['debugger']['runtimeout'] = self.cfg['runner']['runtimeout']
+
     def __exit__(self, etype, value, traceback):
         try:
             handled = IterationBase3.__exit__(self, etype, value, traceback)
