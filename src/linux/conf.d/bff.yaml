@@ -93,17 +93,64 @@ runoptions:
     watchdogtimeout: 3600
     
     
-################################################################
+#####################################################################
 # FUZZER OPTIONS
 #
-# fuzzer:
-# Mutator to use
+# ** Note that only one fuzzer can be selected per campaign **
 #
-# fuzz_zip_container:
+# bytemut: 
+# replace bytes with random values
+#
+# swap: 
+# swap adjacent bytes
+#
+# wave: 
+# cycle through every possible single-byte value, sequentially
+#
+# drop: 
+# removes one byte from the file for each position in the file
+#
+# insert: 
+# inserts a random byte for each position in the file
+#
+# truncate:
+# truncates bytes from the end of the file
+#
+# crmut: 
+# replace carriage return bytes with random values
+#
+# crlfmut:
+# replace carriage return and linefeed bytes with random values
+#
+# nullmut:
+# replace null bytes with random values
+#
+# verify:
+# do not mutate file. Used for verifying crashing testcases
+#
+# OPTIONS APPLIED TO THE ABOVE MUTATORS:
+#
+# range_list:
+# byte ranges to be fuzzed. One range per line, hex or decimal
+#
+# fuzz_zip_container: 
 # rather than fuzzing zip file contents, fuzz the zip container itself
-################################################################ 
+# 
+#####################################################################
 fuzzer:
     fuzzer: bytemut
+    # fuzzer: swap
+    # fuzzer: wave
+    # fuzzer: drop
+    # fuzzer: insert
+    # fuzzer: truncate
+    # fuzzer: crmut
+    # fuzzer: crlfmut
+    # fuzzer: nullmut
+    # fuzzer: verify
+    # range_list:
+    #     - [0x0000, 0x0400]
+    #     - [0x1000, 0x100F]
     fuzz_zip_container: False
     
     
@@ -114,7 +161,7 @@ fuzzer:
 # maximum program execution time (seconds) that BFF will the target to execute
 ################################################################  
 runner:
-    runtimeout: 5   
+    runtimeout: 5
     
 
 ################################################################
