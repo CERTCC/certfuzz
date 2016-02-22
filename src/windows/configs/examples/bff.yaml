@@ -197,14 +197,6 @@ runner:
 ##############################################################################
 # Debugger options
 #
-# runtimeout:
-# Number of seconds to allow target application to execute when run via the
-# debugger
-#
-# watchcpu:
-# Kill target process when its CPU usage drops towards zero when run with the
-# debugger (null runner). (Auto, True, False)
-#
 # debugheap:
 # Use the debug heap for the target application
 #
@@ -213,7 +205,6 @@ runner:
 #
 ##############################################################################
 debugger:
-    runtimeout: 10
     debugheap: False
     max_handled_exceptions: 6
 

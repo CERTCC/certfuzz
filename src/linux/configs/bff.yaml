@@ -171,10 +171,6 @@ runner:
 ##############################################################################
 # DEBUGGER OPTIONS
 #
-# runtimeout:
-# Maximum time (seconds) to let the program run to capture debugger and
-# CERT Triage Tools exploitable output
-#
 # backtracelevels:
 # Number of backtrace frames to hash for uniqueness
 # Increase this number for more crash uniqueness granularity.
@@ -183,7 +179,6 @@ runner:
 #
 ##############################################################################
 debugger:
-    runtimeout: 60
     backtracelevels: 5
     
     

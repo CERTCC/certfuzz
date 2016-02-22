@@ -30,7 +30,7 @@ class CrashWranglerGmalloc(Analyzer):
             return None
 
         outfile = get_file(crash.fuzzedfile.path)
-        timeout = cfg['debugger']['runtimeout']
+        timeout = cfg['runner']['runtimeout']
 
         Analyzer.__init__(self, cfg, crash, outfile, timeout)
 

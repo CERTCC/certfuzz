@@ -42,7 +42,7 @@ def _create_minimizer_cfg(cfg):
         pass
     config = DummyCfg()
     config.backtracelevels = 5  # doesn't matter what this is, we don't use it
-    config.debugger_timeout = cfg['debugger']['runtimeout']
+    config.debugger_timeout = cfg['runner']['runtimeout']
     template = string.Template(cfg['target']['cmdline_template'])
     config.get_command_args_list = lambda x: get_command_args_list(template, x)[1]
     config.program = cfg['target']['program']
