@@ -72,10 +72,10 @@ def main():
     if options.config:
         cfg_file = os.path.expanduser(options.config)
     else:
-        if os.path.isfile("../conf.d/bff.yaml"):
-            cfg_file = "../conf.d/bff.cfg"
-        elif os.path.isfile("conf.d/bff.yaml"):
-            cfg_file = "conf.d/bff.yaml"
+        if os.path.isfile("../configs/bff.yaml"):
+            cfg_file = "../configs/bff.cfg"
+        elif os.path.isfile("configs/bff.yaml"):
+            cfg_file = "configs/bff.yaml"
         else:
             parser.error('Configuration file (--config) option must be specified.')
     logger.debug('Config file: %s', cfg_file)

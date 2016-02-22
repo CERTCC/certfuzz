@@ -110,7 +110,7 @@ shared folder /mnt/hgfs/fuzz. The default results location is
 /home/fuzz/results, which in the UbuFuzz vm is a soft link to
 /home/fuzz/bff/results (thus /mnt/hgfs/fuzz/results). Either
 of these soft links can be changed if desired, or you can edit
-conf.d/bff.cfg to point BFF at a different destination.
+configs/bff.cfg to point BFF at a different destination.
 
 BFF will copy its configuration to results/bff.cfg, and will
 log messages of level INFO or higher into results/bff.log. The

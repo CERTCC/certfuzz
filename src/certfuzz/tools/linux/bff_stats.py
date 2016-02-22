@@ -98,7 +98,7 @@ def main():
     if options.cfgfile:
         cfg_file = options.cfgfile
     else:
-        cfg_file = os.path.join('conf.d', 'bff.yaml')
+        cfg_file = os.path.join('configs', 'bff.yaml')
 
     logger.debug('Using config file: %s', cfg_file)
     cfg = load_and_fix_config(cfg_file)
