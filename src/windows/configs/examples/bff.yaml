@@ -214,7 +214,6 @@ runner:
 ##############################################################################
 debugger:
     runtimeout: 10
-    watchcpu: Auto
     debugheap: False
     max_handled_exceptions: 6
 

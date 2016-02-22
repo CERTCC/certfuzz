@@ -116,7 +116,7 @@ class WindowsCampaign(CampaignBase):
             logger.debug('This seems to be a CLI application.')
         try:
             runner_watchcpu = str(self.config['runner']['watchcpu']).lower()
-            debugger_watchcpu = str(self.config['debugger']['watchcpu']).lower()
+            debugger_watchcpu = runner_watchcpu
         except KeyError:
             self.config['runner']['watchcpu'] = 'auto'
             self.config['debugger']['watchcpu'] = 'auto'
@@ -138,7 +138,7 @@ class WindowsCampaign(CampaignBase):
         self.gui_app = True
         try:
             runner_watchcpu = str(self.config['runner']['watchcpu']).lower()
-            debugger_watchcpu = str(self.config['debugger']['watchcpu']).lower()
+            debugger_watchcpu = runner_watchcpu
         except KeyError:
             self.config['runner']['watchcpu'] = 'auto'
             self.config['debugger']['watchcpu'] = 'auto'
