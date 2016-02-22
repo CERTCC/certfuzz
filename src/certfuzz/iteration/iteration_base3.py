@@ -81,6 +81,9 @@ class IterationBase3(object):
         # increment the iteration counter
         IterationBase3._iteration_counter += 1
 
+        # increment the seedfile try counter
+        self.seedfile.tries += 1
+
         if self.success:
             # score it so we can learn
             self.record_success()
@@ -160,7 +163,6 @@ class IterationBase3(object):
 
     def record_success(self):
         self.sf_set.record_success(key=self.seedfile.md5)
-        self.seedfile.tries += 1
         if hasattr(self.r, 'id'):
             self.seedfile.rangefinder.record_success(key=self.r.id)
 
@@ -171,7 +173,6 @@ class IterationBase3(object):
         if self.seedfile.md5 in self.sf_set.arms:
             # Only record tries for seedfiles that haven't been removed
             self.sf_set.record_tries(key=self.seedfile.md5, tries=1)
-            self.seedfile.tries += 1
             if hasattr(self.r, 'id'):
                 self.seedfile.rangefinder.record_tries(key=self.r.id, tries=1)
 
