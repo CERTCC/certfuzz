@@ -36,6 +36,9 @@ class TestCaseBundle(object):
 
         self.regdict = {}
 
+        if not os.path.exists(self.dbg_outfile):
+            raise TestCaseBundleError
+
         self.reporttext = read_text_file(self.dbg_outfile)
         self._find_testcase_file()
         self._verify_files_exist()
