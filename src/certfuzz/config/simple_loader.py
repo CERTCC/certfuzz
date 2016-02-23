@@ -24,7 +24,7 @@ def load_config(yaml_file):
 
     # yaml.load returns None if the file is empty. We need to raise an error
     if cfg is None:
-        raise(ConfigError,'Config file was empty')
+        raise(ConfigError, 'Config file was empty')
 
     # add the file timestamp so we can tell if it changes later
     cfg['config_timestamp'] = os.path.getmtime(yaml_file)
@@ -40,15 +40,17 @@ def fixup_config(cfg):
     cfgdict = deepcopy(cfg)
     # fix target program path
     cfgdict['target']['program'] = fixup_path(cfgdict['target']['program'])
-    
+
     quoted_prg = quoted(cfgdict['target']['program'])
     quoted_sf = quoted('$SEEDFILE')
     t = Template(cfgdict['target']['cmdline_template'])
     intermediate_t = t.safe_substitute(PROGRAM=quoted_prg, SEEDFILE=quoted_sf)
     cfgdict['target']['cmdline_template'] = Template(intermediate_t)
 
-    for k,v in cfgdict['directories'].iteritems():
+    for k, v in cfgdict['directories'].iteritems():
         cfgdict['directories'][k] = fixup_path(v)
+
+    if 'analyzer' not in cfgdict: cfgdict['analyzer'] = {}
 
     return cfgdict
 
