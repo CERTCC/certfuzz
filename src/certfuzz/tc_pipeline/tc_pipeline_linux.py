@@ -17,8 +17,7 @@ from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateEmptyOutputFile
 from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateMissingInputFileError
 from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 from certfuzz.fuzztools import filetools
-from certfuzz.minimizer.errors import MinimizerError
-from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
+from certfuzz.minimizer.unix_minimizer import UnixMinimizer
 from certfuzz.tc_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.reporters.copy_files import CopyFilesReporter
 from certfuzz.reporters.testcase_logger import TestcaseLoggerReporter
@@ -37,6 +36,7 @@ def get_uniq_logger(logfile):
 
 
 class LinuxTestCasePipeline(TestCasePipelineBase):
+    _minimizer_cls = UnixMinimizer
 
     def _setup_analyzers(self):
         self.analyzer_classes.append(stderr.StdErr)
@@ -87,22 +87,8 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
     def _post_verify(self, testcase):
         testcase.get_logger()
 
-    def _minimize(self, testcase):
-        if self.options.get('minimize_crashers'):
-            touch_watchdog_file()
-            self._minimize_to_seedfile(testcase)
-        if self.options.get('minimize_to_string'):
-            touch_watchdog_file()
-            self._minimize_to_string(testcase)
-
-    def _post_minimize(self, testcase):
-        if self.cfg['runoptions']['recycle_crashers']:
-            logger.debug('Recycling crash as seedfile')
-            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
-            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-            crasherseed_path = os.path.join(self.cfg['directories']['seedfile_dir'], crasherseedname)
-            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
-            self.sf_set.add_file(crasherseed_path)
+    def _pre_minimize(self, testcase):
+        touch_watchdog_file()
 
     def _pre_analyze(self, testcase):
         # get one last debugger output for the newly minimized file
@@ -166,28 +152,3 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         # clean up
         testcase.delete_files()
 
-    def _minimize_to_seedfile(self, testcase):
-        self._minimize_generic(testcase, sftarget=True, confidence=0.999)
-        # calculate the hamming distances for this crash
-        # between the original seedfile and the minimized fuzzed file
-        testcase.calculate_hamming_distances()
-
-    def _minimize_to_string(self, testcase):
-        self._minimize_generic(testcase, sftarget=False, confidence=0.9)
-
-    def _minimize_generic(self, testcase, sftarget=True, confidence=0.999):
-        try:
-            with Minimizer(cfg=self.cfg,
-                           crash=testcase,
-                           bitwise=False,
-                           seedfile_as_target=sftarget,
-                           confidence=confidence,
-                           tempdir=self.options.get('local_dir'),
-                           maxtime=self.options.get('minimizertimeout'),
-                           ) as m:
-                m.go()
-                for new_tc in m.other_crashes.values():
-                    self.tc_candidate_q.put(new_tc)
-        except MinimizerError as e:
-            logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
-            m = None
