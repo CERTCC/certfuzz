@@ -68,6 +68,10 @@ class TestCaseBase(object):
             # one of the files wasn't defined
             logger.warning('Cannot find either sf_path or minimized file to calculate Hamming Distances')
 
+        self.logger.info("bitwise_hd=%d", self.hd_bits)
+        self.logger.info("bytewise_hd=%d", self.hd_bytes)
+
+
     def calculate_hamming_distances_a(self):
         with open(self.fuzzedfile.path, 'rb') as fd:
             fuzzed = fd.read()
@@ -75,4 +79,8 @@ class TestCaseBase(object):
         a_string = 'x' * len(fuzzed)
 
         self.hd_bits = hamming.bitwise_hd(a_string, fuzzed)
+        self.logger.info("bitwise_hd=%d", self.hd_bits)
+
         self.hd_bytes = hamming.bytewise_hd(a_string, fuzzed)
+        self.logger.info("bytewise_hd=%d", self.hd_bytes)
+

@@ -75,16 +75,6 @@ class Testcase(TestCaseBase):
     def _verify_crash_base_dir(self):
         raise NotImplementedError
 
-    def calculate_hamming_distances(self):
-        TestCaseBase.calculate_hamming_distances(self)
-        logger.info("bitwise_hd=%d", self.hd_bits)
-        logger.info("bytewise_hd=%d", self.hd_bytes)
-
-    def calculate_hamming_distances_a(self):
-        TestCaseBase.calculate_hamming_distances_a(self)
-        logger.info("bitwise_hd=%d", self.hd_bits)
-        logger.info("bytewise_hd=%d", self.hd_bytes)
-
     def clean_tmpdir(self):
         logger.debug('Cleaning up %s', self.tempdir)
         if os.path.exists(self.tempdir):
@@ -110,8 +100,8 @@ class Testcase(TestCaseBase):
 
     def copy_files(self, outdir):
         crash_files = os.listdir(self.tempdir)
-        for file in crash_files:
-            filepath = os.path.join(self.tempdir, file)
+        for f in crash_files:
+            filepath = os.path.join(self.tempdir, f)
             if os.path.isfile(filepath):
                 filetools.copy_file(filepath, outdir)
 
