@@ -5,12 +5,12 @@ Created on Jan 29, 2016
 '''
 import logging
 from certfuzz.analyzers.analyzer_base import Analyzer
-from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
+from certfuzz.analyzers.drillresults.testcasebundle_base import TestCaseBundle
 from certfuzz.drillresults.errors import TestCaseBundleError
-from certfuzz.drillresults.testcasebundle_linux import LinuxTestCaseBundle
-from certfuzz.drillresults.testcasebundle_windows import WindowsTestCaseBundle
+from certfuzz.analyzers.drillresults.testcasebundle_linux import LinuxTestCaseBundle
+from certfuzz.analyzers.drillresults.testcasebundle_windows import WindowsTestCaseBundle
 
-logger=logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 OUTFILE_EXT = "drillresults"
 get_file = lambda x: '{}.{}'.format(x, OUTFILE_EXT)
@@ -28,21 +28,21 @@ class DrillResults(Analyzer):
         '''
         self.cfg = cfg
         self.testcase = testcase
-        
+
         self.outfile = get_file(self.testcase.fuzzedfile.path)
         self.output_lines = []
-    
-    
+
+
     def _process_tcb(self, tcb):
         details = tcb.details
         score = tcb.score
         crash_key = tcb.crash_hash
-        
+
         output_lines = []
-        
+
         output_lines.append('%s - Exploitability rank: %s' % (crash_key, score))
         output_lines.append('Fuzzed file: %s' % details['fuzzedfile'])
-        
+
         for exception in details['exceptions']:
             shortdesc = details['exceptions'][exception]['shortdesc']
             eiftext = ''
@@ -58,17 +58,19 @@ class DrillResults(Analyzer):
                     output_lines.append('Instruction pointer is not in a loaded module!')
             else:
                 output_lines.append('Code executing in: %s' % module)
-        
+
         self.output_lines = output_lines
 
     def _write_outfile(self):
-        with open(self.outfile,'wb') as f:
+        with open(self.outfile, 'wb') as f:
             f.write('\n'.join(self.output_lines))
 
     def go(self):
         logger.info('Drill Results PLACEHOLDER')
 
-       
+
+
+
         # turn testcase into tescase_bundle
         with self._tcb_cls(dbg_outfile=self.testcase.dbg_file,
                            testcase_file=self.testcase.fuzzedfile.path,
@@ -79,16 +81,15 @@ class DrillResults(Analyzer):
             except TestCaseBundleError as e:
                 logger.warning('Skipping drillresults on testcase %s: %s', self.testcase.signature, e)
                 return
-        
+
         self._process_tcb(tcb)
         self._write_outfile()
         # if score < max_score do something (more interesting)
         # if score > max_score do something else (less interesting)
-        
+
 
 class LinuxDrillResults(DrillResults):
     _tcb_cls = LinuxTestCaseBundle
-    
+
 class WindowsDrillResults(DrillResults):
     _tcb_cls = WindowsTestCaseBundle
-    

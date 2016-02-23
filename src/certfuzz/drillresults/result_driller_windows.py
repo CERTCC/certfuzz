@@ -5,7 +5,7 @@ import logging
 import os
 import re
 
-from certfuzz.drillresults.testcasebundle_windows import WindowsTestCaseBundle as TestCaseBundle
+from certfuzz.analyzers.drillresults.testcasebundle_windows import WindowsTestCaseBundle as TestCaseBundle
 from certfuzz.drillresults.result_driller_base import ResultDriller
 
 

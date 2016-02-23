@@ -35,7 +35,7 @@ class Testcase(TestCaseBase):
         # set some defaults
         # Not a crash until we're sure
         self.is_crash = False
-        self.debugger_file = None
+        self.dbg_file = None
         self.is_unique = False
         self.should_proceed_with_analysis = False
         self.is_corrupt_stack = False

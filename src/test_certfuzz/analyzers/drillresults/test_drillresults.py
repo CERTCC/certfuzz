@@ -4,7 +4,7 @@ Created on Jan 29, 2016
 @author: adh
 '''
 import unittest
-from certfuzz.analyzers import drillresults
+from certfuzz.analyzers.drillresults import drillresults
 from test_certfuzz.mocks import MockCfg, MockTestcase, MockFuzzedFile
 import tempfile
 import shutil
