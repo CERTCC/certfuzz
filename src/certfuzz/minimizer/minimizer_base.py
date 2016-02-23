@@ -24,6 +24,7 @@ from certfuzz.analyzers import pin_calltrace
 from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
 from certfuzz.debuggers.output_parsers.calltracefile import Calltracefile
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +140,7 @@ class Minimizer(object):
         self.newfuzzed = ''
 
         self.crash_sigs_found = {}
-        self.files_tried = {}
+        self.files_tried = set()
         self.files_tried_at_hd = {}
         self.files_tried_singlebyte_at_hd = {}
         self.bytemap = []
@@ -236,10 +237,12 @@ class Minimizer(object):
         '''
         returns the contents of the fuzzed_content file
         '''
+
         # store the files in memory
         if self.is_zipfile:  # work with zip file contents, not the container
             logger.debug('Working with a zip file')
             return self._readzip(self.testcase.fuzzedfile.path)
+
         return self.testcase.fuzzedfile.read()
 
     def _read_seed(self):
@@ -329,58 +332,61 @@ class Minimizer(object):
         self.logger.addHandler(self.log_file_hdlr)
 
     def _set_crash_hashes(self):
-        if not self.crash_hashes:
-            miss_count = 0
-            # we want to keep going until we are 0.95 confident that
-            # if there are any other crashers they have a probability
-            # less than 0.5
-            max_misses = probability.misses_until_quit(0.95, 0.5)
-            sigs_seen = {}
-            times = []
-            # loop until we've found ALL the testcase signatures
-            while miss_count < max_misses:
-                # (sometimes testcase sigs change for the same input file)
-                (fd, f) = tempfile.mkstemp(prefix='minimizer_set_crash_hashes_', text=True, dir=self.tempdir)
-                os.close(fd)
+        if self.crash_hashes:
+            # shortcut if it's already set
+            return self.crash_hashes
+
+        miss_count = 0
+        # we want to keep going until we are 0.95 confident that
+        # if there are any other crashers they have a probability
+        # less than 0.5
+        max_misses = probability.misses_until_quit(0.95, 0.5)
+        sigs_set = set()
+        times = []
+        # loop until we've found ALL the testcase signatures
+        while miss_count < max_misses:
+            # (sometimes testcase sigs change for the same input file)
+            (fd, f) = tempfile.mkstemp(prefix='minimizer_set_crash_hashes_', text=True, dir=self.tempdir)
+            os.close(fd)
+            delete_files(f)
+
+            # run debugger
+            start = time.time()
+
+            dbg = self.run_debugger(self.tempfile, f)
+
+            # remember the elapsed time for later
+            end = time.time()
+            delta = end - start
+
+            if dbg.is_crash:
+                times.append(delta)
+
+            current_sig = self.get_signature(dbg, self.backtracelevels)
+
+            # ditch the temp file
+            if os.path.exists(f):
                 delete_files(f)
 
-                # run debugger
-                start = time.time()
-
-                dbg = self.run_debugger(self.tempfile, f)
-
-                # remember the elapsed time for later
-                end = time.time()
-                delta = end - start
-                if dbg.is_crash:
-                    times.append(delta)
-
-                current_sig = self.get_signature(dbg, self.backtracelevels)
-
-                # ditch the temp file
-                if os.path.exists(f):
-                    delete_files(f)
-
-                if current_sig:
-                    if sigs_seen.get(current_sig):
-                        sigs_seen[current_sig] += 1
-                        miss_count += 1
-                    else:
-                        sigs_seen[current_sig] = 1
-                        miss_count = 0
-                else:
-                    # this testcase had no signature, so skip it
+            if current_sig:
+                if current_sig in sigs_set:
                     miss_count += 1
-            self.crash_hashes = sigs_seen.keys()
-            # calculate average time
-            # get stdev
-            avg_time = numpy.average(times)
-            stdev_time = numpy.std(times)
-            # set debugger timeout to 0.95 confidence
-            # TODO: What if the VM becomes slower.
-            # We may give up on crashes before they happen.
-            zscore = 1.645
-            self.measured_dbg_time = avg_time + (zscore * stdev_time)
+                else:
+                    sigs_set.add(current_sig)
+                    miss_count = 0
+            else:
+                # this testcase had no signature, so skip it
+                miss_count += 1
+        self.crash_hashes = list(sigs_set)
+        # calculate average time
+        # get stdev
+        avg_time = numpy.average(times)
+        stdev_time = numpy.std(times)
+        # set debugger timeout to 0.95 confidence
+        # TODO: What if the VM becomes slower.
+        # We may give up on crashes before they happen.
+        zscore = 1.645
+        self.measured_dbg_time = avg_time + (zscore * stdev_time)
 
         return self.crash_hashes
 
@@ -390,10 +396,7 @@ class Minimizer(object):
         cmd = cmd_args[0]
         cmd_args = cmd_args[1:]
 
-        try:
-            exclude_unmapped_frames = self.cfg['analyzer']['exclude_unmapped_frames']
-        except KeyError:
-            exclude_unmapped_frames = True
+        exclude_unmapped_frames = self.cfg['analyzer'].get('exclude_unmapped_frames', True)
 
         dbg = self._debugger_cls(cmd,
                             cmd_args,
@@ -406,11 +409,11 @@ class Minimizer(object):
                             watchcpu=self.watchcpu
                             )
         parsed_debugger_output = dbg.go()
+
         return parsed_debugger_output
 
     def _crash_builder(self):
         self.logger.debug('Building new testcase object.')
-        import copy
 
         # copy our original testcase as the basis for the new testcase
         new_testcase = copy.copy(self.testcase)
@@ -424,6 +427,7 @@ class Minimizer(object):
             pfx = '%s-' % self.testcase.seedfile.root
         else:
             pfx = 'string-'
+
         (fd, f) = tempfile.mkstemp(suffix=sfx, prefix=pfx, dir=newcrash_tmpdir)
         os.close(fd)
         delete_files(f)
@@ -451,20 +455,27 @@ class Minimizer(object):
 
         return new_testcase
 
+
+    def _get_pin_signature(self, backtracelevels):
+        # total_stack_corruption.  Use pin calltrace to get a backtrace
+        analyzer_instance = pin_calltrace.Pin_calltrace(self.cfg, self.testcase)
+        try:
+            analyzer_instance.go()
+        except AnalyzerEmptyOutputError:
+            logger.warning('Unexpected empty output from analyzer. Continuing')
+        if os.path.exists(analyzer_instance.outfile):
+            calltrace = Calltracefile(analyzer_instance.outfile)
+            pinsignature = calltrace.get_testcase_signature(backtracelevels * 10)
+            if pinsignature:
+                signature = pinsignature
+        return signature
+
     def get_signature(self, dbg, backtracelevels):
         signature = dbg.get_testcase_signature(backtracelevels)
+
         if dbg.total_stack_corruption:
-            # total_stack_corruption.  Use pin calltrace to get a backtrace
-            analyzer_instance = pin_calltrace.Pin_calltrace(self.cfg, self.testcase)
-            try:
-                analyzer_instance.go()
-            except AnalyzerEmptyOutputError:
-                logger.warning('Unexpected empty output from analyzer. Continuing')
-            if os.path.exists(analyzer_instance.outfile):
-                calltrace = Calltracefile(analyzer_instance.outfile)
-                pinsignature = calltrace.get_testcase_signature(backtracelevels * 10)
-                if pinsignature:
-                    signature = pinsignature
+            signature = self._get_pin_signature(backtracelevels)
+
         return signature
 
     def is_same_crash(self):
@@ -538,17 +549,6 @@ class Minimizer(object):
         p = probability.FuzzRun(self.min_distance, self.target_size_guess, keep_chance)
 
         self.n_misses_allowed = p.how_many_misses_until_quit(self.confidence_level)
-        return True
-
-    def have_we_seen_this_file_before(self):
-        # is this a new file?
-        if not self.files_tried.get(self.newfuzzed_md5):
-            # totally new file
-            self.files_tried[self.newfuzzed_md5] = 1
-            return False
-
-        # it's a repeat
-        self.files_tried[self.newfuzzed_md5] += 1
         return True
 
     def print_intermediate_log(self):
@@ -645,54 +645,50 @@ class Minimizer(object):
 
                 self.total_tries += 1
 
-                is_repeat = self.have_we_seen_this_file_before()
-
                 # have we been at this level before?
                 if not self.files_tried_at_hd.get(self.min_distance):
-                    # we've reached a new minimum
-                    self.files_tried_at_hd[self.min_distance] = {}
-                    self.files_tried_singlebyte_at_hd[self.min_distance] = {}
+                    # we've reached a new minimum, so create new sets
+                    self.files_tried_at_hd[self.min_distance] = set()
+                    self.files_tried_singlebyte_at_hd[self.min_distance] = set()
 
-                # have we seen this file at this level before?
-                if not self.files_tried_at_hd[self.min_distance].get(self.newfuzzed_md5):
-                    # this is a new file so we'll try it
-                    self.files_tried_at_hd[self.min_distance][self.newfuzzed_md5] = 1
-                    if self.newfuzzed_hd == (self.min_distance - 1):
-                        self.files_tried_singlebyte_at_hd[self.min_distance][self.newfuzzed_md5] = 1
-                else:
-                    # this is a repeat at this level
-                    self.files_tried_at_hd[self.min_distance][self.newfuzzed_md5] += 1
-                    if self.newfuzzed_hd == (self.min_distance - 1):
-                        self.files_tried_singlebyte_at_hd[self.min_distance][self.newfuzzed_md5] += 1
+                # have we exhausted all the possible files with smaller hd?
+                possible_files = (2 ** self.min_distance) - 2
+                seen_files = len(self.files_tried_at_hd[self.min_distance])
 
-                    # have we exhausted all the possible files with smaller hd?
-                    possible_files = (2 ** self.min_distance) - 2
-                    seen_files = len(self.files_tried_at_hd[self.min_distance])
-                    # maybe we're done?
-                    if seen_files == possible_files:
-                        # we've exhaustively searched everything with hd < self.min_distance
-                        self.logger.info('Exhaustively searched all files shorter than %d', self.min_distance)
-                        self.min_found = True
-                        break
+                # maybe we're done?
+                if seen_files == possible_files:
+                    # we've exhaustively searched everything with hd < self.min_distance
+                    self.logger.info('Exhaustively searched all files shorter than %d', self.min_distance)
+                    self.min_found = True
+                    break
 
-                    # have we exhausted all files that are 1 byte smaller hd?
-                    possible_singlebyte_diff_files = self.min_distance
-                    singlebyte_diff_files_seen = len(self.files_tried_singlebyte_at_hd[self.min_distance])
-                    # maybe we're done?
-                    if singlebyte_diff_files_seen == possible_singlebyte_diff_files:
-                        self.logger.info('We have tried all %d files that are one byte closer than the current minimum', self.min_distance)
-                        self.min_found = True
-                        break
+                # have we exhausted all files that are 1 byte smaller hd?
+                possible_singlebyte_diff_files = self.min_distance
+                singlebyte_diff_files_seen = len(self.files_tried_singlebyte_at_hd[self.min_distance])
+
+                # maybe we're done?
+                if singlebyte_diff_files_seen == possible_singlebyte_diff_files:
+                    self.logger.info('We have tried all %d files that are one byte closer than the current minimum', self.min_distance)
+                    self.min_found = True
+                    break
+
+                # remember this file for next time around
+                self.files_tried_at_hd[self.min_distance].add(self.newfuzzed_md5)
+                if self.newfuzzed_hd == (self.min_distance - 1):
+                    self.files_tried_singlebyte_at_hd[self.min_distance].add(self.newfuzzed_md5)
 
                 self.print_intermediate_log()
 
-                if is_repeat:
+                if self.newfuzzed_md5 in self.files_tried:
                     # we've already seen this attempt, so skip ahead to the next one
                     # but still count it as a miss since our math assumes we're putting
                     # the marbles back in the jar after each draw
                     self.consecutive_misses += 1
                     self.total_misses += 1
                     continue
+
+                # we didn't skip ahead, so it must have been new. Remember it now
+                self.files_tried.add(self.newfuzzed_md5)
 
                 # we have a better match, write it to a file
                 if not len(self.newfuzzed):

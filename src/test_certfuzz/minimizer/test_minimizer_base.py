@@ -39,12 +39,6 @@ class Test(unittest.TestCase):
     def test_go(self):
         pass
 
-    def test_have_we_seen_this_file_before(self):
-        self.m.newfuzzed_md5 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-        self.assertFalse(self.m.have_we_seen_this_file_before())
-        self.assertTrue(self.m.have_we_seen_this_file_before())
-
     def test_is_same_crash(self):
         pass
 
