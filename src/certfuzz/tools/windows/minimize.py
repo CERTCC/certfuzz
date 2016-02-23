@@ -155,6 +155,8 @@ def main():
     debugger_class = msec.MsecDebugger
 
     cmd_as_args = get_command_args_list(cfg['target']['cmdline_template'], fuzzed_file.path)[1]
+    # Use runner timeout, since we now only specify the runner timeout
+    cfg['debugger']['runtimeout'] = cfg['runner']['runtimeout']
     with WindowsTestcase(cmd_template=cfg['target']['cmdline_template'],
                       seedfile=seedfile,
                       fuzzedfile=fuzzed_file,
