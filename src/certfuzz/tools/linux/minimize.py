@@ -48,7 +48,7 @@ def main():
                       help='Minimize to \'x\' characters instead of Metasploit string pattern')
     parser.add_option('-f', '--faddr', dest='keep_uniq_faddr',
                       action='store_true',
-                      help='Use exception faulting addresses as part of crash signature')
+                      help='Use exception faulting addresses as part of testcase signature')
     parser.add_option('-b', '--bitwise', dest='bitwise', action='store_true',
                       help='if set, use bitwise hamming distance. Default is bytewise')
     parser.add_option('-c', '--confidence', dest='confidence',
@@ -144,18 +144,18 @@ def main():
                        backtrace_lines=cfg['debugger']['backtracelevels'],
                        crashers_dir=crashers_dir,
                        workdir_base=None,
-                       keep_faddr=options.keep_uniq_faddr) as crash:
+                       keep_faddr=options.keep_uniq_faddr) as testcase:
 
-        filetools.make_directories(crash.tempdir)
-        logger.info('Copying %s to %s', fuzzed_file.path, crash.tempdir)
-        filetools.copy_file(fuzzed_file.path, crash.tempdir)
+        filetools.make_directories(testcase.tempdir)
+        logger.info('Copying %s to %s', fuzzed_file.path, testcase.tempdir)
+        filetools.copy_file(fuzzed_file.path, testcase.tempdir)
 
-        with Minimizer(cfg=cfg, crash=crash, crash_dst_dir=outdir,
+        with Minimizer(cfg=cfg, testcase=testcase, crash_dst_dir=outdir,
                                  seedfile_as_target=min2seed,
                                  bitwise=options.bitwise,
                                  confidence=confidence,
                                  logfile='./min_log.txt',
-                                 tempdir=crash.tempdir,
+                                 tempdir=testcase.tempdir,
                                  maxtime=options.timeout,
                                  preferx=options.prefer_x_target,
                                  keep_uniq_faddr=options.keep_uniq_faddr) as minimize:
@@ -179,14 +179,14 @@ def main():
                 for idx in minimize.bytemap:
                     logger.debug('Swapping index %d', idx)
                     targetstring[idx] = fuzzed[idx]
-                filename = ''.join((crash.fuzzedfile.root, filename_modifier, crash.fuzzedfile.ext))
-                metasploit_file = os.path.join(crash.tempdir, filename)
+                filename = ''.join((testcase.fuzzedfile.root, filename_modifier, testcase.fuzzedfile.ext))
+                metasploit_file = os.path.join(testcase.tempdir, filename)
 
                 with open(metasploit_file, 'wb') as f:
                     f.writelines(targetstring)
 
-        crash.copy_files(outdir)
-        crash.clean_tmpdir()
+        testcase.copy_files(outdir)
+        testcase.clean_tmpdir()
 
 if __name__ == '__main__':
     main()

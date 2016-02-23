@@ -200,7 +200,7 @@ class TestCasePipelineBase(object):
 
         # build arguments for minimizer invocation
         kwargs = {'cfg': self.cfg,
-                  'crash': testcase,
+                  'testcase': testcase,
                   'seedfile_as_target': True,
                   'bitwise': False,
                   'confidence': 0.999,

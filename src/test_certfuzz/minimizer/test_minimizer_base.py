@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         self.cfg = MockFixupCfg()
-        self.crash = MockCrasher()
+        self.testcase = MockCrasher()
 
         Minimizer._debugger_cls = MockDebugger
 
@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
         os.remove(self.logfile)
         self.assertFalse(os.path.exists(self.logfile))
 
-        self.m = Minimizer(cfg=self.cfg, crash=self.crash,
+        self.m = Minimizer(cfg=self.cfg, testcase=self.testcase,
                            crash_dst_dir=self.crash_dst_dir,
                            logfile=self.logfile, tempdir=self.tempdir)
 

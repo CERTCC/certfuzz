@@ -20,11 +20,11 @@ class Test(unittest.TestCase):
     def setUp(self):
         cfg = MockFixupCfg()
 
-        crash = Mock()
-        crash.fuzzedfile = Mock()
-        crash.fuzzedfile.path = "foo"
-        crash.fuzzedfile.dirname = 'foodir'
-        self.vg = Valgrind(cfg, crash)
+        testcase = Mock()
+        testcase.fuzzedfile = Mock()
+        testcase.fuzzedfile.path = "foo"
+        testcase.fuzzedfile.dirname = 'foodir'
+        self.vg = Valgrind(cfg, testcase)
 
     def tearDown(self):
         pass

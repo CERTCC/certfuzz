@@ -35,12 +35,12 @@ class Test(unittest.TestCase):
             cfg['target']['cmdline_template'] = string.Template('cat -a foo')
 
 
-        crash = Mock()
-        crash.fuzzedfile = Mock()
-        crash.fuzzedfile.path = f
-        crash.fuzzedfile.dirname = os.path.dirname(f)
+        testcase = Mock()
+        testcase.fuzzedfile = Mock()
+        testcase.fuzzedfile.path = f
+        testcase.fuzzedfile.dirname = os.path.dirname(f)
 
-        self.se = StdErr(cfg, crash)
+        self.se = StdErr(cfg, testcase)
 
     def tearDown(self):
         if os.path.exists(self.file):
@@ -58,5 +58,5 @@ class Test(unittest.TestCase):
         self.assertTrue('cat' in contents)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

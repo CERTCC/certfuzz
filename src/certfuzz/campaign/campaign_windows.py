@@ -36,7 +36,7 @@ class WindowsCampaign(CampaignBase):
     def __getstate__(self):
         state = self.__dict__.copy()
 
-        state['crashes_seen'] = list(state['crashes_seen'])
+        state['testcases_seen'] = list(state['testcases_seen'])
         if state['seedfile_set']:
             state['seedfile_set'] = state['seedfile_set'].__getstate__()
 
@@ -53,7 +53,7 @@ class WindowsCampaign(CampaignBase):
 
     def __setstate__(self, state):
         # turn the list into a set
-        state['crashes_seen'] = set(state['crashes_seen'])
+        state['testcases_seen'] = set(state['testcases_seen'])
 
         # reconstitute the seedfile set
         with SeedfileSet(state['campaign_id'], state['seed_dir_in'], state['seed_dir_local'],
@@ -174,7 +174,7 @@ class WindowsCampaign(CampaignBase):
                               workdirbase=self.working_dir,
                               outdir=self.outdir,
                               sf_set=self.seedfile_set,
-                              uniq_func=self._crash_is_unique,
+                              uniq_func=self._testcase_is_unique,
                               config=self.config,
                               fuzzer_cls=self.fuzzer_cls,
                               runner_cls=self.runner_cls,
@@ -190,8 +190,8 @@ class WindowsCampaign(CampaignBase):
                 self.seedfile_set.remove_file(seedfile)
 
         if not seednum % self.status_interval:
-            logger.info('Iteration: %d Crashes found: %d', self.current_seed,
-                        len(self.crashes_seen))
+            logger.info('Iteration: %d testcases found: %d', self.current_seed,
+                        len(self.testcases_seen))
             # FIXME
             # self.seedfile_set.update_csv()
             logger.info('Seedfile Set Status:')

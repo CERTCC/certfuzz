@@ -111,7 +111,7 @@ class _Test(unittest.TestCase):
         self.assertEqual(gdbf._hashable_backtrace_string(2), '0x11111111 foo.c:80')
         self.assertEqual(gdbf._hashable_backtrace_string(3), '0x11111111 foo.c:80 0x33333333')
 
-    def test_get_crash_signature(self):
+    def test_get_testcase_signature(self):
         gdbf = GDBfile(self.file)
         self.assertFalse(gdbf._hashable_backtrace())
 
@@ -121,9 +121,9 @@ class _Test(unittest.TestCase):
 
         gdbf._process_lines()
         gdbf._hashable_backtrace()
-        self.assertEqual(gdbf.get_crash_signature(1), hashlib.md5('0x11111111').hexdigest())
-        self.assertEqual(gdbf.get_crash_signature(2), hashlib.md5('0x11111111 foo.c:80').hexdigest())
-        self.assertEqual(gdbf.get_crash_signature(3), hashlib.md5('0x11111111 foo.c:80 0x33333333').hexdigest())
+        self.assertEqual(gdbf.get_testcase_signature(1), hashlib.md5('0x11111111').hexdigest())
+        self.assertEqual(gdbf.get_testcase_signature(2), hashlib.md5('0x11111111 foo.c:80').hexdigest())
+        self.assertEqual(gdbf.get_testcase_signature(3), hashlib.md5('0x11111111 foo.c:80 0x33333333').hexdigest())
 
     def test_backtrace(self):
         (fd, f) = tempfile.mkstemp(text=True)

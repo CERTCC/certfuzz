@@ -20,7 +20,7 @@ class CrashWranglerGmalloc(Analyzer):
     classdocs
     '''
 
-    def __init__(self, cfg, crash):
+    def __init__(self, cfg, testcase):
         '''
         Constructor
         '''
@@ -29,10 +29,10 @@ class CrashWranglerGmalloc(Analyzer):
         elif not os.path.isfile('/usr/lib/libgmalloc.dylib'):
             return None
 
-        outfile = get_file(crash.fuzzedfile.path)
+        outfile = get_file(testcase.fuzzedfile.path)
         timeout = cfg['runner']['runtimeout']
 
-        Analyzer.__init__(self, cfg, crash, outfile, timeout)
+        Analyzer.__init__(self, cfg, testcase, outfile, timeout)
 
     def go(self):
         if not _platform_is_supported:

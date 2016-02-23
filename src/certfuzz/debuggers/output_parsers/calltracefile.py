@@ -26,7 +26,7 @@ class Calltracefile:
         '''
         Create a GDB file object from the gdb output file <file>
         @param lines: The lines of the gdb file
-        @param is_crash: True if gdb file represents a crash
+        @param is_crash: True if gdb file represents a testcase
         @param is_assert_fail: True if gdb file represents an assert_fail
         @param is_debugbuild: True if gdb file contains source code lines
         '''
@@ -82,13 +82,13 @@ class Calltracefile:
 
             self.calltrace_line(idx, line)
 
-    def get_crash_signature(self, backtrace_level):
+    def get_testcase_signature(self, backtrace_level):
         '''
         Determines if a crash is unique. Depending on <backtrace_level>,
         it may look at a number of source code lines in the gdb backtrace, or simply
         just the memory location of the crash.
         '''
-        logger.debug('get_crash_signature')
+        logger.debug('get_testcase_signature')
         backtrace_string = self._hashable_backtrace_string(backtrace_level)
         if bool(backtrace_string):
             return hashlib.md5(backtrace_string).hexdigest()
@@ -108,4 +108,4 @@ if __name__ == '__main__':
 
     for path in args:
         g = Calltracefile(path)
-        print g.get_crash_signature(50)
+        print g.get_testcase_signature(50)

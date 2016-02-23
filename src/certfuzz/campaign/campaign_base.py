@@ -61,7 +61,7 @@ class CampaignBase(object):
         self.debug = debug
         self._version = __version__
 
-        self.crashes_seen = set()
+        self.testcases_seen = set()
 
         self.runner_module_name = None
         self.runner_module = None
@@ -351,19 +351,19 @@ class CampaignBase(object):
         # FIXME
         # dump_obj_to_file(cachefile, self)
 
-    def _crash_is_unique(self, crash_id, exploitability='UNKNOWN'):
+    def _testcase_is_unique(self, testcase_id, exploitability='UNKNOWN'):
         '''
-        If crash_id represents a new crash, add the crash_id to crashes_seen
+        If testcase_id represents a new testcase, add the testcase_id to testcases_seen
         and return True. Otherwise return False.
 
-        @param crash_id: the crash_id to look up
+        @param testcase_id: the testcase_id to look up
         @param exploitability: not used at this time
         '''
-        if not crash_id in self.crashes_seen:
-            self.crashes_seen.add(crash_id)
-            logger.debug("%s did not exist in cache, crash is unique", crash_id)
+        if not testcase_id in self.testcases_seen:
+            self.testcases_seen.add(testcase_id)
+            logger.debug("%s did not exist in cache, testcase is unique", testcase_id)
             return True
-        logger.debug('%s was found, not unique', crash_id)
+        logger.debug('%s was found, not unique', testcase_id)
         return False
 
     def _keep_going(self):

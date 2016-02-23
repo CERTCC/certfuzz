@@ -16,15 +16,15 @@ class WindowsMinimizer(MinimizerBase):
     use_watchdog = False
     _debugger_cls = MsecDebugger
 
-    def __init__(self, cfg=None, crash=None, crash_dst_dir=None,
+    def __init__(self, cfg=None, testcase=None, crash_dst_dir=None,
                  seedfile_as_target=False, bitwise=False, confidence=0.999,
                  logfile=None, tempdir=None, maxtime=3600, preferx=False,
                  keep_uniq_faddr=False, watchcpu=False):
 
         self.saved_arcinfo = None
-        self.is_zipfile = check_zip_file(crash.fuzzedfile.path)
+        self.is_zipfile = check_zip_file(testcase.fuzzedfile.path)
 
-        MinimizerBase.__init__(self, cfg, crash, crash_dst_dir,
+        MinimizerBase.__init__(self, cfg, testcase, crash_dst_dir,
                                seedfile_as_target, bitwise, confidence,
                                logfile, tempdir, maxtime, preferx,
                                keep_uniq_faddr, watchcpu)
@@ -36,7 +36,7 @@ class WindowsMinimizer(MinimizerBase):
             self.signature = None
         else:
             crash_id_parts = [crash_hash]
-            if self.crash.keep_uniq_faddr and hasattr(dbg, 'faddr'):
+            if self.testcase.keep_uniq_faddr and hasattr(dbg, 'faddr'):
                 crash_id_parts.append(dbg.faddr)
             self.signature = '.'.join(crash_id_parts)
         return self.signature
@@ -48,7 +48,7 @@ class WindowsMinimizer(MinimizerBase):
         # store the files in memory
         if self.is_zipfile:  # work with zip file contents, not the container
             logger.debug('Working with a zip file')
-            return self._readzip(self.crash.fuzzedfile.path)
+            return self._readzip(self.testcase.fuzzedfile.path)
         # otherwise just call the parent class method
         return MinimizerBase._read_fuzzed(self)
 
@@ -59,7 +59,7 @@ class WindowsMinimizer(MinimizerBase):
         # we're either going to minimize to the seedfile, the metasploit
         # pattern, or a string of 'x's
         if self.is_zipfile and self.seedfile_as_target:
-            return self._readzip(self.crash.seedfile.path)
+            return self._readzip(self.testcase.seedfile.path)
         # otherwise just call the parent class method
         return MinimizerBase._read_seed(self)
 

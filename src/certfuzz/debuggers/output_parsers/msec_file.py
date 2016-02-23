@@ -52,7 +52,7 @@ class MsecFile(DebuggerFile):
     def _hashable_backtrace(self):
         pass
 
-    def get_crash_signature(self, backtrace_level):
+    def get_testcase_signature(self, backtrace_level):
         return self.crash_hash
 
     def _find_exploitability(self, line):
