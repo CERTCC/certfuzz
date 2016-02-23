@@ -452,7 +452,7 @@ class Minimizer(object):
         return new_testcase
 
     def get_signature(self, dbg, backtracelevels):
-        signature = dbg.get_crash_signature(backtracelevels)
+        signature = dbg.get_testcase_signature(backtracelevels)
         if dbg.total_stack_corruption:
             # total_stack_corruption.  Use pin calltrace to get a backtrace
             analyzer_instance = pin_calltrace.Pin_calltrace(self.cfg, self.testcase)
@@ -462,7 +462,7 @@ class Minimizer(object):
                 logger.warning('Unexpected empty output from analyzer. Continuing')
             if os.path.exists(analyzer_instance.outfile):
                 calltrace = Calltracefile(analyzer_instance.outfile)
-                pinsignature = calltrace.get_crash_signature(backtracelevels * 10)
+                pinsignature = calltrace.get_testcase_signature(backtracelevels * 10)
                 if pinsignature:
                     signature = pinsignature
         return signature

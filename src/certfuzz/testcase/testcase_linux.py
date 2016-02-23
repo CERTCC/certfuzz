@@ -135,7 +135,7 @@ class LinuxTestcase(Testcase):
         @raise CrasherHasNoSignatureError: if it's a valid crash, but we don't get a signature
         '''
         if not self.signature:
-            self.signature = self.dbg.get_crash_signature(self.backtrace_lines)
+            self.signature = self.dbg.get_testcase_signature(self.backtrace_lines)
             if self.signature:
                 logger.debug("Testcase signature is %s", self.signature)
             else:
@@ -150,7 +150,7 @@ class LinuxTestcase(Testcase):
                     return self.signature
 
                 calltrace = Calltracefile(analyzer_instance.outfile)
-                pinsignature = calltrace.get_crash_signature(self.backtrace_lines * 10)
+                pinsignature = calltrace.get_testcase_signature(self.backtrace_lines * 10)
                 if pinsignature:
                     self.signature = pinsignature
         return self.signature

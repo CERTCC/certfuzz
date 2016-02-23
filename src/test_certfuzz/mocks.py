@@ -88,7 +88,7 @@ class MockDbgOut(Mock):
     is_crash = False
     total_stack_corruption = False
 
-    def get_crash_signature(self, *dummyargs):
+    def get_testcase_signature(self, *dummyargs):
         return 'AAAAA'
 
 class MockDebugger(Mock):

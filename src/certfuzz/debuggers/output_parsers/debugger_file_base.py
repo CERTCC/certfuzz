@@ -539,13 +539,13 @@ class DebuggerFile(object):
         self.registers_sought.remove(r)
         logger.debug('Register %s=%s', r, self.registers_hex[r])
 
-    def get_crash_signature(self, backtrace_level):
+    def get_testcase_signature(self, backtrace_level):
         '''
         Determines if a crash is unique. Depending on <backtrace_level>,
         it may look at a number of source code lines in the gdb backtrace, or simply
         just the memory location of the crash.
         '''
-        logger.debug('get_crash_signature')
+        logger.debug('get_testcase_signature')
         backtrace_string = self._hashable_backtrace_string(backtrace_level)
 
         if bool(backtrace_string):
@@ -596,7 +596,7 @@ def _analyze_file(filepath, include_bt=False):
     bthash = 'no_backtrace_available'
 
     if bt:
-        sig = bt.get_crash_signature(5)
+        sig = bt.get_testcase_signature(5)
         if bt.total_stack_corruption:
             sig = "total_stack_corruption"
         if not sig:
