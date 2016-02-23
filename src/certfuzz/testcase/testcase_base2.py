@@ -77,13 +77,13 @@ class Testcase(TestCaseBase):
 
     def calculate_hamming_distances(self):
         TestCaseBase.calculate_hamming_distances(self)
-        self.logger.info("bitwise_hd=%d", self.hd_bits)
-        self.logger.info("bytewise_hd=%d", self.hd_bytes)
+        logger.info("bitwise_hd=%d", self.hd_bits)
+        logger.info("bytewise_hd=%d", self.hd_bytes)
 
     def calculate_hamming_distances_a(self):
         TestCaseBase.calculate_hamming_distances_a(self)
-        self.logger.info("bitwise_hd=%d", self.hd_bits)
-        self.logger.info("bytewise_hd=%d", self.hd_bytes)
+        logger.info("bitwise_hd=%d", self.hd_bits)
+        logger.info("bytewise_hd=%d", self.hd_bytes)
 
     def clean_tmpdir(self):
         logger.debug('Cleaning up %s', self.tempdir)
