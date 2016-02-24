@@ -95,3 +95,7 @@ class Debugger(object):
 
     def __exit__(self, etype, value, traceback):
         pass
+
+    @property
+    def extension(self):
+        return self._ext

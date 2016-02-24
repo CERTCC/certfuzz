@@ -4,7 +4,7 @@ Created on Jul 2, 2014
 @organization: cert.org
 '''
 import unittest
-from certfuzz.drillresults import testcasebundle_windows
+from certfuzz.analyzers.drillresults import testcasebundle_windows
 
 
 class Test(unittest.TestCase):

@@ -8,7 +8,7 @@ import os
 import re
 
 from certfuzz.drillresults.common import carve
-from certfuzz.drillresults.testcasebundle_base import TestCaseBundle
+from certfuzz.analyzers.drillresults.testcasebundle_base import TestCaseBundle
 
 
 logger = logging.getLogger(__name__)

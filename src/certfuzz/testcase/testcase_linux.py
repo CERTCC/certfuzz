@@ -52,7 +52,6 @@ class LinuxTestcase(Testcase):
         self.keep_uniq_faddr = keep_faddr
 
         self.cmdargs = None
-#        self.debugger_file = None
         self.is_crash = False
         self.signature = None
         self.faddr = None
@@ -110,6 +109,8 @@ class LinuxTestcase(Testcase):
                                 keep_uniq_faddr=self.keep_uniq_faddr
                                 )
         self.dbg = debugger_obj.go()
+        self.dbg_file = self.dbg.file
+
 
     def confirm_crash(self):
         # get debugger output
