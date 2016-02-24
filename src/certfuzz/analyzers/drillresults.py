@@ -64,17 +64,13 @@ class DrillResults(Analyzer):
     def _write_outfile(self):
         with open(self.outfile,'wb') as f:
             f.write('\n'.join(self.output_lines))
-    
-    @property
-    def dbg_file(self):
-        return '{}.{}'.format(self.testcase.fuzzedfile.path,self.testcase.debugger_extension)
 
     def go(self):
         logger.info('Drill Results PLACEHOLDER')
 
        
         # turn testcase into tescase_bundle
-        with self._tcb_cls(dbg_outfile=self.dbg_file,
+        with self._tcb_cls(dbg_outfile=self.testcase.dbg_file,
                            testcase_file=self.testcase.fuzzedfile.path,
                            crash_hash=self.testcase.signature,
                            ignore_jit=False) as tcb:

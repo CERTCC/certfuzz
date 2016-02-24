@@ -37,7 +37,7 @@ class TestCaseBundle(object):
         self.regdict = {}
 
         if not os.path.exists(self.dbg_outfile):
-            raise TestCaseBundleError
+            raise TestCaseBundleError('Debugger file not found: {}'.format(self.dbg_outfile))
 
         self.reporttext = read_text_file(self.dbg_outfile)
         self._find_testcase_file()
@@ -150,7 +150,7 @@ class TestCaseBundle(object):
             return
 
         if not instraddr:
-            #raise TestCaseBundleError('No instraddr address means no crash')
+            # raise TestCaseBundleError('No instraddr address means no crash')
             return
 
         faultaddr, instraddr = self._64bit_addr_fixup(faultaddr, instraddr)
@@ -297,15 +297,14 @@ class TestCaseBundle(object):
         exceptions = self.details['exceptions']
 
         for exception in exceptions.itervalues():
-            module = exception['pcmodule']
+            module, efa, eif = self._get_efa_mod_eif(exception)
+
             if module == 'unloaded' and not self.ignore_jit:
                 # EIP is not in a loaded module
                 scores.append(20)
 
             if exception['shortdesc'] in self.re_set:
-                efa = '0x' + exception['efa']
-
-                if exception['EIF']:
+                if eif:
                 # The faulting address pattern is in the fuzzed file
                     if '0x000000' in efa:
                         # Faulting address is near null
@@ -325,13 +324,33 @@ class TestCaseBundle(object):
 
         return scores
 
+
+    def _get_efa_mod_eif(self, exception):
+        try:
+            efa = '0x' + exception['efa']
+        except KeyError:
+            logger.error('Exception has no value set for efa.')
+            efa = ''
+        try:
+            module = exception['pcmodule']
+        except KeyError:
+            logger.error('Exception has no value set for pcmodule')
+            module = ''
+        try:
+            eif = exception['EIF']
+        except KeyError:
+            logger.error('Exception has no value set for EIF')
+            eif = False
+
+        return module, efa, eif
+
     def _score_less_interesting(self):
         scores = []
         exceptions = self.details['exceptions']
 
         for exception in exceptions.itervalues():
-            efa = '0x' + exception['efa']
-            module = exception['pcmodule']
+            module, efa, eif = self._get_efa_mod_eif(exception)
+
             if module == 'unloaded' and not self.ignore_jit:
                 scores.append(20)
             elif module.lower() == 'ntdll.dll' or 'msvcr' in module.lower():
@@ -340,7 +359,7 @@ class TestCaseBundle(object):
             elif '0x00120000' in efa or '0x00130000' in efa or '0x00140000' in efa:
                 # non-continued potential stack buffer overflow
                 scores.append(40)
-            elif exception['EIF']:
+            elif eif:
             # The faulting address pattern is in the fuzzed file
                 if '0x000000' in efa:
                     # Faulting address is near null

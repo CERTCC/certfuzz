@@ -30,7 +30,7 @@ class Debugger(object):
         logger.debug('Initialize Debugger')
         self.program = program
         self.cmd_args = cmd_args
-        self.outfile = '.'.join((outfile_base, self.extension))
+        self.outfile = '.'.join((outfile_base, self._ext))
         self.timeout = timeout
         self.input_file = ''
         self.debugger_output = None

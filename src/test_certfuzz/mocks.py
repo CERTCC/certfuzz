@@ -69,7 +69,7 @@ class MockSeedfile(Mock):
 class MockFuzzedFile(Mock):
     path = u'foo'
 
-    def __init__(self,path=None):
+    def __init__(self, path=None):
         if path is not None:
             self.path = path
 
@@ -87,7 +87,8 @@ class MockTestcase(Mock):
     range = MockRange()
     fuzzedfile = MockFuzzedFile()
     pc = u'dummyPCstring'
-    debugger_extension='abcdefg'
+    debugger_extension = 'abcdefg'
+    dbg_outfile = 'xyz'
 
 class MockDbgOut(Mock):
     is_crash = False

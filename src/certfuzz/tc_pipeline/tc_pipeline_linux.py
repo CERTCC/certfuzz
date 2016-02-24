@@ -6,11 +6,6 @@ Created on Jul 16, 2014
 import logging
 import os
 
-from certfuzz.analyzers import cw_gmalloc
-from certfuzz.analyzers import pin_calltrace
-from certfuzz.analyzers import stderr
-from certfuzz.analyzers import valgrind
-from certfuzz.analyzers.callgrind import callgrind
 from certfuzz.analyzers.callgrind.annotate import annotate_callgrind
 from certfuzz.analyzers.callgrind.annotate import annotate_callgrind_tree
 from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateEmptyOutputFileError
@@ -21,8 +16,12 @@ from certfuzz.minimizer.unix_minimizer import UnixMinimizer
 from certfuzz.tc_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.reporters.copy_files import CopyFilesReporter
 from certfuzz.reporters.testcase_logger import TestcaseLoggerReporter
-
-from certfuzz.analyzers import drillresults
+from certfuzz.analyzers.drillresults import LinuxDrillResults
+from certfuzz.analyzers.pin_calltrace import Pin_calltrace
+from certfuzz.analyzers.callgrind.callgrind import Callgrind
+from certfuzz.analyzers.valgrind import Valgrind
+from certfuzz.analyzers.cw_gmalloc import CrashWranglerGmalloc
+from certfuzz.analyzers.stderr import StdErr
 
 logger = logging.getLogger(__name__)
 
@@ -39,17 +38,17 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
     _minimizer_cls = UnixMinimizer
 
     def _setup_analyzers(self):
-        self.analyzer_classes.append(stderr.StdErr)
-        self.analyzer_classes.append(cw_gmalloc.CrashWranglerGmalloc)
+        self.analyzer_classes.append(StdErr)
+        self.analyzer_classes.append(CrashWranglerGmalloc)
 
         if self.options.get('use_valgrind'):
-            self.analyzer_classes.append(valgrind.Valgrind)
-            self.analyzer_classes.append(callgrind.Callgrind)
+            self.analyzer_classes.append(Valgrind)
+            self.analyzer_classes.append(Callgrind)
 
         if self.options.get('use_pin_calltrace'):
-            self.analyzer_classes.append(pin_calltrace.Pin_calltrace)
-            
-        self.analyzer_classes.append(drillresults.LinuxDrillResults)
+            self.analyzer_classes.append(Pin_calltrace)
+
+        self.analyzer_classes.append(LinuxDrillResults)
 
     def _verify(self, testcase):
         '''
