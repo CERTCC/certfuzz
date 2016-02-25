@@ -66,11 +66,6 @@ class DrillResults(Analyzer):
             f.write('\n'.join(self.output_lines))
 
     def go(self):
-        logger.info('Drill Results PLACEHOLDER')
-
-
-
-
         # turn testcase into tescase_bundle
         with self._tcb_cls(dbg_outfile=self.testcase.dbg_file,
                            testcase_file=self.testcase.fuzzedfile.path,
