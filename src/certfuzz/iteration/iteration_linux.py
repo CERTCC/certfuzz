@@ -44,41 +44,30 @@ class LinuxIteration(IterationBase3):
                                 runner_cls=runner_cls,
                                 )
 
-        self.quiet_flag = self._iteration_counter < 2
-
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
-        self.pipeline_options = {'use_valgrind': self.cfg['analyzer']['use_valgrind'],
-                                 'use_pin_calltrace': self.cfg['analyzer']['use_pin_calltrace'],
-                                 'uniq_log': os.path.join(self.cfg['directories']['results_dir'], 'uniquelog.txt'),
-                                 'local_dir': fixup_path(self.cfg['directories']['working_dir']),
-                                 'minimizertimeout': self.cfg['runoptions']['minimizer_timeout'],
-                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions']['minimize'],
-                                 }
+        self.pipeline_options.update({'use_valgrind': self.cfg['analyzer']['use_valgrind'],
+                                      'use_pin_calltrace': self.cfg['analyzer']['use_pin_calltrace'],
+                                      'uniq_log': os.path.join(self.cfg['directories']['results_dir'], 'uniquelog.txt'),
+                                      'local_dir': fixup_path(self.cfg['directories']['working_dir']),
+                                      'minimizertimeout': self.cfg['runoptions']['minimizer_timeout'],
+                                      })
 
     def __enter__(self):
-        IterationBase3.__enter__(self)
         check_ppid()
-        return self.go
-
-    def _pre_run(self):
-
-        if self.quiet_flag:
-            self._runner_options['hideoutput'] = True
-        self._runner_cmd_template = self.cfg['target']['cmdline_template']
-
-        IterationBase3._pre_run(self)
+        return IterationBase3.__enter__(self)
 
     def _construct_testcase(self):
         with LinuxTestcase(cfg=self.cfg,
-                      seedfile=self.seedfile,
-                      fuzzedfile=BasicFile(self.fuzzer.output_file_path),
-                      program=self.cfg['target']['program'],
-                      debugger_timeout=self.cfg['runner']['runtimeout'],
-                      backtrace_lines=self.cfg['debugger']['backtracelevels'],
-                      crashers_dir=self.testcase_base_dir,
-                      workdir_base=self.working_dir,
-                      seednum=self.seednum,
-                      range=self.r) as testcase:
+                           seedfile=self.seedfile,
+                           fuzzedfile=BasicFile(self.fuzzer.output_file_path),
+                           program=self.cfg['target']['program'],
+                           debugger_timeout=self.cfg['runner']['runtimeout'],
+                           backtrace_lines=self.cfg[
+                               'debugger']['backtracelevels'],
+                           crashers_dir=self.testcase_base_dir,
+                           workdir_base=self.working_dir,
+                           seednum=self.seednum,
+                           range=self.r) as testcase:
             # put it on the list for the analysis pipeline
             self.testcases.append(testcase)

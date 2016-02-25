@@ -8,25 +8,16 @@ import logging
 import os
 
 from certfuzz.testcase.testcase_windows import WindowsTestcase
-from certfuzz.debuggers.output_parsers.errors import DebuggerFileError
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
-from certfuzz.fuzzers.errors import FuzzerError
-from certfuzz.fuzzers.errors import FuzzerExhaustedError
-from certfuzz.fuzzers.errors import FuzzerInputMatchesOutputError
-from certfuzz.minimizer.errors import MinimizerError
 from certfuzz.fuzztools.filetools import delete_files_or_dirs
 from certfuzz.iteration.iteration_base3 import IterationBase3
-from certfuzz.runners.errors import RunnerRegistryError
 from certfuzz.tc_pipeline.tc_pipeline_windows import WindowsTestCasePipeline
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
 # from certfuzz.iteration.iteration_base import IterationBase2
 logger = logging.getLogger(__name__)
-
-IOERROR_COUNT = 0
-MAX_IOERRORS = 5
 
 
 class WindowsIteration(IterationBase3):
@@ -42,7 +33,6 @@ class WindowsIteration(IterationBase3):
                  config=None,
                  fuzzer_cls=None,
                  runner_cls=None,
-                 cmd_template=None,
                  debug=False,
                  ):
         IterationBase3.__init__(self,
@@ -62,8 +52,6 @@ class WindowsIteration(IterationBase3):
         self.keep_uniq_faddr = config['runoptions'].get(
             'keep_unique_faddr', False)
 
-        self.cmd_template = cmd_template
-
         if self.runner_cls.is_nullrunner:
             # null runner_cls case
             self.retries = 0
@@ -71,12 +59,11 @@ class WindowsIteration(IterationBase3):
             # runner_cls is not null
             self.retries = 4
 
-        self.pipeline_options = {'keep_duplicates': self.cfg['runoptions'].get('keep_duplicates', False),
-                                 'keep_heisenbugs': self.cfg['campaign'].get('keep_heisenbugs', False),
-                                 'cmd_template': self.cmd_template,
-                                 'null_runner': self.runner_cls.is_nullrunner,
-                                 'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions'].get('minimize', False),
-                                 }
+        self.pipeline_options.update({'keep_duplicates': self.cfg['runoptions'].get('keep_duplicates', False),
+                                      'keep_heisenbugs': self.cfg['campaign'].get('keep_heisenbugs', False),
+                                      'cmd_template': self.cfg['target']['cmdline_template'],
+                                      'null_runner': self.runner_cls.is_nullrunner,
+                                      })
 
         # Windows testcase object needs a timeout, and we only pass debugger
         # options
@@ -89,58 +76,19 @@ class WindowsIteration(IterationBase3):
             logger.warning('Caught WindowsError in iteration exit: %s', e)
             handled = True
 
-        global IOERROR_COUNT
-
-        # Reset error count every time we do not have an error
-        if not etype:
-            IOERROR_COUNT = 0
-
-        # check for exceptions we want to handle
-        if etype is FuzzerExhaustedError:
-            # let Fuzzer Exhaustion filter up to the campaign level
-            handled = False
-        elif etype is FuzzerInputMatchesOutputError:
-            # Non-fuzzing happens sometimes, just log and move on
-            logger.debug('Skipping seed %d, fuzzed == input', self.seednum)
-            handled = True
-        elif etype is FuzzerError:
-            logger.warning('Failed to fuzz, Skipping seed %d.', self.seednum)
-            handled = True
-        elif etype is MinimizerError:
-            logger.warning('Failed to minimize %d, Continuing.', self.seednum)
-            handled = True
-        elif etype is DebuggerFileError:
-            logger.warning('Failed to debug, Skipping seed %d', self.seednum)
-            handled = True
-        elif etype is RunnerRegistryError:
-            logger.warning(
-                'Runner cannot set registry entries. Consider null runner in config?')
-            # this is fatal, pass it up
-            handled = False
-        elif etype is IOError:
-            IOERROR_COUNT += 1
-            if IOERROR_COUNT > MAX_IOERRORS:
-                # something is probably wrong, we should crash
-                logger.critical(
-                    'Too many IOErrors (%d in a row): %s', IOERROR_COUNT + 1, value)
-            else:
-                # we can keep going for a bit
-                logger.error(
-                    'Intercepted IOError, will try to continue: %s', value)
-                handled = True
-
-        # log something different if we failed to handle an exception
         if etype and not handled:
             logger.warning(
-                'WindowsIteration terminating abnormally due to %s: %s', etype.__name__, value)
+                'WindowsIteration terminating abnormally due to %s: %s',
+                etype.__name__,
+                value
+            )
+            if self.debug:
+                # don't clean up if we're in debug mode and have an unhandled
+                # exception
+                logger.debug('Skipping cleanup since we are in debug mode.')
+                return handled
 
-        if self.debug and etype and not handled:
-            # don't clean up if we're in debug mode and have an unhandled
-            # exception
-            logger.debug('Skipping cleanup since we are in debug mode.')
-        else:
-            self._tidy()
-
+        self._tidy()
         return handled
 
     def _tidy(self):
@@ -152,11 +100,6 @@ class WindowsIteration(IterationBase3):
         delete_files_or_dirs(paths)
         # wipe them out, all of them
         TmpReaper().clean_tmp()
-
-    def _pre_run(self):
-        self._runner_cmd_template = self.cmd_template
-
-        IterationBase3._pre_run(self)
 
     def _construct_testcase(self):
         with WindowsTestcase(cmd_template=self.cmd_template,
@@ -172,8 +115,7 @@ class WindowsIteration(IterationBase3):
                                  'keep_unique_faddr'],
                              program=self.cfg['target']['program'],
                              heisenbug_retries=self.retries,
-                             copy_fuzzedfile=self.fuzzer.fuzzed_changes_input,
-                             is_nullrunner=self.runner_cls.is_nullrunner) as testcase:
+                             copy_fuzzedfile=self.fuzzer.fuzzed_changes_input) as testcase:
 
             # put it on the list for the analysis pipeline
             self.testcases.append(testcase)

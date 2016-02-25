@@ -190,7 +190,6 @@ class WindowsCampaign(CampaignBase):
                               config=self.config,
                               fuzzer_cls=self.fuzzer_cls,
                               runner_cls=self.runner_cls,
-                              cmd_template=self.cmd_template,
                               debug=self.debug,
                               ) as iteration:
             try:

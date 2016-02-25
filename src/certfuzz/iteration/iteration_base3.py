@@ -7,8 +7,16 @@ import logging
 import tempfile
 import abc
 from certfuzz.fuzztools.filetools import rm_rf
+from certfuzz.fuzzers.errors import FuzzerExhaustedError, \
+    FuzzerInputMatchesOutputError, FuzzerError
+from certfuzz.minimizer.errors import MinimizerError
+from certfuzz.debuggers.output_parsers.errors import DebuggerFileError
+from certfuzz.runners.errors import RunnerRegistryError
 
 logger = logging.getLogger(__name__)
+
+IOERROR_COUNT = 0
+MAX_IOERRORS = 5
 
 
 class IterationBase3(object):
@@ -40,7 +48,8 @@ class IterationBase3(object):
 
         self.r = None
 
-        self.pipeline_options = {}
+        self.pipeline_options = {'minimizable': self.fuzzer_cls.is_minimizable and self.cfg[
+            'runoptions'].get('minimize', False), }
 
         if uniq_func is None:
             self.uniq_func = lambda _tc_id: True
@@ -59,7 +68,6 @@ class IterationBase3(object):
         # extract some parts of the config for fuzzer and runner
         self._fuzz_opts = self.cfg['fuzzer']
         self._runner_options = self.cfg['runner']
-
 
     @abc.abstractproperty
     def tcpipeline_cls(self):
@@ -90,6 +98,46 @@ class IterationBase3(object):
         else:
             self.record_failure()
 
+        global IOERROR_COUNT
+
+        # Reset error count every time we do not have an error
+        if not etype:
+            IOERROR_COUNT = 0
+
+        # check for exceptions we want to handle
+        if etype is FuzzerExhaustedError:
+            # let Fuzzer Exhaustion filter up to the campaign level
+            handled = False
+        elif etype is FuzzerInputMatchesOutputError:
+            # Non-fuzzing happens sometimes, just log and move on
+            logger.debug('Skipping seed %d, fuzzed == input', self.seednum)
+            handled = True
+        elif etype is FuzzerError:
+            logger.warning('Failed to fuzz, Skipping seed %d.', self.seednum)
+            handled = True
+        elif etype is MinimizerError:
+            logger.warning('Failed to minimize %d, Continuing.', self.seednum)
+            handled = True
+        elif etype is DebuggerFileError:
+            logger.warning('Failed to debug, Skipping seed %d', self.seednum)
+            handled = True
+        elif etype is RunnerRegistryError:
+            logger.warning(
+                'Runner cannot set registry entries. Consider null runner in config?')
+            # this is fatal, pass it up
+            handled = False
+        elif etype is IOError:
+            IOERROR_COUNT += 1
+            if IOERROR_COUNT > MAX_IOERRORS:
+                # something is probably wrong, we should crash
+                logger.critical(
+                    'Too many IOErrors (%d in a row): %s', IOERROR_COUNT + 1, value)
+            else:
+                # we can keep going for a bit
+                logger.error(
+                    'Intercepted IOError, will try to continue: %s', value)
+                handled = True
+
         if self.debug and etype:
             # leave it behind if we're in debug mode
             # and there's a problem
@@ -101,8 +149,13 @@ class IterationBase3(object):
 
         return handled
 
+    @property
+    def quiet_flag(self):
+        return self._iteration_counter < 2
+
     def _pre_fuzz(self):
-        self.fuzzer = self.fuzzer_cls(self.seedfile, self.working_dir, self.seednum, self._fuzz_opts)
+        self.fuzzer = self.fuzzer_cls(
+            self.seedfile, self.working_dir, self.seednum, self._fuzz_opts)
 
     def _fuzz(self):
         with self.fuzzer:
@@ -118,7 +171,10 @@ class IterationBase3(object):
     def _pre_run(self):
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
-        self.runner = self.runner_cls(self._runner_options, self._runner_cmd_template, fuzzed_file, workingdir_base)
+        self._runner_options['hideoutput'] = self.quiet_flag
+        self.cmd_template = self.cfg['target']['cmdline_template']
+        self.runner = self.runner_cls(
+            self._runner_options, self.cmd_template, fuzzed_file, workingdir_base)
 
     def _run(self):
         with self.runner:
@@ -129,7 +185,7 @@ class IterationBase3(object):
 
     def construct_testcase(self):
         '''
-        If the runner saw a crash, construct a test case 
+        If the runner saw a crash, construct a test case
         and append it to the list of testcases to be analyzed further.
         '''
         if not self.runner.saw_crash:
