@@ -17,14 +17,14 @@ from pprint import pformat
 logger = logging.getLogger(__name__)
 
 
-class Testcase(object):
+class TestCaseBase(object):
     _tmp_sfx = ''
     _tmp_pfx = 'BFF_testcase_'
     _debugger_cls = None
 
 
     def __init__(self, seedfile, fuzzedfile, dbg_timeout=30):
-        logger.debug('Inititalize Testcase')
+        logger.debug('Inititalize TestCaseBase')
 
         self.seedfile = seedfile
         self.fuzzedfile = fuzzedfile

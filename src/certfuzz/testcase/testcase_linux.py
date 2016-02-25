@@ -6,7 +6,7 @@ Created on Jul 19, 2011
 import logging
 import os
 
-from certfuzz.testcase.testcase_base2 import Testcase
+from certfuzz.testcase.testcase_base2 import TestCaseBase
 from certfuzz.fuzztools import hostinfo, filetools
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 from certfuzz.testcase.errors import TestCaseError
@@ -28,7 +28,7 @@ elif host_info.is_osx():
     from certfuzz.debuggers.crashwrangler import CrashWrangler as debugger_cls
 
 
-class LinuxTestcase(Testcase):
+class LinuxTestcase(TestCaseBase):
     '''
     classdocs
     '''
@@ -40,7 +40,7 @@ class LinuxTestcase(Testcase):
         '''
         Constructor
         '''
-        Testcase.__init__(self, seedfile, fuzzedfile, debugger_timeout)
+        TestCaseBase.__init__(self, seedfile, fuzzedfile, debugger_timeout)
         self.cfg = cfg
         self.program = program
         self.backtrace_lines = backtrace_lines
@@ -71,7 +71,7 @@ class LinuxTestcase(Testcase):
                 raise TestCaseError('Debugger template does not exist at %s' % self.debugger_template)
 
     def update_crash_details(self):
-        Testcase.update_crash_details(self)
+        TestCaseBase.update_crash_details(self)
 
         cmdlist = get_command_args_list(self.cfg['target']['cmdline_template'],
                                              infile=self.fuzzedfile.path,
@@ -138,9 +138,9 @@ class LinuxTestcase(Testcase):
         if not self.signature:
             self.signature = self.dbg.get_testcase_signature(self.backtrace_lines)
             if self.signature:
-                logger.debug("Testcase signature is %s", self.signature)
+                logger.debug("TestCaseBase signature is %s", self.signature)
             else:
-                raise TestCaseError('Testcase has no signature.')
+                raise TestCaseError('TestCaseBase has no signature.')
             if self.dbg.total_stack_corruption:
                 # total_stack_corruption.  Use pin calltrace to get a backtrace
                 analyzer_instance = pin_calltrace.Pin_calltrace(self.cfg, self)

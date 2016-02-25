@@ -7,7 +7,7 @@ import hashlib
 import logging
 import os
 
-from certfuzz.testcase.testcase_base2 import Testcase
+from certfuzz.testcase.testcase_base2 import TestCaseBase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
 from certfuzz.helpers.misc import random_str
@@ -38,7 +38,7 @@ exp_rank = {
 }
 
 
-class WindowsTestcase(Testcase):
+class WindowsTestcase(TestCaseBase):
     _debugger_cls = MsecDebugger
 
     # TODO: do we still need fuzzer as an arg?
@@ -48,7 +48,7 @@ class WindowsTestcase(Testcase):
 
         dbg_timeout = dbg_opts['runtimeout']
 
-        Testcase.__init__(self, seedfile, fuzzedfile, dbg_timeout)
+        TestCaseBase.__init__(self, seedfile, fuzzedfile, dbg_timeout)
 
         self.dbg_opts = dbg_opts
         self.copy_fuzzedfile = copy_fuzzedfile
@@ -96,7 +96,7 @@ class WindowsTestcase(Testcase):
         as needed. Used in both object runtime context and for refresh after
         a crash object is copied.
         '''
-        Testcase.update_crash_details(self)
+        TestCaseBase.update_crash_details(self)
         # Reset properties that need to be regenerated
         self.exception_depth = 0
         self.parsed_outputs = []
