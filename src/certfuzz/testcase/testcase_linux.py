@@ -73,8 +73,8 @@ class LinuxTestcase(TestCaseBase):
         TestCaseBase.update_crash_details(self)
 
         cmdlist = get_command_args_list(self.cfg['target']['cmdline_template'],
-                                             infile=self.fuzzedfile.path,
-                                             posix=True)[1]
+                                        infile=self.fuzzedfile.path,
+                                        posix=True)[1]
         self.cmdargs = cmdlist[1:]
         self.is_crash = self.confirm_crash()
 
