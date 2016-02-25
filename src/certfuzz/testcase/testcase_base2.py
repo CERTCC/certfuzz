@@ -118,9 +118,6 @@ class Testcase(TestCaseBase):
     def get_debug_output(self, f):
         raise NotImplementedError
 
-    def get_logger(self):
-        raise NotImplementedError
-
     def get_result_dir(self):
         raise NotImplementedError
 
