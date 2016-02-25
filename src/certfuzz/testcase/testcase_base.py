@@ -141,8 +141,8 @@ class TestCaseBase(object):
     def get_signature(self):
         raise NotImplementedError
 
-    def set_debugger_template(self, option='bt_only'):
-        raise NotImplementedError
+    def set_debugger_template(self, *args):
+        pass
 
     def update_crash_details(self):
         self.tempdir = tempfile.mkdtemp(prefix=self._tmp_pfx, suffix=self._tmp_sfx, dir=self.workdir_base)

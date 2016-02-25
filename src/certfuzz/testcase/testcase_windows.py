@@ -110,9 +110,6 @@ class WindowsTestcase(TestCaseBase):
         self._rename_fuzzed_file()
         self._rename_dbg_file()
 
-    def set_debugger_template(self, *args):
-        pass
-
     def debug_once(self):
         outfile_base = os.path.join(self.tempdir, self.fuzzedfile.basename)
 
