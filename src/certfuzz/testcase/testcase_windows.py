@@ -39,7 +39,6 @@ exp_rank = {
 
 
 class WindowsTestcase(Testcase):
-    tmpdir_pfx = 'bff-crash-'
     _debugger_cls = MsecDebugger
 
     # TODO: do we still need fuzzer as an arg?

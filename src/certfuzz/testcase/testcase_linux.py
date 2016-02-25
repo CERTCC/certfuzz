@@ -32,7 +32,6 @@ class LinuxTestcase(Testcase):
     '''
     classdocs
     '''
-    tmpdir_pfx = 'bff-crash-'
     _debugger_cls = debugger_cls
 
     def __init__(self, cfg, seedfile, fuzzedfile, program,
