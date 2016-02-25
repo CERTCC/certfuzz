@@ -170,21 +170,3 @@ class LinuxTestcase(Testcase):
 
         return self.result_dir
 
-    def get_logger(self):
-        '''
-        sets self.logger to a logger specific to this crash
-        '''
-        self.logger = logging.getLogger(self.signature)
-        if len(self.logger.handlers) == 0:
-            if not os.path.exists(self.result_dir):
-                logger.error('Result path not found: %s', self.result_dir)
-                raise CrashError('Result path not found: {}'.format(self.result_dir))
-            logger.debug('result_dir=%s sig=%s', self.result_dir, self.signature)
-            logfile = '%s.log' % self.signature
-            logger.debug('logfile=%s', logfile)
-            logpath = os.path.join(self.result_dir, logfile)
-            logger.debug('logpath=%s', logpath)
-            hdlr = logging.FileHandler(logpath)
-            self.logger.addHandler(hdlr)
-
-        return self.logger

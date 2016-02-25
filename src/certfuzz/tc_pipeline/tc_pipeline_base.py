@@ -178,7 +178,7 @@ class TestCasePipelineBase(object):
         pass
 
     def _post_verify(self, testcase):
-        pass
+        testcase.get_logger()
 
     def _pre_minimize(self, testcase):
         pass

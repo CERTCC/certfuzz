@@ -83,8 +83,6 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                     logger.info('Testcase signature %s was already seen, skipping further analysis', tc.signature)
             else:
                 logger.debug('not a crash, continuing')
-    def _post_verify(self, testcase):
-        testcase.get_logger()
 
     def _pre_minimize(self, testcase):
         touch_watchdog_file()

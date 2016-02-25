@@ -41,7 +41,6 @@ class Testcase(TestCaseBase):
         self.is_corrupt_stack = False
         self.copy_fuzzedfile = True
         self.pc = None
-        self.logger = None
         self.result_dir = None
         self.debugger_missed_stack_corruption = False
         self.total_stack_corruption = False

@@ -10,6 +10,8 @@ import tempfile
 from certfuzz.fuzztools import hamming
 from certfuzz.fuzztools.filetools import check_zip_file
 from pprint import pformat
+import os
+from certfuzz.testcase.errors import CrashError
 
 
 logger = logging.getLogger(__name__)
@@ -32,6 +34,9 @@ class TestCaseBase(object):
         self.signature = None
         self.working_dir = None
         self.is_zipfile = False
+
+        # this will get overridden by calls to get_logger
+        self.logger = logger
 
     def __enter__(self):
         self._setup_workdir()
@@ -83,4 +88,23 @@ class TestCaseBase(object):
 
         self.hd_bytes = hamming.bytewise_hd(a_string, fuzzed)
         self.logger.info("bytewise_hd=%d", self.hd_bytes)
+
+    def get_logger(self):
+        '''
+        sets self.logger to a logger specific to this crash
+        '''
+        self.logger = logging.getLogger(self.signature)
+        if len(self.logger.handlers) == 0:
+            if not os.path.exists(self.result_dir):
+                logger.error('Result path not found: %s', self.result_dir)
+                raise CrashError('Result path not found: {}'.format(self.result_dir))
+            logger.debug('result_dir=%s sig=%s', self.result_dir, self.signature)
+            logfile = '%s.log' % self.signature
+            logger.debug('logfile=%s', logfile)
+            logpath = os.path.join(self.result_dir, logfile)
+            logger.debug('logpath=%s', logpath)
+            hdlr = logging.FileHandler(logpath)
+            self.logger.addHandler(hdlr)
+
+        return self.logger
 
