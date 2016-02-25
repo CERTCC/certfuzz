@@ -58,6 +58,8 @@ class Test(unittest.TestCase):
 
         class MockTestCase(object):
             should_proceed_with_analysis = True
+            def get_logger(self):
+                pass
 
         tcpl._verify = func
         tcpl._minimize = func
