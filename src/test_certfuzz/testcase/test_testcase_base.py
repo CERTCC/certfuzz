@@ -4,7 +4,7 @@ Created on Apr 10, 2012
 @organization: cert.org
 '''
 import unittest
-import certfuzz.testcase.testcase_base2
+import certfuzz.testcase.testcase_base
 
 class Test(unittest.TestCase):
 
