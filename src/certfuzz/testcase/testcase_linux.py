@@ -60,7 +60,6 @@ class LinuxTestcase(TestCaseBase):
 
     def __exit__(self, etype, value, traceback):
         pass
-#        self.clean_tmpdir()
 
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_linux():
@@ -159,8 +158,8 @@ class LinuxTestcase(TestCaseBase):
     def _verify_crash_base_dir(self):
         if not self.crash_base_dir:
             raise TestCaseError('crash_base_dir not set')
-        if not os.path.exists(self.crash_base_dir):
-            filetools.make_directories(self.crash_base_dir)
+
+        filetools.mkdir_p(self.crash_base_dir)
 
     def get_result_dir(self):
         assert self.crash_base_dir
