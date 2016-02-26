@@ -17,6 +17,7 @@ from certfuzz.fuzzers.errors import FuzzerExhaustedError
 from certfuzz.iteration.iteration_windows import WindowsIteration
 from certfuzz.runners.killableprocess import Popen
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
+from certfuzz.file_handlers.watchdog_file import TWDF
 
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,7 @@ class WindowsCampaign(CampaignBase):
         self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker', False)
         self.runner_module_name = 'certfuzz.runners.winrun'
         self.debugger_module_name = 'certfuzz.debuggers.gdb'
+        TWDF.disable()
 
     def __getstate__(self):
         state = self.__dict__.copy()
