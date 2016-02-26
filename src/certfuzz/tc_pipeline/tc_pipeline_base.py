@@ -178,7 +178,9 @@ class TestCasePipelineBase(object):
         pass
 
     def _post_verify(self, testcase):
-        testcase.get_logger()
+        # TODO: This isn't writing data where we want it.  BFF-928, BFF-926
+        # testcase.get_logger()
+        pass
 
     def _pre_minimize(self, testcase):
         pass
