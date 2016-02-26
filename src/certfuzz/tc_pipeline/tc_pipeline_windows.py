@@ -21,7 +21,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
     _minimizer_cls = WindowsMinimizer
 
     def _setup_analyzers(self):
-        self.analyzer_classes.append(StdErr)
+        #self.analyzer_classes.append(StdErr)
         self.analyzer_classes.append(WindowsDrillResults)
 
     def _pre_verify(self, testcase):
