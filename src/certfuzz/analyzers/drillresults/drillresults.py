@@ -32,6 +32,9 @@ class DrillResults(Analyzer):
         self.outfile = get_file(self.testcase.fuzzedfile.path)
         self.output_lines = []
 
+        # TODO: This should be dynamic, no?
+        self.ignore_jit = False
+
 
     def _process_tcb(self, tcb):
         details = tcb.details
