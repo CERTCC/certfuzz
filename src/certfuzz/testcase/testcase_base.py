@@ -95,13 +95,13 @@ class TestCaseBase(object):
         '''
         self.logger = logging.getLogger(self.signature)
         if len(self.logger.handlers) == 0:
-            if not os.path.exists(self.result_dir):
-                logger.error('Result path not found: %s', self.result_dir)
-                raise CrashError('Result path not found: {}'.format(self.result_dir))
-            logger.debug('result_dir=%s sig=%s', self.result_dir, self.signature)
+            if not os.path.exists(self.tempdir):
+                logger.error('Working path not found: %s', self.tempdir)
+                raise CrashError('Working path not found: {}'.format(self.tempdir))
+            logger.debug('tempdir=%s sig=%s', self.tempdir, self.signature)
             logfile = '%s.log' % self.signature
             logger.debug('logfile=%s', logfile)
-            logpath = os.path.join(self.result_dir, logfile)
+            logpath = os.path.join(self.tempdir, logfile)
             logger.debug('logpath=%s', logpath)
             hdlr = logging.FileHandler(logpath)
             self.logger.addHandler(hdlr)
