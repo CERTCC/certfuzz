@@ -58,9 +58,6 @@ class LinuxTestcase(TestCaseBase):
         self.pc = None
         self.result_dir = None
 
-    def __exit__(self, etype, value, traceback):
-        pass
-
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_linux():
             dbg_template_name = '%s_%s_template.txt' % (self._debugger_cls._key, option)
