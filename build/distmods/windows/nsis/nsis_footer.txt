@@ -7,7 +7,7 @@ Delete "$INSTDIR\CERT website.url"
 RmDir "$INSTDIR\fuzzdir"
 RmDir "$INSTDIR\symbols"
 RmDir "$INSTDIR\configs"
-RmDir "$INSTDIR\results\convert v5.5.7"
+RmDir "$INSTDIR\results\convert_v5.5.7"
 RmDir "$INSTDIR\results"
 RmDir "$INSTDIR"
 

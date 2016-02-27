@@ -325,7 +325,7 @@ WriteRegStr HKLM "SOFTWARE\ImageMagick\5.5.7\Q:16" ConfigurePath "$INSTDIR\image
 WriteRegStr HKLM "SOFTWARE\ImageMagick\5.5.7\Q:16" LibPath "$INSTDIR\imagemagick"
 
 #${If} $FUZZ_IMAGEMAGICK == "Y"
-    CreateDirectory "$INSTDIR\results\convert v5.5.7"
+    CreateDirectory "$INSTDIR\results\convert_v5.5.7"
 #${EndIf}
 
 SectionEnd
