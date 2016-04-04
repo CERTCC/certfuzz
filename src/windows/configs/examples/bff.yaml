@@ -57,16 +57,16 @@ target:
 
 
 ##############################################################################
-# Directories used by BFF
+# Directories used by BFF (all relative to bff.py)
 #
 # seedfile_dir: 
-# Location of seed files (relative to bff.py)
+# Location of seed files 
 #
 # working_dir:
 # Temporary directory used by BFF. Use a ramdisk to reduce disk activity
 #
 # results_dir: 
-# Location of fuzzing results (relative to bff.py)
+# Location of fuzzing results
 ##############################################################################
 directories:
     seedfile_dir: seedfiles\examples
