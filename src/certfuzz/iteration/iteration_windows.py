@@ -71,7 +71,7 @@ class WindowsIteration(IterationBase3):
             self.retries = 4
 
         self.pipeline_options = {'keep_duplicates': self.cfg['runoptions'].get('keep_duplicates', False),
-                                 'keep_heisenbugs': self.cfg['runoptions'].get('keep_heisenbugs', False),
+                                 'keep_heisenbugs': self.cfg['campaign'].get('keep_heisenbugs', False),
                                  'cmd_template': self.cmd_template,
                                  'null_runner': self.runner_cls.is_nullrunner,
                                  'minimizable': self.fuzzer_cls.is_minimizable and self.cfg['runoptions'].get('minimize', False),
