@@ -120,7 +120,7 @@ class MsecDebugger(DebuggerBase):
                       universal_newlines=True)
 
         child_pid = self._find_debug_target(exename)
-        if child_pid is None:
+        if child_pid is None and self.watchcpu == True:
             logger.debug('Bailing on debugger iteration')
             self.kill(p.pid, 99)
             return
