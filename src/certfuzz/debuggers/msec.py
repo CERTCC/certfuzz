@@ -83,23 +83,23 @@ class MsecDebugger(DebuggerBase):
         return args
 
 
-    def _find_debug_target(self, exename):
+    def _find_debug_target(self, exename, trycount=5):
         pid = None
-        retrycount = 0
+        attempts = 0
         foundpid = False
 
         if self.watchcpu == True:
 
-            while retrycount < 5 and not foundpid:
+            while attempts < trycount and not foundpid:
                 for process in self.wmiInterface.Win32_Process(name=exename):
                     # TODO: What if there's more than one?
                     pid = process.ProcessID
                     logger.debug('Found %s PID: %s', exename, pid)
                     foundpid = True
 
-                if not foundpid:
+                attempts += 1
+                if not foundpid and attempts < trycount:
                     logger.debug('%s not seen yet. Retrying...', exename)
-                    retrycount += 1
                     time.sleep(0.1)
 
             if not pid:
@@ -119,7 +119,7 @@ class MsecDebugger(DebuggerBase):
         p = Popen(args, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'),
                       universal_newlines=True)
 
-        child_pid = self._find_debug_target(exename)
+        child_pid = self._find_debug_target(exename, trycount=5)
         if child_pid is None and self.watchcpu == True:
             logger.debug('Bailing on debugger iteration')
             self.kill(p.pid, 99)
@@ -141,14 +141,15 @@ class MsecDebugger(DebuggerBase):
                         percent_processor_time = 0.0
                     process_info[child_pid] = (n1, d1)
                     logger.debug('Process %s CPU usage: %s', child_pid, percent_processor_time)
-                    if percent_processor_time < 0.01:
+                    if percent_processor_time < 0.0000000001:
                         if started:
                             logger.debug('killing %s due to CPU inactivity', child_pid)
                             done = True
                             self.kill(child_pid, 99)
-                            child_pid = self._find_debug_target(exename)
+                            # Look once to see if the child process is there still
+                            child_pid = self._find_debug_target(exename, trycount=1)
                             if child_pid is not None:
-                                # cdb launched the target app, but it wasn't killed
+                                # cdb launched the target app, but the child wasn't killed
                                 # This indicates that the target experienced an exception (crash)
                                 # We will wait for cdb to do its thing
                                 p.wait()

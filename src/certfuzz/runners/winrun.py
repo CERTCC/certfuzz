@@ -283,7 +283,7 @@ class WinRunner(RunnerBase):
                         percent_processor_time = 0.0
                     process_info[id] = (n1, d1)
                     logger.debug('Process %s CPU usage: %s', id, percent_processor_time)
-                    if percent_processor_time < 0.01:
+                    if percent_processor_time < 0.0000000001:
                         if started:
                             logger.debug('killing %s due to CPU inactivity', id)
                             done = True
