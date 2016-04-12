@@ -33,6 +33,8 @@ class MsecDebugger(DebuggerBase):
         DebuggerBase.__init__(self, program, cmd_args, outfile_base, timeout, **options)
         self.exception_depth = exception_depth
         self.watchcpu = watchcpu
+        if watchcpu:
+            self.wmiInterface = wmi.WMI()
         self.t = None
 
     def kill(self, pid, returncode):
@@ -80,38 +82,48 @@ class MsecDebugger(DebuggerBase):
             logger.debug('dbg_args: %s', l)
         return args
 
+
+    def _find_debug_target(self, exename):
+        pid = None
+        retrycount = 0
+        foundpid = False
+
+        if self.watchcpu == True:
+
+            while retrycount < 5 and not foundpid:
+                for process in self.wmiInterface.Win32_Process(name=exename):
+                    # TODO: What if there's more than one?
+                    pid = process.ProcessID
+                    logger.debug('Found %s PID: %s', exename, pid)
+                    foundpid = True
+
+                if not foundpid:
+                    logger.debug('%s not seen yet. Retrying...', exename)
+                    retrycount += 1
+                    time.sleep(0.1)
+
+            if not pid:
+                logger.debug('Cannot find %s child process!', exename)
+        return pid
+
     def run_with_timer(self):
         # TODO: replace this with subp.run_with_timer()
         targetdir = os.path.dirname(self.program)
         exename = os.path.basename(self.program)
         process_info = {}
-        _id = None
+        child_pid = None
         done = False
         started = False
-        wmiInterface = None
-        retrycount = 0
-        foundpid = False
 
         args = self._get_cmdline(self.outfile)
         p = Popen(args, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'),
                       universal_newlines=True)
 
-        if self.watchcpu == True:
-            wmiInterface = wmi.WMI()
-            while retrycount < 5 and not foundpid:
-                for process in wmiInterface.Win32_Process(name=exename):
-                    # TODO: What if there's more than one?
-                    _id = process.ProcessID
-                    logger.debug('Found %s PID: %s', exename, _id)
-                    foundpid = True
-                if not foundpid:
-                    logger.debug('%s not seen yet. Retrying...', exename)
-                    retrycount += 1
-                    time.sleep(0.1)
-            if not _id:
-                logger.debug('Cannot find %s child process! Bailing.', exename)
-                self.kill(p.pid, 99)
-                return
+        child_pid = self._find_debug_target(exename)
+        if child_pid is None:
+            logger.debug('Bailing on debugger iteration')
+            self.kill(p.pid, 99)
+            return
 
         # create a timer that calls kill() when it expires
         self.t = Timer(self.timeout, self.kill, args=[p.pid, 99])
@@ -119,21 +131,27 @@ class MsecDebugger(DebuggerBase):
         if self.watchcpu == True:
             # This is a race.  In some cases, a GUI app could be done before we can even measure it
             # TODO: Do something about it
-            while p.poll() is None and not done and _id:
-                for proc in wmiInterface.Win32_PerfRawData_PerfProc_Process(IDProcess=_id):
+            while p.poll() is None and not done and child_pid:
+                for proc in self.wmiInterface.Win32_PerfRawData_PerfProc_Process(IDProcess=child_pid):
                     n1, d1 = long(proc.PercentProcessorTime), long(proc.Timestamp_Sys100NS)
-                    n0, d0 = process_info.get(_id, (0, 0))
+                    n0, d0 = process_info.get(child_pid, (0, 0))
                     try:
                         percent_processor_time = (float(n1 - n0) / float(d1 - d0)) * 100.0
                     except ZeroDivisionError:
                         percent_processor_time = 0.0
-                    process_info[_id] = (n1, d1)
-                    logger.debug('Process %s CPU usage: %s', _id, percent_processor_time)
+                    process_info[child_pid] = (n1, d1)
+                    logger.debug('Process %s CPU usage: %s', child_pid, percent_processor_time)
                     if percent_processor_time < 0.01:
                         if started:
-                            logger.debug('killing %s due to CPU inactivity', p.pid)
+                            logger.debug('killing %s due to CPU inactivity', child_pid)
                             done = True
-                            self.kill(p.pid, 99)
+                            self.kill(child_pid, 99)
+                            child_pid = self._find_debug_target(exename)
+                            if child_pid is not None:
+                                # cdb launched the target app, but it wasn't killed
+                                # This indicates that the target experienced an exception (crash)
+                                # We will wait for cdb to do its thing
+                                p.wait()
                     else:
                         # Detected CPU usage. Now look for it to drop near zero
                         started = True
