@@ -206,7 +206,7 @@ class MinimizableFuzzer(Fuzzer):
             # save compress type
             self.saved_arcinfo[i] = (len(self.zipinput), len(data),
                                     tempzip.getinfo(i).compress_type)
-            self.input += data
+            self.zipinput += data
         tempzip.close()
         inmemseed.close()
         # Zip processing went fine, so use the zip contents as self.input to fuzzer
