@@ -110,6 +110,7 @@ def main():
         outdir = options.outdir
     else:
         outdir = "./minimizer_out"
+    outdir = os.path.abspath(outdir)
 
     if not os.path.exists(outdir):
         filetools.make_directories(outdir)

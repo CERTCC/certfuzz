@@ -133,6 +133,7 @@ def main():
         outdir = options.outdir
     else:
         outdir = 'minimizer_out'
+    outdir = os.path.abspath(outdir)
 
     filetools.make_directories(outdir)
 

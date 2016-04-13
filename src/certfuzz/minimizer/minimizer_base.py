@@ -195,7 +195,7 @@ class Minimizer(object):
         except KeyError:
             pass
         if not self._is_crash_to_minimize():
-            msg = 'Unable to minimize: No testcase'
+            msg = 'Unable to minimize: No crash'
             self.logger.info(msg)
             self._raise(msg)
         if self._is_already_minimized():
