@@ -35,7 +35,6 @@ class DrillResults(Analyzer):
         # TODO: This should be dynamic, no?
         self.ignore_jit = False
 
-
     def _process_tcb(self, tcb):
         details = tcb.details
         score = tcb.score
@@ -43,7 +42,8 @@ class DrillResults(Analyzer):
 
         output_lines = []
 
-        output_lines.append('%s - Exploitability rank: %s' % (crash_key, score))
+        output_lines.append(
+            '%s - Exploitability rank: %s' % (crash_key, score))
         output_lines.append('Fuzzed file: %s' % details['fuzzedfile'])
 
         for exception in details['exceptions']:
@@ -52,20 +52,23 @@ class DrillResults(Analyzer):
             efa = '0x' + details['exceptions'][exception]['efa']
             if details['exceptions'][exception]['EIF']:
                 eiftext = " *** Byte pattern is in fuzzed file! ***"
-            output_lines.append('exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext))
+            output_lines.append(
+                'exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext))
             if details['exceptions'][exception]['instructionline']:
-                output_lines.append(details['exceptions'][exception]['instructionline'])
+                output_lines.append(
+                    details['exceptions'][exception]['instructionline'])
             module = details['exceptions'][exception]['pcmodule']
             if module == 'unloaded':
                 if not self.ignore_jit:
-                    output_lines.append('Instruction pointer is not in a loaded module!')
+                    output_lines.append(
+                        'Instruction pointer is not in a loaded module!')
             else:
                 output_lines.append('Code executing in: %s' % module)
 
         self.output_lines = output_lines
 
     def _write_outfile(self):
-        with open(self.outfile, 'wb') as f:
+        with open(self.outfile, 'w') as f:
             f.write('\n'.join(self.output_lines))
 
     def go(self):
@@ -77,7 +80,8 @@ class DrillResults(Analyzer):
             try:
                 tcb.go()
             except TestCaseBundleError as e:
-                logger.warning('Skipping drillresults on testcase %s: %s', self.testcase.signature, e)
+                logger.warning(
+                    'Skipping drillresults on testcase %s: %s', self.testcase.signature, e)
                 return
 
         self._process_tcb(tcb)
@@ -88,6 +92,7 @@ class DrillResults(Analyzer):
 
 class LinuxDrillResults(DrillResults):
     _tcb_cls = LinuxTestCaseBundle
+
 
 class WindowsDrillResults(DrillResults):
     _tcb_cls = WindowsTestCaseBundle
