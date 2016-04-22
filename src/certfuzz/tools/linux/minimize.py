@@ -156,11 +156,13 @@ def main():
         logger.info('Copying %s to %s', fuzzed_file.path, testcase.tempdir)
         filetools.copy_file(fuzzed_file.path, testcase.tempdir)
 
+        minlog = os.path.join(outdir, 'min_log.txt')
+
         with Minimizer(cfg=cfg, testcase=testcase, crash_dst_dir=outdir,
                        seedfile_as_target=min2seed,
                        bitwise=options.bitwise,
                        confidence=confidence,
-                       logfile='./min_log.txt',
+                       logfile=minlog,
                        tempdir=testcase.tempdir,
                        maxtime=options.timeout,
                        preferx=options.prefer_x_target,
