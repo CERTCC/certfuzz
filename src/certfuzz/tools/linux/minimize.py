@@ -61,6 +61,9 @@ def main():
     parser.add_option('', '--timeout', dest='timeout',
                       metavar='N', type='int', default=0,
                       help='Stop minimizing after N seconds (default is 0, never time out).')
+    parser.add_option('-k', '--keepothers', dest='keep_other_crashes',
+                      action='store_true',
+                      help='Keep other testcase hashes encountered during minimization')
 
     (options, args) = parser.parse_args()
 
@@ -77,11 +80,13 @@ def main():
         elif os.path.isfile("configs/bff.yaml"):
             cfg_file = "configs/bff.yaml"
         else:
-            parser.error('Configuration file (--config) option must be specified.')
+            parser.error(
+                'Configuration file (--config) option must be specified.')
     logger.debug('Config file: %s', cfg_file)
 
     if options.stringmode and options.target:
-        parser.error('Options --stringmode and --target are mutually exclusive.')
+        parser.error(
+            'Options --stringmode and --target are mutually exclusive.')
 
     # Set some default options. Fast and loose if in string mode
     # More precise with minimize to seedfile
@@ -116,14 +121,14 @@ def main():
         filetools.make_directories(outdir)
 
     if not os.path.isdir(outdir):
-        parser.error('--outdir must either already be a dir or not exist: %s' % outdir)
+        parser.error(
+            '--outdir must either already be a dir or not exist: %s' % outdir)
 
     if len(args) and os.path.exists(args[0]):
         fuzzed_file = BasicFile(args[0])
         logger.info('Fuzzed file is %s', fuzzed_file)
     else:
         parser.error('fuzzedfile must be specified')
-
 
     if options.target:
         seedfile = BasicFile(options.target)
@@ -144,7 +149,7 @@ def main():
                        debugger_timeout=cfg['runner']['runtimeout'],
                        backtrace_lines=cfg['debugger']['backtracelevels'],
                        crashers_dir=crashers_dir,
-                       workdir_base=None,
+                       workdir_base=outdir,
                        keep_faddr=options.keep_uniq_faddr) as testcase:
 
         filetools.make_directories(testcase.tempdir)
@@ -152,15 +157,15 @@ def main():
         filetools.copy_file(fuzzed_file.path, testcase.tempdir)
 
         with Minimizer(cfg=cfg, testcase=testcase, crash_dst_dir=outdir,
-                                 seedfile_as_target=min2seed,
-                                 bitwise=options.bitwise,
-                                 confidence=confidence,
-                                 logfile='./min_log.txt',
-                                 tempdir=testcase.tempdir,
-                                 maxtime=options.timeout,
-                                 preferx=options.prefer_x_target,
-                                 keep_uniq_faddr=options.keep_uniq_faddr) as minimize:
-            minimize.save_others = False
+                       seedfile_as_target=min2seed,
+                       bitwise=options.bitwise,
+                       confidence=confidence,
+                       logfile='./min_log.txt',
+                       tempdir=testcase.tempdir,
+                       maxtime=options.timeout,
+                       preferx=options.prefer_x_target,
+                       keep_uniq_faddr=options.keep_uniq_faddr) as minimize:
+            minimize.save_others = options.keep_other_crashes
             minimize.target_size_guess = int(options.initial_target_size)
             minimize.go()
 
@@ -168,11 +173,13 @@ def main():
                 logger.debug('x character substitution')
                 length = len(minimize.fuzzed_content)
                 if options.prefer_x_target:
-                    # We minimized to 'x', so we attempt to get metasploit as a freebie
+                    # We minimized to 'x', so we attempt to get metasploit as a
+                    # freebie
                     targetstring = list(text.metasploit_pattern_orig(length))
                     filename_modifier = '-mtsp'
                 else:
-                    # We minimized to metasploit, so we attempt to get 'x' as a freebie
+                    # We minimized to metasploit, so we attempt to get 'x' as a
+                    # freebie
                     targetstring = list('x' * length)
                     filename_modifier = '-x'
 
@@ -180,7 +187,8 @@ def main():
                 for idx in minimize.bytemap:
                     logger.debug('Swapping index %d', idx)
                     targetstring[idx] = fuzzed[idx]
-                filename = ''.join((testcase.fuzzedfile.root, filename_modifier, testcase.fuzzedfile.ext))
+                filename = ''.join(
+                    (testcase.fuzzedfile.root, filename_modifier, testcase.fuzzedfile.ext))
                 metasploit_file = os.path.join(testcase.tempdir, filename)
 
                 with open(metasploit_file, 'wb') as f:
