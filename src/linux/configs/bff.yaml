@@ -18,7 +18,7 @@ campaign:
 # TARGET APPLICATION INVOCATION OPTIONS:
 #
 # program: 
-# Path to fuzzing target executable
+# Full path to fuzzing target executable
 #
 # cmdline_template: 
 # Used to specify the command-line invocation of the target
@@ -28,6 +28,7 @@ campaign:
 # $SEEDFILE will be replaced at runtime with the appropriate
 # seed file name.
 # Use quotes if the target application has spaces in the path
+# Shell redirection (>) is not allowed
 #
 ##############################################################################
 target:

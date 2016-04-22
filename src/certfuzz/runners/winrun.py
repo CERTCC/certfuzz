@@ -5,11 +5,13 @@ from .errors import RunnerPlatformVersionError
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 if not platform.version().startswith('5.'):
-    raise RunnerPlatformVersionError('Incompatible OS: winrun only works on Windows XP and 2003')
+    raise RunnerPlatformVersionError(
+        'Incompatible OS: winrun only works on Windows XP and 2003')
 
 from killableprocess import Popen
 from threading import Timer
-from _winreg import OpenKey, SetValueEx, HKEY_LOCAL_MACHINE, REG_SZ, KEY_ALL_ACCESS, QueryValueEx  # @UnresolvedImport
+# @UnresolvedImport
+from _winreg import OpenKey, SetValueEx, HKEY_LOCAL_MACHINE, REG_SZ, KEY_ALL_ACCESS, QueryValueEx
 import ctypes
 import os
 import logging
@@ -30,7 +32,8 @@ except ImportError:
     # we don't have win32api, try ctypes
     def GetShortPathName(longname):
         buf = ctypes.create_unicode_buffer(512)
-        if ctypes.windll.kernel32.GetShortPathNameW(longname, buf, ctypes.sizeof(buf)):  # @UndefinedVariable
+        # @UndefinedVariable
+        if ctypes.windll.kernel32.GetShortPathNameW(longname, buf, ctypes.sizeof(buf)):
             return buf.value
         else:
             # but don't panic if we can't do that either
@@ -58,67 +61,43 @@ def kill(p):
 
 
 class WinRunner(RunnerBase):
+
     def __init__(self, options, cmd_template, fuzzed_file, workingdir_base):
-        RunnerBase.__init__(self, options, cmd_template, fuzzed_file, workingdir_base)
+        RunnerBase.__init__(
+            self, options, cmd_template, fuzzed_file, workingdir_base)
 
         logger.debug('Initialize Runner')
 
-#    exceptions:
-#        - 0x80000001    # STATUS_GUARD_PAGE_VIOLATION
-#        - 0x80000002    # EXCEPTION_DATATYPE_MISALIGNMENT
-#        - 0x80000005    # STATUS_BUFFER_OVERFLOW
-#        - 0xC0000005    # STATUS_ACCESS_VIOLATION
-#        - 0xC0000009    # STATUS_BAD_INITIAL_STACK
-#        - 0xC000000A    # STATUS_BAD_INITIAL_PC
-#        - 0xC000001D    # STATUS_ILLEGAL_INSTRUCTION
-#        - 0xC0000025    # EXCEPTION_NONCONTINUABLE_EXCEPTION
-#        - 0xC0000026    # EXCEPTION_INVALID_DISPOSITION
-#        - 0xC000008C    # EXCEPTION_ARRAY_BOUNDS_EXCEEDED
-#        - 0xC000008D    # STATUS_FLOAT_DENORMAL_OPERAND
-#        - 0xC000008E    # EXCEPTION_FLT_DIVIDE_BY_ZERO
-#        - 0xC000008F    # EXCEPTION_FLOAT_INEXACT_RESULT
-#        - 0xC0000090    # EXCEPTION_FLT_INVALID_OPERATION
-#        - 0xC0000091    # EXCEPTION_FLT_OVERFLOW
-#        - 0xC0000092    # EXCEPTION_FLT_STACK_CHECK
-#        - 0xC0000093    # EXCEPTION_FLT_UNDERFLOW
-#        - 0xC0000094    # STATUS_INTEGER_DIVIDE_BY_ZERO
-#        - 0xC0000095    # EXCEPTION_INT_OVERFLOW
-#        - 0xC0000096    # STATUS_PRIVILEGED_INSTRUCTION
-#        - 0xC00000FD    # STATUS_STACK_OVERFLOW
-#        - 0xC00002B4    # STATUS_FLOAT_MULTIPLE_FAULTS
-#        - 0xC00002B5    # STATUS_FLOAT_MULTIPLE_TRAPS
-#        - 0xC00002C5    # STATUS_DATATYPE_MISALIGNMENT_ERROR
-#        - 0xC00002C9    # STATUS_REG_NAT_CONSUMPTION
-
-        self.exceptions = [0x80000001,
-                           0x80000002,
-                           0x80000005,
-                           0xC0000005,
-                           0xC0000009,
-                           0xC000000A,
-                           0xC000001D,
-                           0xC0000025,
-                           0xC0000026,
-                           0xC000008C,
-                           0xC000008D,
-                           0xC000008E,
-                           0xC000008F,
-                           0xC0000090,
-                           0xC0000091,
-                           0xC0000092,
-                           0xC0000093,
-                           0xC0000094,
-                           0xC0000095,
-                           0xC0000096,
-                           0xC00000FD,
-                           0xC00002B4,
-                           0xC00002B5,
-                           0xC00002C5,
-                           0xC00002C9,
+        self.exceptions = [0x80000001,  # STATUS_GUARD_PAGE_VIOLATION
+                           0x80000002,  # EXCEPTION_DATATYPE_MISALIGNMENT
+                           0x80000005,  # STATUS_BUFFER_OVERFLOW
+                           0xC0000005,  # STATUS_ACCESS_VIOLATION
+                           0xC0000009,  # STATUS_BAD_INITIAL_STACK
+                           0xC000000A,  # STATUS_BAD_INITIAL_PC
+                           0xC000001D,  # STATUS_ILLEGAL_INSTRUCTION
+                           0xC0000025,  # EXCEPTION_NONCONTINUABLE_EXCEPTION
+                           0xC0000026,  # EXCEPTION_INVALID_DISPOSITION
+                           0xC000008C,  # EXCEPTION_ARRAY_BOUNDS_EXCEEDED
+                           0xC000008D,  # STATUS_FLOAT_DENORMAL_OPERAND
+                           0xC000008E,  # EXCEPTION_FLT_DIVIDE_BY_ZERO
+                           0xC000008F,  # EXCEPTION_FLOAT_INEXACT_RESULT
+                           0xC0000090,  # EXCEPTION_FLT_INVALID_OPERATION
+                           0xC0000091,  # EXCEPTION_FLT_OVERFLOW
+                           0xC0000092,  # EXCEPTION_FLT_STACK_CHECK
+                           0xC0000093,  # EXCEPTION_FLT_UNDERFLOW
+                           0xC0000094,  # EXCEPTION_INT_OVERFLOW
+                           0xC0000095,  # EXCEPTION_INT_OVERFLOW
+                           0xC0000096,  # STATUS_PRIVILEGED_INSTRUCTION
+                           0xC00000FD,  # STATUS_STACK_OVERFLOW
+                           0xC00002B4,  # STATUS_FLOAT_MULTIPLE_FAULTS
+                           0xC00002B5,  # STATUS_FLOAT_MULTIPLE_TRAPS
+                           0xC00002C5,  # STATUS_DATATYPE_MISALIGNMENT_ERROR
+                           0xC00002C9,  # STATUS_REG_NAT_CONSUMPTION
                            ]
 
         self.watchcpu = options.get('watchcpu', False)
-        (self.cmd, self.cmdlist) = get_command_args_list(cmd_template, fuzzed_file)
+        (self.cmd, self.cmdlist) = get_command_args_list(
+            cmd_template, fuzzed_file)
         logger.debug('Command: %s', self.cmd)
 
         find_or_create_dir(self.workingdir)
@@ -159,13 +138,15 @@ class WinRunner(RunnerBase):
         # assume hook dll is at ../hooks/winxp/Release/hook.dll relative to
         # the location of this module
         my_path = os.path.dirname(__file__)
-        relative_path_to_hook_dll = os.path.join(my_path, '..', "hooks", "winxp", "Release", "hook.dll")
+        relative_path_to_hook_dll = os.path.join(
+            my_path, '..', "hooks", "winxp", "Release", "hook.dll")
         rval = GetShortPathName(os.path.abspath(relative_path_to_hook_dll))
 
         try:
             _set_reg_value(hive, branch, rname, rval)
         except OSError, e:
-            logger.error('Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
+            logger.error(
+                'Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
             raise RunnerRegistryError(e)
 
         # register jit debugger (or lack thereof)
@@ -175,7 +156,8 @@ class WinRunner(RunnerBase):
         python_path = sys.executable
         if not python_path:
             python_path = 'c:\python27\python.exe'
-            logger.warning('No path to python exec in sys.executable, using default of %s', python_path)
+            logger.warning(
+                'No path to python exec in sys.executable, using default of %s', python_path)
         # Find our preferred debugger module
         dbg_path = dbg.__file__
     #    dbg_path = 'calc.exe'
@@ -187,7 +169,8 @@ class WinRunner(RunnerBase):
         try:
             _set_reg_value(hive, branch, rname, rval)
         except OSError:
-            logger.error('Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
+            logger.error(
+                'Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
             raise RunnerRegistryError(e)
 
         # enable auto debugger invocation
@@ -199,7 +182,8 @@ class WinRunner(RunnerBase):
         try:
             _set_reg_value(hive, branch, rname, rval)
         except OSError:
-            logger.error('Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
+            logger.error(
+                'Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
             raise RunnerRegistryError(e)
 
         # check cdb path
@@ -219,7 +203,8 @@ class WinRunner(RunnerBase):
             try:
                 _set_reg_value(hive, branch, rname, rval)
             except OSError:
-                logger.warning('Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
+                logger.warning(
+                    'Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
 
     def _verify_architecture(self, expected_bits=None):
         '''
@@ -255,7 +240,8 @@ class WinRunner(RunnerBase):
         # set timeout(s)
         # run program
         if self.hideoutput:
-            p = Popen(self.cmdlist, cwd=targetdir, stdout=open(os.devnull), stderr=open(os.devnull))
+            p = Popen(self.cmdlist, cwd=targetdir, stdout=open(
+                os.devnull), stderr=open(os.devnull))
         else:
             p = Popen(self.cmdlist, cwd=targetdir)
 
@@ -275,17 +261,21 @@ class WinRunner(RunnerBase):
             # TODO: Do something about it
             while p.poll() is None and not done and id:
                 for proc in wmiInterface.Win32_PerfRawData_PerfProc_Process(IDProcess=id):
-                    n1, d1 = long(proc.PercentProcessorTime), long(proc.Timestamp_Sys100NS)
+                    n1, d1 = long(proc.PercentProcessorTime), long(
+                        proc.Timestamp_Sys100NS)
                     n0, d0 = process_info.get(id, (0, 0))
                     try:
-                        percent_processor_time = (float(n1 - n0) / float(d1 - d0)) * 100.0
+                        percent_processor_time = (
+                            float(n1 - n0) / float(d1 - d0)) * 100.0
                     except ZeroDivisionError:
                         percent_processor_time = 0.0
                     process_info[id] = (n1, d1)
-                    logger.debug('Process %s CPU usage: %s', id, percent_processor_time)
+                    logger.debug(
+                        'Process %s CPU usage: %s', id, percent_processor_time)
                     if percent_processor_time < 0.0000000001:
                         if started:
-                            logger.debug('killing %s due to CPU inactivity', id)
+                            logger.debug(
+                                'killing %s due to CPU inactivity', id)
                             done = True
                             kill(p)
                     else:
@@ -301,7 +291,8 @@ class WinRunner(RunnerBase):
         t.cancel()
 
         self.returncode = ctypes.c_uint(p.returncode).value
-        logger.debug('...Returncode: raw=%s cast=%s', p.returncode, self.returncode)
+        logger.debug(
+            '...Returncode: raw=%s cast=%s', p.returncode, self.returncode)
         logger.debug('...Exceptions: %s', self.exceptions)
         if self.returncode in self.exceptions:
             self.saw_crash = True
