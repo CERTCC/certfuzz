@@ -412,8 +412,10 @@ def checkreport(reportfile, crasherfile, crash_hash):
 
 
 #    pc_module = pc_in_mapped_address(reporttext, instraddr)
-    crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr)
-
+    try:
+        crashid['exceptions'][exceptionnum]['pcmodule'] = pc_in_mapped_address(reporttext, instraddr)
+    except:
+        print reporttext 
     # Get the cdb line that contains the crashing instruction
     instructionline = getinstr(reporttext, instraddr)
     crashid['exceptions'][exceptionnum]['instructionline'] = instructionline
