@@ -32,7 +32,7 @@ def _zipdir(path, zip_):
 
 class Build(object):
     _blacklist = []
-    _common_dirs = ['certfuzz', 'seedfiles']
+    _common_dirs = ['certfuzz', 'seedfiles', 'tools']
     _license_file = 'COPYING.txt'
 
     def __init__(self, platform=None, distpath=None, srcpath=None):
@@ -44,7 +44,8 @@ class Build(object):
             self.base_path = os.path.abspath(distpath)
 
         if srcpath == None:
-            self.src_path = os.path.abspath(os.path.join(self.base_path, '../../src'))
+            self.src_path = os.path.abspath(
+                os.path.join(self.base_path, '../../src'))
         else:
             self.src_path = os.path.abspath(srcpath)
 
@@ -56,11 +57,13 @@ class Build(object):
         self.zipfile = '{}.zip'.format(self._filename_pfx)
         self.target = os.path.join(self.base_path, self.zipfile)
         self.license_md_path = os.path.join(self.src_path, '..', 'LICENSE.md')
-        self.license_txt_path = os.path.join(self.platform_path, self._license_file)
+        self.license_txt_path = os.path.join(
+            self.platform_path, self._license_file)
 
     def __enter__(self):
         logger.debug('Entering Build context')
-        self.tmp_dir = tempfile.mkdtemp(prefix='bff_build_{}_'.format(self.platform))
+        self.tmp_dir = tempfile.mkdtemp(
+            prefix='bff_build_{}_'.format(self.platform))
         logger.debug('Temp dir is %s', self.tmp_dir)
         self.build_dir = os.path.join(self.tmp_dir, 'bff')
         os.mkdir(self.build_dir)
@@ -138,7 +141,8 @@ class Build(object):
         logger.debug('moving {} to {}'.format(tmpzip, self.target))
         shutil.move(tmpzip, self.target)
         _perm = 0644
-        logger.debug('setting {:04o} permissions on {}'.format(_perm, self.target))
+        logger.debug(
+            'setting {:04o} permissions on {}'.format(_perm, self.target))
         os.chmod(self.target, _perm)
 
     def _create_zip(self):
@@ -155,11 +159,13 @@ class Build(object):
         if os.path.isdir(self.platform_path):
             platform_path = self.platform_path
         else:
-            logger.info('No platform-specific info found at %s', self.platform_path)
+            logger.info(
+                'No platform-specific info found at %s', self.platform_path)
             platform_path = os.path.join(self.src_path, 'linux')
             logger.info('Defaulting to %s', platform_path)
             # Set license text path since we're overriding it above
-            self.license_txt_path = os.path.join(platform_path, self._license_file)
+            self.license_txt_path = os.path.join(
+                platform_path, self._license_file)
 
         logger.info('Converting markdown files')
         self._convert_md_files()
@@ -182,7 +188,6 @@ class Build(object):
             else:
                 logger.warning("Not sure what to do with %s", f_src)
 
-
     def _copy_common_dirs(self):
         # copy other dirs
         for d in self._common_dirs:
@@ -197,7 +202,8 @@ class Build(object):
             logger.info('Result path does not exist, creating %s', result_path)
             os.makedirs(result_path)
         else:
-            logger.info('Result path %s already exists, proceeding', result_path)
+            logger.info(
+                'Result path %s already exists, proceeding', result_path)
 
     def _clean_up(self, path, remove_blacklist=True):
         for f in os.listdir(path):

@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class Build(object):
-    _common_dirs = ['certfuzz', 'seedfiles']
+    _common_dirs = ['certfuzz', 'seedfiles', 'tools']
     _blacklist = ['.svn']
     _name = None
     _platform = None
@@ -30,12 +30,15 @@ class Build(object):
             self.platform = self._platform
 
         self.my_path = os.path.abspath(os.path.dirname(__file__))
-        self.src_path = os.path.abspath(os.path.join(self.my_path, '../../src'))
-        self.dev_builds_path = os.path.abspath(os.path.join(self.src_path, '..', 'dev_builds'))
+        self.src_path = os.path.abspath(
+            os.path.join(self.my_path, '../../src'))
+        self.dev_builds_path = os.path.abspath(
+            os.path.join(self.src_path, '..', 'dev_builds'))
 
         target_shortname = '{}-{}'.format(self.name, self.platform)
 
-        self.target_path = os.path.abspath(os.path.join(self.dev_builds_path, target_shortname))
+        self.target_path = os.path.abspath(
+            os.path.join(self.dev_builds_path, target_shortname))
         self.platform_path = os.path.join(self.src_path, self.platform)
         self.license_md_path = os.path.join(self.src_path, '..', 'LICENSE.md')
         self.license_txt_path = os.path.join(self.target_path, 'COPYING.txt')
@@ -74,10 +77,12 @@ class Build(object):
     def _create_target_path(self):
         # create base build path if it doesn't already exist
         if not os.path.exists(self.target_path):
-            logger.info('Build dir does not exist, creating %s', self.target_path)
+            logger.info(
+                'Build dir does not exist, creating %s', self.target_path)
             os.makedirs(self.target_path)
         else:
-            logger.info('Build dir %s already exists, proceeding', self.target_path)
+            logger.info(
+                'Build dir %s already exists, proceeding', self.target_path)
 
         # base build path exists
         assert os.path.isdir(self.target_path)
@@ -115,7 +120,8 @@ class Build(object):
             logger.info('Result path does not exist, creating %s', result_path)
             os.makedirs(result_path)
         else:
-            logger.info('Result path %s already exists, proceeding', result_path)
+            logger.info(
+                'Result path %s already exists, proceeding', result_path)
 
     def _clean_up(self, path, remove_blacklist=True):
         logger.debug("Cleaning up %s", path)
