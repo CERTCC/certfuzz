@@ -83,7 +83,7 @@ class WindowsMinimizer(MinimizerBase):
             # probably unnecessary since it's the content that matters
 
             self.saved_arcinfo[i] = (len(unzippedbytes), len(data),
-                                        tempzip.getinfo(i).compress_type)
+                                     tempzip.getinfo(i).compress_type)
             unzippedbytes += data
         tempzip.close()
         return unzippedbytes
@@ -106,7 +106,7 @@ class WindowsMinimizer(MinimizerBase):
         filepath = self.tempfile
 
         logger.debug('Creating zip with mutated contents.')
-        tempzip = self._safe_createzip(filepath, 'w')
+        tempzip = self._safe_createzip(filepath)
 
         '''
         reconstruct archived files, using the same compression scheme as
@@ -118,9 +118,11 @@ class WindowsMinimizer(MinimizerBase):
                 # Python zipfile only supports compression types 0 and 8
                 compressiontype = info[2]
             else:
-                logger.warning('Compression type %s is not supported. Overriding', info[2])
+                logger.warning(
+                    'Compression type %s is not supported. Overriding', info[2])
                 compressiontype = 8
-            tempzip.writestr(name, str(filedata[info[0]:info[0] + info[1]]), compress_type=compressiontype)
+            tempzip.writestr(
+                name, str(filedata[info[0]:info[0] + info[1]]), compress_type=compressiontype)
         tempzip.close()
 
     def _write_file(self):
