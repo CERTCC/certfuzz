@@ -16,18 +16,21 @@ logger = logging.getLogger(__name__)
 RE_BT_ADDR = re.compile(r'(0x[0-9a-fA-F]+)\s+.+$')
 RE_CURRENT_INSTR = re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)')
 RE_FRAME_0 = re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+')
-RE_MAPPED_FRAME = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(/.+)')
-RE_VDSO = re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(\[vdso\])')
+RE_MAPPED_FRAME = re.compile(
+    r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x[0-9a-fA-F]+)?\s+(/.+)')
+RE_VDSO = re.compile(
+    r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(\[vdso\])')
 RE_RETURN_ADDR = re.compile(r'^#1\s.(0x[0-9a-fA-F]+)\s')
+
 
 class LinuxTestCaseBundle(TestCaseBundle):
     really_exploitable = [
-                  'SegFaultOnPc',
-                  'BranchAv',
-                  'StackCodeExection',
-                  'BadInstruction',
-                  'ReturnAv',
-                  ]
+        'SegFaultOnPc',
+        'BranchAv',
+        'StackCodeExection',
+        'BadInstruction',
+        'ReturnAv',
+    ]
 
     def _get_classification(self):
         self.classification = carve(self.reporttext, "Classification: ", "\n")
@@ -64,7 +67,8 @@ class LinuxTestCaseBundle(TestCaseBundle):
                 begin_address = int(n.group(1).replace('`', ''), 16)
                 end_address = int(n.group(2).replace('`', ''), 16)
                 module_name = n.group(4)
-                logger.debug('%x %x %s %x', begin_address, end_address, module_name, instraddr)
+                logger.debug(
+                    '%x %x %s %x', begin_address, end_address, module_name, instraddr)
                 if begin_address < instraddr < end_address:
                     logger.debug('Matched: %x in %x %x %s', instraddr,
                                  begin_address, end_address, module_name)
