@@ -49,7 +49,7 @@
 scriptlocation=`echo "$(cd "$(dirname "$0")"; pwd)/"`
 echo Script location: $scriptlocation/bff.py
 platform=`uname -a`
-PINURL=http://software.intel.com/sites/landingpage/pintool/downloads/pin-2.12-58423-gcc.4.4.7-linux.tar.gz
+PINURL=https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.0-76991-gcc-linux.tar.gz
 if [[ "$platform" =~ "Darwin Kernel Version 11" ]]; then
     mypython="/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
 else
