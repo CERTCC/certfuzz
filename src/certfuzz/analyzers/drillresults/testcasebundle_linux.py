@@ -26,10 +26,13 @@ RE_RETURN_ADDR = re.compile(r'^#1\s.(0x[0-9a-fA-F]+)\s')
 class LinuxTestCaseBundle(TestCaseBundle):
     really_exploitable = [
         'SegFaultOnPc',
+        'SegFaultOnPcNearNull',
         'BranchAv',
+        'BranchAvNearNull',
         'StackCodeExection',
         'BadInstruction',
         'ReturnAv',
+        'BadInstruction',
     ]
 
     def _get_classification(self):
