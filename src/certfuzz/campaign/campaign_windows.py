@@ -30,7 +30,8 @@ class WindowsCampaign(CampaignBase):
 
     def __init__(self, config_file, result_dir=None, debug=False):
         CampaignBase.__init__(self, config_file, result_dir, debug)
-        self.use_buttonclicker = self.config['campaign'].get('use_buttonclicker', False)
+        self.use_buttonclicker = self.config[
+            'campaign'].get('use_buttonclicker', False)
         self.runner_module_name = 'certfuzz.runners.winrun'
         self.debugger_module_name = 'certfuzz.debuggers.gdb'
         TWDF.disable()
@@ -86,7 +87,8 @@ class WindowsCampaign(CampaignBase):
         if not hook_incompatible:
             return
 
-        logger.debug('winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
+        logger.debug(
+            'winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
         self.runner_module_name = 'certfuzz.runners.nullrun'
 
     def _post_enter(self):
@@ -97,10 +99,12 @@ class WindowsCampaign(CampaignBase):
         self._stop_buttonclicker()
 
     def _cache_app(self):
-        logger.debug('Caching application %s and determining if we need to watch the CPU...', self.program)
+        logger.debug(
+            'Caching application %s and determining if we need to watch the CPU...', self.program)
         sf = self.seedfile_set.next_item()
         targetdir = os.path.dirname(self.program)
-        cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=sf.path)[1]
+        cmdargs = get_command_args_list(
+            self.config['target']['cmdline_template'], infile=sf.path)[1]
         logger.info('Invoking %s' % cmdargs)
 
         # Use overriden Popen that uses a job object to make sure that
@@ -128,10 +132,12 @@ class WindowsCampaign(CampaignBase):
             logger.debug('Disabling runner CPU monitoring for dynamic timeout')
             self.config['runner']['watchcpu'] = False
         if debugger_watchcpu == 'auto':
-            logger.debug('Disabling debugger CPU monitoring for dynamic timeout')
+            logger.debug(
+                'Disabling debugger CPU monitoring for dynamic timeout')
             self.config['debugger']['watchcpu'] = False
 
-        logger.info('Please ensure that the target program has just executed successfully')
+        logger.info(
+            'Please ensure that the target program has just executed successfully')
         time.sleep(10)
 
     def kill(self, p):
@@ -149,18 +155,22 @@ class WindowsCampaign(CampaignBase):
         if runner_watchcpu == 'auto':
             logger.debug('Enabling runner CPU monitoring for dynamic timeout')
             self.config['runner']['watchcpu'] = True
-            logger.debug('kill runner watchcpu: %s', self.config['runner']['watchcpu'])
+            logger.debug(
+                'kill runner watchcpu: %s', self.config['runner']['watchcpu'])
         if debugger_watchcpu == 'auto':
-            logger.debug('Enabling debugger CPU monitoring for dynamic timeout')
+            logger.debug(
+                'Enabling debugger CPU monitoring for dynamic timeout')
             self.config['debugger']['watchcpu'] = True
-            logger.debug('kill debugger watchcpu: %s', self.config['debugger']['watchcpu'])
+            logger.debug(
+                'kill debugger watchcpu: %s', self.config['debugger']['watchcpu'])
         logger.debug('kill %s', p)
         p.kill()
 
     def _start_buttonclicker(self):
         if self.use_buttonclicker:
             rootpath = os.path.dirname(sys.argv[0])
-            buttonclicker = os.path.join(rootpath, 'buttonclicker', 'buttonclicker.exe')
+            buttonclicker = os.path.join(
+                rootpath, 'buttonclicker', 'buttonclicker.exe')
             os.startfile(buttonclicker)  # @UndefinedVariable
 
     def _stop_buttonclicker(self):
@@ -188,11 +198,12 @@ class WindowsCampaign(CampaignBase):
             except FuzzerExhaustedError:
                 # Some fuzzers run out of things to do. They should
                 # raise a FuzzerExhaustedError when that happens.
-                logger.info('Done with %s, removing from set', seedfile.basename)
+                logger.info(
+                    'Done with %s, removing from set', seedfile.basename)
                 self.seedfile_set.remove_file(seedfile)
 
         if not seednum % self.status_interval:
-            logger.info('Iteration: %d testcases found: %d', self.current_seed,
+            logger.info('Iteration: %d crashes found: %d', self.current_seed,
                         len(self.testcases_seen))
             # FIXME
             # self.seedfile_set.update_csv()
