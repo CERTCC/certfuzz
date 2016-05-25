@@ -22,20 +22,20 @@ def logerror(func, path, excinfo):
     logger.warning('%s failed to remove %s: %s', func, path, excinfo)
 
 short_exp = {
-             'UNKNOWN': 'UNK',
-             'PROBABLY_NOT_EXPLOITABLE': 'PNE',
-             'PROBABLY_EXPLOITABLE': 'PEX',
-             'EXPLOITABLE': 'EXP',
-             'HEISENBUG': 'HSB',
-             }
+    'UNKNOWN': 'UNK',
+    'PROBABLY_NOT_EXPLOITABLE': 'PNE',
+    'PROBABLY_EXPLOITABLE': 'PEX',
+    'EXPLOITABLE': 'EXP',
+    'HEISENBUG': 'HSB',
+}
 
 exp_rank = {
-            'EXPLOITABLE': 1,
-            'PROBABLY_EXPLOITABLE': 2,
-            'UNKNOWN': 3,
-            'PROBABLY_NOT_EXPLOITABLE': 4,
-            'HEISENBUG': 5,
-            }
+    'EXPLOITABLE': 1,
+    'PROBABLY_EXPLOITABLE': 2,
+    'UNKNOWN': 3,
+    'PROBABLY_NOT_EXPLOITABLE': 4,
+    'HEISENBUG': 5,
+}
 
 
 class WindowsTestcase(Testcase):
@@ -45,7 +45,7 @@ class WindowsTestcase(Testcase):
     # TODO: do we still need fuzzer as an arg?
     def __init__(self, cmd_template, seedfile, fuzzedfile, cmdlist, fuzzer,
                  dbg_opts, workingdir_base, keep_faddr, program,
-                 heisenbug_retries=4, copy_fuzzedfile=True):
+                 heisenbug_retries=4, copy_fuzzedfile=True, is_nullrunner=False):
 
         dbg_timeout = dbg_opts['runtimeout']
 
@@ -66,7 +66,8 @@ class WindowsTestcase(Testcase):
         self.dbg_file = ''
         self.cmd_template = cmd_template
         try:
-            self.max_handled_exceptions = self.dbg_opts['max_handled_exceptions']
+            self.max_handled_exceptions = self.dbg_opts[
+                'max_handled_exceptions']
         except KeyError:
             self.max_handled_exceptions = 6
         try:
@@ -78,6 +79,7 @@ class WindowsTestcase(Testcase):
         self.parsed_outputs = []
 
         self.max_depth = heisenbug_retries
+        self.is_nullrunner = is_nullrunner
 
     def _get_file_basename(self):
         '''
@@ -103,7 +105,8 @@ class WindowsTestcase(Testcase):
         fname = self._get_file_basename()
         outfile_base = os.path.join(self.tempdir, fname)
         # Regenerate target commandline with new crasher file
-        self.cmdargs = get_command_args_list(self.cmd_template, outfile_base)[1][1:]
+        self.cmdargs = get_command_args_list(
+            self.cmd_template, outfile_base)[1][1:]
         self.debug()
         self._rename_fuzzed_file()
         self._rename_dbg_file()
@@ -115,15 +118,16 @@ class WindowsTestcase(Testcase):
         outfile_base = os.path.join(self.tempdir, self.fuzzedfile.basename)
 
         with self._debugger_cls(program=self.program,
-                                  cmd_args=self.cmdargs,
-                                  outfile_base=outfile_base,
-                                  timeout=self.debugger_timeout,
-                                  exception_depth=self.exception_depth,
-                                  workingdir=self.tempdir,
-                                  watchcpu=self.watchcpu) as debugger:
+                                cmd_args=self.cmdargs,
+                                outfile_base=outfile_base,
+                                timeout=self.debugger_timeout,
+                                exception_depth=self.exception_depth,
+                                workingdir=self.tempdir,
+                                watchcpu=self.watchcpu) as debugger:
             self.parsed_outputs.append(debugger.go())
 
-        self.reached_secondchance = self.parsed_outputs[self.exception_depth].secondchance
+        self.reached_secondchance = self.parsed_outputs[
+            self.exception_depth].secondchance
 
         if self.reached_secondchance and self.exception_depth > 0:
             # No need to process second-chance exception
@@ -139,8 +143,10 @@ class WindowsTestcase(Testcase):
             elif exp_rank[current_exception_exp] < exp_rank[self.exp]:
                 self.exp = current_exception_exp
 
-        current_exception_hash = self.parsed_outputs[self.exception_depth].crash_hash
-        current_exception_faddr = self.parsed_outputs[self.exception_depth].faddr
+        current_exception_hash = self.parsed_outputs[
+            self.exception_depth].crash_hash
+        current_exception_faddr = self.parsed_outputs[
+            self.exception_depth].faddr
         if current_exception_hash:
             # We have a hash for the current exception
             if self.exception_depth == 0:
@@ -148,7 +154,8 @@ class WindowsTestcase(Testcase):
                 self.crash_hash = current_exception_hash
             elif self.crash_hash:
                 # Append to the exception hash chain
-                self.crash_hash = self.crash_hash + '_' + current_exception_hash
+                self.crash_hash = self.crash_hash + \
+                    '_' + current_exception_hash
 
             if self.keep_uniq_faddr and current_exception_faddr:
                 self.crash_hash += '.' + current_exception_faddr
@@ -186,13 +193,15 @@ class WindowsTestcase(Testcase):
                     break
             # get the signature now that we've got all of the exceptions
             self.get_signature()
-        else:
+        elif not self.is_nullrunner:
+            # With the Windows XP hook, there's the concept of a heisenbug.
             # if we are still a heisenbug after debugging
             # we might need to try again
             # or give up if we've tried enough already
             if tries_remaining:
                 # keep diving
-                logger.debug("possible heisenbug (%d tries left)", tries_remaining)
+                logger.debug(
+                    "possible heisenbug (%d tries left)", tries_remaining)
                 self.debug(tries_remaining - 1)
             else:
                 # we're at the bottom
@@ -207,7 +216,8 @@ class WindowsTestcase(Testcase):
             # for whatever reason we couldn't get the real content,
             # and since we're just generating a string here
             # any string will do
-            logger.warning('Unable to get md5 of %s, using random string for heisenbug signature: %s', self.fuzzedfile.path, e)
+            logger.warning(
+                'Unable to get md5 of %s, using random string for heisenbug signature: %s', self.fuzzedfile.path, e)
             fuzzed_content = random_str(64)
         self.is_heisenbug = True
         self.signature = hashlib.md5(fuzzed_content).hexdigest()
@@ -228,9 +238,11 @@ class WindowsTestcase(Testcase):
             return
 
         logger.debug('Attempting to rename %s', self.fuzzedfile.path)
-        new_basename = '%s-%s%s' % (self.fuzzedfile.root, self.faddr, self.fuzzedfile.ext)
+        new_basename = '%s-%s%s' % (self.fuzzedfile.root,
+                                    self.faddr, self.fuzzedfile.ext)
         new_fuzzed_file = os.path.join(self.fuzzedfile.dirname, new_basename)
-        logger.debug('renaming %s -> %s', self.fuzzedfile.path, new_fuzzed_file)
+        logger.debug(
+            'renaming %s -> %s', self.fuzzedfile.path, new_fuzzed_file)
 
         # best_effort move returns a tuple of booleans indicating (copied, deleted)
         # we only care about copied
@@ -263,7 +275,8 @@ class WindowsTestcase(Testcase):
                 parts.append(faddr_str)
             if exp_str:
                 parts.append(exp_str)
-            new_basename = '-'.join(parts) + ext + '.e%s' % exception_num + dbgext
+            new_basename = '-'.join(parts) + ext + \
+                '.e%s' % exception_num + dbgext
 
             new_dbg_file = os.path.join(path, new_basename)
 
