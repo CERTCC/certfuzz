@@ -10,6 +10,7 @@ import shutil
 import tempfile
 
 from certfuzz.fuzztools.filetools import delete_contents_of
+from certfuzz.file_handlers.watchdog_file import touch_watchdog_file
 
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ class TmpReaper(object):
     '''
     classdocs
     '''
+
     def __init__(self):
         '''
         Constructor
@@ -66,3 +68,7 @@ class TmpReaper(object):
                 # we don't mind these exceptions as they're usually indicative
                 # of a file that got deleted before we could do the same
                 continue
+        # We've just cleaned tmp, which is the default watchdog file location
+        # If BFF dies before the watchdog file is recreated, UbuFuzz won't
+        # notice
+        touch_watchdog_file()
