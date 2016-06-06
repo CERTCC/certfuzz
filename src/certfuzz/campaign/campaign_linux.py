@@ -21,7 +21,6 @@ from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
-from certfuzz.fuzztools.filetools import read_text_file
 
 
 logger = logging.getLogger(__name__)
@@ -65,15 +64,6 @@ class LinuxCampaign(CampaignBase):
         CampaignBase.__init__(self, config_file, result_dir, debug)
         self.runner_module_name = 'certfuzz.runners.zzufrun'
         self.debugger_module_name = 'certfuzz.debuggers.gdb'
-        self.watchdogfile = '/tmp/bff_watchdog'
-        self._use_watchdog = self._check_watchdog_compat()
-
-    def _remove_watchdog_file(self):
-        try:
-            os.remove(self.watchdogfile)
-        except OSError:
-            # No watchdog file to remove
-            pass
 
     def _full_path_original(self, seedfile):
         # yes, two seedfile mentions are intended - adh
@@ -101,7 +91,7 @@ class LinuxCampaign(CampaignBase):
         self._cache_app()
 
     def _pre_exit(self):
-        self._remove_watchdog_file()
+        TWDF.remove_wdf()
 
     def _set_unbuffered_stdout(self):
         '''
@@ -135,36 +125,18 @@ class LinuxCampaign(CampaignBase):
         time.sleep(10)
 
     def _setup_watchdog(self):
+        # short circuit if we're not using the watchdog
+        if not TWDF.use_watchdog:
+            logger.debug('skipping watchdog setup')
+            return
+
         logger.debug('setup watchdog')
         # setup our watchdog file toucher
-        wdf = self.watchdogfile
-        TWDF.wdf = wdf
-        if self._use_watchdog:
-            TWDF.enable()
-            touch_watchdog_file()
+        touch_watchdog_file()
 
-            # set up the watchdog timeout within the VM and restart the daemon
-            with WatchDog(wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
-                watchdog()
-        else:
-            TWDF.disable()
-
-    def _check_hostname(self):
-        hostname = 'System'
-        try:
-            hostname = read_text_file('/etc/hostname').rstrip()
-        except:
-            logger.debug('Error determining hostname')
-        return hostname
-
-    def _check_watchdog_compat(self):
-        hostname = self._check_hostname().lower()
-        if 'ubufuzz' in hostname:
-            logger.debug('%s is watchdog compatible' % hostname)
-            return True
-        else:
-            logger.debug('%s is not watchdog compatible' % hostname)
-            return False
+        # set up the watchdog timeout within the VM and restart the daemon
+        with WatchDog(TWDF.wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
+            watchdog()
 
     def _setup_environment(self):
         os.environ['KDE_DEBUG'] = '1'
