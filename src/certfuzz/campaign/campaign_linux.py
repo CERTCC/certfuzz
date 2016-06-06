@@ -36,7 +36,8 @@ def check_program_file_type(string, program):
     Runs the system "file" command on self.program
     @return: True if <string> appears in the output.
     '''
-    file_loc = subprocess.Popen("which %s" % program, stdout=subprocess.PIPE, shell=True).stdout.read().strip()
+    file_loc = subprocess.Popen(
+        "which %s" % program, stdout=subprocess.PIPE, shell=True).stdout.read().strip()
     # maybe it's not on the path, but it still exists
     if not file_loc:
         if os.path.exists(program):
@@ -47,11 +48,13 @@ def check_program_file_type(string, program):
         return False
 
     # get the 'file' results
-    ftype = subprocess.Popen("file -b -L %s" % file_loc, stdout=subprocess.PIPE, shell=True).stdout.read()
+    ftype = subprocess.Popen(
+        "file -b -L %s" % file_loc, stdout=subprocess.PIPE, shell=True).stdout.read()
     if string in ftype:
         return True
     else:
         return False
+
 
 class LinuxCampaign(CampaignBase):
     '''
@@ -81,7 +84,8 @@ class LinuxCampaign(CampaignBase):
                             seedfile)
 
 #     def _get_command_list(self, seedfile):
-#         return [re.sub(SEEDFILE_REPLACE_STRING, seedfile, item) for item in self.cmd_list]
+# return [re.sub(SEEDFILE_REPLACE_STRING, seedfile, item) for item in
+# self.cmd_list]
 
     def _pre_enter(self):
         # give up if prog is a script
@@ -115,7 +119,8 @@ class LinuxCampaign(CampaignBase):
 
         # Run the program once to cache it into memory
         fullpathorig = self._full_path_original(sf.path)
-        cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=fullpathorig)[1]
+        cmdargs = get_command_args_list(
+            self.config['target']['cmdline_template'], infile=fullpathorig)[1]
         logger.info('Invoking %s' % cmdargs)
         subp.run_with_timer(cmdargs,
                             self.config['runner']['runtimeout'] * 8,
@@ -125,7 +130,8 @@ class LinuxCampaign(CampaignBase):
                             )
 
         # Give target time to die
-        logger.info('Please ensure that the target program has just executed successfully')
+        logger.info(
+            'Please ensure that the target program has just executed successfully')
         time.sleep(10)
 
     def _setup_watchdog(self):
@@ -224,5 +230,6 @@ class LinuxCampaign(CampaignBase):
             except FuzzerExhaustedError:
                 # Some fuzzers run out of things to do. They should
                 # raise a FuzzerExhaustedError when that happens.
-                logger.info('Done with %s, removing from set', seedfile.basename)
+                logger.info(
+                    'Done with %s, removing from set', seedfile.basename)
                 self.seedfile_set.remove_file(seedfile)
