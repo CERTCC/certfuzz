@@ -32,6 +32,8 @@ elif re.match('Darwin-14', myplatform):
     cwapp = 'exc_handler_yosemite'
 elif re.match('Darwin-15', myplatform):
     cwapp = 'exc_handler_elcapitan'
+elif re.match('Darwin-16', myplatform):
+    cwapp = 'exc_handler_sierra'
 else:
     cwapp = 'exc_handler'
 
