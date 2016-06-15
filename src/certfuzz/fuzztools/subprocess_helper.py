@@ -112,7 +112,7 @@ def _kill(p, returncode, progname):  # @UnusedVariable
             ret = os.killpg(os.getpgid(p.pid), signal.SIGKILL)
         except OSError:
             # Process could be dead by now
-            pass
+            ret = 1
         if progname:
             killall(progname, signal.SIGKILL)
     return (0 != ret)
