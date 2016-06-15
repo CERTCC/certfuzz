@@ -29,7 +29,8 @@ if on_windows():
     import ctypes
 
 if on_linux():
-    #gdb can cause SIGTTOU to get sent to python. We don't want python to stop.
+    # gdb can cause SIGTTOU to get sent to python. We don't want python to
+    # stop.
     signal.signal(signal.SIGTTOU, signal.SIG_IGN)
 
 
@@ -72,9 +73,11 @@ def run_with_timer(args, timeout, progname, use_shell=False, **options):
     try:
         if _seeoutput:
             # os.setsid sets process group
-            p = subprocess.Popen(args, env=env, shell=use_shell, preexec_fn=os.setsid)
+            p = subprocess.Popen(
+                args, env=env, shell=use_shell, preexec_fn=os.setsid)
         else:
-            p = subprocess.Popen(args, stdout=output, stderr=errors, env=env, shell=use_shell, preexec_fn=os.setsid)
+            p = subprocess.Popen(
+                args, stdout=output, stderr=errors, env=env, shell=use_shell, preexec_fn=os.setsid)
     except:
         print "Failed to run [%s]" % ' '.join(args)
         sys.exit(-1)
@@ -96,7 +99,7 @@ def run_with_timer(args, timeout, progname, use_shell=False, **options):
     return p
 
 
-def _kill(p, returncode, progname):  #@UnusedVariable
+def _kill(p, returncode, progname):  # @UnusedVariable
     if (on_windows()):
         """_kill function for Win32"""
         kernel32 = ctypes.windll.kernel32
@@ -105,7 +108,11 @@ def _kill(p, returncode, progname):  #@UnusedVariable
         kernel32.CloseHandle(handle)
     else:
         # Kill process group
-        ret = os.killpg(os.getpgid(p.pid), signal.SIGKILL)
+        try:
+            ret = os.killpg(os.getpgid(p.pid), signal.SIGKILL)
+        except OSError:
+            # Process could be dead by now
+            pass
         if progname:
             killall(progname, signal.SIGKILL)
     return (0 != ret)
