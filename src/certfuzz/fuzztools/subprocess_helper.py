@@ -126,7 +126,7 @@ def killall(processname, killsignal):
     '''
     assert (processname != ''), "Cannot kill a blank process name"
     if (on_osx()):
-        os.system('killall -%d %s' % (killsignal, processname))
+        os.system('killall -%d %s 2> /dev/null' % (killsignal, processname))
     else:
         for folder in os.listdir("/proc"):
             filename = os.path.join("/proc", folder, "cmdline")
