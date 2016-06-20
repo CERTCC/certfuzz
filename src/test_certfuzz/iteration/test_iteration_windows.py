@@ -15,23 +15,23 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix='test_iteration_windows_')
-        self.workdirbase = tempfile.mkdtemp(prefix='workdirbase_', dir=self.tmpdir)
+        self.workdirbase = tempfile.mkdtemp(
+            prefix='workdirbase_', dir=self.tmpdir)
         self.outdir = tempfile.mkdtemp(prefix='outdir_', dir=self.tmpdir)
-        
-        _cfg=MockCfg()
-        
-        kwargs={'seedfile': MockSeedfile(),
-                 'seednum':0,
-                 'workdirbase': self.workdirbase,
-                 'outdir':self.outdir,
-                 'sf_set':'a',
-                 'uniq_func':None,
-                 'config':_cfg,
-                 'fuzzer_cls':MockFuzzer,
-                 'runner_cls':MockRunner,
-                 'cmd_template':'a',
-                 'debug':False,
-                 }
+
+        _cfg = MockCfg()
+
+        kwargs = {'seedfile': MockSeedfile(),
+                  'seednum': 0,
+                  'workdirbase': self.workdirbase,
+                  'outdir': self.outdir,
+                  'sf_set': 'a',
+                  'uniq_func': None,
+                  'config': _cfg,
+                  'fuzzer_cls': MockFuzzer,
+                  'runner_cls': MockRunner,
+                  'debug': False,
+                  }
 
         self.iteration = WindowsIteration(**kwargs)
 
