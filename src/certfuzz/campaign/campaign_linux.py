@@ -21,7 +21,6 @@ from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 from certfuzz.fuzzers.errors import FuzzerExhaustedError
-from certfuzz.fuzztools.filetools import read_text_file
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +35,8 @@ def check_program_file_type(string, program):
     Runs the system "file" command on self.program
     @return: True if <string> appears in the output.
     '''
-    file_loc = subprocess.Popen("which %s" % program, stdout=subprocess.PIPE, shell=True).stdout.read().strip()
+    file_loc = subprocess.Popen(
+        "which %s" % program, stdout=subprocess.PIPE, shell=True).stdout.read().strip()
     # maybe it's not on the path, but it still exists
     if not file_loc:
         if os.path.exists(program):
@@ -47,11 +47,13 @@ def check_program_file_type(string, program):
         return False
 
     # get the 'file' results
-    ftype = subprocess.Popen("file -b -L %s" % file_loc, stdout=subprocess.PIPE, shell=True).stdout.read()
+    ftype = subprocess.Popen(
+        "file -b -L %s" % file_loc, stdout=subprocess.PIPE, shell=True).stdout.read()
     if string in ftype:
         return True
     else:
         return False
+
 
 class LinuxCampaign(CampaignBase):
     '''
@@ -62,15 +64,6 @@ class LinuxCampaign(CampaignBase):
         CampaignBase.__init__(self, config_file, result_dir, debug)
         self.runner_module_name = 'certfuzz.runners.zzufrun'
         self.debugger_module_name = 'certfuzz.debuggers.gdb'
-        self.watchdogfile = '/tmp/bff_watchdog'
-        self._use_watchdog = self._check_watchdog_compat()
-
-    def _remove_watchdog_file(self):
-        try:
-            os.remove(self.watchdogfile)
-        except OSError:
-            # No watchdog file to remove
-            pass
 
     def _full_path_original(self, seedfile):
         # yes, two seedfile mentions are intended - adh
@@ -81,7 +74,8 @@ class LinuxCampaign(CampaignBase):
                             seedfile)
 
 #     def _get_command_list(self, seedfile):
-#         return [re.sub(SEEDFILE_REPLACE_STRING, seedfile, item) for item in self.cmd_list]
+# return [re.sub(SEEDFILE_REPLACE_STRING, seedfile, item) for item in
+# self.cmd_list]
 
     def _pre_enter(self):
         # give up if prog is a script
@@ -97,7 +91,7 @@ class LinuxCampaign(CampaignBase):
         self._cache_app()
 
     def _pre_exit(self):
-        self._remove_watchdog_file()
+        TWDF.remove_wdf()
 
     def _set_unbuffered_stdout(self):
         '''
@@ -115,7 +109,8 @@ class LinuxCampaign(CampaignBase):
 
         # Run the program once to cache it into memory
         fullpathorig = self._full_path_original(sf.path)
-        cmdargs = get_command_args_list(self.config['target']['cmdline_template'], infile=fullpathorig)[1]
+        cmdargs = get_command_args_list(
+            self.config['target']['cmdline_template'], infile=fullpathorig)[1]
         logger.info('Invoking %s' % cmdargs)
         subp.run_with_timer(cmdargs,
                             self.config['runner']['runtimeout'] * 8,
@@ -125,40 +120,23 @@ class LinuxCampaign(CampaignBase):
                             )
 
         # Give target time to die
-        logger.info('Please ensure that the target program has just executed successfully')
+        logger.info(
+            'Please ensure that the target program has just executed successfully')
         time.sleep(10)
 
     def _setup_watchdog(self):
+        # short circuit if we're not using the watchdog
+        if not TWDF.use_watchdog:
+            logger.debug('skipping watchdog setup')
+            return
+
         logger.debug('setup watchdog')
         # setup our watchdog file toucher
-        wdf = self.watchdogfile
-        TWDF.wdf = wdf
-        if self._use_watchdog:
-            TWDF.enable()
-            touch_watchdog_file()
+        touch_watchdog_file()
 
-            # set up the watchdog timeout within the VM and restart the daemon
-            with WatchDog(wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
-                watchdog()
-        else:
-            TWDF.disable()
-
-    def _check_hostname(self):
-        hostname = 'System'
-        try:
-            hostname = read_text_file('/etc/hostname').rstrip()
-        except:
-            logger.debug('Error determining hostname')
-        return hostname
-
-    def _check_watchdog_compat(self):
-        hostname = self._check_hostname().lower()
-        if 'ubufuzz' in hostname:
-            logger.debug('%s is watchdog compatible' % hostname)
-            return True
-        else:
-            logger.debug('%s is not watchdog compatible' % hostname)
-            return False
+        # set up the watchdog timeout within the VM and restart the daemon
+        with WatchDog(TWDF.wdf, self.config['runoptions']['watchdogtimeout']) as watchdog:
+            watchdog()
 
     def _setup_environment(self):
         os.environ['KDE_DEBUG'] = '1'
@@ -224,5 +202,6 @@ class LinuxCampaign(CampaignBase):
             except FuzzerExhaustedError:
                 # Some fuzzers run out of things to do. They should
                 # raise a FuzzerExhaustedError when that happens.
-                logger.info('Done with %s, removing from set', seedfile.basename)
+                logger.info(
+                    'Done with %s, removing from set', seedfile.basename)
                 self.seedfile_set.remove_file(seedfile)
