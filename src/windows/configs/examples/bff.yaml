@@ -10,7 +10,8 @@
 # used for identifying campaign, placement of results
 #
 # keep_heisenbugs:
-# Keep crashing testcases detected by hook, but not when run via the debugger.
+# Keep crashing testcases detected by the Windows XP hook, but not when run
+# via the debugger. This option is ignored on non-XP platforms.
 #
 # use_buttonclicker: 
 # Spawn program to click buttons
