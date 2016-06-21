@@ -11,11 +11,15 @@ import os
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.config.simple_loader import fixup_config
 
+
 class Mock(object):
+
     def __init__(self, *args, **kwargs):
         pass
 
+
 class MockCrasher(Mock):
+
     def __init__(self):
         fd, f = tempfile.mkstemp(suffix='.ext', prefix='fileroot')
         os.close(fd)
@@ -25,21 +29,29 @@ class MockCrasher(Mock):
     def set_debugger_template(self, dummy):
         pass
 
+
 class MockObj(object):
+
     def __init__(self, **kwargs):
         for (kw, arg) in kwargs:
             self.__setattr__(kw, arg)
 
+
 class MockCrash(MockObj):
+
     def __init__(self):
         self.fuzzedfile = MockFile()
 
+
 class MockFile(MockObj):
+
     def __init__(self):
         self.dirname = 'dirname'
         self.path = 'path'
 
+
 class MockRange(Mock):
+
     def __init__(self):
         self.min = 0.01
         self.max = 0.10
@@ -47,9 +59,12 @@ class MockRange(Mock):
     def __str__(self):
         return '{}-{}'.format(self.min, self.max)
 
+
 class MockRangefinder(Mock):
+
     def next_item(self):
         return MockRange()
+
 
 class MockSeedfile(Mock):
     basename = 'basename'
@@ -66,6 +81,7 @@ class MockSeedfile(Mock):
     def read(self):
         return self.value
 
+
 class MockFuzzedFile(Mock):
     path = u'foo'
 
@@ -73,11 +89,20 @@ class MockFuzzedFile(Mock):
         if path is not None:
             self.path = path
 
+
 class MockFuzzer(Mock):
     is_minimizable = False
 
+
+class MockLogger(object):
+
+    def info(self, *args):
+        pass
+
+
 class MockRunner(Mock):
     is_nullrunner = False
+
 
 class MockTestcase(Mock):
     signature = 'ABCDEFGHIJK'
@@ -90,6 +115,7 @@ class MockTestcase(Mock):
     debugger_extension = 'abcdefg'
     dbg_outfile = 'xyz'
 
+
 class MockDbgOut(Mock):
     is_crash = False
     total_stack_corruption = False
@@ -97,7 +123,9 @@ class MockDbgOut(Mock):
     def get_testcase_signature(self, *dummyargs):
         return 'AAAAA'
 
+
 class MockDebugger(Mock):
+
     def get(self):
         return MockDebugger
 
@@ -106,29 +134,33 @@ class MockDebugger(Mock):
 
 
 class MockCfg(dict):
+
     def __init__(self, templated=True):
         self['debugger'] = {'backtracelevels': 5,
-                         'debugger': 'gdb',
-                         }
+                            'debugger': 'gdb',
+                            }
         self['target'] = {'cmdline_template': '$PROGRAM b c d $SEEDFILE',
-                        'killprocname': 'a',
-                        'program': 'a'}
+                          'killprocname': 'a',
+                          'program': 'a'}
         self['analyzer'] = {'exclude_unmapped_frames': False,
-                          'valgrind_timeout': 1}
+                            'valgrind_timeout': 1}
         self['directories'] = {'seedfile_dir': '',
-                              'results_dir': '',
-                              'working_dir': ''}
+                               'results_dir': '',
+                               'working_dir': ''}
         self['fuzzer'] = {'fuzzer': 'bytemut'}
         self['campaign'] = {'id': 'xyz'}
         self['runoptions'] = {'first_iteration': 0,
-                            'seed_interval': 10}
+                              'seed_interval': 10}
         self['runner'] = {'runner': 'zzufrun',
                           'runtimeout': 5}
         if templated:
-            self['target']['cmdline_template'] = string.Template(self['target']['cmdline_template'])
+            self['target']['cmdline_template'] = string.Template(
+                self['target']['cmdline_template'])
+
 
 def MockFixupCfg():
     return fixup_config(MockCfg(templated=False))
+
 
 class MockMinimizer(object):
     pass

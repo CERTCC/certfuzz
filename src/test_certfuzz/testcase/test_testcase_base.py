@@ -9,16 +9,17 @@ import tempfile
 import shutil
 from certfuzz.testcase.errors import TestCaseError
 import logging
+from test_certfuzz.mocks import MockSeedfile, MockFuzzedFile, MockLogger
+import os
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix='bff-test-')
-        self.sf = tempfile.mkstemp(prefix='seedfile-',
-                                   dir=self.tmpdir)
-        self.ff = tempfile.mkstemp(prefix='fuzzedfile-',
-                                   dir=self.tmpdir)
+        self.sf = MockSeedfile()
+        self.ff = MockFuzzedFile()
+
         self.tc = certfuzz.testcase.testcase_base.TestCaseBase(self.sf,
                                                                self.ff)
         pass
@@ -53,6 +54,28 @@ class Test(unittest.TestCase):
         x = self.tc.get_logger()
         self.assertTrue(isinstance(x, logging.Logger))
 
+    def test_calculate_hamming_distances(self):
+        tc = self.tc
+
+        tc.logger = MockLogger()
+
+        fd, tc.seedfile.path = tempfile.mkstemp(suffix='.seed',
+                                                prefix='bff-test-',
+                                                dir=self.tmpdir)
+        os.write(fd, 'abcdefghijklmnopqrstuvwxyz\n')
+        os.close(fd)
+
+        fd, tc.fuzzedfile.path = tempfile.mkstemp(suffix='.fuzzed',
+                                                  prefix='bff-test-',
+                                                  dir=self.tmpdir)
+        os.write(fd, 'ABCDefghijklmnopqrstuvwxyz\n')
+        os.close(fd)
+
+        self.assertEqual(None, tc.hd_bits)
+        self.assertEqual(None, tc.hd_bytes)
+        tc.calculate_hamming_distances()
+        self.assertEqual(4, tc.hd_bits)
+        self.assertEqual(4, tc.hd_bytes)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
