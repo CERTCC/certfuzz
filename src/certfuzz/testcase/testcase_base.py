@@ -39,7 +39,7 @@ class TestCaseBase(object):
         self.is_zipfile = False
 
         # this will get overridden by calls to get_logger
-        self.logger = logger
+        self.logger = None
 
         self.debugger_timeout = dbg_timeout
 
