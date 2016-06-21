@@ -180,12 +180,11 @@ fuzzer:
 # Hide stdout of target application
 #
 # runtimeout:
-# Number of seconds to allow target application to execute when run with
-# the hook (winrun)
+# Number of seconds to allow target application to execute
 #
 # watchcpu: 
-# Kill target process when its CPU usage drops towards zero when run with
-# the hook (winrun). (Auto, True, False)
+# Kill target process when its CPU usage drops towards zero 
+# (Auto, True, False)
 #
 ##############################################################################
 runner:
