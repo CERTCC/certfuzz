@@ -37,6 +37,7 @@ class MsecDebugger(DebuggerBase):
         if watchcpu:
             self.wmiInterface = wmi.WMI()
         self.t = None
+        self.savedpid = None
 
     def kill(self, pid, returncode):
         """kill function for Win32"""
@@ -88,7 +89,7 @@ class MsecDebugger(DebuggerBase):
         attempts = 0
         foundpid = False
 
-        if self.watchcpu == True:
+        if self.watchcpu is True:
 
             while attempts < trycount and not foundpid:
                 for process in self.wmiInterface.Win32_Process(name=exename):
@@ -108,7 +109,6 @@ class MsecDebugger(DebuggerBase):
 
     def run_with_timer(self):
         # TODO: replace this with subp.run_with_timer()
-        targetdir = os.path.dirname(self.program)
         exename = os.path.basename(self.program)
         process_info = {}
         child_pid = None
@@ -118,17 +118,18 @@ class MsecDebugger(DebuggerBase):
         args = self._get_cmdline(self.outfile)
         p = Popen(args, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'),
                   universal_newlines=True)
+        self.savedpid = p.pid
 
         child_pid = self._find_debug_target(exename, trycount=5)
-        if child_pid is None and self.watchcpu == True:
+        if child_pid is None and self.watchcpu is True:
             logger.debug('Bailing on debugger iteration')
-            self.kill(p.pid, 99)
+            self.kill(self.savedpid, 99)
             return
 
         # create a timer that calls kill() when it expires
-        self.t = Timer(self.timeout, self.kill, args=[p.pid, 99])
+        self.t = Timer(self.timeout, self.kill, args=[self.savedpid, 99])
         self.t.start()
-        if self.watchcpu == True:
+        if self.watchcpu is True:
             # This is a race.  In some cases, a GUI app could be done before we can even measure it
             # TODO: Do something about it
             while p.poll() is None and not done and child_pid:
@@ -147,18 +148,9 @@ class MsecDebugger(DebuggerBase):
                     if percent_processor_time < 0.0000000001:
                         if started:
                             logger.debug(
-                                'killing %s due to CPU inactivity', child_pid)
+                                'killing cdb session for %s due to CPU inactivity', child_pid)
                             done = True
-                            self.kill(child_pid, 99)
-                            # Look once to see if the child process is there
-                            # still
-                            child_pid = self._find_debug_target(
-                                exename, trycount=1)
-                            if child_pid is not None:
-                                # cdb launched the target app, but the child wasn't killed
-                                # This indicates that the target experienced an exception (crash)
-                                # We will wait for cdb to do its thing
-                                p.wait()
+                            self.kill(self.savedpid, 99)
                     else:
                         # Detected CPU usage. Now look for it to drop near zero
                         started = True
