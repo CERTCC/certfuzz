@@ -34,9 +34,18 @@ class LinuxTestcase(TestCaseBase):
     '''
     _debugger_cls = debugger_cls
 
-    def __init__(self, cfg, seedfile, fuzzedfile, program,
-                 debugger_timeout, backtrace_lines,
-                 crashers_dir, workdir_base, seednum=None, range=None, keep_faddr=False):
+    def __init__(self,
+                 cfg,
+                 seedfile,
+                 fuzzedfile,
+                 program,
+                 debugger_timeout,
+                 backtrace_lines,
+                 crashers_dir,
+                 workdir_base,
+                 seednum=None,
+                 range=None,
+                 keep_faddr=False):
         '''
         Constructor
         '''
@@ -47,7 +56,8 @@ class LinuxTestcase(TestCaseBase):
         self.crash_base_dir = crashers_dir
         self.seednum = seednum
         self.range = range
-        self.exclude_unmapped_frames = cfg['analyzer']['exclude_unmapped_frames']
+        self.exclude_unmapped_frames = cfg[
+            'analyzer']['exclude_unmapped_frames']
         self.set_debugger_template('bt_only')
         self.keep_uniq_faddr = keep_faddr
 
@@ -60,11 +70,14 @@ class LinuxTestcase(TestCaseBase):
 
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_linux():
-            dbg_template_name = '%s_%s_template.txt' % (self._debugger_cls._key, option)
-            self.debugger_template = os.path.join('certfuzz/debuggers/templates', dbg_template_name)
+            dbg_template_name = '%s_%s_template.txt' % (
+                self._debugger_cls._key, option)
+            self.debugger_template = os.path.join(
+                'certfuzz/debuggers/templates', dbg_template_name)
             logger.debug('Debugger template set to %s', self.debugger_template)
             if not os.path.exists(self.debugger_template):
-                raise TestCaseError('Debugger template does not exist at %s' % self.debugger_template)
+                raise TestCaseError(
+                    'Debugger template does not exist at %s' % self.debugger_template)
 
     def update_crash_details(self):
         TestCaseBase.update_crash_details(self)
@@ -97,16 +110,15 @@ class LinuxTestcase(TestCaseBase):
         logger.debug('Debugger template: %s outfile_base: %s',
                      self.debugger_template, outfile_base)
         debugger_obj = self._debugger_cls(self.program,
-                                self.cmdargs,
-                                outfile_base,
-                                self.debugger_timeout,
-                                template=self.debugger_template,
-                                exclude_unmapped_frames=self.exclude_unmapped_frames,
-                                keep_uniq_faddr=self.keep_uniq_faddr
-                                )
+                                          self.cmdargs,
+                                          outfile_base,
+                                          self.debugger_timeout,
+                                          template=self.debugger_template,
+                                          exclude_unmapped_frames=self.exclude_unmapped_frames,
+                                          keep_uniq_faddr=self.keep_uniq_faddr
+                                          )
         self.dbg = debugger_obj.go()
         self.dbg_file = self.dbg.file
-
 
     def confirm_crash(self):
         # get debugger output
@@ -115,7 +127,8 @@ class LinuxTestcase(TestCaseBase):
         if not self.dbg:
             raise TestCaseError('Debug object not found')
 
-        logger.debug('is_crash: %s is_assert_fail: %s', self.dbg.is_crash, self.dbg.is_assert_fail)
+        logger.debug('is_crash: %s is_assert_fail: %s',
+                     self.dbg.is_crash, self.dbg.is_assert_fail)
         if self.cfg['analyzer']['savefailedasserts']:
             return self.dbg.is_crash
         else:
@@ -132,7 +145,8 @@ class LinuxTestcase(TestCaseBase):
         @raise CrasherHasNoSignatureError: if it's a valid crash, but we don't get a signature
         '''
         if not self.signature:
-            self.signature = self.dbg.get_testcase_signature(self.backtrace_lines)
+            self.signature = self.dbg.get_testcase_signature(
+                self.backtrace_lines)
             if self.signature:
                 logger.debug("TestCaseBase signature is %s", self.signature)
             else:
@@ -143,11 +157,13 @@ class LinuxTestcase(TestCaseBase):
                 try:
                     analyzer_instance.go()
                 except AnalyzerEmptyOutputError:
-                    logger.warning('Unexpected empty output from pin. Cannot determine call trace.')
+                    logger.warning(
+                        'Unexpected empty output from pin. Cannot determine call trace.')
                     return self.signature
 
                 calltrace = Calltracefile(analyzer_instance.outfile)
-                pinsignature = calltrace.get_testcase_signature(self.backtrace_lines * 10)
+                pinsignature = calltrace.get_testcase_signature(
+                    self.backtrace_lines * 10)
                 if pinsignature:
                     self.signature = pinsignature
         return self.signature
@@ -165,4 +181,3 @@ class LinuxTestcase(TestCaseBase):
         self.result_dir = os.path.join(self.crash_base_dir, self.signature)
 
         return self.result_dir
-

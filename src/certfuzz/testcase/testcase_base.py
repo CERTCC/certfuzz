@@ -22,7 +22,6 @@ class TestCaseBase(object):
     _tmp_pfx = 'BFF_testcase_'
     _debugger_cls = None
 
-
     def __init__(self, seedfile, fuzzedfile, dbg_timeout=30):
         logger.debug('Inititalize TestCaseBase')
 
@@ -41,7 +40,6 @@ class TestCaseBase(object):
 
         # this will get overridden by calls to get_logger
         self.logger = logger
-
 
         self.debugger_timeout = dbg_timeout
 
@@ -145,27 +143,33 @@ class TestCaseBase(object):
         pass
 
     def update_crash_details(self):
-        self.tempdir = tempfile.mkdtemp(prefix=self._tmp_pfx, suffix=self._tmp_sfx, dir=self.workdir_base)
+        self.tempdir = tempfile.mkdtemp(
+            prefix=self._tmp_pfx, suffix=self._tmp_sfx, dir=self.workdir_base)
         self.copy_files_to_temp()
 
 #        raise NotImplementedError
     def calculate_hamming_distances(self):
-        # If the fuzzed file is a valid zip, then we're fuzzing zip contents, not the container
+        # If the fuzzed file is a valid zip, then we're fuzzing zip contents,
+        # not the container
         self.is_zipfile = check_zip_file(self.fuzzedfile.path)
         try:
             if self.is_zipfile:
-                self.hd_bits = hamming.bitwise_zip_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
-                self.hd_bytes = hamming.bytewise_zip_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
+                self.hd_bits = hamming.bitwise_zip_hamming_distance(
+                    self.seedfile.path, self.fuzzedfile.path)
+                self.hd_bytes = hamming.bytewise_zip_hamming_distance(
+                    self.seedfile.path, self.fuzzedfile.path)
             else:
-                self.hd_bits = hamming.bitwise_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
-                self.hd_bytes = hamming.bytewise_hamming_distance(self.seedfile.path, self.fuzzedfile.path)
+                self.hd_bits = hamming.bitwise_hamming_distance(
+                    self.seedfile.path, self.fuzzedfile.path)
+                self.hd_bytes = hamming.bytewise_hamming_distance(
+                    self.seedfile.path, self.fuzzedfile.path)
         except KeyError:
             # one of the files wasn't defined
-            logger.warning('Cannot find either sf_path or minimized file to calculate Hamming Distances')
+            logger.warning(
+                'Cannot find either sf_path or minimized file to calculate Hamming Distances')
 
         self.logger.info("bitwise_hd=%d", self.hd_bits)
         self.logger.info("bytewise_hd=%d", self.hd_bytes)
-
 
     def calculate_hamming_distances_a(self):
         with open(self.fuzzedfile.path, 'rb') as fd:
@@ -187,8 +191,10 @@ class TestCaseBase(object):
         if len(self.logger.handlers) == 0:
             if not os.path.exists(self.result_dir):
                 logger.error('Result path not found: %s', self.result_dir)
-                raise TestCaseError('Result path not found: {}'.format(self.result_dir))
-            logger.debug('result_dir=%s sig=%s', self.result_dir, self.signature)
+                raise TestCaseError(
+                    'Result path not found: {}'.format(self.result_dir))
+            logger.debug(
+                'result_dir=%s sig=%s', self.result_dir, self.signature)
             logfile = '%s.log' % self.signature
             logger.debug('logfile=%s', logfile)
             logpath = os.path.join(self.result_dir, logfile)
@@ -197,4 +203,3 @@ class TestCaseBase(object):
             self.logger.addHandler(hdlr)
 
         return self.logger
-
