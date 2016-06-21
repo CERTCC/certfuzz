@@ -812,6 +812,8 @@ class Minimizer(object):
                     self.fuzzed_content = self.newfuzzed
                     self.bytemap.remove(offset)
 
+        # We're done minimizing. Set the bytemap (kept bytes)
+        self._set_bytemap()
         self.logger.info(
             'We were looking for [%s] ...', self._crash_hashes_string())
         for (md5, count) in self.crash_sigs_found.items():
