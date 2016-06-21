@@ -30,7 +30,8 @@ class MsecDebugger(DebuggerBase):
     _ext = 'msec'
 
     def __init__(self, program, cmd_args, outfile_base, timeout, watchcpu, exception_depth=0, **options):
-        DebuggerBase.__init__(self, program, cmd_args, outfile_base, timeout, **options)
+        DebuggerBase.__init__(
+            self, program, cmd_args, outfile_base, timeout, **options)
         self.exception_depth = exception_depth
         self.watchcpu = watchcpu
         if watchcpu:
@@ -82,7 +83,6 @@ class MsecDebugger(DebuggerBase):
             logger.debug('dbg_args: %s', l)
         return args
 
-
     def _find_debug_target(self, exename, trycount=5):
         pid = None
         attempts = 0
@@ -117,7 +117,7 @@ class MsecDebugger(DebuggerBase):
 
         args = self._get_cmdline(self.outfile)
         p = Popen(args, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'),
-                      universal_newlines=True)
+                  universal_newlines=True)
 
         child_pid = self._find_debug_target(exename, trycount=5)
         if child_pid is None and self.watchcpu == True:
@@ -133,21 +133,27 @@ class MsecDebugger(DebuggerBase):
             # TODO: Do something about it
             while p.poll() is None and not done and child_pid:
                 for proc in self.wmiInterface.Win32_PerfRawData_PerfProc_Process(IDProcess=child_pid):
-                    n1, d1 = long(proc.PercentProcessorTime), long(proc.Timestamp_Sys100NS)
+                    n1, d1 = long(proc.PercentProcessorTime), long(
+                        proc.Timestamp_Sys100NS)
                     n0, d0 = process_info.get(child_pid, (0, 0))
                     try:
-                        percent_processor_time = (float(n1 - n0) / float(d1 - d0)) * 100.0
+                        percent_processor_time = (
+                            float(n1 - n0) / float(d1 - d0)) * 100.0
                     except ZeroDivisionError:
                         percent_processor_time = 0.0
                     process_info[child_pid] = (n1, d1)
-                    logger.debug('Process %s CPU usage: %s', child_pid, percent_processor_time)
+                    logger.debug(
+                        'Process %s CPU usage: %s', child_pid, percent_processor_time)
                     if percent_processor_time < 0.0000000001:
                         if started:
-                            logger.debug('killing %s due to CPU inactivity', child_pid)
+                            logger.debug(
+                                'killing %s due to CPU inactivity', child_pid)
                             done = True
                             self.kill(child_pid, 99)
-                            # Look once to see if the child process is there still
-                            child_pid = self._find_debug_target(exename, trycount=1)
+                            # Look once to see if the child process is there
+                            # still
+                            child_pid = self._find_debug_target(
+                                exename, trycount=1)
                             if child_pid is not None:
                                 # cdb launched the target app, but the child wasn't killed
                                 # This indicates that the target experienced an exception (crash)
@@ -165,9 +171,11 @@ class MsecDebugger(DebuggerBase):
 
     def go(self):
         """run cdb and process output"""
-        # For exceptions beyond the first one, put the handled exception number in the name
+        # For exceptions beyond the first one, put the handled exception number
+        # in the name
         if self.exception_depth > 0:
-            self.outfile = os.path.splitext(self.outfile)[0] + '.e' + str(self.exception_depth) + os.path.splitext(self.outfile)[1]
+            self.outfile = os.path.splitext(self.outfile)[
+                0] + '.e' + str(self.exception_depth) + os.path.splitext(self.outfile)[1]
         self.run_with_timer()
         if not os.path.exists(self.outfile):
             # touch it if it doesn't exist
