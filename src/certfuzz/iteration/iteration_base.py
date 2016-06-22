@@ -87,7 +87,7 @@ class IterationBase(object):
         handled = False
 
         # increment the iteration counter
-        IterationBase3._iteration_counter += 1
+        IterationBase._iteration_counter += 1
 
         # increment the seedfile try counter
         self.seedfile.tries += 1
