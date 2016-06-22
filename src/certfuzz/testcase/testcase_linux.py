@@ -36,29 +36,28 @@ class LinuxTestcase(TestCaseBase):
                  seedfile,
                  fuzzedfile,
                  program,
+                 cmd_template,
                  debugger_timeout,
                  backtrace_lines,
                  crashers_dir,
                  workdir_base,
                  seednum=None,
                  range=None,
-                 keep_faddr=False):
-        '''
-        Constructor
-        '''
+                 keep_faddr=False,
+                 exclude_unmapped_frames=False):
+
         TestCaseBase.__init__(self,
-                              cfg,
                               seedfile,
                               fuzzedfile,
                               program,
+                              cmd_template,
                               keep_faddr,
                               debugger_timeout)
 
         self.backtrace_lines = backtrace_lines
         self.cmdargs = None
         self.crash_base_dir = crashers_dir
-        self.exclude_unmapped_frames = cfg[
-            'analyzer']['exclude_unmapped_frames']
+        self.exclude_unmapped_frames = exclude_unmapped_frames
         self.range = range
         self.seednum = seednum
         self.set_debugger_template('bt_only')
@@ -78,7 +77,7 @@ class LinuxTestcase(TestCaseBase):
     def update_crash_details(self):
         TestCaseBase.update_crash_details(self)
 
-        cmdlist = get_command_args_list(self.cfg['target']['cmdline_template'],
+        cmdlist = get_command_args_list(self.cmd_template,
                                         infile=self.fuzzedfile.path,
                                         posix=True)[1]
         self.cmdargs = cmdlist[1:]

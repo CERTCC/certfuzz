@@ -18,21 +18,24 @@ logger = logging.getLogger(__name__)
 
 
 class TestCaseBase(object):
+    '''
+    A BFF test case represents everything we know about a fuzzer finding.
+    '''
     _tmp_sfx = ''
     _tmp_pfx = 'BFF_testcase_'
     _debugger_cls = None
 
     def __init__(self,
-                 cfg,
                  seedfile,
                  fuzzedfile,
                  program,
+                 cmd_template,
                  keep_faddr=False,
                  dbg_timeout=30):
 
         logger.debug('Inititalize TestCaseBase')
 
-        self.cfg = cfg
+        self.cmd_template = cmd_template
         self.copy_fuzzedfile = True
         self.dbg_file = None
         self.debugger_missed_stack_corruption = False

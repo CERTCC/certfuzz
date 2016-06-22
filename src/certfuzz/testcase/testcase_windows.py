@@ -48,6 +48,7 @@ class WindowsTestcase(TestCaseBase):
                  fuzzedfile,
                  program,
                  cmd_template,
+                 debugger_timeout,
                  cmdlist,
                  dbg_opts,
                  workingdir_base,
@@ -55,17 +56,14 @@ class WindowsTestcase(TestCaseBase):
                  heisenbug_retries=4,
                  copy_fuzzedfile=True):
 
-        dbg_timeout = dbg_opts['runtimeout']
-
         TestCaseBase.__init__(self,
-                              cfg,
                               seedfile,
                               fuzzedfile,
                               program,
+                              cmd_template,
                               keep_faddr,
-                              dbg_timeout)
+                              debugger_timeout)
 
-        self.cmd_template = cmd_template
         self.cmdargs = cmdlist
         self.copy_fuzzedfile = copy_fuzzedfile
         self.crash_hash = None

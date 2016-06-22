@@ -19,9 +19,13 @@ class Test(unittest.TestCase):
         self.tmpdir = tempfile.mkdtemp(prefix='bff-test-')
         self.sf = MockSeedfile()
         self.ff = MockFuzzedFile()
+        program = 'foo'
+        cmd_template = 'foo a b c'
 
         self.tc = certfuzz.testcase.testcase_base.TestCaseBase(self.sf,
-                                                               self.ff)
+                                                               self.ff,
+                                                               program,
+                                                               cmd_template,)
         pass
 
     def tearDown(self):
