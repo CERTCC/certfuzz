@@ -23,6 +23,7 @@ class TestCaseBase(object):
     _debugger_cls = None
 
     def __init__(self,
+                 cfg,
                  seedfile,
                  fuzzedfile,
                  program,
@@ -31,6 +32,7 @@ class TestCaseBase(object):
 
         logger.debug('Inititalize TestCaseBase')
 
+        self.cfg = cfg
         self.copy_fuzzedfile = True
         self.dbg_file = None
         self.debugger_missed_stack_corruption = False

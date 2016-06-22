@@ -102,18 +102,18 @@ class WindowsIteration(IterationBase3):
         TmpReaper().clean_tmp()
 
     def _construct_testcase(self):
-        with WindowsTestcase(cmd_template=self.cmd_template,
+        with WindowsTestcase(cfg=self.cfg,
                              seedfile=self.seedfile,
                              fuzzedfile=BasicFile(
                                  self.fuzzer.output_file_path),
+                             program=self.cfg['target']['program'],
+                             cmd_template=self.cmd_template,
                              cmdlist=get_command_args_list(
                                  self.cmd_template, self.fuzzer.output_file_path)[1],
-                             fuzzer=self.fuzzer,
                              dbg_opts=self.cfg['debugger'],
                              workingdir_base=self.working_dir,
                              keep_faddr=self.cfg['runoptions'][
                                  'keep_unique_faddr'],
-                             program=self.cfg['target']['program'],
                              heisenbug_retries=self.retries,
                              copy_fuzzedfile=self.fuzzer.fuzzed_changes_input) as testcase:
 

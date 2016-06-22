@@ -47,6 +47,7 @@ class LinuxTestcase(TestCaseBase):
         Constructor
         '''
         TestCaseBase.__init__(self,
+                              cfg,
                               seedfile,
                               fuzzedfile,
                               program,
@@ -54,7 +55,6 @@ class LinuxTestcase(TestCaseBase):
                               debugger_timeout)
 
         self.backtrace_lines = backtrace_lines
-        self.cfg = cfg
         self.cmdargs = None
         self.crash_base_dir = crashers_dir
         self.exclude_unmapped_frames = cfg[

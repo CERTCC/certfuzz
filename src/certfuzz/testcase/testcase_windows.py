@@ -43,21 +43,22 @@ class WindowsTestcase(TestCaseBase):
 
     # TODO: do we still need fuzzer as an arg?
     def __init__(self,
-                 cmd_template,
+                 cfg,
                  seedfile,
                  fuzzedfile,
+                 program,
+                 cmd_template,
                  cmdlist,
-                 fuzzer,
                  dbg_opts,
                  workingdir_base,
-                 keep_faddr,
-                 program,
+                 keep_faddr=False,
                  heisenbug_retries=4,
                  copy_fuzzedfile=True):
 
         dbg_timeout = dbg_opts['runtimeout']
 
         TestCaseBase.__init__(self,
+                              cfg,
                               seedfile,
                               fuzzedfile,
                               program,
