@@ -112,7 +112,7 @@ class WindowsIteration(IterationBase3):
                              cmdlist=get_command_args_list(
                                  self.cmd_template, self.fuzzer.output_file_path)[1],
                              dbg_opts=self.cfg['debugger'],
-                             workingdir_base=self.working_dir,
+                             workdir_base=self.working_dir,
                              keep_faddr=self.cfg['runoptions'][
                                  'keep_unique_faddr'],
                              heisenbug_retries=self.retries,

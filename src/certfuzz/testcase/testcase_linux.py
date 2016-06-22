@@ -51,6 +51,7 @@ class LinuxTestcase(TestCaseBase):
                               fuzzedfile,
                               program,
                               cmd_template,
+                              workdir_base,
                               keep_faddr,
                               debugger_timeout)
 

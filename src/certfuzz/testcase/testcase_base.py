@@ -30,6 +30,7 @@ class TestCaseBase(object):
                  fuzzedfile,
                  program,
                  cmd_template,
+                 workdir_base,
                  keep_faddr=False,
                  dbg_timeout=30):
 
@@ -65,7 +66,7 @@ class TestCaseBase(object):
         self.should_proceed_with_analysis = False
         self.signature = None
         self.total_stack_corruption = False
-        self.workdir_base = tempfile.gettempdir()
+        self.workdir_base = workdir_base
         self.working_dir = None
 
     def __enter__(self):

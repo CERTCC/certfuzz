@@ -51,7 +51,7 @@ class WindowsTestcase(TestCaseBase):
                  debugger_timeout,
                  cmdlist,
                  dbg_opts,
-                 workingdir_base,
+                 workdir_base,
                  keep_faddr=False,
                  heisenbug_retries=4,
                  copy_fuzzedfile=True):
@@ -61,6 +61,7 @@ class WindowsTestcase(TestCaseBase):
                               fuzzedfile,
                               program,
                               cmd_template,
+                              workdir_base,
                               keep_faddr,
                               debugger_timeout)
 
@@ -77,7 +78,6 @@ class WindowsTestcase(TestCaseBase):
         self.parsed_outputs = []
         self.reached_secondchance = False
         self.watchcpu = self.dbg_opts.get('watchcpu', False)
-        self.workdir_base = workingdir_base
 
     def _get_file_basename(self):
         '''
