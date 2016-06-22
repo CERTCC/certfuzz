@@ -49,7 +49,10 @@ class LinuxTestcase(TestCaseBase):
         '''
         Constructor
         '''
-        TestCaseBase.__init__(self, seedfile, fuzzedfile, debugger_timeout)
+        TestCaseBase.__init__(self,
+                              seedfile,
+                              fuzzedfile,
+                              debugger_timeout)
         self.cfg = cfg
         self.program = program
         self.backtrace_lines = backtrace_lines

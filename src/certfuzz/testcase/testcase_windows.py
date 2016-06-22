@@ -42,13 +42,25 @@ class WindowsTestcase(TestCaseBase):
     _debugger_cls = MsecDebugger
 
     # TODO: do we still need fuzzer as an arg?
-    def __init__(self, cmd_template, seedfile, fuzzedfile, cmdlist, fuzzer,
-                 dbg_opts, workingdir_base, keep_faddr, program,
-                 heisenbug_retries=4, copy_fuzzedfile=True):
+    def __init__(self,
+                 cmd_template,
+                 seedfile,
+                 fuzzedfile,
+                 cmdlist,
+                 fuzzer,
+                 dbg_opts,
+                 workingdir_base,
+                 keep_faddr,
+                 program,
+                 heisenbug_retries=4,
+                 copy_fuzzedfile=True):
 
         dbg_timeout = dbg_opts['runtimeout']
 
-        TestCaseBase.__init__(self, seedfile, fuzzedfile, dbg_timeout)
+        TestCaseBase.__init__(self,
+                              seedfile,
+                              fuzzedfile,
+                              dbg_timeout)
 
         self.dbg_opts = dbg_opts
         self.copy_fuzzedfile = copy_fuzzedfile
