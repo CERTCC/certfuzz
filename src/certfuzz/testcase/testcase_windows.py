@@ -57,6 +57,7 @@ class WindowsTestcase(TestCaseBase):
                  copy_fuzzedfile=True):
 
         TestCaseBase.__init__(self,
+                              cfg,
                               seedfile,
                               fuzzedfile,
                               program,

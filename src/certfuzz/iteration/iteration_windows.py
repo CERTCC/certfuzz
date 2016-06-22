@@ -113,8 +113,8 @@ class WindowsIteration(IterationBase3):
                                  self.cmd_template, self.fuzzer.output_file_path)[1],
                              dbg_opts=self.cfg['debugger'],
                              workdir_base=self.working_dir,
-                             keep_faddr=self.cfg['runoptions'][
-                                 'keep_unique_faddr'],
+                             keep_faddr=self.cfg['runoptions'].get(
+                                 'keep_unique_faddr', False),
                              heisenbug_retries=self.retries,
                              copy_fuzzedfile=self.fuzzer.fuzzed_changes_input) as testcase:
 

@@ -42,9 +42,11 @@ class LinuxTestcase(TestCaseBase):
                  crashers_dir,
                  workdir_base,
                  keep_faddr=False,
+                 save_failed_asserts=False,
                  exclude_unmapped_frames=False):
 
         TestCaseBase.__init__(self,
+                              cfg,
                               seedfile,
                               fuzzedfile,
                               program,
@@ -57,6 +59,7 @@ class LinuxTestcase(TestCaseBase):
         self.cmdargs = None
         self.crash_base_dir = crashers_dir
         self.exclude_unmapped_frames = exclude_unmapped_frames
+        self.save_failed_asserts = save_failed_asserts
         self.set_debugger_template('bt_only')
         self.signature = None
 
@@ -121,7 +124,7 @@ class LinuxTestcase(TestCaseBase):
 
         logger.debug('is_crash: %s is_assert_fail: %s',
                      self.dbg.is_crash, self.dbg.is_assert_fail)
-        if self.cfg['analyzer']['savefailedasserts']:
+        if self.savefailedasserts:
             return self.dbg.is_crash
         else:
             # only keep real crashes (not failed assertions)

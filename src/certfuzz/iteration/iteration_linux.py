@@ -58,7 +58,8 @@ class LinuxIteration(IterationBase3):
         return IterationBase3.__enter__(self)
 
     def _construct_testcase(self):
-        with LinuxTestcase(seedfile=self.seedfile,
+        with LinuxTestcase(cfg=self.cfg,
+                           seedfile=self.seedfile,
                            fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                            program=self.cfg['target']['program'],
                            cmd_template=self.cmd_template,
@@ -67,6 +68,10 @@ class LinuxIteration(IterationBase3):
                                'debugger']['backtracelevels'],
                            crashers_dir=self.testcase_base_dir,
                            workdir_base=self.working_dir,
+                           keep_faddr=self.cfg['runoptions'].get(
+                               'keep_unique_faddr', False),
+                           save_failed_asserts=self.cfg['analyzer'].get(
+                               'savefailedasserts', False),
                            exclude_unmapped_frames=self.cfg['analyzer']['exclude_unmapped_frames']) as testcase:
             # put it on the list for the analysis pipeline
             self.testcases.append(testcase)
