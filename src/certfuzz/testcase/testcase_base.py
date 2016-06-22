@@ -31,49 +31,37 @@ class TestCaseBase(object):
 
         logger.debug('Inititalize TestCaseBase')
 
-        self.seedfile = seedfile
-        self.fuzzedfile = fuzzedfile
-        self.workdir_base = None
-
+        self.copy_fuzzedfile = True
+        self.dbg_file = None
+        self.debugger_missed_stack_corruption = False
+        self.debugger_template = None
+        self.debugger_timeout = dbg_timeout
         # Exploitability is UNKNOWN unless proven otherwise
         self.exp = 'UNKNOWN'
-
         self.hd_bits = None
         self.hd_bytes = None
-        self.signature = None
-        self.working_dir = None
-        self.is_zipfile = False
-
-        self.result_dir = None
         self.faddr = None
-
-        # this will get overridden by calls to get_logger
-        self.logger = None
-
-        self.debugger_timeout = dbg_timeout
-
-        self.debugger_template = None
-        # All crashes are heisenbugs until proven otherwise
-        self.is_heisenbug = True
-
-        self.workdir_base = tempfile.gettempdir()
-
-        # set some defaults
+        self.fuzzedfile = fuzzedfile
+        self.is_corrupt_stack = False
         # Not a crash until we're sure
         self.is_crash = False
-        self.dbg_file = None
+        # All crashes are heisenbugs until proven otherwise
+        self.is_heisenbug = True
         self.is_unique = False
-        self.should_proceed_with_analysis = False
-        self.is_corrupt_stack = False
-        self.copy_fuzzedfile = True
-        self.pc = None
-        self.result_dir = None
-        self.debugger_missed_stack_corruption = False
-        self.total_stack_corruption = False
-        self.pc_in_function = False
-
+        self.is_zipfile = False
         self.keep_uniq_faddr = keep_faddr
+        # this will get overridden by calls to get_logger
+        self.logger = None
+        self.pc = None
+        self.pc_in_function = False
         self.program = program
+        self.result_dir = None
+        self.seedfile = seedfile
+        self.should_proceed_with_analysis = False
+        self.signature = None
+        self.total_stack_corruption = False
+        self.workdir_base = tempfile.gettempdir()
+        self.working_dir = None
 
     def __enter__(self):
         mkdir_p(self.workdir_base)
