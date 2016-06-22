@@ -29,9 +29,6 @@ elif host_info.is_osx():
 
 
 class LinuxTestcase(TestCaseBase):
-    '''
-    classdocs
-    '''
     _debugger_cls = debugger_cls
 
     def __init__(self,
@@ -52,24 +49,20 @@ class LinuxTestcase(TestCaseBase):
         TestCaseBase.__init__(self,
                               seedfile,
                               fuzzedfile,
+                              program,
+                              keep_faddr,
                               debugger_timeout)
-        self.cfg = cfg
-        self.program = program
+
         self.backtrace_lines = backtrace_lines
+        self.cfg = cfg
+        self.cmdargs = None
         self.crash_base_dir = crashers_dir
-        self.seednum = seednum
-        self.range = range
         self.exclude_unmapped_frames = cfg[
             'analyzer']['exclude_unmapped_frames']
+        self.range = range
+        self.seednum = seednum
         self.set_debugger_template('bt_only')
-        self.keep_uniq_faddr = keep_faddr
-
-        self.cmdargs = None
-        self.is_crash = False
         self.signature = None
-        self.faddr = None
-        self.pc = None
-        self.result_dir = None
 
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_linux():

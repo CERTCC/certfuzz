@@ -22,7 +22,13 @@ class TestCaseBase(object):
     _tmp_pfx = 'BFF_testcase_'
     _debugger_cls = None
 
-    def __init__(self, seedfile, fuzzedfile, dbg_timeout=30):
+    def __init__(self,
+                 seedfile,
+                 fuzzedfile,
+                 program,
+                 keep_faddr=False,
+                 dbg_timeout=30):
+
         logger.debug('Inititalize TestCaseBase')
 
         self.seedfile = seedfile
@@ -37,6 +43,9 @@ class TestCaseBase(object):
         self.signature = None
         self.working_dir = None
         self.is_zipfile = False
+
+        self.result_dir = None
+        self.faddr = None
 
         # this will get overridden by calls to get_logger
         self.logger = None
@@ -62,6 +71,9 @@ class TestCaseBase(object):
         self.debugger_missed_stack_corruption = False
         self.total_stack_corruption = False
         self.pc_in_function = False
+
+        self.keep_uniq_faddr = keep_faddr
+        self.program = program
 
     def __enter__(self):
         mkdir_p(self.workdir_base)

@@ -60,36 +60,25 @@ class WindowsTestcase(TestCaseBase):
         TestCaseBase.__init__(self,
                               seedfile,
                               fuzzedfile,
+                              program,
+                              keep_faddr,
                               dbg_timeout)
 
-        self.dbg_opts = dbg_opts
-        self.copy_fuzzedfile = copy_fuzzedfile
-
-        self.cmdargs = cmdlist
-        self.workdir_base = workingdir_base
-
-        self.keep_uniq_faddr = keep_faddr
-        self.program = program
-        self.dbg_result = {}
-        self.crash_hash = None
-        self.result_dir = None
-        self.faddr = None
-        self.dbg_file = ''
         self.cmd_template = cmd_template
-        try:
-            self.max_handled_exceptions = self.dbg_opts[
-                'max_handled_exceptions']
-        except KeyError:
-            self.max_handled_exceptions = 6
-        try:
-            self.watchcpu = self.dbg_opts['watchcpu']
-        except KeyError:
-            self.watchcpu = False
+        self.cmdargs = cmdlist
+        self.copy_fuzzedfile = copy_fuzzedfile
+        self.crash_hash = None
+        self.dbg_file = ''
+        self.dbg_opts = dbg_opts
+        self.dbg_result = {}
         self.exception_depth = 0
-        self.reached_secondchance = False
-        self.parsed_outputs = []
-
         self.max_depth = heisenbug_retries
+        self.max_handled_exceptions = self.dbg_opts.get(
+            'max_handled_exceptions', 6)
+        self.parsed_outputs = []
+        self.reached_secondchance = False
+        self.watchcpu = self.dbg_opts.get('watchcpu', False)
+        self.workdir_base = workingdir_base
 
     def _get_file_basename(self):
         '''
