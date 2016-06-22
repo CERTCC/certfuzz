@@ -67,8 +67,6 @@ class LinuxIteration(IterationBase3):
                                'debugger']['backtracelevels'],
                            crashers_dir=self.testcase_base_dir,
                            workdir_base=self.working_dir,
-                           seednum=self.seednum,
-                           range=self.r,
                            exclude_unmapped_frames=self.cfg['analyzer']['exclude_unmapped_frames']) as testcase:
             # put it on the list for the analysis pipeline
             self.testcases.append(testcase)

@@ -41,8 +41,6 @@ class LinuxTestcase(TestCaseBase):
                  backtrace_lines,
                  crashers_dir,
                  workdir_base,
-                 seednum=None,
-                 range=None,
                  keep_faddr=False,
                  exclude_unmapped_frames=False):
 
@@ -59,8 +57,6 @@ class LinuxTestcase(TestCaseBase):
         self.cmdargs = None
         self.crash_base_dir = crashers_dir
         self.exclude_unmapped_frames = exclude_unmapped_frames
-        self.range = range
-        self.seednum = seednum
         self.set_debugger_template('bt_only')
         self.signature = None
 
