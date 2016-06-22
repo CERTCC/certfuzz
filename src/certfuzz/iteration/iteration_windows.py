@@ -11,7 +11,7 @@ from certfuzz.testcase.testcase_windows import WindowsTestcase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.file_handlers.tmp_reaper import TmpReaper
 from certfuzz.fuzztools.filetools import delete_files_or_dirs
-from certfuzz.iteration.iteration_base3 import IterationBase3
+from certfuzz.iteration.iteration_base import IterationBase
 from certfuzz.tc_pipeline.tc_pipeline_windows import WindowsTestCasePipeline
 from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
@@ -20,7 +20,7 @@ from certfuzz.fuzztools.command_line_templating import get_command_args_list
 logger = logging.getLogger(__name__)
 
 
-class WindowsIteration(IterationBase3):
+class WindowsIteration(IterationBase):
     tcpipeline_cls = WindowsTestCasePipeline
 
     def __init__(self,
@@ -35,17 +35,17 @@ class WindowsIteration(IterationBase3):
                  runner_cls=None,
                  debug=False,
                  ):
-        IterationBase3.__init__(self,
-                                seedfile=seedfile,
-                                seednum=seednum,
-                                workdirbase=workdirbase,
-                                outdir=outdir,
-                                sf_set=sf_set,
-                                uniq_func=uniq_func,
-                                config=config,
-                                fuzzer_cls=fuzzer_cls,
-                                runner_cls=runner_cls,
-                                )
+        IterationBase.__init__(self,
+                               seedfile=seedfile,
+                               seednum=seednum,
+                               workdirbase=workdirbase,
+                               outdir=outdir,
+                               sf_set=sf_set,
+                               uniq_func=uniq_func,
+                               config=config,
+                               fuzzer_cls=fuzzer_cls,
+                               runner_cls=runner_cls,
+                               )
 
         self.debug = debug
         # TODO: do we use keep_uniq_faddr at all?
@@ -71,7 +71,7 @@ class WindowsIteration(IterationBase3):
 
     def __exit__(self, etype, value, traceback):
         try:
-            handled = IterationBase3.__exit__(self, etype, value, traceback)
+            handled = IterationBase.__exit__(self, etype, value, traceback)
         except WindowsError as e:
             logger.warning('Caught WindowsError in iteration exit: %s', e)
             handled = True

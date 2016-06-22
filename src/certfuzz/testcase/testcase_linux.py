@@ -124,7 +124,7 @@ class LinuxTestcase(TestCaseBase):
 
         logger.debug('is_crash: %s is_assert_fail: %s',
                      self.dbg.is_crash, self.dbg.is_assert_fail)
-        if self.savefailedasserts:
+        if self.save_failed_asserts:
             return self.dbg.is_crash
         else:
             # only keep real crashes (not failed assertions)

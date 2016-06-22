@@ -8,7 +8,7 @@ import os
 
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.ppid_observer import check_ppid
-from certfuzz.iteration.iteration_base3 import IterationBase3
+from certfuzz.iteration.iteration_base import IterationBase
 from certfuzz.tc_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 from certfuzz.helpers.misc import fixup_path
 from certfuzz.testcase.testcase_linux import LinuxTestcase
@@ -17,7 +17,7 @@ from certfuzz.testcase.testcase_linux import LinuxTestcase
 logger = logging.getLogger(__name__)
 
 
-class LinuxIteration(IterationBase3):
+class LinuxIteration(IterationBase):
     tcpipeline_cls = LinuxTestCasePipeline
 
     def __init__(self,
@@ -32,17 +32,17 @@ class LinuxIteration(IterationBase3):
                  runner_cls=None,
                  ):
 
-        IterationBase3.__init__(self,
-                                seedfile=seedfile,
-                                seednum=seednum,
-                                workdirbase=workdirbase,
-                                outdir=outdir,
-                                sf_set=sf_set,
-                                uniq_func=uniq_func,
-                                config=config,
-                                fuzzer_cls=fuzzer_cls,
-                                runner_cls=runner_cls,
-                                )
+        IterationBase.__init__(self,
+                               seedfile=seedfile,
+                               seednum=seednum,
+                               workdirbase=workdirbase,
+                               outdir=outdir,
+                               sf_set=sf_set,
+                               uniq_func=uniq_func,
+                               config=config,
+                               fuzzer_cls=fuzzer_cls,
+                               runner_cls=runner_cls,
+                               )
 
         self.testcase_base_dir = os.path.join(self.outdir, 'crashers')
 
@@ -55,7 +55,7 @@ class LinuxIteration(IterationBase3):
 
     def __enter__(self):
         check_ppid()
-        return IterationBase3.__enter__(self)
+        return IterationBase.__enter__(self)
 
     def _construct_testcase(self):
         with LinuxTestcase(cfg=self.cfg,
