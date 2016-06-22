@@ -76,7 +76,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                     is_new_to_campaign and not crash_dir_found)
 
                 if tc.should_proceed_with_analysis:
-                    logger.info('%s first seen at %d', tc.signature, tc.seednum)
+                    logger.info('%s is new', tc.signature)
                     self.dbg_out_file_orig = tc.dbg.file
                     logger.debug(
                         'Original debugger file: %s', self.dbg_out_file_orig)
