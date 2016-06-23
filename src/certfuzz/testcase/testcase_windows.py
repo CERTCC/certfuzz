@@ -63,10 +63,11 @@ class WindowsTestcase(TestCaseBase):
                               program,
                               cmd_template,
                               workdir_base,
+                              cmdlist,
                               keep_faddr,
                               debugger_timeout)
 
-        self.cmdargs = cmdlist
+        self.cmdargs = self.cmdlist
         self.copy_fuzzedfile = copy_fuzzedfile
         self.crash_hash = None
         self.dbg_file = ''

@@ -12,6 +12,7 @@ from certfuzz.iteration.iteration_base import IterationBase
 from certfuzz.tc_pipeline.tc_pipeline_linux import LinuxTestCasePipeline
 from certfuzz.helpers.misc import fixup_path
 from certfuzz.testcase.testcase_linux import LinuxTestcase
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
 logger = logging.getLogger(__name__)
@@ -64,6 +65,9 @@ class LinuxIteration(IterationBase):
                            program=self.cfg['target']['program'],
                            cmd_template=self.cmd_template,
                            debugger_timeout=self.cfg['runner']['runtimeout'],
+                           cmdlist=get_command_args_list(self.cmd_template,
+                                                         infile=self.fuzzedfile.path,
+                                                         posix=True)[1],
                            backtrace_lines=self.cfg[
                                'debugger']['backtracelevels'],
                            crashers_dir=self.testcase_base_dir,

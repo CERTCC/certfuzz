@@ -38,6 +38,7 @@ class LinuxTestcase(TestCaseBase):
                  program,
                  cmd_template,
                  debugger_timeout,
+                 cmdlist,
                  backtrace_lines,
                  crashers_dir,
                  workdir_base,
@@ -52,11 +53,12 @@ class LinuxTestcase(TestCaseBase):
                               program,
                               cmd_template,
                               workdir_base,
+                              cmdlist,
                               keep_faddr,
                               debugger_timeout)
 
         self.backtrace_lines = backtrace_lines
-        self.cmdargs = None
+        self.cmdargs = self.cmdlist[1:]
         self.crash_base_dir = crashers_dir
         self.exclude_unmapped_frames = exclude_unmapped_frames
         self.save_failed_asserts = save_failed_asserts
@@ -77,10 +79,6 @@ class LinuxTestcase(TestCaseBase):
     def update_crash_details(self):
         TestCaseBase.update_crash_details(self)
 
-        cmdlist = get_command_args_list(self.cmd_template,
-                                        infile=self.fuzzedfile.path,
-                                        posix=True)[1]
-        self.cmdargs = cmdlist[1:]
         self.is_crash = self.confirm_crash()
 
         if self.is_crash:

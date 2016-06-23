@@ -32,6 +32,7 @@ class TestCaseBase(object):
                  program,
                  cmd_template,
                  workdir_base,
+                 cmdlist,
                  keep_faddr=False,
                  dbg_timeout=30):
 
@@ -39,6 +40,7 @@ class TestCaseBase(object):
 
         self.cfg = cfg
         self.cmd_template = cmd_template
+        self.cmdlist = cmdlist
         self.copy_fuzzedfile = True
         self.dbg_file = None
         self.debugger_missed_stack_corruption = False
