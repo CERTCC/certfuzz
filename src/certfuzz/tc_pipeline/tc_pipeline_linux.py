@@ -68,7 +68,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
 
                 # fall back to checking if the crash directory exists
                 #
-                crash_dir_found = filetools.find_or_create_dir(tc.result_dir)
+                crash_dir_found = filetools.find_or_create_dir(tc.target_dir)
 
                 keep_all = self.cfg['runoptions'].get('keep_duplicates', False)
 

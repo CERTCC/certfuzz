@@ -84,14 +84,14 @@ class LinuxTestcase(TestCaseBase):
         if self.is_crash:
             self.signature = self.get_signature()
             self.pc = self.dbg.registers_hex.get(self.dbg.pc_name)
-            self.result_dir = self.get_result_dir()
+            self.target_dir = self._get_output_dir()
             self.debugger_missed_stack_corruption = self.dbg.debugger_missed_stack_corruption
             self.total_stack_corruption = self.dbg.total_stack_corruption
             self.pc_in_function = self.dbg.pc_in_function
             self.faddr = self.dbg.faddr
             logger.debug('sig: %s', self.signature)
             logger.debug('pc: %s', self.pc)
-            logger.debug('result_dir: %s', self.result_dir)
+            logger.debug('target_dir: %s', self.target_dir)
         else:
             # clean up on non-crashes
             self.delete_files()
@@ -167,10 +167,10 @@ class LinuxTestcase(TestCaseBase):
 
         filetools.mkdir_p(self.crash_base_dir)
 
-    def get_result_dir(self):
+    def _get_output_dir(self):
         assert self.crash_base_dir
         assert self.signature
         self._verify_crash_base_dir()
-        self.result_dir = os.path.join(self.crash_base_dir, self.signature)
+        self.target_dir = os.path.join(self.crash_base_dir, self.signature)
 
-        return self.result_dir
+        return self.target_dir

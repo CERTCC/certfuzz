@@ -47,10 +47,10 @@ class Test(unittest.TestCase):
 
     def test_get_logger(self):
         self.tc.signature = 'signature'
-        self.tc.result_dir = 'does_not_exist'
+        self.tc.target_dir = 'does_not_exist'
         self.assertRaises(TestCaseError, self.tc.get_logger)
 
-        self.tc.result_dir = tempfile.mkdtemp(suffix='-results',
+        self.tc.target_dir = tempfile.mkdtemp(suffix='-results',
                                               prefix='bff-test-',
                                               dir=self.tmpdir)
 

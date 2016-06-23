@@ -63,7 +63,7 @@ class TestCaseBase(object):
         self.pc = None
         self.pc_in_function = False
         self.program = program
-        self.result_dir = None
+        self.target_dir = None
         self.seedfile = seedfile
         self.should_proceed_with_analysis = False
         self.signature = None
@@ -141,7 +141,7 @@ class TestCaseBase(object):
     def get_debug_output(self, f):
         raise NotImplementedError
 
-    def get_result_dir(self):
+    def _get_output_dir(self):
         raise NotImplementedError
 
     def get_signature(self):
