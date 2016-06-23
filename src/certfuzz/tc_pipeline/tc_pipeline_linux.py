@@ -130,24 +130,12 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         uniqlogger = get_uniq_logger(self.options.get('uniq_log'))
         if testcase.hd_bits is not None:
             # We know HD info, since we minimized
-            if testcase.range is not None:
-                # Fuzzer specifies a range
-                uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename,
-                                testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
-            else:
-                uniqlogger.info('%s crash_id=%s seed=%d bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename,
-                                testcase.signature, testcase.seednum, testcase.hd_bits, testcase.hd_bytes)
+            uniqlogger.info('%s crash_id=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename,
+                            testcase.signature, testcase.hd_bits, testcase.hd_bytes)
         else:
             # We don't know the HD info
-            if testcase.range is not None:
-                # We have a fuzzer that uses a range
-                uniqlogger.info('%s crash_id=%s seed=%d range=%s', testcase.seedfile.basename,
-                                testcase.signature, testcase.seednum, testcase.range)
-            else:
-                uniqlogger.info(
-                    '%s crash_id=%s seed=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum)
-        logger.info(
-            '%s first seen at %d', testcase.signature, testcase.seednum)
+            uniqlogger.info(
+                '%s crash_id=%s', testcase.seedfile.basename, testcase.signature)
 
     def _report(self, testcase):
         with CopyFilesReporter(testcase, self.tc_dir) as reporter:
