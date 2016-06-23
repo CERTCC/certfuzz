@@ -137,28 +137,39 @@ class LinuxTestcase(TestCaseBase):
         Runs the debugger on the crash and gets its signature.
         @raise CrasherHasNoSignatureError: if it's a valid crash, but we don't get a signature
         '''
-        if not self.signature:
-            self.signature = self.dbg.get_testcase_signature(
-                self.backtrace_lines)
-            if self.signature:
-                logger.debug("TestCaseBase signature is %s", self.signature)
-            else:
-                raise TestCaseError('TestCaseBase has no signature.')
-            if self.dbg.total_stack_corruption:
-                # total_stack_corruption.  Use pin calltrace to get a backtrace
-                analyzer_instance = pin_calltrace.Pin_calltrace(self.cfg, self)
-                try:
-                    analyzer_instance.go()
-                except AnalyzerEmptyOutputError:
-                    logger.warning(
-                        'Unexpected empty output from pin. Cannot determine call trace.')
-                    return self.signature
+        # short circuit if we already know the sig
+        if self.signature:
+            return self.signature
 
-                calltrace = Calltracefile(analyzer_instance.outfile)
-                pinsignature = calltrace.get_testcase_signature(
-                    self.backtrace_lines * 10)
-                if pinsignature:
-                    self.signature = pinsignature
+        # sig wasn't set, so let's find out what it is
+        self.signature = self.dbg.get_testcase_signature(
+            self.backtrace_lines)
+
+        if not self.signature:
+            raise TestCaseError('Testcase has no signature.')
+
+        logger.debug("Testcase signature is %s", self.signature)
+
+        if not self.dbg.total_stack_corruption:
+            return self.signature
+
+        # total_stack_corruption.
+        # Use pin calltrace to get a backtrace
+        analyzer_instance = pin_calltrace.Pin_calltrace(self.cfg, self)
+        try:
+            analyzer_instance.go()
+        except AnalyzerEmptyOutputError:
+            logger.warning(
+                'Unexpected empty output from pin. Cannot determine call trace.')
+            return self.signature
+
+        calltrace = Calltracefile(analyzer_instance.outfile)
+        pinsignature = calltrace.get_testcase_signature(
+            self.backtrace_lines * 10)
+
+        if pinsignature:
+            self.signature = pinsignature
+
         return self.signature
 
     def _verify_crash_base_dir(self):
