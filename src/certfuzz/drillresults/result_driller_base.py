@@ -77,7 +77,8 @@ class ResultDriller(object):
                 logger.debug('found dir: %s', self.tld)
                 return
         # if you got here, none of them exist
-        raise DrillResultsError('None of {} appears to be a dir'.format(check_dirs))
+        raise DrillResultsError(
+            'None of {} appears to be a dir'.format(check_dirs))
 
     def load_cached(self):
         if self.force:
@@ -96,7 +97,7 @@ class ResultDriller(object):
         return dict([(tcb.crash_hash, tcb.score) for tcb in self.testcase_bundles])
 
     def print_crash_report(self, crash_key, score, details):
-#        details = self.results[crash_key]
+        #        details = self.results[crash_key]
         print '\n%s - Exploitability rank: %s' % (crash_key, score)
         print 'Fuzzed file: %s' % details['fuzzedfile']
         for exception in details['exceptions']:
@@ -120,7 +121,8 @@ class ResultDriller(object):
         return sorted(self.crash_scores.iteritems(), key=lambda(k, v): (v, k))
 
     def print_reports(self):
-        results = dict([(tcb.crash_hash, tcb.details) for tcb in self.testcase_bundles])
+        results = dict([(tcb.crash_hash, tcb.details)
+                        for tcb in self.testcase_bundles])
         print "--- Interesting crashes ---\n"
         for crash_key, score in self.sorted_crashes:
             if self.max_score is not None:
@@ -132,7 +134,8 @@ class ResultDriller(object):
             try:
                 self.print_crash_report(crash_key, score, details)
             except KeyError as e:
-                logger.warning('Tescase %s is missing information: %s', crash_key, e)
+                logger.warning(
+                    'Tescase %s is missing information: %s', crash_key, e)
 
     def cache_results(self):
         pkldir = os.path.dirname(self.pickle_file)
@@ -148,4 +151,3 @@ class ResultDriller(object):
         self.process_testcases()
         self.print_reports()
         self.cache_results()
-
