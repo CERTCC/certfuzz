@@ -19,13 +19,19 @@ class Test(unittest.TestCase):
         self.tmpdir = tempfile.mkdtemp(prefix='bff-test-')
         self.sf = MockSeedfile()
         self.ff = MockFuzzedFile()
+        cfg = {}
         program = 'foo'
         cmd_template = 'foo a b c'
+        workdir_base = os.path.join(self.tmpdir, 'workdir_base')
+        cmdlist = cmd_template.split()
 
-        self.tc = certfuzz.testcase.testcase_base.TestCaseBase(self.sf,
+        self.tc = certfuzz.testcase.testcase_base.TestCaseBase(cfg,
+                                                               self.sf,
                                                                self.ff,
                                                                program,
-                                                               cmd_template,)
+                                                               cmd_template,
+                                                               workdir_base,
+                                                               cmdlist,)
         pass
 
     def tearDown(self):
@@ -44,19 +50,6 @@ class Test(unittest.TestCase):
         self.assertFalse(self.tc.debugger_missed_stack_corruption)
         self.assertFalse(self.tc.total_stack_corruption)
         self.assertFalse(self.tc.pc_in_function)
-
-    def test_get_logger(self):
-        self.tc.signature = 'signature'
-        self.tc.target_dir = 'does_not_exist'
-        self.assertRaises(TestCaseError, self.tc.get_logger)
-
-        self.tc.target_dir = tempfile.mkdtemp(suffix='-results',
-                                              prefix='bff-test-',
-                                              dir=self.tmpdir)
-
-        self.tc.logger = None
-        x = self.tc.get_logger()
-        self.assertTrue(isinstance(x, logging.Logger))
 
     def test_calculate_hamming_distances(self):
         tc = self.tc

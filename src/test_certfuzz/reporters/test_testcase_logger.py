@@ -7,16 +7,14 @@ import unittest
 import certfuzz.reporters.testcase_logger
 from test_certfuzz.mocks import MockTestcase
 
-class Test(unittest.TestCase):
 
+class Test(unittest.TestCase):
 
     def setUp(self):
         pass
 
-
     def tearDown(self):
         pass
-
 
     def test_go(self):
         import logging
@@ -40,7 +38,7 @@ class Test(unittest.TestCase):
 
         log_capture_string.close()
 
-        for x in ['seen in', 'at seed', 'range', 'outfile', 'PC']:
+        for x in ['seen in', 'outfile', 'PC']:
             self.assertTrue(x in log_contents, '"{}" not in log'.format(x))
 
 
