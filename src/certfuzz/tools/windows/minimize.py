@@ -44,7 +44,8 @@ def _create_minimizer_cfg(cfg):
     config.backtracelevels = 5  # doesn't matter what this is, we don't use it
     config.debugger_timeout = cfg['runner']['runtimeout']
     template = string.Template(cfg['target']['cmdline_template'])
-    config.get_command_args_list = lambda x: get_command_args_list(template, x)[1]
+    config.get_command_args_list = lambda x: get_command_args_list(
+        template, x)[1]
     config.program = cfg['target']['program']
     config.exclude_unmapped_frames = False
     config.watchdogfile = os.devnull
@@ -104,7 +105,8 @@ def main():
     logger.debug('WindowsConfig file: %s', cfg_file)
 
     if options.stringmode and options.target:
-        parser.error('Options --stringmode and --target are mutually exclusive.')
+        parser.error(
+            'Options --stringmode and --target are mutually exclusive.')
 
     # Set some default options. Fast and loose if in string mode
     # More precise with minimize to seedfile
@@ -155,20 +157,21 @@ def main():
     retries = 0
     debugger_class = msec.MsecDebugger
 
-    cmd_as_args = get_command_args_list(cfg['target']['cmdline_template'], fuzzed_file.path)[1]
+    cmd_as_args = get_command_args_list(
+        cfg['target']['cmdline_template'], fuzzed_file.path)[1]
     # Use runner timeout, since we now only specify the runner timeout
     cfg['debugger']['runtimeout'] = cfg['runner']['runtimeout']
-    with WindowsTestcase(cmd_template=cfg['target']['cmdline_template'],
-                      seedfile=seedfile,
-                      fuzzedfile=fuzzed_file,
-                      cmdlist=cmd_as_args,
-                      fuzzer=None,
-                      dbg_opts=cfg['debugger'],
-                      workingdir_base=outdir,
-                      keep_faddr=options.keep_uniq_faddr,
-                      program=cfg['target']['program'],
-                      heisenbug_retries=retries
-                      ) as testcase:
+    with WindowsTestcase(cfg=cfg,
+                         seedfile=seedfile,
+                         fuzzedfile=fuzzed_file,
+                         program=cfg['target']['program'],
+                         cmd_template=cfg['target']['cmdline_template'],
+                         cmdlist=cmd_as_args,
+                         dbg_opts=cfg['debugger'],
+                         workingdir_base=outdir,
+                         keep_faddr=options.keep_uniq_faddr,
+                         heisenbug_retries=retries
+                         ) as testcase:
         filetools.make_directories(testcase.tempdir)
         logger.info('Copying %s to %s', fuzzed_file.path, testcase.tempdir)
         filetools.copy_file(fuzzed_file.path, testcase.tempdir)
@@ -188,11 +191,13 @@ def main():
             logger.debug('x character substitution')
             length = len(minimize.fuzzed_content)
             if options.prefer_x_target:
-                # We minimized to 'x', so we attempt to get metasploit as a freebie
+                # We minimized to 'x', so we attempt to get metasploit as a
+                # freebie
                 targetstring = list(text.metasploit_pattern_orig(length))
                 filename_modifier = '-mtsp'
             else:
-                # We minimized to metasploit, so we attempt to get 'x' as a freebie
+                # We minimized to metasploit, so we attempt to get 'x' as a
+                # freebie
                 targetstring = list('x' * length)
                 filename_modifier = '-x'
 
@@ -200,7 +205,8 @@ def main():
             for idx in minimize.bytemap:
                 logger.debug('Swapping index %d', idx)
                 targetstring[idx] = fuzzed[idx]
-            filename = ''.join((testcase.fuzzedfile.root, filename_modifier, testcase.fuzzedfile.ext))
+            filename = ''.join(
+                (testcase.fuzzedfile.root, filename_modifier, testcase.fuzzedfile.ext))
             metasploit_file = os.path.join(testcase.tempdir, filename)
 
             f = open(metasploit_file, 'wb')
