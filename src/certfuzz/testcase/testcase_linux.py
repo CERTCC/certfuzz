@@ -135,7 +135,7 @@ class LinuxTestcase(TestCaseBase):
     def get_signature(self):
         '''
         Runs the debugger on the crash and gets its signature.
-        @raise CrasherHasNoSignatureError: if it's a valid crash, but we don't get a signature
+        @raise TestCaseError: if it's a valid crash, but we don't get a signature
         '''
         # short circuit if we already know the sig
         if self.signature:
