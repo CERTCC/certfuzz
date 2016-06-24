@@ -141,9 +141,6 @@ class TestCaseBase(object):
     def get_debug_output(self, f):
         raise NotImplementedError
 
-    def _get_output_dir(self):
-        raise NotImplementedError
-
     def get_signature(self):
         raise NotImplementedError
 
