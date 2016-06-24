@@ -66,7 +66,7 @@ class LinuxIteration(IterationBase):
                            cmd_template=self.cmd_template,
                            debugger_timeout=self.cfg['runner']['runtimeout'],
                            cmdlist=get_command_args_list(self.cmd_template,
-                                                         infile=self.fuzzedfile.path,
+                                                         infile=self.fuzzer.output_file_path,
                                                          posix=True)[1],
                            backtrace_lines=self.cfg[
                                'debugger']['backtracelevels'],
