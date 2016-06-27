@@ -12,12 +12,13 @@ from certfuzz.drillresults.result_driller_base import ResultDriller
 logger = logging.getLogger(__name__)
 
 regex = {
-        'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]+.+e0.+'),
-        'msec_report': re.compile('.+.msec$'),
-        }
+    'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]+.+e0.+'),
+    'msec_report': re.compile('.+.msec$'),
+}
 
 
 class WindowsResultDriller(ResultDriller):
+
     def _platform_find_testcases(self, crash_hash, files, root):
         if "0x" in crash_hash:
             # Create dictionary for hashes in results dictionary
@@ -42,13 +43,15 @@ class WindowsResultDriller(ResultDriller):
                     if crasherfile and root not in crasherfile:
                         crasherfile = os.path.join(root, crasherfile)
                     with TestCaseBundle(dbg_file, crasherfile, crash_hash,
-                                         self.ignore_jit) as tcb:
+                                        self.ignore_jit) as tcb:
                         tcb.go()
                         _updated_existing = False
                         for index, tcbundle in enumerate(self.testcase_bundles):
                             if tcbundle.crash_hash == crash_hash:
-                                # This is a new exception for the same crash hash
-                                self.testcase_bundles[index].details['exceptions'].update(tcb.details['exceptions'])
+                                # This is a new exception for the same crash
+                                # hash
+                                self.testcase_bundles[index].details[
+                                    'exceptions'].update(tcb.details['exceptions'])
                                 _updated_existing = True
                         if not _updated_existing:
                             # This is a new crash hash
