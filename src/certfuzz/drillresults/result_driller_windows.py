@@ -52,6 +52,10 @@ class WindowsResultDriller(ResultDriller):
                                 # hash
                                 self.testcase_bundles[index].details[
                                     'exceptions'].update(tcb.details['exceptions'])
+                                # If the current exception score is lower than
+                                # the existing crash_hash score, update it
+                                self.testcase_bundles[index].score = min(
+                                    self.testcase_bundles[index].score, tcb.score)
                                 _updated_existing = True
                         if not _updated_existing:
                             # This is a new crash hash
