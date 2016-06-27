@@ -19,7 +19,7 @@ IOERROR_COUNT = 0
 MAX_IOERRORS = 5
 
 
-class IterationBase3(object):
+class IterationBase(object):
     __metaclass__ = abc.ABCMeta
     _tmpdir_pfx = 'iteration_'
     _iteration_counter = 0
@@ -87,7 +87,7 @@ class IterationBase3(object):
         handled = False
 
         # increment the iteration counter
-        IterationBase3._iteration_counter += 1
+        IterationBase._iteration_counter += 1
 
         # increment the seedfile try counter
         self.seedfile.tries += 1

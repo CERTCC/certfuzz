@@ -8,8 +8,3 @@ from certfuzz.errors import CERTFuzzError
 
 class TestCaseError(CERTFuzzError):
     pass
-
-
-class CrashError(TestCaseError):
-    pass
-

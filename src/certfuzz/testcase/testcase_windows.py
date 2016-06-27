@@ -7,7 +7,7 @@ import hashlib
 import logging
 import os
 
-from certfuzz.testcase.testcase_base2 import Testcase
+from certfuzz.testcase.testcase_base import TestCaseBase
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools.filetools import best_effort_move
 from certfuzz.helpers.misc import random_str
@@ -38,48 +38,48 @@ exp_rank = {
 }
 
 
-class WindowsTestcase(Testcase):
-    tmpdir_pfx = 'bff-crash-'
+class WindowsTestcase(TestCaseBase):
     _debugger_cls = MsecDebugger
 
     # TODO: do we still need fuzzer as an arg?
-    def __init__(self, cmd_template, seedfile, fuzzedfile, cmdlist, fuzzer,
-                 dbg_opts, workingdir_base, keep_faddr, program,
-                 heisenbug_retries=4, copy_fuzzedfile=True, is_nullrunner=False):
+    def __init__(self,
+                 cfg,
+                 seedfile,
+                 fuzzedfile,
+                 program,
+                 cmd_template,
+                 debugger_timeout,
+                 cmdlist,
+                 dbg_opts,
+                 workdir_base,
+                 keep_faddr=False,
+                 heisenbug_retries=4,
+                 copy_fuzzedfile=True):
 
-        dbg_timeout = dbg_opts['runtimeout']
+        TestCaseBase.__init__(self,
+                              cfg,
+                              seedfile,
+                              fuzzedfile,
+                              program,
+                              cmd_template,
+                              workdir_base,
+                              cmdlist,
+                              keep_faddr,
+                              debugger_timeout)
 
-        Testcase.__init__(self, seedfile, fuzzedfile, dbg_timeout)
-
-        self.dbg_opts = dbg_opts
+        self.cmdargs = self.cmdlist
         self.copy_fuzzedfile = copy_fuzzedfile
-
-        self.cmdargs = cmdlist
-        self.workdir_base = workingdir_base
-
-        self.keep_uniq_faddr = keep_faddr
-        self.program = program
-        self.dbg_result = {}
         self.crash_hash = None
-        self.result_dir = None
-        self.faddr = None
         self.dbg_file = ''
-        self.cmd_template = cmd_template
-        try:
-            self.max_handled_exceptions = self.dbg_opts[
-                'max_handled_exceptions']
-        except KeyError:
-            self.max_handled_exceptions = 6
-        try:
-            self.watchcpu = self.dbg_opts['watchcpu']
-        except KeyError:
-            self.watchcpu = False
+        self.dbg_opts = dbg_opts
+        self.dbg_result = {}
         self.exception_depth = 0
-        self.reached_secondchance = False
-        self.parsed_outputs = []
-
         self.max_depth = heisenbug_retries
-        self.is_nullrunner = is_nullrunner
+        self.max_handled_exceptions = self.dbg_opts.get(
+            'max_handled_exceptions', 6)
+        self.parsed_outputs = []
+        self.reached_secondchance = False
+        self.watchcpu = self.dbg_opts.get('watchcpu', False)
 
     def _get_file_basename(self):
         '''
@@ -97,7 +97,7 @@ class WindowsTestcase(Testcase):
         as needed. Used in both object runtime context and for refresh after
         a crash object is copied.
         '''
-        Testcase.update_crash_details(self)
+        TestCaseBase.update_crash_details(self)
         # Reset properties that need to be regenerated
         self.exception_depth = 0
         self.parsed_outputs = []
@@ -105,25 +105,18 @@ class WindowsTestcase(Testcase):
         fname = self._get_file_basename()
         outfile_base = os.path.join(self.tempdir, fname)
         # Regenerate target commandline with new crasher file
-        self.cmdargs = get_command_args_list(
-            self.cmd_template, outfile_base)[1][1:]
+
+        cmdlist = get_command_args_list(self.cmd_template,
+                                        outfile_base)[1]
+        self.cmdargs = cmdlist[1:]
         self.debug()
         self._rename_fuzzed_file()
         self._rename_dbg_file()
 
-    def set_debugger_template(self, *args):
-        pass
-
     def debug_once(self):
         outfile_base = os.path.join(self.tempdir, self.fuzzedfile.basename)
 
-        with self._debugger_cls(program=self.program,
-                                cmd_args=self.cmdargs,
-                                outfile_base=outfile_base,
-                                timeout=self.debugger_timeout,
-                                exception_depth=self.exception_depth,
-                                workingdir=self.tempdir,
-                                watchcpu=self.watchcpu) as debugger:
+        with self._debugger_cls(program=self.program, cmd_args=self.cmdargs, outfile_base=outfile_base, timeout=self.debugger_timeout, exception_depth=self.exception_depth, workingdir=self.tempdir, watchcpu=self.watchcpu) as debugger:
             self.parsed_outputs.append(debugger.go())
 
         self.reached_secondchance = self.parsed_outputs[
@@ -193,8 +186,7 @@ class WindowsTestcase(Testcase):
                     break
             # get the signature now that we've got all of the exceptions
             self.get_signature()
-        elif not self.is_nullrunner:
-            # With the Windows XP hook, there's the concept of a heisenbug.
+        else:
             # if we are still a heisenbug after debugging
             # we might need to try again
             # or give up if we've tried enough already

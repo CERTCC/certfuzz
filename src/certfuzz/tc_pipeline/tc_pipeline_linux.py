@@ -68,19 +68,22 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
 
                 # fall back to checking if the crash directory exists
                 #
-                crash_dir_found = filetools.find_or_create_dir(tc.result_dir)
+                crash_dir_found = filetools.find_or_create_dir(tc.target_dir)
 
                 keep_all = self.cfg['runoptions'].get('keep_duplicates', False)
 
-                tc.should_proceed_with_analysis = keep_all or (is_new_to_campaign and not crash_dir_found)
+                tc.should_proceed_with_analysis = keep_all or (
+                    is_new_to_campaign and not crash_dir_found)
 
                 if tc.should_proceed_with_analysis:
-                    logger.info('%s first seen at %d', tc.signature, tc.seednum)
+                    logger.info('%s is new', tc.signature)
                     self.dbg_out_file_orig = tc.dbg.file
-                    logger.debug('Original debugger file: %s', self.dbg_out_file_orig)
+                    logger.debug(
+                        'Original debugger file: %s', self.dbg_out_file_orig)
                     self.success = True
                 else:
-                    logger.info('Testcase signature %s was already seen, skipping further analysis', tc.signature)
+                    logger.info(
+                        'Testcase signature %s was already seen, skipping further analysis', tc.signature)
             else:
                 logger.debug('not a crash, continuing')
 
@@ -93,9 +96,11 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             # change the debugger template
             testcase.set_debugger_template('complete')
         else:
-            # use a debugger template that specifies fixed offsets from $pc for disassembly
+            # use a debugger template that specifies fixed offsets from $pc for
+            # disassembly
             testcase.set_debugger_template('complete_nofunction')
-        logger.info('Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
+        logger.info(
+            'Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
         testcase.get_debug_output(testcase.fuzzedfile.path)
 
         if self.dbg_out_file_orig != testcase.dbg.file:
@@ -103,9 +108,11 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
             # remove the old one
             filetools.delete_files(self.dbg_out_file_orig)
             if os.path.exists(self.dbg_out_file_orig):
-                logger.warning('Failed to remove old debugger file %s', self.dbg_out_file_orig)
+                logger.warning(
+                    'Failed to remove old debugger file %s', self.dbg_out_file_orig)
             else:
-                logger.debug('Removed old debug file %s', self.dbg_out_file_orig)
+                logger.debug(
+                    'Removed old debug file %s', self.dbg_out_file_orig)
 
     def _post_analyze(self, testcase):
         if self.options.get('use_valgrind'):
@@ -114,7 +121,8 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                 annotate_callgrind(testcase)
                 annotate_callgrind_tree(testcase)
             except CallgrindAnnotateEmptyOutputFileError:
-                logger.warning('Unexpected empty output from annotate_callgrind. Continuing')
+                logger.warning(
+                    'Unexpected empty output from annotate_callgrind. Continuing')
             except CallgrindAnnotateMissingInputFileError:
                 logger.warning('Missing callgrind output. Continuing')
 
@@ -122,19 +130,12 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         uniqlogger = get_uniq_logger(self.options.get('uniq_log'))
         if testcase.hd_bits is not None:
             # We know HD info, since we minimized
-            if testcase.range is not None:
-                # Fuzzer specifies a range
-                uniqlogger.info('%s crash_id=%s seed=%d range=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range, testcase.hd_bits, testcase.hd_bytes)
-            else:
-                uniqlogger.info('%s crash_id=%s seed=%d bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.hd_bits, testcase.hd_bytes)
+            uniqlogger.info('%s crash_id=%s bitwise_hd=%d bytewise_hd=%d', testcase.seedfile.basename,
+                            testcase.signature, testcase.hd_bits, testcase.hd_bytes)
         else:
             # We don't know the HD info
-            if testcase.range is not None:
-                # We have a fuzzer that uses a range
-                uniqlogger.info('%s crash_id=%s seed=%d range=%s', testcase.seedfile.basename, testcase.signature, testcase.seednum, testcase.range)
-            else:
-                uniqlogger.info('%s crash_id=%s seed=%d', testcase.seedfile.basename, testcase.signature, testcase.seednum)
-        logger.info('%s first seen at %d', testcase.signature, testcase.seednum)
+            uniqlogger.info(
+                '%s crash_id=%s', testcase.seedfile.basename, testcase.signature)
 
     def _report(self, testcase):
         with CopyFilesReporter(testcase, self.tc_dir) as reporter:
@@ -148,4 +149,3 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         testcase.clean_tmpdir()
         # clean up
         testcase.delete_files()
-

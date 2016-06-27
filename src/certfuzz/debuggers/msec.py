@@ -89,7 +89,7 @@ class MsecDebugger(DebuggerBase):
         attempts = 0
         foundpid = False
 
-        if self.watchcpu is True:
+        if self.watchcpu:
 
             while attempts < trycount and not foundpid:
                 for process in self.wmiInterface.Win32_Process(name=exename):
@@ -121,7 +121,7 @@ class MsecDebugger(DebuggerBase):
         self.savedpid = p.pid
 
         child_pid = self._find_debug_target(exename, trycount=5)
-        if child_pid is None and self.watchcpu is True:
+        if child_pid is None and self.watchcpu:
             logger.debug('Bailing on debugger iteration')
             self.kill(self.savedpid, 99)
             return
@@ -129,7 +129,7 @@ class MsecDebugger(DebuggerBase):
         # create a timer that calls kill() when it expires
         self.t = Timer(self.timeout, self.kill, args=[self.savedpid, 99])
         self.t.start()
-        if self.watchcpu is True:
+        if self.watchcpu:
             # This is a race.  In some cases, a GUI app could be done before we can even measure it
             # TODO: Do something about it
             while p.poll() is None and not done and child_pid:
