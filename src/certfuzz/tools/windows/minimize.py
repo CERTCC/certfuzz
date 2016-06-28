@@ -166,9 +166,10 @@ def main():
                          fuzzedfile=fuzzed_file,
                          program=cfg['target']['program'],
                          cmd_template=cfg['target']['cmdline_template'],
+                         debugger_timeout=cfg['debugger']['runtimeout'],
                          cmdlist=cmd_as_args,
                          dbg_opts=cfg['debugger'],
-                         workingdir_base=outdir,
+                         workdir_base=outdir,
                          keep_faddr=options.keep_uniq_faddr,
                          heisenbug_retries=retries
                          ) as testcase:
