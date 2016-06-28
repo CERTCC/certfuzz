@@ -102,7 +102,7 @@ class WindowsIteration(IterationBase):
         TmpReaper().clean_tmp()
 
     def _construct_testcase(self):
-        with WindowsTestcase(seedfile=self.seedfile,
+        with WindowsTestcase(cfg=self.cfg, seedfile=self.seedfile,
                              fuzzedfile=BasicFile(
                                  self.fuzzer.output_file_path),
                              program=self.cfg['target']['program'],
