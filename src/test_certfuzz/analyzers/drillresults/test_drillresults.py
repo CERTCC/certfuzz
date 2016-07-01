@@ -13,6 +13,7 @@ import os
 go_count = 0
 process_count = 0
 
+
 class MockTcb(object):
     details = {'fuzzedfile': 'foo',
                'exceptions': {}, }
@@ -32,13 +33,14 @@ class MockTcb(object):
         global go_count
         go_count += 1
 
+
 def _inc_proc_count(*args):
     global process_count
 
     process_count += 1
 
-class Test(unittest.TestCase):
 
+class Test(unittest.TestCase):
 
     def setUp(self):
         global go_count
@@ -53,11 +55,9 @@ class Test(unittest.TestCase):
 
         self.tmpdir = tempfile.mkdtemp()
 
-
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
         pass
-
 
     def testInit(self):
         self.assertTrue('debugger' in self.dra.cfg)
@@ -66,11 +66,12 @@ class Test(unittest.TestCase):
         fd, ff = tempfile.mkstemp(prefix='fuzzed-', dir=self.tmpdir)
         os.close(fd)
 
-        dbgf = os.path.join(self.tmpdir, '{}.{}'.format(ff, self.dra.testcase.debugger_extension))
+        dbgf = os.path.join(
+            self.tmpdir, '{}.{}'.format(ff, self.dra.testcase.debugger_extension))
         # touch the file
         open(dbgf, 'w').close()
 
-        self.dra.testcase.dbg_file = dbgf
+        self.dra.testcase.dbg_files = {0: 'dbgf'}
         self.dra.testcase.fuzzedfile = MockFuzzedFile(ff)
         self.dra._tcb_cls = MockTcb
         self.dra._process_tcb = _inc_proc_count
@@ -95,10 +96,12 @@ class Test(unittest.TestCase):
 
         self.assertTrue(MockTcb.crash_hash in self.dra.output_lines[0])
         self.assertTrue(str(MockTcb.score) in self.dra.output_lines[0])
-        self.assertTrue(MockTcb.details['fuzzedfile'] in self.dra.output_lines[1])
+        self.assertTrue(
+            MockTcb.details['fuzzedfile'] in self.dra.output_lines[1])
 
     def test_write_outfile(self):
-        fd, f = tempfile.mkstemp(suffix='-fuzzed', prefix='test-', dir=self.tmpdir)
+        fd, f = tempfile.mkstemp(
+            suffix='-fuzzed', prefix='test-', dir=self.tmpdir)
         os.close(fd)
 
         self.dra.output_lines = ['a', 'b', 'c']
@@ -118,7 +121,8 @@ class Test(unittest.TestCase):
     def test_getfile(self):
         x = 'asdfghjklqwertyuiop'
         self.assertTrue(drillresults.get_file(x).startswith(x))
-        self.assertTrue(drillresults.get_file(x).endswith(drillresults.OUTFILE_EXT))
+        self.assertTrue(
+            drillresults.get_file(x).endswith(drillresults.OUTFILE_EXT))
 
 
 if __name__ == "__main__":
