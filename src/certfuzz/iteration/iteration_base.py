@@ -149,10 +149,6 @@ class IterationBase(object):
 
         return handled
 
-    @property
-    def quiet_flag(self):
-        return self._iteration_counter < 2
-
     def _pre_fuzz(self):
         self.fuzzer = self.fuzzer_cls(
             self.seedfile, self.working_dir, self.seednum, self._fuzz_opts)
@@ -171,7 +167,6 @@ class IterationBase(object):
     def _pre_run(self):
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
-        self._runner_options['hideoutput'] = self.quiet_flag
         self.cmd_template = self.cfg['target']['cmdline_template']
         self.runner = self.runner_cls(
             self._runner_options, self.cmd_template, fuzzed_file, workingdir_base)
