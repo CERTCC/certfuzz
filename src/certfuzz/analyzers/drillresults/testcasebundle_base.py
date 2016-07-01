@@ -37,7 +37,8 @@ class TestCaseBundle(object):
         self.regdict = {}
 
         if not os.path.exists(self.dbg_outfile):
-            raise TestCaseBundleError('Debugger file not found: {}'.format(self.dbg_outfile))
+            raise TestCaseBundleError(
+                'Debugger file not found: {}'.format(self.dbg_outfile))
 
         self.reporttext = read_text_file(self.dbg_outfile)
         self._find_testcase_file()
@@ -100,7 +101,8 @@ class TestCaseBundle(object):
     def _find_testcase_file(self):
         if not os.path.isfile(self.testcase_file):
             # Can't find the crasher file
-            raise TestCaseBundleError('Cannot find testcase file %s', self.testcase_file)
+            raise TestCaseBundleError(
+                'Cannot find testcase file %s', self.testcase_file)
 
     @abc.abstractmethod
     def _get_classification(self):
@@ -156,18 +158,19 @@ class TestCaseBundle(object):
         faultaddr, instraddr = self._64bit_addr_fixup(faultaddr, instraddr)
 
         if instraddr:
-            self.details['exceptions'][exceptionnum]['pcmodule'] = self.pc_in_mapped_address(instraddr)
+            self.details['exceptions'][exceptionnum][
+                'pcmodule'] = self.pc_in_mapped_address(instraddr)
 
         # Get the cdb line that contains the crashing instruction
         instructionline = self.get_instr(instraddr)
-        self.details['exceptions'][exceptionnum]['instructionline'] = instructionline
+        self.details['exceptions'][exceptionnum][
+            'instructionline'] = instructionline
         if instructionline:
             self.instructionpieces = instructionline.split()
             faultaddr = self._prefix_0x(faultaddr)
             faultaddr = self.fix_efa_offset(instructionline, faultaddr)
             if self.shortdesc == 'ReturnAv':
                 faultaddr = self.fix_return_efa(faultaddr)
-
 
         # Fix faulting pattern endian
         faultaddr = faultaddr.replace('0x', '')
@@ -280,7 +283,8 @@ class TestCaseBundle(object):
     def _record_exception_info(self, exceptionnum):
         if self.classification:
             # Create a new exception dictionary to add to the crash
-            self.details['exceptions'][exceptionnum] = {'classification': self.classification}
+            self.details['exceptions'][exceptionnum] = {
+                'classification': self.classification}
 
         if not self.shortdesc:
             logger.debug('no short description')
@@ -305,7 +309,7 @@ class TestCaseBundle(object):
 
             if exception['shortdesc'] in self.re_set:
                 if eif:
-                # The faulting address pattern is in the fuzzed file
+                    # The faulting address pattern is in the fuzzed file
                     if '0x000000' in efa:
                         # Faulting address is near null
                         scores.append(30)
@@ -323,7 +327,6 @@ class TestCaseBundle(object):
                     scores.append(40)
 
         return scores
-
 
     def _get_efa_mod_eif(self, exception):
         try:
@@ -360,7 +363,7 @@ class TestCaseBundle(object):
                 # non-continued potential stack buffer overflow
                 scores.append(40)
             elif eif:
-            # The faulting address pattern is in the fuzzed file
+                # The faulting address pattern is in the fuzzed file
                 if '0x000000' in efa:
                     # Faulting address is near null
                     scores.append(70)
@@ -402,7 +405,8 @@ class TestCaseBundle(object):
         '''
         if int(faultaddr, base=16) == 0:
             derived_faultaddr = self.get_return_addr()
-            logger.debug('New faulting address derived from backtrace: %s' % derived_faultaddr)
+            logger.debug(
+                'New faulting address derived from backtrace: %s' % derived_faultaddr)
             if derived_faultaddr is not None:
                 faultaddr = derived_faultaddr
         return faultaddr

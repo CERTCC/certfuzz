@@ -111,7 +111,7 @@ class LinuxTestcase(TestCaseBase):
                                           keep_uniq_faddr=self.keep_uniq_faddr
                                           )
         self.dbg = debugger_obj.go()
-        self.dbg_file = self.dbg.file
+        self.dbg_files[0] = self.dbg.file
 
     def confirm_crash(self):
         # get debugger output

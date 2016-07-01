@@ -70,7 +70,6 @@ class WindowsTestcase(TestCaseBase):
         self.cmdargs = self.cmdlist
         self.copy_fuzzedfile = copy_fuzzedfile
         self.crash_hash = None
-        self.dbg_file = ''
         self.dbg_opts = dbg_opts
         self.dbg_result = {}
         self.exception_depth = 0
@@ -111,7 +110,7 @@ class WindowsTestcase(TestCaseBase):
         self.cmdargs = cmdlist[1:]
         self.debug()
         self._rename_fuzzed_file()
-        self._rename_dbg_file()
+        self._rename_dbg_files()
 
     def debug_once(self):
         outfile_base = os.path.join(self.tempdir, self.fuzzedfile.basename)
@@ -154,8 +153,8 @@ class WindowsTestcase(TestCaseBase):
                 self.crash_hash += '.' + current_exception_faddr
 
         # The first exception is the one that is representative for the crasher
+        self.dbg_files[self.exception_depth] = debugger.outfile
         if self.exception_depth == 0:
-            self.dbg_file = debugger.outfile
             # add debugger results to our own attributes
             self.is_crash = self.parsed_outputs[0].is_crash
             self.dbg_type = self.parsed_outputs[0]._key
@@ -244,17 +243,18 @@ class WindowsTestcase(TestCaseBase):
             # replace fuzzed file
             self.fuzzedfile = BasicFile(new_fuzzed_file)
 
-    def _rename_dbg_file(self):
+    def _rename_dbg_files(self):
         if not self.faddr:
             return
 
-        (path, basename) = os.path.split(self.dbg_file)
+        (path, basename) = os.path.split(self.dbg_files[0])
         (basename, dbgext) = os.path.splitext(basename)
         (root, ext) = os.path.splitext(basename)
         for exception_num in range(0, self.exception_depth + 1):
             if exception_num > 0:
                 new_basename = root + ext + '.e%s' % exception_num + dbgext
-                self.dbg_file = os.path.join(path, new_basename)
+                self.dbg_files[exception_num] = os.path.join(
+                    path, new_basename)
 
             if not self.parsed_outputs[exception_num].is_crash:
                 return
@@ -274,6 +274,7 @@ class WindowsTestcase(TestCaseBase):
 
             # best_effort move returns a tuple of booleans indicating (copied, deleted)
             # we only care about copied
-            copied = best_effort_move(self.dbg_file, new_dbg_file)[0]
+            copied = best_effort_move(
+                self.dbg_files[exception_num], new_dbg_file)[0]
             if copied:
-                self.dbg_file = new_dbg_file
+                self.dbg_files[exception_num] = new_dbg_file

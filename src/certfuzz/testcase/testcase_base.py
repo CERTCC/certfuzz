@@ -43,6 +43,7 @@ class TestCaseBase(object):
         self.cmdlist = cmdlist
         self.copy_fuzzedfile = True
         self.dbg_file = None
+        self.dbg_files = {}
         self.debugger_missed_stack_corruption = False
         self.debugger_template = None
         self.debugger_timeout = dbg_timeout
@@ -85,7 +86,7 @@ class TestCaseBase(object):
     def _get_output_dir(self, *args):
         raise NotImplementedError
 
-    def _rename_dbg_file(self):
+    def _rename_dbg_files(self):
         raise NotImplementedError
 
     def _rename_fuzzed_file(self):
