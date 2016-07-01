@@ -70,7 +70,6 @@ class WindowsTestcase(TestCaseBase):
         self.cmdargs = self.cmdlist
         self.copy_fuzzedfile = copy_fuzzedfile
         self.crash_hash = None
-        self.dbg_files = {}
         self.dbg_opts = dbg_opts
         self.dbg_result = {}
         self.exception_depth = 0

@@ -73,6 +73,7 @@ class DrillResults(Analyzer):
 
     def go(self):
         # turn testcase into tescase_bundle
+        # Get crash details for first exception
         with self._tcb_cls(dbg_outfile=self.testcase.dbg_files[0],
                            testcase_file=self.testcase.fuzzedfile.path,
                            crash_hash=self.testcase.signature,
@@ -84,8 +85,10 @@ class DrillResults(Analyzer):
                     'Skipping drillresults on testcase %s: %s', self.testcase.signature, e)
                 return
 
+            # Get temporary testase bundle for exceptions beyond the first
+            # Update tcb with those exceptions, updating cumulative score
+            # On any platform other that Windows, this is a no-op
             for index, exception in enumerate(self.testcase.dbg_files):
-                dbg_file = self.testcase.dbg_files[exception]
                 if exception > 0:
                     with self._tcb_cls(dbg_outfile=self.testcase.dbg_files[exception],
                                        testcase_file=self.testcase.fuzzedfile.path,
