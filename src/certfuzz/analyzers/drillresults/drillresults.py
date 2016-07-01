@@ -73,7 +73,7 @@ class DrillResults(Analyzer):
 
     def go(self):
         # turn testcase into tescase_bundle
-        with self._tcb_cls(dbg_outfile=self.testcase.dbg_file,
+        with self._tcb_cls(dbg_outfile=self.testcase.dbg_files[0],
                            testcase_file=self.testcase.fuzzedfile.path,
                            crash_hash=self.testcase.signature,
                            ignore_jit=False) as tcb:
@@ -83,6 +83,25 @@ class DrillResults(Analyzer):
                 logger.warning(
                     'Skipping drillresults on testcase %s: %s', self.testcase.signature, e)
                 return
+
+            for index, exception in enumerate(self.testcase.dbg_files):
+                dbg_file = self.testcase.dbg_files[exception]
+                if exception > 0:
+                    with self._tcb_cls(dbg_outfile=self.testcase.dbg_files[exception],
+                                       testcase_file=self.testcase.fuzzedfile.path,
+                                       crash_hash=self.testcase.signature,
+                                       ignore_jit=False) as temp_tcb:
+                        try:
+                            temp_tcb.go()
+                        except TestCaseBundleError as e:
+                            logger.warning(
+                                'Skipping drillresults on testcase %s: %s', self.testcase.signature, e)
+                            continue
+
+                        tcb.details['exceptions'].update(
+                            temp_tcb.details['exceptions'])
+
+                        tcb.score = min(tcb.score, temp_tcb.score)
 
         self._process_tcb(tcb)
         self._write_outfile()
