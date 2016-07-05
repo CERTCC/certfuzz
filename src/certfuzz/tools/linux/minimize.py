@@ -15,6 +15,7 @@ from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools import filetools, text
 from certfuzz.minimizer.unix_minimizer import UnixMinimizer as Minimizer
 from certfuzz.config.simple_loader import load_and_fix_config
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 
 mydir = os.path.dirname(os.path.abspath(__file__))
@@ -146,7 +147,10 @@ def main():
                        seedfile=seedfile,
                        fuzzedfile=fuzzed_file,
                        program=cfg['target']['program'],
+                       cmd_template=cfg['target']['cmdline_template'],
                        debugger_timeout=cfg['runner']['runtimeout'],
+                       cmdlist=get_command_args_list(
+                           cfg['target']['cmdline_template'], fuzzed_file.path)[1],
                        backtrace_lines=cfg['debugger']['backtracelevels'],
                        crashers_dir=crashers_dir,
                        workdir_base=outdir,
