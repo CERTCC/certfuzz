@@ -56,7 +56,8 @@ blacklist = ('__kernel_vsyscall', 'abort', 'raise', 'malloc', 'free',
              '_dl_addr_inside_object', '_int_free', '*__GI___libc_free',
              '__malloc_assert', 'sYSMALLOc', '_int_realloc', '*__GI___libc_malloc',
              '*__GI___libc_realloc', '_int_memalign', '*__GI___libc_memalign',
-             '__posix_memalign', 'malloc_consolidate', '__libc_malloc', '__libc_realloc'
+             '__posix_memalign', 'malloc_consolidate', '__libc_malloc', '__libc_realloc',
+             'g_assertion_message', 'g_assertion_message_expr',
              )
 
 
