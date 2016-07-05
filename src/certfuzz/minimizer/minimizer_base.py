@@ -400,10 +400,10 @@ class Minimizer(object):
         # get stdev
         avg_time = numpy.average(times)
         stdev_time = numpy.std(times)
-        # set debugger timeout to 0.95 confidence
+        # set debugger timeout to 0.99 confidence
         # TODO: What if the VM becomes slower.
         # We may give up on crashes before they happen.
-        zscore = 1.645
+        zscore = 2.58
         self.measured_dbg_time = avg_time + (zscore * stdev_time)
 
         return self.crash_hashes
