@@ -1,0 +1,18 @@
+<pkgref spec="1.12" uuid="196EBC56-95A9-4EDD-88E0-F36DE154790C">
+<config>
+<identifier>com.cert.cc.certBff.exc_handler_sierra.pkg</identifier>
+<version>1.0</version>
+<description></description>
+<post-install type="none" />
+<requireAuthorization />
+<installFrom relative="true">crashwrangler/binaries/exc_handler_sierra</installFrom>
+<installTo mod="true">/usr/local/bin</installTo>
+<flags>
+<followSymbolicLinks />
+</flags>
+<packageStore type="internal"></packageStore>
+<mod>parent</mod>
+<mod>installFrom.isRelativeType</mod>
+<mod>installTo</mod>
+</config>
+</pkgref>
