@@ -6,6 +6,7 @@ Created on Jul 2, 2014
 import abc
 import logging
 import os
+import re
 
 import cPickle as pickle
 from certfuzz.drillresults.errors import DrillResultsError
@@ -13,6 +14,10 @@ from certfuzz.drillresults.errors import TestCaseBundleError
 
 
 logger = logging.getLogger(__name__)
+
+regex = {
+    'dr_score': re.compile('.+ - Exploitability rank: (\d+)')
+}
 
 
 class ResultDriller(object):
@@ -37,6 +42,8 @@ class ResultDriller(object):
         self.pickle_file = os.path.join('fuzzdir', 'drillresults.pkl')
         self.cached_testcases = None
         self.testcase_bundles = []
+        self.dr_outputs = {}
+        self.dr_scores = {}
 
     def __enter__(self):
         return self
@@ -53,6 +60,22 @@ class ResultDriller(object):
     @abc.abstractmethod
     def _platform_find_testcases(self, crash_hash):
         pass
+
+    def _load_dr_output(self, crash_hash, drillresults_file):
+        logger.debug(
+            'Loading precalculated drillresults output from %s' % drillresults_file)
+        dr_output = ''
+        with open(drillresults_file, 'r') as f:
+            dr_output = f.read()
+        self.dr_outputs[crash_hash] = dr_output
+        self.dr_scores[crash_hash] = self._get_dr_score(dr_output)
+        return
+
+    def store_dr_output(self, crash_hash, dr_output, score):
+        logger.debug(
+            'Storing recalculated drillresults output for %s' % crash_hash)
+        self.dr_scores[crash_hash] = score
+        return
 
     def process_testcases(self):
         '''
@@ -96,6 +119,12 @@ class ResultDriller(object):
     def crash_scores(self):
         return dict([(tcb.crash_hash, tcb.score) for tcb in self.testcase_bundles])
 
+    def _get_dr_score(self, dr_output):
+        firstline = dr_output.splitlines()[0]
+        m = regex['dr_score'].match(firstline)
+        score = int(m.group(1))
+        return score
+
     def print_crash_report(self, crash_key, score, details):
         #        details = self.results[crash_key]
         print '\n%s - Exploitability rank: %s' % (crash_key, score)
@@ -120,10 +149,26 @@ class ResultDriller(object):
     def sorted_crashes(self):
         return sorted(self.crash_scores.iteritems(), key=lambda(k, v): (v, k))
 
+    @property
+    def sorted_drillresults_output(self):
+        return sorted(self.dr_scores.iteritems(), key=lambda(k, v): (v, k))
+
     def print_reports(self):
         results = dict([(tcb.crash_hash, tcb.details)
                         for tcb in self.testcase_bundles])
         print "--- Interesting crashes ---\n"
+
+        if len(self.dr_scores) > 0:
+            # We're using existing .drillresults files
+            for crash_key, score in self.sorted_drillresults_output:
+                # print('crash_key: %s, score: %s' % (crash_key, score))
+                if score > self.max_score:
+                    # skip test cases with scores above our max
+                    continue
+                print self.dr_outputs[crash_key]
+                print os.linesep
+            return
+
         for crash_key, score in self.sorted_crashes:
             if self.max_score is not None:
                 if score > self.max_score:
