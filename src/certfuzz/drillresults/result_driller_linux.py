@@ -48,5 +48,4 @@ class LinuxResultDriller(ResultDriller):
                 with TestCaseBundle(dbg_file, crasherfile, crash_hash,
                                     self.ignore_jit) as tcb:
                     tcb.go()
-                    raw_input('check tcb')
                     self.testcase_bundles.append(tcb)
