@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 regex = {
     'first_msec': re.compile('^sf_.+-\w+-0x.+.-[A-Z]+.+e0.+'),
-    'msec_report': re.compile('.+.msec$'),
 }
 
 
@@ -25,20 +24,35 @@ class WindowsResultDriller(ResultDriller):
             hash_dict = {}
             hash_dict['hash'] = crash_hash
             crasherfile = ''
+
             # Check each of the files in the hash directory
             for current_file in files:
-                # If it's exception #0, strip out the exploitability part of
-                # the file name. This gives us the crasher file name
                 if regex['first_msec'].match(current_file):
+                    # If it's exception #0, strip out the exploitability part of
+                    # the file name. This gives us the crasher file name
                     crasherfile, _junk = os.path.splitext(current_file)
                     crasherfile = crasherfile.replace('-EXP', '')
                     crasherfile = crasherfile.replace('-PEX', '')
                     crasherfile = crasherfile.replace('-PNE', '')
                     crasherfile = crasherfile.replace('-UNK', '')
                     crasherfile = crasherfile.replace('.e0', '')
+                elif current_file.endswith('.drillresults'):
+                    # If we have a drillresults file for this crash hash, we use
+                    # that output instead of recalculating it
+                    # Use the .drillresults output for this crash hash
+                    self._load_dr_output(crash_hash,
+                                         os.path.join(root, current_file))
+
             for current_file in files:
+                if crash_hash in self.dr_scores:
+                    # We are currently working with a crash hash
+                    if self.dr_scores[crash_hash] is not None:
+                        # We've already got a score for this crash_hash
+                        logger.debug('Skipping %s' % current_file)
+                        continue
+
                 # Go through all of the .msec files and parse them
-                if regex['msec_report'].match(current_file):
+                if current_file.endswith('.msec'):
                     dbg_file = os.path.join(root, current_file)
                     if crasherfile and root not in crasherfile:
                         crasherfile = os.path.join(root, crasherfile)

@@ -19,11 +19,28 @@ class LinuxResultDriller(ResultDriller):
         # Create dictionary for hashes in results dictionary
         crasherfile = ''
         # Check each of the files in the hash directory
+
         for current_file in files:
+            # Look for a .drillresults file first.  If there is one, we get the
+            # drillresults info from there and move on.
+            if current_file.endswith('.drillresults'):
+                # Use the .drillresults output for this crash hash
+                self._load_dr_output(crash_hash,
+                                     os.path.join(root, current_file))
+                # Move on to next file
+                continue
+
+        for current_file in files:
+
+            if crash_hash in self.dr_scores:
+                # We are currently working with a crash hash
+                if self.dr_scores[crash_hash] is not None:
+                    # We've already got a score for this crash_hash
+                    continue
+
             # Go through all of the .gdb files and parse them
             if current_file.endswith('.gdb'):
                 #            if regex['gdb_report'].match(current_file):
-                # print 'checking %s' % current_file
                 dbg_file = os.path.join(root, current_file)
                 logger.debug('found gdb file: %s', dbg_file)
                 crasherfile = dbg_file.replace('.gdb', '')
