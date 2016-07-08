@@ -19,7 +19,7 @@ Because fuzzing can fill temporary directories, put the target application
 in an unusable state, or trigger other operating-system-level bugs, we 
 recommend that BFF be used in a virtual machine.
 
-Run BFF-2.1-setup.exe in a virtual machine to install BFF 2.1.
+Run BFF-2.8-setup.exe in a virtual machine to install BFF 2.8.
 
 The installer should detect and attempt to download prerequisites and 
 configure your environment appropriately.
