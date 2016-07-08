@@ -18,7 +18,7 @@ regex = {
 
 class WindowsResultDriller(ResultDriller):
 
-    def _platform_find_testcases(self, crash_hash, files, root):
+    def _platform_find_testcases(self, crash_hash, files, root, force=False):
         if "0x" in crash_hash:
             # Create dictionary for hashes in results dictionary
             hash_dict = {}
@@ -36,7 +36,7 @@ class WindowsResultDriller(ResultDriller):
                     crasherfile = crasherfile.replace('-PNE', '')
                     crasherfile = crasherfile.replace('-UNK', '')
                     crasherfile = crasherfile.replace('.e0', '')
-                elif current_file.endswith('.drillresults'):
+                elif current_file.endswith('.drillresults') and not force:
                     # If we have a drillresults file for this crash hash, we use
                     # that output instead of recalculating it
                     # Use the .drillresults output for this crash hash

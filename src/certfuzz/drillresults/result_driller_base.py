@@ -87,7 +87,8 @@ class ResultDriller(object):
             logger.debug('Looking for testcases in %s', root)
             dir_basename = os.path.basename(root)
             try:
-                self._platform_find_testcases(dir_basename, files, root)
+                self._platform_find_testcases(
+                    dir_basename, files, root, force=self.force)
             except TestCaseBundleError as e:
                 logger.warning('Skipping %s: %s', dir_basename, e)
                 continue

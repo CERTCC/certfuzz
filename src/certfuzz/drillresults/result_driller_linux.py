@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class LinuxResultDriller(ResultDriller):
 
-    def _platform_find_testcases(self, crash_hash, files, root):
+    def _platform_find_testcases(self, crash_hash, files, root, force=False):
         # Only use directories that are hashes
         # if "0x" in crash_hash:
         # Create dictionary for hashes in results dictionary
@@ -23,7 +23,7 @@ class LinuxResultDriller(ResultDriller):
         for current_file in files:
             # Look for a .drillresults file first.  If there is one, we get the
             # drillresults info from there and move on.
-            if current_file.endswith('.drillresults'):
+            if current_file.endswith('.drillresults') and not force:
                 # Use the .drillresults output for this crash hash
                 self._load_dr_output(crash_hash,
                                      os.path.join(root, current_file))
