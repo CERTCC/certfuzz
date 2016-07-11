@@ -13,24 +13,14 @@ from certfuzz.analyzers.drillresults.testcasebundle_base import TestCaseBundle
 logger = logging.getLogger(__name__)
 
 # compile our regular expresssions once
-RE_BT_ADDR = re.compile(r'.+(0x[0-9a-fA-F]+)\s+.+$')
-RE_CURRENT_INSTR = re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)')
-RE_FRAME_0 = re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+')
+RE_CODE_TYPE = re.compile(r'^Code Type:\s+(\S+)')
 RE_MAPPED_FRAME = re.compile(
     r'\s?(0x[0-9a-fA-F]+)\s-\s+(0x[0-9a-fA-F]+)\s+.+\s(/.+)')
-RE_RETURN_ADDR = re.compile(r'^#1\s.(0x[0-9a-fA-F]+)\s')
 
 
 class DarwinTestCaseBundle(TestCaseBundle):
     really_exploitable = [
-        'SegFaultOnPc',
-        'SegFaultOnPcNearNull',
-        'BranchAv',
-        'BranchAvNearNull',
-        'StackCodeExection',
-        'BadInstruction',
-        'ReturnAv',
-        'BadInstruction',
+        'EXC_BAD_INSTRUCTION',
     ]
 
     def _get_classification(self):
@@ -43,12 +33,12 @@ class DarwinTestCaseBundle(TestCaseBundle):
 
     def _check_64bit(self):
         for line in self.reporttext.splitlines():
-            m = re.match(RE_BT_ADDR, line)
+            m = re.match(RE_CODE_TYPE, line)
             if m:
-                start_addr = m.group(1)
-                if len(start_addr) > 10:
+                code_type = m.group(1)
+                if code_type == 'X86-64':
                     self._64bit_debugger = True
-                    logger.debug('Using a 64-bit debugger')
+                    logger.debug('Using a 64-bit target')
 
     def _64bit_addr_fixup(self, faultaddr, instraddr):
         return faultaddr, instraddr
