@@ -70,6 +70,10 @@ class DarwinTestCaseBundle(TestCaseBundle):
         logger.debug('currentinstr: %s' % currentinstr)
         return currentinstr
 
+    def get_return_addr(self):
+        # This isn't needed on OSX
+        pass
+
     def fix_return_efa(self, faultaddr):
         '''
         No need for this on Darwin
