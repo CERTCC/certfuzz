@@ -17,9 +17,7 @@ RE_BT_ADDR = re.compile(r'.+(0x[0-9a-fA-F]+)\s+.+$')
 RE_CURRENT_INSTR = re.compile(r'^=>\s(0x[0-9a-fA-F]+)(.+)?:\s+(\S.+)')
 RE_FRAME_0 = re.compile(r'^#0\s+(0x[0-9a-fA-F]+)\s.+')
 RE_MAPPED_FRAME = re.compile(
-    r'\s+(0x[0-9a-fA-F]+)\s-\s+(0x[0-9a-fA-F]+)\s+.+\s(/.+)')
-RE_VDSO = re.compile(
-    r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+0x[0-9a-fA-F]+\s+0(x0)?\s+(\[vdso\])')
+    r'\s?(0x[0-9a-fA-F]+)\s-\s+(0x[0-9a-fA-F]+)\s+.+\s(/.+)')
 RE_RETURN_ADDR = re.compile(r'^#1\s.(0x[0-9a-fA-F]+)\s')
 
 
@@ -63,7 +61,7 @@ class DarwinTestCaseBundle(TestCaseBundle):
         # convert to an int as hex
         instraddr = int(instraddr, 16)
 
-        for pattern in [RE_MAPPED_FRAME, RE_VDSO]:
+        for pattern in [RE_MAPPED_FRAME]:
             n = re.search(pattern, line)
             if n:
                 begin_address = int(n.group(1), 16)
@@ -82,11 +80,11 @@ class DarwinTestCaseBundle(TestCaseBundle):
         logger.debug('currentinstr: %s' % currentinstr)
         return currentinstr
 
-    def get_return_addr(self):
-        rvfunc = lambda x, l: x.group(1)
-        rgx = RE_RETURN_ADDR
-
-        return self._match_rgx(rgx, rvfunc)
+    def fix_return_efa(self, faultaddr):
+        '''
+        No need for this on Darwin
+        '''
+        return faultaddr
 
     def get_instr_addr(self):
         '''

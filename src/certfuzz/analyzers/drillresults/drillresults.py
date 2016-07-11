@@ -8,6 +8,7 @@ from certfuzz.analyzers.analyzer_base import Analyzer
 from certfuzz.analyzers.drillresults.testcasebundle_base import TestCaseBundle
 from certfuzz.drillresults.errors import TestCaseBundleError
 from certfuzz.analyzers.drillresults.testcasebundle_linux import LinuxTestCaseBundle
+from certfuzz.analyzers.drillresults.testcasebundle_darwin import DarwinTestCaseBundle
 from certfuzz.analyzers.drillresults.testcasebundle_windows import WindowsTestCaseBundle
 
 logger = logging.getLogger(__name__)
@@ -114,6 +115,10 @@ class DrillResults(Analyzer):
 
 class LinuxDrillResults(DrillResults):
     _tcb_cls = LinuxTestCaseBundle
+
+
+class DarwinDrillResults(DrillResults):
+    _tcb_cls = DarwinTestCaseBundle
 
 
 class WindowsDrillResults(DrillResults):

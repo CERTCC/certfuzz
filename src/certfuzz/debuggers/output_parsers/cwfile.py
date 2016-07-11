@@ -25,7 +25,7 @@ regex = {
     'exception_line': re.compile('^exception=.+instruction_address=(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
     'bt_thread': re.compile('^Thread.+'),
     'bt_line_basic': re.compile('^\d'),
-    'bt_line': re.compile('^\d+\s+(.*)$'),
+    'bt_line': re.compile('^\d+\s+(\S+)\s+0x[0-9a-zA-Z][0-9a-zA-Z]+\s+(.*)$'),
     'bt_function': re.compile('.+\s+(\S+)\s+(\S+)\s'),
     'bt_at': re.compile('.+\s+at\s+(\S+)'),
     'bt_tab': re.compile('.+\t'),
@@ -46,6 +46,10 @@ blacklist = ('__kernel_vsyscall', 'abort', 'raise', 'malloc', 'free',
              '*__GI_abort', '*__GI_raise', 'malloc_printerr', '__libc_message',
              '__kill', '_sigtramp'
              )
+
+# These libraries should be used in the uniqueness determination of a crash
+blacklist_libs = ('libSystem.B.dylib', 'libsystem_malloc.dylib'
+                  )
 
 
 class CWfile:
@@ -99,37 +103,11 @@ class CWfile:
 
                 logger.debug("checking backtrace line")
                 # skip blacklisted functions
-                x = re.match(regex['bt_function'], bt)
-                if x and x.group(1) in blacklist:
+                if bt in blacklist:
                     continue
+                else:
+                    hashable.append(bt)
 
-                if '???' in bt:
-                    logger.debug('Unmapped frame, skipping')
-                    continue
-
-                m = re.match(regex['bt_tab'], bt)
-                s = re.sub(regex['bt_tab'], "", bt)
-                t = re.sub(regex['bt_addr'], "", s)
-                if m:
-                    logger.debug("found tab: %s" % t)
-                    val = t
-                    # remember the value for the first line in case we need it
-                    # later
-                    if not line_0:
-                        line_0 = val
-
-                    # skip anything in /sysdeps/ since they're
-                    # typically part of the post-crash
-                    if '/sysdeps/' in val:
-                        logger.debug('Found sysdeps, skipping')
-                        continue
-
-                    hashable.append(val)
-#                elif n:
-#                    val = n.group(1)
-#                    # remember the value for the first line in case we need it later
-#                    if not line_0: line_0 = val
-#                    hashable.append(val)
             if not hashable:
                 if self.exit_code:
                     hashable.append(self.exit_code)
@@ -167,7 +145,8 @@ class CWfile:
         self._look_for_crashing_thread(l)
         m = re.match(regex['bt_line'], l)
         if m and self.crashing_thread:
-            item = m.group(1)  # sometimes gdb splits across lines
+            library = m.group(1)
+            item = m.group(2)  # sometimes gdb splits across lines
             # so get the next one if it looks like '<anything> at <foo>' or
             # '<anything> from <foo>'
             next_idx = idx + 1
@@ -179,8 +158,9 @@ class CWfile:
                     item = ' '.join((item, nextline))
                 next_idx += 1
 
-            self.backtrace.append(item)
-            logger.debug('Appending to backtrace: %s', item)
+            if library not in blacklist_libs:
+                self.backtrace.append(item)
+                logger.debug('Appending to backtrace: %s', item)
 
     def _read_file(self):
         '''

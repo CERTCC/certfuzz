@@ -5,6 +5,7 @@ Created on Jul 16, 2014
 '''
 import logging
 import os
+import platform
 
 from certfuzz.analyzers.callgrind.annotate import annotate_callgrind
 from certfuzz.analyzers.callgrind.annotate import annotate_callgrind_tree
@@ -17,6 +18,7 @@ from certfuzz.tc_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.reporters.copy_files import CopyFilesReporter
 from certfuzz.reporters.testcase_logger import TestcaseLoggerReporter
 from certfuzz.analyzers.drillresults import LinuxDrillResults
+from certfuzz.analyzers.drillresults import DarwinDrillResults
 from certfuzz.analyzers.pin_calltrace import Pin_calltrace
 from certfuzz.analyzers.callgrind.callgrind import Callgrind
 from certfuzz.analyzers.valgrind import Valgrind
@@ -48,7 +50,11 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         if self.options.get('use_pin_calltrace'):
             self.analyzer_classes.append(Pin_calltrace)
 
-        self.analyzer_classes.append(LinuxDrillResults)
+        plat = platform.system()
+        if plat == 'Darwin':
+            self.analyzer_classes.append(DarwinDrillResults)
+        else:
+            self.analyzer_classes.append(LinuxDrillResults)
 
     def _verify(self, testcase):
         '''
