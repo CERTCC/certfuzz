@@ -17,26 +17,26 @@ logger = logging.getLogger(__name__)
 registers = ['eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi',
              'edi', 'eip', 'cs', 'ss', 'ds', 'es', 'fs', 'gs']
 registers64 = ('rax', 'rbx', 'rcx', 'rdx', 'rsi', 'rdi', 'rbp',
-             'rsp', 'r8', 'r9', 'r10', 'r11', 'r12', 'r13', 'r14',
-             'r15', 'rip', 'rfl', 'cr2')
+               'rsp', 'r8', 'r9', 'r10', 'r11', 'r12', 'r13', 'r14',
+               'r15', 'rip', 'rfl', 'cr2')
 
 regex = {
-        'code_type': re.compile('Code Type:\s+(.+)'),
-        'exception_line': re.compile('^exception=.+instruction_address=(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
-        'bt_thread': re.compile('^Thread.+'),
-        'bt_line_basic': re.compile('^\d'),
-        'bt_line': re.compile('^\d+\s+(.*)$'),
-        'bt_function': re.compile('.+\s+(\S+)\s+(\S+)\s'),
-        'bt_at': re.compile('.+\s+at\s+(\S+)'),
-        'bt_tab': re.compile('.+\t'),
-        'bt_space': re.compile('.+\s'),
-        'bt_addr': re.compile('(0x[0-9a-fA-F]+)\s'),
-        'signal': re.compile('Program\sreceived\ssignal\s+([^,]+)'),
-        'exit_code': re.compile('Program exited with code (\d+)'),
-        'bt_line_from': re.compile(r'\bfrom\b'),
-        'bt_line_at': re.compile(r'\bat\b'),
-        'register': re.compile('\s\s\s?[0-9a-zA-Z]+:\s(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
-         }
+    'code_type': re.compile('Code Type:\s+(.+)'),
+    'exception_line': re.compile('^exception=.+instruction_address=(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
+    'bt_thread': re.compile('^Thread.+'),
+    'bt_line_basic': re.compile('^\d'),
+    'bt_line': re.compile('^\d+\s+(.*)$'),
+    'bt_function': re.compile('.+\s+(\S+)\s+(\S+)\s'),
+    'bt_at': re.compile('.+\s+at\s+(\S+)'),
+    'bt_tab': re.compile('.+\t'),
+    'bt_space': re.compile('.+\s'),
+    'bt_addr': re.compile('(0x[0-9a-fA-F]+)\s'),
+    'signal': re.compile('Program\sreceived\ssignal\s+([^,]+)'),
+    'exit_code': re.compile('Program exited with code (\d+)'),
+    'bt_line_from': re.compile(r'\bfrom\b'),
+    'bt_line_at': re.compile(r'\bat\b'),
+    'register': re.compile('\s\s\s?[0-9a-zA-Z]+:\s(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
+}
 
 # There are a number of functions that are typically found in crash backtraces,
 # yet are side effects of a crash and are not directly relevant to identifying
@@ -47,7 +47,9 @@ blacklist = ('__kernel_vsyscall', 'abort', 'raise', 'malloc', 'free',
              '__kill', '_sigtramp'
              )
 
+
 class CWfile:
+
     def __init__(self, f):
         '''
         Create a GDB file object from the gdb output file <file>
@@ -111,7 +113,8 @@ class CWfile:
                 if m:
                     logger.debug("found tab: %s" % t)
                     val = t
-                    # remember the value for the first line in case we need it later
+                    # remember the value for the first line in case we need it
+                    # later
                     if not line_0:
                         line_0 = val
 
@@ -147,22 +150,26 @@ class CWfile:
         return self.hashable_backtrace
 
     def _hashable_backtrace_string(self, level):
-        self.hashable_backtrace_string = ' '.join(self.hashable_backtrace[:level]).strip()
-        logger.warning('_hashable_backtrace_string: %s', self.hashable_backtrace_string)
+        self.hashable_backtrace_string = ' '.join(
+            self.hashable_backtrace[:level]).strip()
+        logger.warning(
+            '_hashable_backtrace_string: %s', self.hashable_backtrace_string)
         return self.hashable_backtrace_string
 
     def _backtrace_without_questionmarks(self):
         logger.debug('_backtrace_without_questionmarks')
         if not self.backtrace_without_questionmarks:
-            self.backtrace_without_questionmarks = [bt for bt in self.backtrace if not '??' in bt]
+            self.backtrace_without_questionmarks = [
+                bt for bt in self.backtrace if not '??' in bt]
         return self.backtrace_without_questionmarks
 
     def backtrace_line(self, idx, l):
         self._look_for_crashing_thread(l)
         m = re.match(regex['bt_line'], l)
-        if m  and self.crashing_thread:
+        if m and self.crashing_thread:
             item = m.group(1)  # sometimes gdb splits across lines
-            # so get the next one if it looks like '<anything> at <foo>' or '<anything> from <foo>'
+            # so get the next one if it looks like '<anything> at <foo>' or
+            # '<anything> from <foo>'
             next_idx = idx + 1
             while next_idx < len(self.lines):
                 nextline = self.lines[next_idx]
@@ -218,7 +225,8 @@ class CWfile:
         # so remove it
         if self.is_corrupt_stack and len(self.backtrace):
             removed_bt_line = self.backtrace.pop()
-            logger.debug("Corrupt stack found. Removing backtrace line: %s", removed_bt_line)
+            logger.debug(
+                "Corrupt stack found. Removing backtrace line: %s", removed_bt_line)
 
     def _look_for_crashing_thread(self, line):
         m = re.match(regex['bt_thread'], line)
@@ -243,7 +251,7 @@ class CWfile:
                 self.pc_name = 'rip'
                 self.registers_sought = list(registers64)
 
-    #TODO: CrashWrangler equivalents of the below
+    # TODO: CrashWrangler equivalents of the below
     def _look_for_corrupt_stack(self, line):
         if 'corrupt stack' in line:
             self.is_corrupt_stack = True
@@ -321,7 +329,8 @@ if __name__ == '__main__':
     logger.addHandler(hdlr)
 
     parser = OptionParser()
-    parser.add_option('', '--debug', dest='debug', action='store_true', help='Enable debug messages (overrides --verbose)')
+    parser.add_option('', '--debug', dest='debug', action='store_true',
+                      help='Enable debug messages (overrides --verbose)')
     (options, args) = parser.parse_args()
 
     if options.debug:
