@@ -51,9 +51,9 @@ class Twdf(object):
             logger.debug('%s is watchdog compatible' % hostname)
             self.use_watchdog = True
             self.enable()
-
-        logger.debug('%s is not watchdog compatible' % hostname)
-        self.disable()
+        else:
+            logger.debug('%s is not watchdog compatible' % hostname)
+            self.disable()
 
     def _check_hostname(self):
         hostname = 'System'
