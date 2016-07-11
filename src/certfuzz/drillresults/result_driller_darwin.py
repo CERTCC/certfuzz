@@ -43,7 +43,7 @@ class DarwinResultDriller(ResultDriller):
                 dbg_file = os.path.join(root, current_file)
                 logger.debug('found CrashWrangler file: %s', dbg_file)
                 crasherfile = dbg_file.replace('.gmalloc', '')
-                crasherfile = crasherfile('.cw', '')
+                crasherfile = crasherfile.replace('.cw', '')
                 with TestCaseBundle(dbg_file, crasherfile, crash_hash,
                                     self.ignore_jit) as tcb:
                     tcb.go()
