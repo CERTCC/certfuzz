@@ -418,6 +418,11 @@ class TestCaseBundle(object):
         '''
 
     def fix_efa_offset(self, instructionline, faultaddr):
+        '''
+        Adjust faulting address for instructions that use offsets
+        Currently only works for instructions like CALL [reg + offset]
+        '''
+
         try:
             index = self.instructionpieces.index('call')
         except ValueError:
