@@ -44,6 +44,7 @@ class ResultDriller(object):
         self.testcase_bundles = []
         self.dr_outputs = {}
         self.dr_scores = {}
+        self.dr_paths = {}
 
     def __enter__(self):
         return self
@@ -69,6 +70,7 @@ class ResultDriller(object):
             dr_output = f.read()
         self.dr_outputs[crash_hash] = dr_output
         self.dr_scores[crash_hash] = self._get_dr_score(dr_output)
+        self.dr_paths[crash_hash] = os.path.dirname(drillresults_file)
         return
 
     def store_dr_output(self, crash_hash, dr_output, score):
@@ -154,6 +156,19 @@ class ResultDriller(object):
     def sorted_drillresults_output(self):
         return sorted(self.dr_scores.iteritems(), key=lambda(k, v): (v, k))
 
+    def print_drillresults_file(self, crash_key):
+        ff_line_indicator = 'Fuzzed file: '
+        for line in self.dr_outputs[crash_key].splitlines():
+            if line.startswith(ff_line_indicator):
+                pathname = line.replace(ff_line_indicator, '')
+                fuzzedfile = os.path.basename(pathname)
+                realdir = self.dr_paths[crash_key]
+                fixed_ff_path = os.path.join(realdir, fuzzedfile)
+                print ('%s%s' % (ff_line_indicator, fixed_ff_path))
+            else:
+                print line
+        print os.linesep
+
     def print_reports(self):
         results = dict([(tcb.crash_hash, tcb.details)
                         for tcb in self.testcase_bundles])
@@ -166,8 +181,7 @@ class ResultDriller(object):
                 if score > self.max_score:
                     # skip test cases with scores above our max
                     continue
-                print self.dr_outputs[crash_key]
-                print os.linesep
+                self.print_drillresults_file(crash_key)
             return
 
         for crash_key, score in self.sorted_crashes:
