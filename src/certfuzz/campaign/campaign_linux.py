@@ -25,7 +25,7 @@ from certfuzz.fuzzers.errors import FuzzerExhaustedError
 
 
 logger = logging.getLogger(__name__)
-host_info = hostinfo
+host_info = hostinfo.HostInfo()
 
 SEEDFILE_REPLACE_STRING = '\$SEEDFILE'
 
