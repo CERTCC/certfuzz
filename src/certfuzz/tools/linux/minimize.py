@@ -77,7 +77,7 @@ def main():
         cfg_file = os.path.expanduser(options.config)
     else:
         if os.path.isfile("../configs/bff.yaml"):
-            cfg_file = "../configs/bff.cfg"
+            cfg_file = "../configs/bff.yaml"
         elif os.path.isfile("configs/bff.yaml"):
             cfg_file = "configs/bff.yaml"
         else:

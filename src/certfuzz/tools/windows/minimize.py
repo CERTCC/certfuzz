@@ -6,7 +6,9 @@ Created on Apr 9, 2012
 
 import logging
 import os
+import sys
 import string
+import platform
 
 
 try:
@@ -42,7 +44,9 @@ def _create_minimizer_cfg(cfg):
         pass
     config = DummyCfg()
     config.backtracelevels = 5  # doesn't matter what this is, we don't use it
-    config.debugger_timeout = cfg['runner']['runtimeout']
+    config.debugger_timeout = cfg['runner']['runtimeout'] * 2
+    if config.debugger_timeout < 10:
+        config.debugger_timeout = 10
     template = string.Template(cfg['target']['cmdline_template'])
     config.get_command_args_list = lambda x: get_command_args_list(
         template, x)[1]
@@ -101,7 +105,7 @@ def main():
     if options.config:
         cfg_file = options.config
     else:
-        cfg_file = "../configs/bff.cfg"
+        cfg_file = "../configs/bff.yaml"
     logger.debug('WindowsConfig file: %s', cfg_file)
 
     if options.stringmode and options.target:
@@ -159,8 +163,20 @@ def main():
 
     cmd_as_args = get_command_args_list(
         cfg['target']['cmdline_template'], fuzzed_file.path)[1]
-    # Use runner timeout, since we now only specify the runner timeout
-    cfg['debugger']['runtimeout'] = cfg['runner']['runtimeout']
+
+    # Figure out an appropriate timeout to use based on the config
+    winver = sys.getwindowsversion().major
+    machine = platform.machine()
+    hook_incompatible = winver > 5 or machine == 'AMD64'
+    debugger_timeout = cfg['runner']['runtimeout']
+    if not hook_incompatible:
+        # Assume the user has tuned timeout to the hook.
+        # Allow extra time for the debugger to run
+        debugger_timeout *= 2
+        if debugger_timeout < 10:
+            debugger_timeout = 10
+    cfg['debugger']['runtimeout'] = debugger_timeout
+
     with WindowsTestcase(cfg=cfg,
                          seedfile=seedfile,
                          fuzzedfile=fuzzed_file,

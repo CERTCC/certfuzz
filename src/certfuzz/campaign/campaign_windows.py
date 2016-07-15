@@ -85,11 +85,23 @@ class WindowsCampaign(CampaignBase):
         hook_incompatible = winver > 5 or machine == 'AMD64'
 
         if not hook_incompatible:
+            # Since we've simplified configuration to include only one run timeout, we
+            # need to account for the fact that a debugger-run instance could take
+            # longer than a hooked instance.q
+            debugger_timeout = self.config['runner']['runtimeout'] * 2
+            if debugger_timeout < 10:
+                debugger_timeout = 10
+            self.config['debugger']['runtimeout'] = debugger_timeout
             return
 
         logger.debug(
             'winrun is not compatible with Windows %s %s. Overriding.', winver, machine)
         self.runner_module_name = 'certfuzz.runners.nullrun'
+
+        # Assume that since we're not using the hook, the user has configured the timeout
+        # to be reasonble for debugger-invoked instances.
+        self.config['debugger']['runtimeout'] = self.config[
+            'runner']['runtimeout']
 
     def _post_enter(self):
         self._start_buttonclicker()

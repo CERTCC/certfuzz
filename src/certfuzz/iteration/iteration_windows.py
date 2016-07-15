@@ -65,10 +65,6 @@ class WindowsIteration(IterationBase):
                                       'null_runner': self.runner_cls.is_nullrunner,
                                       })
 
-        # Windows testcase object needs a timeout, and we only pass debugger
-        # options
-        self.cfg['debugger']['runtimeout'] = self.cfg['runner']['runtimeout']
-
     def __exit__(self, etype, value, traceback):
         try:
             handled = IterationBase.__exit__(self, etype, value, traceback)
@@ -108,7 +104,7 @@ class WindowsIteration(IterationBase):
                              program=self.cfg['target']['program'],
                              cmd_template=self.cmd_template,
                              debugger_timeout=self.cfg[
-                                 'runner']['runtimeout'],
+                                 'debugger']['runtimeout'],
                              cmdlist=get_command_args_list(
                                  self.cmd_template, self.fuzzer.output_file_path)[1],
                              dbg_opts=self.cfg['debugger'],
