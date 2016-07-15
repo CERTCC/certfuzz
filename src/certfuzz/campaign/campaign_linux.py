@@ -86,7 +86,7 @@ class LinuxCampaign(CampaignBase):
         self._check_for_redirect()
         self._set_unbuffered_stdout()
         self._setup_environment()
-        if not host_info.is_osx:
+        if not host_info.is_osx():
             # OSX doesn't use gdb,
             self._check_ctt_compat()
 
