@@ -98,13 +98,25 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
 
     def _pre_analyze(self, testcase):
         # get one last debugger output for the newly minimized file
-        if testcase.pc_in_function:
-            # change the debugger template
-            testcase.set_debugger_template('complete')
+        if self.cfg['debugger']['ctt_compat']:
+            # CERT Triage Tools compatible gdb vrsion
+            if testcase.pc_in_function:
+                # change the debugger template
+                testcase.set_debugger_template('complete')
+            else:
+                # use a debugger template that specifies fixed offsets from $pc for
+                # disassembly
+                testcase.set_debugger_template('complete_nofunction')
         else:
-            # use a debugger template that specifies fixed offsets from $pc for
-            # disassembly
-            testcase.set_debugger_template('complete_nofunction')
+            # gdb version not compatible with CERT Triage Tools
+            if testcase.pc_in_function:
+                # change the debugger template
+                testcase.set_debugger_template('noctt_complete')
+            else:
+                # use a debugger template that specifies fixed offsets from $pc for
+                # disassembly
+                testcase.set_debugger_template('noctt_complete_nofunction')
+
         logger.info(
             'Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
         testcase.get_debug_output(testcase.fuzzedfile.path)
