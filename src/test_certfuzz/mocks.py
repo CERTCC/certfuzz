@@ -138,6 +138,7 @@ class MockCfg(dict):
     def __init__(self, templated=True):
         self['debugger'] = {'backtracelevels': 5,
                             'debugger': 'gdb',
+                            'runtimeout': 10,
                             }
         self['target'] = {'cmdline_template': '$PROGRAM b c d $SEEDFILE',
                           'killprocname': 'a',
