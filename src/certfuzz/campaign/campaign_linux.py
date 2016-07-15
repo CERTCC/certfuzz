@@ -64,6 +64,8 @@ class LinuxCampaign(CampaignBase):
         CampaignBase.__init__(self, config_file, result_dir, debug)
         self.runner_module_name = 'certfuzz.runners.zzufrun'
         self.debugger_module_name = 'certfuzz.debuggers.gdb'
+        # Assume gdb compatible with CERT Triage Tools
+        self.config['debugger']['ctt_compat'] = True
 
     def _full_path_original(self, seedfile):
         # yes, two seedfile mentions are intended - adh
@@ -83,6 +85,7 @@ class LinuxCampaign(CampaignBase):
         self._check_for_redirect()
         self._set_unbuffered_stdout()
         self._setup_environment()
+        self._check_ctt_compat()
 
     def _post_enter(self):
         if self.config['runoptions']['watchdogtimeout']:
@@ -140,6 +143,18 @@ class LinuxCampaign(CampaignBase):
 
     def _setup_environment(self):
         os.environ['KDE_DEBUG'] = '1'
+
+    def _check_ctt_compat(self):
+        logger.debug('checking CERT Triage Tool compatibility')
+        current_dir = os.path.dirname(__file__)
+        ctt_path = os.path.join(
+            current_dir, '..', '..', 'CERT_triage_tools', 'exploitable', 'exploitable.py')
+        gdb_output = subprocess.check_output([
+            'gdb', '-ex', 'source %s' % ctt_path, '-ex', 'q'])
+        if 'Error: ' in gdb_output:
+            logger.warning(
+                'gdb is not compatible with CERT Triage Tools (older than 7.2?). Disabling.')
+            self.config['debugger']['ctt_compat'] = False
 
     def _check_for_script(self):
         logger.debug('check for script')
