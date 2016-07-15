@@ -37,10 +37,14 @@ class LinuxTestCaseBundle(TestCaseBundle):
 
     def _get_classification(self):
         self.classification = carve(self.reporttext, "Classification: ", "\n")
+        if not self.classification:
+            self.classification = 'UNKNOWN'
         logger.debug('Classification: %s', self.classification)
 
     def _get_shortdesc(self):
         self.shortdesc = carve(self.reporttext, "Short description: ", " (")
+        if not self.shortdesc:
+            self.shortdesc = 'UNKNOWN'
         logger.debug('Short Description: %s', self.shortdesc)
 
     def _check_64bit(self):
