@@ -89,6 +89,15 @@ class CampaignBase(object):
 
         self._read_config_file()
 
+        # Create a debugger timeout that allows for slack space to account
+        # for the difference between a zzuf-invoked iteration and a
+        # debugger-invoked iteration
+
+        debugger_timeout = self.config['runner']['runtimeout'] * 2
+        if debugger_timeout < 10:
+            debugger_timeout = 10
+        self.config['debugger']['runtimeout'] = debugger_timeout
+
         self.campaign_id = self.config['campaign']['id']
 
         self.current_seed = self.config['runoptions']['first_iteration']
@@ -112,18 +121,21 @@ class CampaignBase(object):
         self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
         if not self.cached_state_file:
             cachefile = 'campaign_%s.pkl' % _campaign_id_with_underscores
-            self.cached_state_file = os.path.join(self.work_dir_base, cachefile)
+            self.cached_state_file = os.path.join(
+                self.work_dir_base, cachefile)
         if not self.seed_interval:
             self.seed_interval = 1
         if not self.current_seed:
             self.current_seed = 0
 
-        self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(self.config['fuzzer']['fuzzer'])
+        self.fuzzer_module_name = 'certfuzz.fuzzers.{}'.format(
+            self.config['fuzzer']['fuzzer'])
 
     def _read_config_file(self):
         logger.info('Reading config from %s', self.config_file)
         self.config = load_and_fix_config(self.config_file)
-        logger.info('Using target program: %s', self.config['target']['program'])
+        logger.info(
+            'Using target program: %s', self.config['target']['program'])
 
     @abc.abstractmethod
     def _pre_enter(self):
@@ -180,7 +192,8 @@ class CampaignBase(object):
             handled = True
         elif etype is RunnerArchitectureError:
             logger.error('Unsupported architecture: %s', value)
-            logger.error('Set "verify_architecture=false" in the runner         section of your config to override this check')
+            logger.error(
+                'Set "verify_architecture=false" in the runner         section of your config to override this check')
             handled = True
         elif etype is RunnerPlatformVersionError:
             logger.error('Unsupported platform: %s', value)
@@ -245,7 +258,8 @@ class CampaignBase(object):
 
     def _check_prog(self):
         if not os.path.exists(self.program):
-            msg = 'Cannot find program "%s" (resolves to "%s")' % (self.program, os.path.abspath(self.program))
+            msg = 'Cannot find program "%s" (resolves to "%s")' % (
+                self.program, os.path.abspath(self.program))
             raise CampaignError(msg)
 
     def _set_fuzzer(self):
@@ -263,7 +277,8 @@ class CampaignBase(object):
             self.runner_module.check_runner()
         except AttributeError:
             # not a big deal if it's not there, just note it and keep going.
-            logger.warn('Runner module %s has no check_runner method. Skipping runner check.')
+            logger.warn(
+                'Runner module %s has no check_runner method. Skipping runner check.')
 
     @property
     def _version_file(self):
@@ -285,7 +300,8 @@ class CampaignBase(object):
         # it even if work_dir_base already exists
         filetools.make_directories(self.work_dir_base)
         # now we're sure work_dir_base exists, so it's safe to create temp dirs
-        self.working_dir = tempfile.mkdtemp(prefix='campaign_', dir=self.work_dir_base)
+        self.working_dir = tempfile.mkdtemp(
+            prefix='campaign_', dir=self.work_dir_base)
         self.seed_dir_local = os.path.join(self.working_dir, 'seedfiles')
 
     def _cleanup_workdir(self):
@@ -295,7 +311,8 @@ class CampaignBase(object):
             pass
 
         if os.path.exists(self.working_dir):
-            logger.warning("Unable to remove campaign working dir: %s", self.working_dir)
+            logger.warning(
+                "Unable to remove campaign working dir: %s", self.working_dir)
         else:
             logger.debug('Removed campaign working dir: %s', self.working_dir)
 
@@ -330,20 +347,24 @@ class CampaignBase(object):
             with open(cache_file, 'rb') as fp:
                 campaign = pickle.load(fp)
         except Exception, e:
-            logger.warning('Unable to read %s, will use new campaign instead: %s', cache_file, e)
+            logger.warning(
+                'Unable to read %s, will use new campaign instead: %s', cache_file, e)
             return
 
         if campaign:
             try:
                 if self.config['config_timestamp'] != campaign.__dict__['config_timestamp']:
-                    logger.warning('Config file modified. Discarding cached campaign')
+                    logger.warning(
+                        'Config file modified. Discarding cached campaign')
                 else:
                     self.__dict__.update(campaign.__dict__)
                     logger.info('Reloaded campaign from %s', cache_file)
             except KeyError:
-                logger.warning('No config date detected. Discarding cached campaign')
+                logger.warning(
+                    'No config date detected. Discarding cached campaign')
         else:
-            logger.warning('Unable to reload campaign from %s, will use new campaign instead', cache_file)
+            logger.warning(
+                'Unable to reload campaign from %s, will use new campaign instead', cache_file)
 
     def _save_state(self, cachefile=None):
         if not cachefile:
@@ -361,7 +382,8 @@ class CampaignBase(object):
         '''
         if not testcase_id in self.testcases_seen:
             self.testcases_seen.add(testcase_id)
-            logger.debug("%s did not exist in cache, testcase is unique", testcase_id)
+            logger.debug(
+                "%s did not exist in cache, testcase is unique", testcase_id)
             return True
         logger.debug('%s was found, not unique', testcase_id)
         return False
@@ -396,7 +418,8 @@ class CampaignBase(object):
 
         # start an iteration interval
         # note that range does not include interval_limit
-        logger.debug('Starting interval %d-%d', self.current_seed, interval_limit)
+        logger.debug(
+            'Starting interval %d-%d', self.current_seed, interval_limit)
         for seednum in xrange(self.current_seed, interval_limit):
             self._do_iteration(sf, r, seednum)
 
@@ -424,4 +447,3 @@ class CampaignBase(object):
         signal.signal(signal.SIGINT, self.signal_handler)
         while self._keep_going():
             self._do_interval()
-

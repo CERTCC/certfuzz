@@ -184,7 +184,6 @@ class Minimizer(object):
         filetools.copy_file(self.testcase.fuzzedfile.path, self.tempfile)
 
         # figure out what testcase signatures belong to this fuzzedfile
-        raw_input('timeout?')
         self.debugger_timeout = self.cfg['debugger']['runtimeout']
         self.crash_hashes = []
         self.measured_dbg_time = None
