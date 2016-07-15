@@ -16,6 +16,7 @@ from certfuzz.debuggers import crashwrangler  # @UnusedImport
 from certfuzz.debuggers import gdb  # @UnusedImport
 from certfuzz.file_handlers.watchdog_file import TWDF, touch_watchdog_file
 from certfuzz.fuzztools import subprocess_helper as subp
+from certfuzz.fuzztools import hostinfo
 from certfuzz.fuzztools.ppid_observer import check_ppid
 from certfuzz.fuzztools.watchdog import WatchDog
 from certfuzz.iteration.iteration_linux import LinuxIteration
@@ -24,7 +25,7 @@ from certfuzz.fuzzers.errors import FuzzerExhaustedError
 
 
 logger = logging.getLogger(__name__)
-
+host_info = hostinfo
 
 SEEDFILE_REPLACE_STRING = '\$SEEDFILE'
 
@@ -85,7 +86,9 @@ class LinuxCampaign(CampaignBase):
         self._check_for_redirect()
         self._set_unbuffered_stdout()
         self._setup_environment()
-        self._check_ctt_compat()
+        if not host_info.is_osx:
+            # OSX doesn't use gdb,
+            self._check_ctt_compat()
 
     def _post_enter(self):
         if self.config['runoptions']['watchdogtimeout']:
