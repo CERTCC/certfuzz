@@ -77,7 +77,7 @@ def main():
         cfg_file = os.path.expanduser(options.config)
     else:
         if os.path.isfile("../configs/bff.yaml"):
-            cfg_file = "../configs/bff.cfg"
+            cfg_file = "../configs/bff.yaml"
         elif os.path.isfile("configs/bff.yaml"):
             cfg_file = "configs/bff.yaml"
         else:
@@ -142,13 +142,16 @@ def main():
     crashers_dir = '.'
 
     cfg = load_and_fix_config(cfg_file)
+    debugger_timeout = cfg['runner']['runtimeout'] * 2
+    if debugger_timeout < 10:
+        debugger_timeout = 10
 
     with LinuxTestcase(cfg=cfg,
                        seedfile=seedfile,
                        fuzzedfile=fuzzed_file,
                        program=cfg['target']['program'],
                        cmd_template=cfg['target']['cmdline_template'],
-                       debugger_timeout=cfg['runner']['runtimeout'],
+                       debugger_timeout=debugger_timeout,
                        cmdlist=get_command_args_list(
                            cfg['target']['cmdline_template'], fuzzed_file.path)[1],
                        backtrace_lines=cfg['debugger']['backtracelevels'],

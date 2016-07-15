@@ -64,7 +64,7 @@ class LinuxIteration(IterationBase):
                            fuzzedfile=BasicFile(self.fuzzer.output_file_path),
                            program=self.cfg['target']['program'],
                            cmd_template=self.cmd_template,
-                           debugger_timeout=self.cfg['runner']['runtimeout'],
+                           debugger_timeout=self.cfg['debugger']['runtimeout'],
                            cmdlist=get_command_args_list(self.cmd_template,
                                                          infile=self.fuzzer.output_file_path,
                                                          posix=True)[1],
