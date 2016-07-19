@@ -25,7 +25,8 @@ class GDB(Debugger):
     _ext = 'gdb'
 
     def __init__(self, program, cmd_args, outfile_base, timeout, template=None, exclude_unmapped_frames=True, keep_uniq_faddr=False, **options):
-        Debugger.__init__(self, program, cmd_args, outfile_base, timeout, **options)
+        Debugger.__init__(
+            self, program, cmd_args, outfile_base, timeout, **options)
         self.template = template
         self.exclude_unmapped_frames = exclude_unmapped_frames
         self.keep_uniq_faddr = keep_uniq_faddr
@@ -33,16 +34,19 @@ class GDB(Debugger):
     def _get_cmdline(self):
         self._create_input_file()
         if not os.path.exists(self.input_file):
-            raise DebuggerError('Input file does not exist: %s', self.input_file)
+            raise DebuggerError(
+                'Input file does not exist: %s', self.input_file)
 
-        args = [self.debugger_app(), '-n', '-batch', '-command', self.input_file]
+        args = [
+            self.debugger_app(), '-n', '-batch', '-command', self.input_file]
         logger.log(5, "GDB command: [%s]", ' '.join(args))
         return args
 
     def _create_input_file(self):
         # short-circuit if input_file already exists
         if os.path.exists(self.input_file):
-            logger.log(5, "GDB input file already exists at %s", self.input_file)
+            logger.log(
+                5, "GDB input file already exists at %s", self.input_file)
             return
 
         if not self.template:
@@ -72,13 +76,15 @@ class GDB(Debugger):
         if os.path.exists(self.input_file):
             logger.log(5, "GDB input file is %s", self.input_file)
         else:
-            logger.warning("Failed to create GDB input file %s", self.input_file)
+            logger.warning(
+                "Failed to create GDB input file %s", self.input_file)
 
     def _remove_temp_file(self):
         try:
             os.remove(self.input_file)
         except OSError as e:
-            logger.warning("Caught OSError attempting to remove %s: %s", self.input_file, e)
+            logger.warning(
+                "Caught OSError attempting to remove %s: %s", self.input_file, e)
 
         if os.path.exists(self.input_file):
             logger.warning("Failed to delete %s", self.input_file)
@@ -108,7 +114,8 @@ class GDB(Debugger):
         # build the command line in a separate function so we can unit test
         # it without actually running the command
         cmdline = self._get_cmdline()
-        subp.run_with_timer(cmdline, self.timeout, self.program, stdout=os.devnull)
+        subp.run_with_timer(
+            cmdline, self.timeout, self.program, stdout=os.devnull)
 
         self._remove_temp_file()
         if not os.path.exists(self.outfile):

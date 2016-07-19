@@ -9,6 +9,7 @@ import os
 import subprocess
 import sys
 import time
+import platform
 
 from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.campaign.errors import CampaignScriptError, CmdlineTemplateError
@@ -67,6 +68,8 @@ class LinuxCampaign(CampaignBase):
         self.debugger_module_name = 'certfuzz.debuggers.gdb'
         # Assume gdb compatible with CERT Triage Tools
         self.config['debugger']['ctt_compat'] = True
+        # Assume we're on Linux, which has /proc
+        self.config['debugger']['proc_compat'] = True
 
     def _full_path_original(self, seedfile):
         # yes, two seedfile mentions are intended - adh
@@ -88,7 +91,7 @@ class LinuxCampaign(CampaignBase):
         self._setup_environment()
         if not host_info.is_osx():
             # OSX doesn't use gdb,
-            self._check_ctt_compat()
+            self._check_gdb_compat()
 
     def _post_enter(self):
         if self.config['runoptions']['watchdogtimeout']:
@@ -147,7 +150,7 @@ class LinuxCampaign(CampaignBase):
     def _setup_environment(self):
         os.environ['KDE_DEBUG'] = '1'
 
-    def _check_ctt_compat(self):
+    def _check_gdb_compat(self):
         logger.debug('checking CERT Triage Tool compatibility')
         current_dir = os.path.dirname(__file__)
         ctt_path = os.path.join(
@@ -158,6 +161,13 @@ class LinuxCampaign(CampaignBase):
             logger.warning(
                 'gdb is not compatible with CERT Triage Tools (older than 7.2?). Disabling.')
             self.config['debugger']['ctt_compat'] = False
+
+        logger.debug('checking /proc compatibility')
+        current_platform = platform.system()
+        if current_platform is not 'Linux':
+            logger.debug(
+                '%s does not support /proc. Adjusting debugger templates.' % current_platform)
+            self.config['debugger']['proc_compat'] = False
 
     def _check_for_script(self):
         logger.debug('check for script')

@@ -22,10 +22,10 @@ logger = logging.getLogger(__name__)
 
 host_info = hostinfo.HostInfo()
 
-if host_info.is_linux():
-    from certfuzz.debuggers.gdb import GDB as debugger_cls
-elif host_info.is_osx():
+if host_info.is_osx():
     from certfuzz.debuggers.crashwrangler import CrashWrangler as debugger_cls
+else:
+    from certfuzz.debuggers.gdb import GDB as debugger_cls
 
 
 class LinuxTestcase(TestCaseBase):
@@ -66,15 +66,38 @@ class LinuxTestcase(TestCaseBase):
         self.signature = None
 
     def set_debugger_template(self, option='bt_only'):
-        if host_info.is_linux():
-            dbg_template_name = '%s_%s_template.txt' % (
-                self._debugger_cls._key, option)
-            self.debugger_template = os.path.join(
-                'certfuzz/debuggers/templates', dbg_template_name)
-            logger.debug('Debugger template set to %s', self.debugger_template)
-            if not os.path.exists(self.debugger_template):
-                raise TestCaseError(
-                    'Debugger template does not exist at %s' % self.debugger_template)
+        if host_info.is_osx():
+            # OSX doesn't use gdb templates
+            return
+
+        # Available templates, based on current platform capabilities:
+        # bt_only
+        # noproc_bt_only
+        # complete
+        # complete_nofunction
+        # noctt_complete
+        # noctt_complete_nofunction
+        # noproc_complete
+        # noproc_complete_nofunction
+
+        if not self.cfg['debugger']['proc_compat']:
+            option = 'noproc_' + option
+
+        if 'complete' in option:
+            if not self.cfg['debugger']['ctt_compat']:
+                option = 'noctt_' + option
+
+            if not self.pc_in_function:
+                option = option + '_nofunction'
+
+        dbg_template_name = '%s_%s_template.txt' % (
+            self._debugger_cls._key, option)
+        self.debugger_template = os.path.join(
+            'certfuzz/debuggers/templates', dbg_template_name)
+        logger.debug('Debugger template set to %s', self.debugger_template)
+        if not os.path.exists(self.debugger_template):
+            raise TestCaseError(
+                'Debugger template does not exist at %s' % self.debugger_template)
 
     def update_crash_details(self):
         TestCaseBase.update_crash_details(self)
