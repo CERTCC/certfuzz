@@ -97,25 +97,8 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         touch_watchdog_file()
 
     def _pre_analyze(self, testcase):
-        # get one last debugger output for the newly minimized file
-        if self.cfg['debugger']['ctt_compat']:
-            # CERT Triage Tools compatible gdb vrsion
-            if testcase.pc_in_function:
-                # change the debugger template
-                testcase.set_debugger_template('complete')
-            else:
-                # use a debugger template that specifies fixed offsets from $pc for
-                # disassembly
-                testcase.set_debugger_template('complete_nofunction')
-        else:
-            # gdb version not compatible with CERT Triage Tools
-            if testcase.pc_in_function:
-                # change the debugger template
-                testcase.set_debugger_template('noctt_complete')
-            else:
-                # use a debugger template that specifies fixed offsets from $pc for
-                # disassembly
-                testcase.set_debugger_template('noctt_complete_nofunction')
+
+        testcase.set_debugger_template('complete')
 
         logger.info(
             'Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ##############################################################################
 # Use of the CERT Basic Fuzzing Framework and related source code is subject
@@ -46,11 +46,28 @@
 # contract clause at 252.227.7013.
 ##############################################################################
 
+
+# contains(string, substring)
+#
+# Returns 0 if the specified string contains the specified substring,
+# otherwise returns 1.
+contains() {
+    string="$1"
+    substring="$2"
+    if test "${string#*$substring}" != "$string"
+    then
+        return 0    # $substring is in $string
+    else
+        return 1    # $substring is not in $string
+    fi
+}
+
+
 scriptlocation=`echo "$(cd "$(dirname "$0")"; pwd)/"`
 echo Script location: $scriptlocation/bff.py
 platform=`uname -a`
 PINURL=https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.0-76991-gcc-linux.tar.gz
-if [[ "$platform" =~ "Darwin Kernel Version 11" ]]; then
+if ( contains "$platform" "Darwin Kernel Version 11" ); then
     mypython="/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
 else
     mypython="python"
@@ -60,14 +77,14 @@ fi
 # Prevent creation of huge files
 ulimit -f 1048576
 
-if [[ "$platform" =~ "Linux" ]]; then
-    if [[ ! -f ~/pin/pin ]]; then
+if ( contains "$platform" "Linux" ); then
+    if [ ! -f ~/pin/pin ]; then
         mkdir -p ~/fuzzing
         echo PIN not detected. Downloading...
         tarball=~/fuzzing/`basename $PINURL`
         pindir=`basename $tarball .tar.gz`
         wget --tries=1 $PINURL -O $tarball
-        if [[ -f $tarball ]]; then      
+        if [ -f $tarball ]; then      
             tar xzvf $tarball -C ~
             mv ~/$pindir ~/pin
         else
@@ -77,13 +94,13 @@ if [[ "$platform" =~ "Linux" ]]; then
     
     cp -au $scriptlocation/pintool ~
     
-    if [[ ! -f ~/pintool/calltrace.so ]]; then
+    if [ ! -f ~/pintool/calltrace.so ]; then
         echo Building calltrace pintool...
         cd ~/pintool
         $mypython make.py
     fi
     
-    if [[ ~/pintool/calltrace.cpp -ot $scriptlocation/pintool/calltrace.cpp ]]; then
+    if [ ~/pintool/calltrace.cpp -ot $scriptlocation/pintool/calltrace.cpp ]; then
         echo Updating calltrace pintool...
         cd ~/pintool
         $mypython make.py
@@ -93,7 +110,7 @@ fi
 cd $scriptlocation
 
 echo "Using python interpreter: $mypython"
-if [[ -f "$scriptlocation/bff.py" ]]; then
+if [ -f "$scriptlocation/bff.py" ]; then
     $mypython $scriptlocation/bff.py "$@"
 else
     read -p "Cannot find $scriptlocation/bff.py Please verify script locations."
