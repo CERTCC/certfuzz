@@ -6,6 +6,7 @@ Created on Apr 9, 2012
 import logging
 import os
 import sys
+import platform
 
 from certfuzz import debuggers
 from certfuzz.testcase.testcase_linux import LinuxTestcase
@@ -145,6 +146,9 @@ def main():
     debugger_timeout = cfg['runner']['runtimeout'] * 2
     if debugger_timeout < 10:
         debugger_timeout = 10
+    proc_compat = platform.system() == 'Linux'
+    cfg['debugger']['proc_compat'] = proc_compat
+    cfg['debugger']['runtimeout'] = debugger_timeout
 
     with LinuxTestcase(cfg=cfg,
                        seedfile=seedfile,
