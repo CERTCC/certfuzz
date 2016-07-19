@@ -148,11 +148,11 @@ class TestCaseBundle(object):
 
         # No faulting address means no crash.
         if not faultaddr:
-            # raise TestCaseBundleError('No faulting address means no crash')
+            raise TestCaseBundleError('No faulting address means no crash')
             return
 
         if not instraddr:
-            # raise TestCaseBundleError('No instraddr address means no crash')
+            raise TestCaseBundleError('No instraddr address means no crash')
             return
 
         faultaddr, instraddr = self._64bit_addr_fixup(faultaddr, instraddr)
