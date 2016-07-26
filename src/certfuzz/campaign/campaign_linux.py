@@ -9,7 +9,6 @@ import os
 import subprocess
 import sys
 import time
-import platform
 
 from certfuzz.campaign.campaign_base import CampaignBase
 from certfuzz.campaign.errors import CampaignScriptError, CmdlineTemplateError
@@ -163,8 +162,7 @@ class LinuxCampaign(CampaignBase):
             self.config['debugger']['ctt_compat'] = False
 
         logger.debug('checking /proc compatibility')
-        current_platform = platform.system()
-        if current_platform is not 'Linux':
+        if not host_info.is_linux:
             logger.debug(
                 '%s does not support /proc. Adjusting debugger templates.' % current_platform)
             self.config['debugger']['proc_compat'] = False
