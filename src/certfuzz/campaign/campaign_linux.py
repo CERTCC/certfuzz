@@ -155,7 +155,7 @@ class LinuxCampaign(CampaignBase):
         ctt_path = os.path.join(
             current_dir, '..', '..', 'CERT_triage_tools', 'exploitable', 'exploitable.py')
         gdb_output = subprocess.check_output([
-            'gdb', '-ex', 'source %s' % ctt_path, '-ex', 'q'])
+            'gdb', '-ex', 'source %s' % ctt_path, '-ex', 'q'], stderr=subprocess.STDOUT)
         if 'Error: ' in gdb_output:
             logger.warning(
                 'gdb is not compatible with CERT Triage Tools (older than 7.2?). Disabling.')
