@@ -15,30 +15,33 @@ logger = logging.getLogger(__name__)
 
 # compile our regular expresssions once
 RE_64BIT_DEBUGGER = re.compile('^Microsoft.*AMD64$')
-RE_MAPPED_ADDRESS = re.compile('^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)')
-RE_MAPPED_ADDRESS64 = re.compile('^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
+RE_MAPPED_ADDRESS = re.compile(
+    '^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)')
+RE_MAPPED_ADDRESS64 = re.compile(
+    '^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
 RE_SYSWOW64 = re.compile('ModLoad:.*syswow64.*', re.IGNORECASE)
 
 
 class WindowsTestCaseBundle(TestCaseBundle):
     # These !exploitable short descriptions indicate a very interesting crash
     really_exploitable = [
-                      'ReadAVonIP',
-                      'TaintedDataControlsCodeFlow',
-                      'ReadAVonControlFlow',
-                      'DEPViolation',
-                      'IllegalInstruction',
-                      'PrivilegedInstruction',
-                      ]
+        'ReadAVonIP',
+        'TaintedDataControlsCodeFlow',
+        'ReadAVonControlFlow',
+        'DEPViolation',
+        'IllegalInstruction',
+        'PrivilegedInstruction',
+    ]
 
     def __init__(self, dbg_outfile, testcase_file, crash_hash,
                  ignore_jit):
         super(self.__class__, self).__init__(dbg_outfile, testcase_file, crash_hash,
-                 ignore_jit)
+                                             ignore_jit)
         self.wow64_app = False
 
     def _get_classification(self):
-        self.classification = carve(self.reporttext, "Exploitability Classification: ", "\n")
+        self.classification = carve(
+            self.reporttext, "Exploitability Classification: ", "\n")
         logger.debug('Classification: %s', self.classification)
 
     def _get_shortdesc(self):
@@ -77,9 +80,11 @@ class WindowsTestCaseBundle(TestCaseBundle):
                         fileparts = self.testcase_file.split('-')
                         m = re.search('\..+', fileparts[1])
                         # Recreate the original file name, minus the iteration
-                        self.testcase_file = os.path.join(current_dir, fileparts[0] + m.group(0))
+                        self.testcase_file = os.path.join(
+                            current_dir, fileparts[0] + m.group(0))
                     else:
-                        self.testcase_file = os.path.join(current_dir, self.testcase_file)
+                        self.testcase_file = os.path.join(
+                            current_dir, self.testcase_file)
 
         TestCaseBundle._find_testcase_file(self)
 
@@ -115,7 +120,8 @@ class WindowsTestCaseBundle(TestCaseBundle):
             begin_address = int(n.group(1).replace('`', ''), 16)
             end_address = int(n.group(2).replace('`', ''), 16)
             module_name = n.group(3)
-            logger.debug('%x %x %s %x', begin_address, end_address, module_name, instraddr)
+            logger.debug(
+                '%x %x %s %x', begin_address, end_address, module_name, instraddr)
             if begin_address < instraddr < end_address:
                 logger.debug('Matched: %x in %x %x %s', instraddr,
                              begin_address, end_address, module_name)
