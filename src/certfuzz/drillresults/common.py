@@ -33,22 +33,22 @@ def _build_arg_parser():
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--debug', dest='debug', action='store_true',
-                      help='Set logging to DEBUG and enable additional debuggers if available')
+                       help='Set logging to DEBUG and enable additional debuggers if available')
     group.add_argument('-v', '--verbose', dest='verbose', action='store_true',
-                      help='Set logging to INFO level')
+                       help='Set logging to INFO level')
 
     parser.add_argument('-d', '--dir',
-                      help='directory to look for results in. Default is "results"',
-                      dest='resultsdir',
-                      default='../results',
-                      type=str)
+                        help='directory to look for results in. Default is "results"',
+                        dest='resultsdir',
+                        default='../results',
+                        type=str)
     parser.add_argument('-j', '--ignore-jit', dest='ignore_jit',
-                      action='store_true',
-                      help='Ignore PC in unmapped module (JIT)',
-                      default=False)
+                        action='store_true',
+                        help='Ignore PC in unmapped module (JIT)',
+                        default=False)
     parser.add_argument('-f', '--force', dest='force',
-                      action='store_true',
-                      help='Force recalculation of results')
+                        action='store_true',
+                        help='Force recalculation of results')
     parser.add_argument('-a', '--all', dest='report_all',
                         help='Report all scores (default is to only print if <=70)',
                         default=False)
@@ -176,10 +176,11 @@ def main(driller_class=None):
     root_logger_to_console(args)
 
     if driller_class is None:
-        raise DrillResultsError('A platform-specific driller_class must be specified.')
+        raise DrillResultsError(
+            'A platform-specific driller_class must be specified.')
 
     with driller_class(ignore_jit=args.ignore_jit,
-                         base_dir=args.resultsdir,
-                         force_reload=args.force,
-                         report_all=args.report_all) as rd:
+                       base_dir=args.resultsdir,
+                       force_reload=args.force,
+                       report_all=args.report_all) as rd:
         rd.drill_results()
