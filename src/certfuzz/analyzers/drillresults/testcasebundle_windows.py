@@ -10,7 +10,6 @@ import re
 from certfuzz.drillresults.common import carve
 from certfuzz.analyzers.drillresults.testcasebundle_base import TestCaseBundle
 
-
 logger = logging.getLogger(__name__)
 
 # compile our regular expresssions once
@@ -73,7 +72,10 @@ class WindowsTestCaseBundle(TestCaseBundle):
             for arg in args:
                 if "sf_" in arg:
                     self.testcase_file = os.path.basename(arg)
-                    if "-" in self.testcase_file:
+                    if os.path.isfile(os.path.join(current_dir, self.testcase_file)):
+                        self.testcase_file = os.path.join(
+                            current_dir, self.testcase_file)
+                    elif "-" in self.testcase_file:
                         # FOE 2.0 verify mode puts a '-<iteration>' part on the
                         # filename when invoking cdb, however the resulting file
                         # is really just 'sf_<hash>.<ext>'
@@ -82,9 +84,6 @@ class WindowsTestCaseBundle(TestCaseBundle):
                         # Recreate the original file name, minus the iteration
                         self.testcase_file = os.path.join(
                             current_dir, fileparts[0] + m.group(0))
-                    else:
-                        self.testcase_file = os.path.join(
-                            current_dir, self.testcase_file)
 
         TestCaseBundle._find_testcase_file(self)
 
