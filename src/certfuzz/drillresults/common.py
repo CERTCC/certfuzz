@@ -96,7 +96,8 @@ def carve(string, token1, token2):
 # Todo: fix this up.  Was added to bring gdb support
 def carve2(string):
     delims = [("Exception Faulting Address: ", "\n"),
-              ("si_addr:$2 = (void *)", "\n")]
+              ("si_addr:$2 = (void *)", "\n"),
+              ("si_addr:$1 = (void *)", "\n")]
     for token1, token2 in delims:
         substring = carve(string, token1, token2)
         if len(substring):
