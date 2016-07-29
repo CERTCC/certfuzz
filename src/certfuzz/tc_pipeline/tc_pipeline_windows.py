@@ -47,8 +47,6 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         testcase.should_proceed_with_analysis = True
         logger.info("Crash confirmed: %s Exploitability: %s Faulting Address: %s",
                     testcase.crash_hash, testcase.exp, testcase.faddr)
-        # if self.options['minimizable']:
-        #    testcase.should_proceed_with_analysis = True
         self.success = True
 
     def _report(self, testcase):
