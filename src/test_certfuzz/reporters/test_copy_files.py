@@ -13,13 +13,11 @@ import os
 
 class Test(unittest.TestCase):
 
-
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
-
 
     def testCopyFiles(self):
         tc = MockTestcase()
@@ -37,15 +35,15 @@ class Test(unittest.TestCase):
         # source dir has only one file
         self.assertEqual([fname], os.listdir(tc.tempdir))
 
-        r = copy_files.CopyFilesReporter(tc, target_dir)
+        r = copy_files.CopyFilesReporter(tc, keep_duplicates=False)
         with r:
             r.go()
 
-        # target dir should contain an outdir with the file we copied
-        outdir = os.path.join(target_dir, tc.signature)
+        # target dir, which is taken from the testcase object,
+        # should contain the file we copied
+        outdir = tc.target_dir
         self.assertTrue(os.path.exists(outdir))
         self.assertEqual([fname], os.listdir(outdir))
-
 
 
 if __name__ == "__main__":

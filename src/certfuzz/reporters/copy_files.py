@@ -20,7 +20,7 @@ class CopyFilesReporter(ReporterBase):
     Copies files to a location
     '''
 
-    def __init__(self, testcase, keep_duplicates):
+    def __init__(self, testcase, keep_duplicates=False):
         '''
         Constructor
         '''
