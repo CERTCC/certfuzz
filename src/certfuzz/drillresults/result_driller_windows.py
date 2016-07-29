@@ -46,7 +46,7 @@ class WindowsResultDriller(ResultDriller):
             for current_file in files:
                 if crash_dir in self.dr_scores:
                     # We are currently working with a crash hash
-                    if self.dr_scores[crash_hash] is not None:
+                    if self.dr_scores[crash_dir] is not None:
                         # We've already got a score for this crash_dir
                         logger.debug('Skipping %s' % current_file)
                         continue
