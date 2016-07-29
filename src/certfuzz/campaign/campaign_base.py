@@ -380,7 +380,7 @@ class CampaignBase(object):
         @param testcase_id: the testcase_id to look up
         @param exploitability: not used at this time
         '''
-        if not testcase_id in self.testcases_seen:
+        if testcase_id not in self.testcases_seen:
             self.testcases_seen.add(testcase_id)
             logger.debug(
                 "%s did not exist in cache, testcase is unique", testcase_id)

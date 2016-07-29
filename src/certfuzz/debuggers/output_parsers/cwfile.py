@@ -36,6 +36,7 @@ regex = {
     'bt_line_from': re.compile(r'\bfrom\b'),
     'bt_line_at': re.compile(r'\bat\b'),
     'register': re.compile('\s\s\s?[0-9a-zA-Z]+:\s(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
+    'exploitability': re.compile('exception=.+:is_exploitable=( no|yes):'),
 }
 
 # There are a number of functions that are typically found in crash backtraces,
@@ -88,6 +89,7 @@ class CWfile:
         self.pc_name = 'eip'
         self.keep_uniq_faddr = False
         self.faddr = None
+        self.exp = None
 
         self._process_lines()
 
@@ -198,6 +200,9 @@ class CWfile:
             if not self.is_corrupt_stack:
                 self._look_for_corrupt_stack(line)
 
+            if not self.exp:
+                self._look_for_exploitability(line)
+
             self._look_for_registers(line)
 
         # if we found that the stack was corrupt,
@@ -221,7 +226,7 @@ class CWfile:
         '''
         if self.is_64bit:
             return
-        #raw_input('checking exception regex')
+
         m = re.match(regex['code_type'], line)
         if m:
             code_type = m.group(0)
@@ -245,6 +250,19 @@ class CWfile:
         m = re.match(regex['signal'], line)
         if m:
             self.signal = m.group(1)
+
+    def _look_for_exploitability(self, line):
+        if self.faddr:
+            return
+
+        m = re.match(regex['exploitability'], line)
+        if m:
+            exploitable = m.group(1)
+            if exploitable == 'yes':
+                self.exp = 'EXPLOITABLE'
+            else:
+                self.exp = 'UNKNOWN'
+            logger.debug('Exploitable: %s', self.exp)
 
     def _look_for_crash(self, line):
         if 'SIGKILL' in line:
