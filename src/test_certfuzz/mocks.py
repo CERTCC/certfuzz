@@ -114,7 +114,7 @@ class MockTestcase(Mock):
     pc = u'dummyPCstring'
     debugger_extension = 'abcdefg'
     dbg_outfile = 'xyz'
-    target_dir = 'asdf'
+    target_dir = tempfile.mkdtemp()
 
 
 class MockDbgOut(Mock):
