@@ -69,7 +69,10 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
                 # Check if crasher directory exists already
                 target_dir = testcase._get_output_dir(self.outdir)
                 if os.path.exists(target_dir):
-                    return (False, 'skip duplicate %s' % testcase.signature)
+                    if len(os.listdir(target_dir)) > 0:
+                        return (False, 'skip duplicate %s' % testcase.signature)
+                    else:
+                        return(True, 'Empty output directory')
                 else:
                     return (True, 'unique')
             else:
