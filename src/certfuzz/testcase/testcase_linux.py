@@ -106,6 +106,7 @@ class LinuxTestcase(TestCaseBase):
 
         if self.is_crash:
             self.signature = self.get_signature()
+            self.exp = self.dbg.exp
             self.pc = self.dbg.registers_hex.get(self.dbg.pc_name)
             self.target_dir = self._get_output_dir()
             self.debugger_missed_stack_corruption = self.dbg.debugger_missed_stack_corruption
@@ -205,6 +206,7 @@ class LinuxTestcase(TestCaseBase):
         assert self.crash_base_dir
         assert self.signature
         self._verify_crash_base_dir()
-        self.target_dir = os.path.join(self.crash_base_dir, self.signature)
+        self.target_dir = os.path.join(
+            self.crash_base_dir, self.exp, self.signature)
 
         return self.target_dir

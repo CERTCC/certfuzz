@@ -100,7 +100,7 @@ class WindowsTestcase(TestCaseBase):
         # Reset properties that need to be regenerated
         self.exception_depth = 0
         self.parsed_outputs = []
-        self.exp = None
+        self.exp = 'UNKNOWN'
         fname = self._get_file_basename()
         outfile_base = os.path.join(self.tempdir, fname)
         # Regenerate target commandline with new crasher file
@@ -217,7 +217,8 @@ class WindowsTestcase(TestCaseBase):
         logger.debug('target_base: %s', target_base)
         logger.debug('signature: %s', self.signature)
 
-        self.target_dir = os.path.join(target_base, 'crashers', self.signature)
+        self.target_dir = os.path.join(
+            target_base, 'crashers', self.exp, self.signature)
         if len(self.target_dir) > 130:
             # Don't make a path too deep.  Windows won't support it
             self.target_dir = self.target_dir[:130] + '__'

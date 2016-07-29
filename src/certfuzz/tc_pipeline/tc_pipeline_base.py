@@ -216,7 +216,8 @@ class TestCasePipelineBase(object):
                 for new_tc in m.other_crashes.values():
                     self.tc_candidate_q.put(new_tc)
         except MinimizerError as e:
-            logger.warning('Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
+            logger.warning(
+                'Unable to minimize %s, proceeding with original fuzzed crash file: %s', testcase.signature, e)
 
         # calculate the hamming distances for this crash
         # between the original seedfile and the minimized fuzzed file
@@ -225,9 +226,12 @@ class TestCasePipelineBase(object):
     def _post_minimize(self, testcase):
         if self.cfg['runoptions']['recycle_crashers']:
             logger.debug('Recycling crash as seedfile')
-            iterstring = testcase.fuzzedfile.basename.split('-')[1].split('.')[0]
-            crasherseedname = 'sf_' + testcase.seedfile.md5 + '-' + iterstring + testcase.seedfile.ext
-            crasherseed_path = os.path.join(self.cfg['directories']['seedfile_dir'], crasherseedname)
+            iterstring = testcase.fuzzedfile.basename.split(
+                '-')[1].split('.')[0]
+            crasherseedname = 'sf_' + testcase.seedfile.md5 + \
+                '-' + iterstring + testcase.seedfile.ext
+            crasherseed_path = os.path.join(
+                self.cfg['directories']['seedfile_dir'], crasherseedname)
             filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
             self.sf_set.add_file(crasherseed_path)
 
@@ -247,7 +251,8 @@ class TestCasePipelineBase(object):
                 try:
                     analyzer_instance.go()
                 except AnalyzerEmptyOutputError:
-                    logger.warning('Unexpected empty output from analyzer_class. Continuing')
+                    logger.warning(
+                        'Unexpected empty output from analyzer_class. Continuing')
 
     def _post_analyze(self, testcase):
         pass

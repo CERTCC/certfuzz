@@ -74,7 +74,9 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
 
                 # fall back to checking if the crash directory exists
                 #
-                crash_dir_found = filetools.find_or_create_dir(tc.target_dir)
+                # TODO: Before getting the full debugger ouput, the output dir will always
+                # be in UNKNOWN.  Fix this logic
+                crash_dir_found = os.path.exists(tc.target_dir)
 
                 keep_all = self.cfg['runoptions'].get('keep_duplicates', False)
 
@@ -103,6 +105,9 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
         logger.info(
             'Getting complete debugger output for crash: %s', testcase.fuzzedfile.path)
         testcase.get_debug_output(testcase.fuzzedfile.path)
+        # We now have full debugger output, including exploitability.
+        # Update the crash object with this info.
+        testcase.update_crash_details()
 
         if self.dbg_out_file_orig != testcase.dbg.file:
             # we have a new debugger output
@@ -139,7 +144,7 @@ class LinuxTestCasePipeline(TestCasePipelineBase):
                 '%s crash_id=%s', testcase.seedfile.basename, testcase.signature)
 
     def _report(self, testcase):
-        with CopyFilesReporter(testcase, self.tc_dir) as reporter:
+        with CopyFilesReporter(testcase, keep_duplicates=self.cfg['runoptions'].get('keep_duplicates', False)) as reporter:
             reporter.go()
 
         with TestcaseLoggerReporter(testcase) as reporter:

@@ -13,7 +13,6 @@ from certfuzz.analyzers.stderr import StdErr
 from certfuzz.analyzers.drillresults import WindowsDrillResults
 
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +20,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
     _minimizer_cls = WindowsMinimizer
 
     def _setup_analyzers(self):
-        #self.analyzer_classes.append(StdErr)
+        # self.analyzer_classes.append(StdErr)
         self.analyzer_classes.append(WindowsDrillResults)
 
     def _pre_verify(self, testcase):
@@ -46,13 +45,14 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
 
         logger.debug('Keeping testcase (reason=%s)', reason)
         testcase.should_proceed_with_analysis = True
-        logger.info("Crash confirmed: %s Exploitability: %s Faulting Address: %s", testcase.crash_hash, testcase.exp, testcase.faddr)
-        if self.options['minimizable']:
-            testcase.should_proceed_with_analysis = True
+        logger.info("Crash confirmed: %s Exploitability: %s Faulting Address: %s",
+                    testcase.crash_hash, testcase.exp, testcase.faddr)
+        # if self.options['minimizable']:
+        #    testcase.should_proceed_with_analysis = True
         self.success = True
 
     def _report(self, testcase):
-        with CopyFilesReporter(testcase, self.tc_dir) as reporter:
+        with CopyFilesReporter(testcase, keep_duplicates=self.options['keep_duplicates']) as reporter:
             reporter.go()
 
     def keep_testcase(self, testcase):
