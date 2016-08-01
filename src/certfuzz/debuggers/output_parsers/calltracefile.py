@@ -73,10 +73,10 @@ class Calltracefile:
             n = re.match(regex['ct_lib_function'], l)
             if n:
                 function = n.group(2)
-            if not system_lib and function != '.plt' and function != '.text' and function != 'invalid_rtn':
-                item = m.group(1)
-                self.backtrace.append(item)
-                logger.debug('Appending to backtrace: %s', item)
+                if not system_lib and function != '.plt' and function != '.text' and function != 'invalid_rtn':
+                    item = m.group(1)
+                    self.backtrace.append(item)
+                    logger.debug('Appending to backtrace: %s', item)
 
     def _process_lines(self):
         logger.debug('_process_lines')
