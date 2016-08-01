@@ -15,13 +15,14 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 regex = {
-        'ct_lib': re.compile(r'^/.+/(.+:.+)'),
-        'ct_lib_function': re.compile(r'^(/.+):\s(.+)'),
-        'ct_system_lib': re.compile(r'^/(usr/)?lib.+'),
-         }
+    'ct_lib': re.compile(r'^/.+/(.+:.+)'),
+    'ct_lib_function': re.compile(r'^(/.+):\s(.+)'),
+    'ct_system_lib': re.compile(r'^/(usr/)?lib.+'),
+}
 
 
 class Calltracefile:
+
     def __init__(self, f):
         '''
         Create a GDB file object from the gdb output file <file>
@@ -59,8 +60,10 @@ class Calltracefile:
         return self.hashable_backtrace
 
     def _hashable_backtrace_string(self, level):
-        self.hashable_backtrace_string = ' '.join(self.hashable_backtrace[-level:]).strip()
-        logger.warning('_hashable_backtrace_string: %s', self.hashable_backtrace_string)
+        self.hashable_backtrace_string = ' '.join(
+            self.hashable_backtrace[-level:]).strip()
+        logger.warning(
+            '_hashable_backtrace_string: %s', self.hashable_backtrace_string)
         return self.hashable_backtrace_string
 
     def calltrace_line(self, l):
@@ -100,7 +103,8 @@ if __name__ == '__main__':
     logger.addHandler(hdlr)
 
     parser = OptionParser()
-    parser.add_option('', '--debug', dest='debug', action='store_true', help='Enable debug messages (overrides --verbose)')
+    parser.add_option('', '--debug', dest='debug', action='store_true',
+                      help='Enable debug messages (overrides --verbose)')
     (options, args) = parser.parse_args()
 
     if options.debug:
