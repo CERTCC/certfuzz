@@ -90,7 +90,7 @@ class Popen(subprocess.Popen):
     if mswindows:
         def _execute_child(self, args, executable, preexec_fn, close_fds,
                            cwd, env, universal_newlines, startupinfo,
-                           creationflags, shell,
+                           creationflags, shell, to_close,
                            p2cread, p2cwrite,
                            c2pread, c2pwrite,
                            errread, errwrite):
