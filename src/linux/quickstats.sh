@@ -1,8 +1,23 @@
-#!/bin/bash
+#!/bin/sh
+
+# contains(string, substring)
+#
+# Returns 0 if the specified string contains the specified substring,
+# otherwise returns 1.
+contains() {
+    string="$1"
+    substring="$2"
+    if test "${string#*$substring}" != "$string"
+    then
+        return 0    # $substring is in $string
+    else
+        return 1    # $substring is not in $string
+    fi
+}
 
 platform=`uname -a`
 echo "Exploitability Summary for campaign thus far:"
-if [[ "$platform" =~ "Darwin" ]]; then
+if ( contains "$platform" "Darwin" ); then
 	exploitable=`find -L ~/results -name '*.cw' | grep crashers | xargs grep is_exploitable=y | awk -Fcrashers/ '{print $2}' | awk -F/ '{print $1}' | sort | uniq | wc -l`
 	total=`find -L ~/results -name '*.cw' | grep crashers | grep -v gmalloc | wc -l`
 	not_exploitable=$(expr $total - $exploitable)
