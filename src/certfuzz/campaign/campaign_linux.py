@@ -150,7 +150,17 @@ class LinuxCampaign(CampaignBase):
         os.environ['KDE_DEBUG'] = '1'
 
     def _check_gdb_compat(self):
+        logger.debug('checking /proc compatibility')
+        if not host_info.is_linux:
+            logger.debug(
+                'Current platform does not support /proc. Adjusting debugger templates.')
+            self.config['debugger']['proc_compat'] = False
+
         logger.debug('checking CERT Triage Tool compatibility')
+        gdb_version = subprocess.check_output(['gdb', '--version'])
+        if 'gdb 6' in gdb_version:
+            self.config['debugger']['ctt_compat'] = False
+            return
         current_dir = os.path.dirname(__file__)
         ctt_path = os.path.join(
             current_dir, '..', '..', 'CERT_triage_tools', 'exploitable', 'exploitable.py')
@@ -160,12 +170,6 @@ class LinuxCampaign(CampaignBase):
             logger.warning(
                 'gdb is not compatible with CERT Triage Tools (older than 7.2?). Disabling.')
             self.config['debugger']['ctt_compat'] = False
-
-        logger.debug('checking /proc compatibility')
-        if not host_info.is_linux:
-            logger.debug(
-                '%s does not support /proc. Adjusting debugger templates.' % current_platform)
-            self.config['debugger']['proc_compat'] = False
 
     def _check_for_script(self):
         logger.debug('check for script')
