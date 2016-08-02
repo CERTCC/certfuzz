@@ -77,6 +77,9 @@ fi
 # Prevent creation of huge files
 ulimit -f 1048576
 
+# Enable reasonably-sized core dumps
+ulimit -c 4096
+
 if ( contains "$platform" "Linux" ); then
     if [ ! -f ~/pin/pin ]; then
         mkdir -p ~/fuzzing
