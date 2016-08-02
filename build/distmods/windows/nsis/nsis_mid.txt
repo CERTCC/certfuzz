@@ -88,11 +88,11 @@ ${If} $NEED_VC2010 == 1
 ${EndIf}
 
 ${If} $DEP_MISSING == 1
-    IfFileExists "$INSTALLERDIR\deps\python-2.7.5.msi" 0 depMissing
-    IfFileExists "$INSTALLERDIR\deps\scipy-0.10.1-win32-superpack-python2.7.exe" 0 depMissing
-    IfFileExists "$INSTALLERDIR\deps\numpy-1.6.1-win32-superpack-python2.7.exe" 0 depMissing
-    IfFileExists "$INSTALLERDIR\deps\PyYAML-3.10.win32-py2.7.exe" 0 depMissing
-    IfFileExists "$INSTALLERDIR\deps\pywin32-218.win32-py2.7.exe" 0 depMissing
+    IfFileExists "$INSTALLERDIR\deps\python-2.7.12.msi" 0 depMissing
+    IfFileExists "$INSTALLERDIR\deps\scipy-0.16.1-win32-superpack-python2.7.exe" 0 depMissing
+    IfFileExists "$INSTALLERDIR\deps\numpy-1.10.2-win32-superpack-python2.7.exe" 0 depMissing
+    IfFileExists "$INSTALLERDIR\deps\PyYAML-3.11.win32-py2.7.exe" 0 depMissing
+    IfFileExists "$INSTALLERDIR\deps\pywin32-220.win32-py2.7.exe" 0 depMissing
     IfFileExists "$INSTALLERDIR\deps\WMI-1.4.9.win32.exe" 0 depMissing
     IfFileExists "$INSTALLERDIR\deps\$VCR.exe" 0 depMissing
     IfFileExists "$INSTALLERDIR\deps\$DEBUGGER" 0 depMissing
@@ -110,14 +110,14 @@ skipDeps:
 
 
 ${If} $NEED_PYTHON == 1
-    IfFileExists "$INSTALLERDIR\deps\python-2.7.5.msi" localPythonInstall
+    IfFileExists "$INSTALLERDIR\deps\python-2.7.12.msi" localPythonInstall
     ${If} $DOWNLOAD_OK == 1   
     
-      inetc::get "https://www.cert.org/downloads/foe/python-2.7.5.msi" "$TEMP\python-2.7.5.msi"
+      inetc::get "https://www.cert.org/downloads/foe/python-2.7.12.msi" "$TEMP\python-2.7.12.msi"
       Pop $0
       ${If} $0 == "OK"
-        ExecWait '"msiexec.exe" /i "$TEMP\python-2.7.5.msi" /qb ALLUSERS=1'
-        Delete "$TEMP\python-2.7.5.msi"
+        ExecWait '"msiexec.exe" /i "$TEMP\python-2.7.12.msi" /qb ALLUSERS=1'
+        Delete "$TEMP\python-2.7.12.msi"
         ${Else}
             MessageBox MB_YESNO|MB_ICONEXCLAMATION "Python download failed. Retry?" /SD IDNO IDYES skipDeps
         ${EndIf}
@@ -126,7 +126,7 @@ ${If} $NEED_PYTHON == 1
     
     localPythonInstall:
     ${If} $DEPS_OK == 1
-        ExecWait '"msiexec.exe" /i "$INSTALLERDIR\deps\python-2.7.5.msi" /qb ALLUSERS=1'
+        ExecWait '"msiexec.exe" /i "$INSTALLERDIR\deps\python-2.7.12.msi" /qb ALLUSERS=1'
     ${EndIf}
 ${EndIf}
 
@@ -143,13 +143,13 @@ ${EndIf}
 
 skipPython:
 ${If} $NEED_SCIPY == 1
-    IfFileExists "$INSTALLERDIR\deps\scipy-0.10.1-win32-superpack-python2.7.exe" localScipyInstall
+    IfFileExists "$INSTALLERDIR\deps\scipy-0.16.1-win32-superpack-python2.7.exe" localScipyInstall
     ${If} $DOWNLOAD_OK == 1     
-        inetc::get "https://www.cert.org/downloads/foe/scipy-0.10.1-win32-superpack-python2.7.bin" "$TEMP\scipy-0.10.1-win32-superpack-python2.7.exe"
+        inetc::get "https://www.cert.org/downloads/foe/scipy-0.16.1-win32-superpack-python2.7.bin" "$TEMP\scipy-0.16.1-win32-superpack-python2.7.exe"
       Pop $0
       ${If} $0 == "OK"
-        ExecWait "$TEMP\scipy-0.10.1-win32-superpack-python2.7.exe"
-        Delete "$TEMP\scipy-0.10.1-win32-superpack-python2.7.exe"
+        ExecWait "$TEMP\scipy-0.16.1-win32-superpack-python2.7.exe"
+        Delete "$TEMP\scipy-0.16.1-win32-superpack-python2.7.exe"
         ${Else}
             MessageBox MB_YESNO|MB_ICONEXCLAMATION "Scipy download failed. Retry?" /SD IDNO IDYES skipPython
         ${EndIf}
@@ -158,19 +158,19 @@ ${If} $NEED_SCIPY == 1
         
     localScipyInstall:
     ${If} $DEPS_OK == 1
-        ExecWait "$INSTALLERDIR\deps\scipy-0.10.1-win32-superpack-python2.7.exe"
+        ExecWait "$INSTALLERDIR\deps\scipy-0.16.1-win32-superpack-python2.7.exe"
     ${EndIf}
 ${EndIf}
 
 ScipyInstalled:
 ${If} $NEED_NUMPY == 1
-    IfFileExists "$INSTALLERDIR\deps\numpy-1.6.1-win32-superpack-python2.7.exe" localNumpyInstall
+    IfFileExists "$INSTALLERDIR\deps\numpy-1.10.2-win32-superpack-python2.7.exe" localNumpyInstall
     ${If} $DOWNLOAD_OK == 1
-      inetc::get "https://www.cert.org/downloads/foe/numpy-1.6.1-win32-superpack-python2.7.bin" "$TEMP\numpy-1.6.1-win32-superpack-python2.7.exe"
+      inetc::get "https://www.cert.org/downloads/foe/numpy-1.10.2-win32-superpack-python2.7.bin" "$TEMP\numpy-1.10.2-win32-superpack-python2.7.exe"
       Pop $0
       ${If} $0 == "OK"
-        ExecWait "$TEMP\numpy-1.6.1-win32-superpack-python2.7.exe"
-        Delete "$TEMP\numpy-1.6.1-win32-superpack-python2.7.exe"
+        ExecWait "$TEMP\numpy-1.10.2-win32-superpack-python2.7.exe"
+        Delete "$TEMP\numpy-1.10.2-win32-superpack-python2.7.exe"
         ${Else}
             MessageBox MB_YESNO|MB_ICONEXCLAMATION "Numpy download failed. Retry?" /SD IDNO IDYES ScipyInstalled
         ${EndIf}
@@ -179,19 +179,19 @@ ${If} $NEED_NUMPY == 1
 
     localNumpyInstall:
     ${If} $DEPS_OK == 1
-        ExecWait "$INSTALLERDIR\deps\numpy-1.6.1-win32-superpack-python2.7.exe"
+        ExecWait "$INSTALLERDIR\deps\numpy-1.10.2-win32-superpack-python2.7.exe"
     ${EndIf}
 ${EndIf}
 
 NumpyInstalled:
 ${If} $NEED_PYYAML == 1
-    IfFileExists "$INSTALLERDIR\deps\PyYAML-3.10.win32-py2.7.exe" localPyYAMLInstall
+    IfFileExists "$INSTALLERDIR\deps\PyYAML-3.11.win32-py2.7.exe" localPyYAMLInstall
     ${If} $DOWNLOAD_OK == 1
-      inetc::get "https://www.cert.org/downloads/foe/PyYAML-3.10.win32-py2.7.bin" "$TEMP\PyYAML-3.10.win32-py2.7.exe"
+      inetc::get "https://www.cert.org/downloads/foe/PyYAML-3.11.win32-py2.7.bin" "$TEMP\PyYAML-3.11.win32-py2.7.exe"
       Pop $0
       ${If} $0 == "OK"
-        ExecWait "$TEMP\PyYAML-3.10.win32-py2.7.exe"
-        Delete "$TEMP\PyYAML-3.10.win32-py2.7.exe"
+        ExecWait "$TEMP\PyYAML-3.11.win32-py2.7.exe"
+        Delete "$TEMP\PyYAML-3.11.win32-py2.7.exe"
         ${Else}
             MessageBox MB_YESNO|MB_ICONEXCLAMATION "PyYAML download failed. Retry?" /SD IDNO IDYES NumpyInstalled
         ${EndIf} 
@@ -200,19 +200,19 @@ ${If} $NEED_PYYAML == 1
 
     localPyYAMLInstall:
     ${If} $DEPS_OK == 1
-        ExecWait "$INSTALLERDIR\deps\PyYAML-3.10.win32-py2.7.exe"
+        ExecWait "$INSTALLERDIR\deps\PyYAML-3.11.win32-py2.7.exe"
     ${EndIf}
 ${EndIf}
     
 PyYAMLInstalled:
 ${If} $NEED_PYWIN32 == 1
-    IfFileExists "$INSTALLERDIR\deps\pywin32-218.win32-py2.7.exe" localpywin32Install
+    IfFileExists "$INSTALLERDIR\deps\pywin32-220.win32-py2.7.exe" localpywin32Install
     ${If} $DOWNLOAD_OK == 1
-      inetc::get "https://www.cert.org/downloads/foe/pywin32-218.win32-py2.7.bin" "$TEMP\pywin32-218.win32-py2.7.exe"
+      inetc::get "https://www.cert.org/downloads/foe/pywin32-220.win32-py2.7.bin" "$TEMP\pywin32-220.win32-py2.7.exe"
       Pop $0
       ${If} $0 == "OK"
-        ExecWait "$TEMP\pywin32-218.win32-py2.7.exe"
-        Delete "$TEMP\pywin32-218.win32-py2.7.exe"
+        ExecWait "$TEMP\pywin32-220.win32-py2.7.exe"
+        Delete "$TEMP\pywin32-220.win32-py2.7.exe"
         ${Else}
             MessageBox MB_YESNO|MB_ICONEXCLAMATION "pywin32 download failed. Retry?" /SD IDNO IDYES PyYAMLInstalled
         ${EndIf} 
@@ -221,7 +221,7 @@ ${If} $NEED_PYWIN32 == 1
 
     localpywin32Install:
     ${If} $DEPS_OK == 1
-        ExecWait "$INSTALLERDIR\deps\pywin32-218.win32-py2.7.exe"
+        ExecWait "$INSTALLERDIR\deps\pywin32-220.win32-py2.7.exe"
     ${EndIf}
 ${EndIf}
     
