@@ -151,7 +151,7 @@ class LinuxCampaign(CampaignBase):
 
     def _check_gdb_compat(self):
         logger.debug('checking /proc compatibility')
-        if not host_info.is_linux:
+        if not host_info.is_linux():
             logger.debug(
                 'Current platform does not support /proc. Adjusting debugger templates.')
             self.config['debugger']['proc_compat'] = False
