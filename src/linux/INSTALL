@@ -10,7 +10,7 @@ Python 2.7
 Python Numpy
 Python Scipy
 Python Yaml
-gdb 7.2 or later on Linux is required for exploitability information
+gdb (7.2 or later on Linux is required for exploitability information)
 zzuf (patched by CERT)
 
 In order to build zzuf and the other BFF dependencies, the following
