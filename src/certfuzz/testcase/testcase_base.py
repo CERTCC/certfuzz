@@ -119,10 +119,14 @@ class TestCaseBase(object):
             filetools.copy_file(self.seedfile.path, self.tempdir)
 
         # TODO: This seems hacky. Should be better way to have
-        # minimizer_log.txt survive update_crash_details
+        # minimizer_log.txt and core files survive update_crash_details
         minlog = os.path.join(self.fuzzedfile.dirname, 'minimizer_log.txt')
         if os.path.exists(minlog):
             filetools.copy_file(minlog, self.tempdir)
+
+        corefile = os.path.join(self.workdir_base, 'core')
+        if os.path.exists(corefile):
+            filetools.copy_file(corefile, self.tempdir)
 
         new_fuzzedfile = os.path.join(self.tempdir, self.fuzzedfile.basename)
         self.fuzzedfile = BasicFile(new_fuzzedfile)
