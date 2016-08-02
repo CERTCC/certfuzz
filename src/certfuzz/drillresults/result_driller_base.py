@@ -167,7 +167,7 @@ class ResultDriller(object):
                 print ('%s%s' % (ff_line_indicator, fixed_ff_path))
             else:
                 print line
-        print os.linesep
+        print ''
 
     def print_reports(self):
         results = dict([(tcb.crash_hash, tcb.details)
