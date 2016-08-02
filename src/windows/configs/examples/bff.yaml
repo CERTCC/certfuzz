@@ -55,6 +55,41 @@ target:
     # forward slashes or double quotes. For example:
     # cmdline_template: $PROGRAM -in $SEEDFILE -out c:/some/path/to/file
     # cmdline_template: $PROGRAM -in $SEEDFILE -out "c:\some path\to file"
+    
+
+##############################################################################
+# Runner options
+#
+# hideoutput:
+# Hide stdout of target application
+#
+# runtimeout:
+# Number of seconds to allow target application to execute
+#
+# watchcpu: 
+# Kill target process when its CPU usage drops towards zero 
+# (Auto, True, False)
+#
+##############################################################################
+runner:
+    hideoutput: False
+    runtimeout: 5
+    watchcpu: Auto
+
+
+##############################################################################
+# Debugger options
+#
+# debugheap:
+# Use the debug heap for the target application
+#
+# max_handled_exceptions:
+# Maximum number of times to continue exceptions
+#
+##############################################################################
+debugger:
+    debugheap: False
+    max_handled_exceptions: 6
 
 
 ##############################################################################
@@ -172,39 +207,4 @@ fuzzer:
     #     - [0x0000, 0x0400]
     #     - [0x1000, 0x100F]
     fuzz_zip_container: False
-
-
-##############################################################################
-# Runner options
-#
-# hideoutput:
-# Hide stdout of target application
-#
-# runtimeout:
-# Number of seconds to allow target application to execute
-#
-# watchcpu: 
-# Kill target process when its CPU usage drops towards zero 
-# (Auto, True, False)
-#
-##############################################################################
-runner:
-    hideoutput: False
-    runtimeout: 5
-    watchcpu: Auto
-
-
-##############################################################################
-# Debugger options
-#
-# debugheap:
-# Use the debug heap for the target application
-#
-# max_handled_exceptions:
-# Maximum number of times to continue exceptions
-#
-##############################################################################
-debugger:
-    debugheap: False
-    max_handled_exceptions: 6
 

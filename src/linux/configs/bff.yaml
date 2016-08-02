@@ -37,6 +37,31 @@ target:
 
 
 ##############################################################################
+# RUNNER OPTIONS
+#
+# runtimeout:
+# maximum program execution time (seconds) that BFF will the target to execute
+#
+##############################################################################
+runner:
+    runtimeout: 5
+    
+
+##############################################################################
+# DEBUGGER OPTIONS
+#
+# backtracelevels:
+# Number of backtrace frames to hash for uniqueness
+# Increase this number for more crash uniqueness granularity.
+# Decrease this number if you think that you are getting too many duplicate
+# crashes.
+#
+##############################################################################
+debugger:
+    backtracelevels: 5
+    
+    
+##############################################################################
 # LOCATIONS FOR FUZZ RUN FILES:
 #
 # Output files are placed in [outputdir]/[seedfile]
@@ -156,31 +181,6 @@ fuzzer:
     #     - [0x0000, 0x0400]
     #     - [0x1000, 0x100F]
     fuzz_zip_container: False
-    
-    
-##############################################################################
-# RUNNER OPTIONS
-#
-# runtimeout:
-# maximum program execution time (seconds) that BFF will the target to execute
-#
-##############################################################################
-runner:
-    runtimeout: 5
-    
-
-##############################################################################
-# DEBUGGER OPTIONS
-#
-# backtracelevels:
-# Number of backtrace frames to hash for uniqueness
-# Increase this number for more crash uniqueness granularity.
-# Decrease this number if you think that you are getting too many duplicate
-# crashes.
-#
-##############################################################################
-debugger:
-    backtracelevels: 5
     
     
 ##############################################################################

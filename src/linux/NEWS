@@ -1,6 +1,20 @@
 CERT Basic Fuzzing Framework (BFF)
 Significant changes
 
+BFF 2.8 (FIXME)
+  * Virtual Machine changes:
+    - Update from Ubuntu 12.04 to 16.04
+    - Updated version of zzuf
+    
+  * Code changes:
+    - Use of configurable mutators rather than use zzuf's bitwise mutation
+    - Drillresults is automatically executed at fuzz-time
+    - Simplified configuration
+    - Support for OSX Maverics, Yosemite, El Capitan, and MacOS Sierra
+    - Removed X dependency
+    - "null" runner mode for zzuf, which only detects crashes
+    - Bug fixes
+
 BFF 2.7 (September 23, 2013)
   * Virtual Machine changes:
     - Switch to Ubuntu from Debian

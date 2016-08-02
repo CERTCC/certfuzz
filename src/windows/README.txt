@@ -70,21 +70,22 @@ campaign.
 ===== Analyzing results =====
 =============================
 
-.\results\<campaignid>\
-  +- <configname>.yaml
-  +- version.txt
-  +- <SEVERITY>/
-     +- <hash_1>/
-        +- minimizer_log.txt
-        +- sf_<seedfile_hash>.<ext>
-        +- sf_<seedfile_hash>-<iteration>-<EFA>.<ext>
-        +- sf_<seedfile_hash>-<iteration>-<EFA>-<SEVERITY>.<ext>.msec
-        +- sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>
-        +- sf_<seedfile_hash>-<iteration>.<ext>.e<n>.msec
-     +- <hash_2>/
-     +- ...
-     +- <hash_n>/
-
+results\<campaignid>\
+        |-- <configname>.yaml
+        |-- version.txt
+        |-- seedfiles\
+        |-- crashers\
+            |-- <SEVERITY>\
+                |-- <hash_1>\
+                |   |-- minimizer_log.txt
+                |   |-- sf_<seedfile_hash>.<ext>
+                |   |-- sf_<seedfile_hash>-<iteration>-<EFA>.<ext>
+                |   |-- sf_<seedfile_hash>-<iteration>-<EFA>-<SEVERITY>.<ext>.e<n>.msec
+                |   |-- sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>
+                |-- <hash_2>\
+                |-- ...
+                |-- <hash_n>\
+         
      
 <configname>.yaml
 This is a copy of the config file used for this run. It is stored for 
@@ -119,20 +120,19 @@ sf_<seedfile_hash>-<iteration>-<EFA>.<ext>
 This is the fuzzed file that caused the crash. <EFA> is the exception faulting 
 address, as reported by !exploitable.
 
-sf_<seedfile_hash>-<iteration>-<EFA>-<SEVERITY>.<ext>.msec
+sf_<seedfile_hash>-<iteration>-<EFA>-<SEVERITY>.<ext>.e<n>.msec
 This is the cdb text output from the crash, which includes output from the 
-!exploitable tool.
+!exploitable tool. e<n> represents the number of times that an exception
+is continued. One file is provided for each continued exception until an
+uncontinuable exception is encountered, or the handled exception limit has
+been reached, or the target application proceeds without encountering another
+exception.
 
 sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>
 This is the minimized version of the crashing test case. It is the "least
 different" version of the original fuzzed file that caused a specific 
 crash (hash).
 
-sf_<seedfile_hash>-<iteration>.<ext>.e<n>.msec
-This is the cdb output for an exception that is continued <n> number of times.
-One file is provided for each continued exception until an uncontinuable 
-exception is encountered, or the handled exception limit has been reached, or 
-the target application proceeds without encountering another exception.
 
 
 ===== Fuzzing on your own =====
@@ -161,18 +161,13 @@ target: program:
 	
 target: cmdline_template:
 	This specifies the commandline syntax for invoking the target application.
+	Be sure to remove the default "NUL" option if your target application
+	doesn't use that as a commandline parameter.
 
 runner: runtimeout:
 	This value specifies how long BFF should wait before terminating the 
 	application and moving on to the next iteration.
-    Note that this setting only applies to the "winrun" runner (32-bit Windows 
-    XP and Server 2003 systems).
-	
-debugger: runtimeout:
-	This value specifies how long BFF should allow the target application to 
-	run when it is invoked from the debugger. On platforms that use the "null" 
-	runner (64-bit Windows or Windows Vista or newer), this is the only 
-	timeout value that is used.
+
 	
 BFF periodically saves state of a fuzzing campaign, so it will by default 
 continue a cached campaign if bff.yaml has not been modified.
@@ -292,19 +287,19 @@ To install BFF manually, you will need the following prerequisites:
   Other Windows versions will use debugger mode (nullrun)
 
 - Python 2.7
-  http://www.python.org/download/releases/2.7.5/
+  https://www.python.org/downloads/release/python-2712/
    
 - SciPy
-  http://sourceforge.net/projects/scipy/files/scipy/0.10.1/scipy-0.10.1-win32-superpack-python2.7.exe/download
+  http://sourceforge.net/projects/scipy/files/scipy/0.16.1/scipy-0.16.1-win32-superpack-python2.7.exe/download
 
 - NumPy
-  http://sourceforge.net/projects/numpy/files/NumPy/1.6.1/numpy-1.6.1-win32-superpack-python2.7.exe/download
+  http://sourceforge.net/projects/numpy/files/NumPy/1.10.2/numpy-1.10.2-win32-superpack-python2.7.exe/download
   
 - PyYAML
-  http://pyyaml.org/download/pyyaml/PyYAML-3.10.win32-py2.7.exe
+  http://pyyaml.org/download/pyyaml/PyYAML-3.11.win32-py2.7.exe
   
 - pywin32
-  http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py2.7.exe/download
+  https://sourceforge.net/projects/pywin32/files/pywin32/Build%20220/pywin32-220.win32-py2.7.exe/download
   
 - Python WMI
   https://pypi.python.org/packages/any/W/WMI/WMI-1.4.9.win32.exe
