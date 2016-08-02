@@ -113,7 +113,7 @@ directories:
 ##############################################################################
 runoptions:
     first_iteration: 0
-    seed_interval: 20
+    seed_interval: 5
     minimize: True
     minimizer_timeout: 3600
 #    keep_unique_faddr: False

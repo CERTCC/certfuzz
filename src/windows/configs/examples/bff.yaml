@@ -118,7 +118,7 @@ directories:
 #
 # seed_interval: 
 # The number of iterations to perform before selecting a new seed file and
-# mutation range. Default is zero if not present.
+# mutation range. Default is 1 if not present.
 #
 # minimize: 
 # Create a file that is minimally-different than the seed file, yet crashes
@@ -140,7 +140,7 @@ directories:
 ##############################################################################
 runoptions:
     first_iteration: 0
-    seed_interval: 1
+    seed_interval: 5
     minimize: True
     minimizer_timeout: 3600
     keep_unique_faddr: False
