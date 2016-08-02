@@ -79,9 +79,8 @@ class LinuxTestcase(TestCaseBase):
         # noctt_complete_nofunction
         # noproc_complete
         # noproc_complete_nofunction
-
-        if not self.cfg['debugger']['proc_compat']:
-            option = 'noproc_' + option
+        # noproc_noctt_complete
+        # noproc_noctt_complete_nofunction
 
         if 'complete' in option:
             if not self.cfg['debugger']['ctt_compat']:
@@ -89,6 +88,9 @@ class LinuxTestcase(TestCaseBase):
 
             if not self.pc_in_function:
                 option = option + '_nofunction'
+
+        if not self.cfg['debugger']['proc_compat']:
+            option = 'noproc_' + option
 
         dbg_template_name = '%s_%s_template.txt' % (
             self._debugger_cls._key, option)
