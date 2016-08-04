@@ -10,7 +10,6 @@ import tempfile
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools import filetools, hamming
 from certfuzz.fuzztools.filetools import check_zip_file, mkdir_p
-from certfuzz.testcase.errors import TestCaseError
 from pprint import pformat
 
 
@@ -198,4 +197,4 @@ class TestCaseBase(object):
 
         self.hd_bytes = hamming.bytewise_hd(a_string, fuzzed)
         logger.info(
-            "crasher=%s bytewise_hd=%d", self.signature,  self.hd_bytes)
+            "crasher=%s bytewise_hd=%d", self.signature, self.hd_bytes)
