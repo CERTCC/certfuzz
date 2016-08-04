@@ -159,9 +159,6 @@ runoptions:
 #
 # OPTIONS APPLIED TO THE ABOVE MUTATORS:
 #
-# range_list:
-# byte ranges to be fuzzed. One range per line, hex or decimal
-#
 # fuzz_zip_container: 
 # rather than fuzzing zip file contents, fuzz the zip container itself
 # 
