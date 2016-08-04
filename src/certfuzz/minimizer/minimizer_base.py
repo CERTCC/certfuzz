@@ -59,6 +59,7 @@ class Minimizer(object):
         self.keep_uniq_faddr = keep_uniq_faddr
         self.watchcpu = watchcpu
         self.exhaustivesearch_threshold = 10
+        self.max_target_hashes = 10
 
         self.minchar = 'x'
         self.save_others = True
@@ -362,6 +363,10 @@ class Minimizer(object):
         times = []
         # loop until we've found ALL the testcase signatures
         while miss_count < max_misses:
+            target_hash_count = len(sigs_set)
+            if target_hash_count > self.max_target_hashes:
+                self._raise(
+                    'Too many crash hashes seen to minimize. Is memory randomization disabled?')
             # (sometimes testcase sigs change for the same input file)
             (fd, f) = tempfile.mkstemp(
                 prefix='minimizer_set_crash_hashes_', text=True, dir=self.tempdir)
