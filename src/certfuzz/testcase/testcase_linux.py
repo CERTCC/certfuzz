@@ -8,7 +8,6 @@ import os
 
 from certfuzz.testcase.testcase_base import TestCaseBase
 from certfuzz.fuzztools import hostinfo, filetools
-from certfuzz.fuzztools.command_line_templating import get_command_args_list
 from certfuzz.testcase.errors import TestCaseError
 
 try:
