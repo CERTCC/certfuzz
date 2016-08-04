@@ -216,10 +216,3 @@ class WindowsCampaign(CampaignBase):
         if not seednum % self.status_interval:
             logger.info('Iteration: %d crashes found: %d', self.current_seed,
                         len(self.testcases_seen))
-            # FIXME
-            # self.seedfile_set.update_csv()
-            # logger.info('Seedfile Set Status:')
-            # logger.info('FIXME')
-            # for k, score, successes, tries, p in self.seedfile_set.status():
-            #    logger.info('%s %0.6f %d %d %0.6f', k, score, successes,
-            #                tries, p)

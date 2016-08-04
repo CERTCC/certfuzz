@@ -37,6 +37,8 @@ class GDB(Debugger):
             raise DebuggerError(
                 'Input file does not exist: %s', self.input_file)
 
+        # BFF-977 add -ex options instead of reading self.input_file
+
         args = [
             self.debugger_app(), '-n', '-batch', '-command', self.input_file]
         logger.log(5, "GDB command: [%s]", ' '.join(args))
@@ -65,6 +67,8 @@ class GDB(Debugger):
         bffdir = bffdebuggersdir.replace('/certfuzz/debuggers', '')
         new_script = s.safe_substitute(PROGRAM=self.program, CMD_ARGS=cmdargs,
                                        OUTFILE=self.outfile, BFFDIR=bffdir)
+
+        # BFF-977 split new_script by newlines into a list...
 
         (fd, f) = tempfile.mkstemp(text=True)
         try:
