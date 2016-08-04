@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class TestcaseLoggerReporter(ReporterBase):
     '''
-    Invokes the testcase's logger to report out testcase data
+    Logs testcase data
     '''
 
     def go(self):
