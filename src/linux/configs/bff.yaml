@@ -214,6 +214,5 @@ analyzer:
     savefailedasserts: False
     use_valgrind: True
     use_pin_calltrace: False
-    # keep_duplicates: False
     valgrind_timeout: 120
 
