@@ -16,7 +16,8 @@ def dump_obj_to_file(cachefile, obj):
             pickle.dump(obj, fd)
             logger.debug('Wrote %s to %s', obj.__class__.__name__, cachefile)
     except (IOError, TypeError) as e:
-        logger.warning('Unable to write %s to cache file %s: %s', obj.__class__.__name__, cachefile, e)
+        logger.warning(
+            'Unable to write %s to cache file %s: %s', obj.__class__.__name__, cachefile, e)
 
 
 def load_obj_from_file(cachefile):
@@ -27,13 +28,4 @@ def load_obj_from_file(cachefile):
             logger.debug("Read saved state from %s", cachefile)
     except StandardError, e:
         logger.debug("Unable to read from %s: %s", cachefile, e)
-    return obj
-
-
-def cache_state(key_prefix, key_suffix, obj, cachefile):
-    dump_obj_to_file(cachefile, obj)
-
-
-def get_cached_state(key_suffix, key_prefix, cachefile):
-    obj = load_obj_from_file(cachefile)
     return obj

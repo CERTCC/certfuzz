@@ -21,8 +21,10 @@ class Test(unittest.TestCase):
 
     def test_add(self):
         self.assertRaises(MultiArmedBanditError, self.mab.add_item)
-        self.assertRaises(MultiArmedBanditError, self.mab.add_item, key=None, obj='obj')
-        self.assertRaises(MultiArmedBanditError, self.mab.add_item, key='key', obj=None)
+        self.assertRaises(
+            MultiArmedBanditError, self.mab.add_item, key=None, obj='obj')
+        self.assertRaises(
+            MultiArmedBanditError, self.mab.add_item, key='key', obj=None)
 
         self.assertEqual(len(self.keys), len(self.mab.things))
         self.assertEqual(len(self.keys), len(self.mab.arms))
@@ -91,6 +93,17 @@ class Test(unittest.TestCase):
     def test_next(self):
         # empty set raises StopIteration
         self.assertRaises(StopIteration, self.mab.next)
+
+    def test_arms_as_dict(self):
+        d = self.mab.arms_as_dict()
+
+        self.assertTrue(isinstance(d, dict))
+
+        for k, arm in self.mab.arms.iteritems():
+            self.assertTrue(isinstance(d[k], dict))
+            for attrname in ['successes', 'probability', 'trials']:
+                self.assertTrue(attrname in d[k])
+                self.assertEqual(d[k][attrname], getattr(arm, attrname))
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

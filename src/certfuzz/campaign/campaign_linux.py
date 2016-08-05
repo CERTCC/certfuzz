@@ -182,30 +182,6 @@ class LinuxCampaign(CampaignBase):
         '''
         pass
 
-    def __setstate__(self):
-        '''
-        Overrides parent class
-        '''
-        pass
-
-    def _read_state(self):
-        '''
-        Overrides parent class
-        '''
-        pass
-
-    def __getstate__(self):
-        '''
-        Overrides parent class
-        '''
-        pass
-
-    def _save_state(self):
-        '''
-        Overrides parent class
-        '''
-        pass
-
     def _do_iteration(self, seedfile, range_obj, seednum):
         # Prevent watchdog from rebooting VM.
         # If /tmp/fuzzing exists and is stale, the machine will reboot
