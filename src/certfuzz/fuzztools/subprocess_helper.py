@@ -34,7 +34,7 @@ if on_linux():
     signal.signal(signal.SIGTTOU, signal.SIG_IGN)
 
 
-def run_with_timer(args, timeout, progname, use_shell=False, **options):
+def run_with_timer(args, timeout, progname, cwd=None, use_shell=False, **options):
     '''
     Runs <command_line>. If it takes longer than <timeout> we'll
     kill <command_line> as well as hunt down any processes named
@@ -74,10 +74,10 @@ def run_with_timer(args, timeout, progname, use_shell=False, **options):
         if _seeoutput:
             # os.setsid sets process group
             p = subprocess.Popen(
-                args, env=env, shell=use_shell, preexec_fn=os.setsid)
+                args, cwd=cwd, env=env, shell=use_shell, preexec_fn=os.setsid)
         else:
             p = subprocess.Popen(
-                args, stdout=output, stderr=errors, env=env, shell=use_shell, preexec_fn=os.setsid)
+                args, cwd=cwd, stdout=output, stderr=errors, env=env, shell=use_shell, preexec_fn=os.setsid)
     except:
         print "Failed to run [%s]" % ' '.join(args)
         sys.exit(-1)

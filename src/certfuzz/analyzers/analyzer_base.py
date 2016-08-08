@@ -93,7 +93,8 @@ class Analyzer(object):
                 'Skipping analyzer %s: Not found in path.', analyzer)
             return
 
-        subp.run_with_timer(args, self.timeout, self.progname, **self.options)
+        subp.run_with_timer(
+            args, self.timeout, self.progname, cwd=self.tmpdir, **self.options)
         if not self.missing_output_ok and not os.path.exists(self.outfile):
             raise AnalyzerOutputMissingError(self.outfile)
         if not self.empty_output_ok and not os.path.getsize(self.outfile):
