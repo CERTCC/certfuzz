@@ -18,12 +18,14 @@ class Analyzer(object):
     '''
     classdocs
     '''
+
     def __init__(self, cfg, testcase, outfile=None, timeout=None, **options):
         logger.debug('Initializing %s', self.__class__.__name__)
         self.cfg = cfg
         self.testcase = testcase
 
-        self.cmdargs = get_command_args_list(self.cfg['target']['cmdline_template'], testcase.fuzzedfile.path)[1]
+        self.cmdargs = get_command_args_list(
+            self.cfg['target']['cmdline_template'], testcase.fuzzedfile.path)[1]
         self.outfile = outfile
         self.timeout = float(timeout)
         self.progname = self.cmdargs[1]
@@ -84,9 +86,11 @@ class Analyzer(object):
         logger.debug('%s cmd: [%s]', self.__class__.__name__, ' '.join(args))
 
         # short-circuit if analyzer is missing
-        analyzer = str(args[0])  # make a copy of the string so we don't mess up args[0]
+        # make a copy of the string so we don't mess up args[0]
+        analyzer = str(args[0])
         if (not self._analyzer_exists(analyzer)):
-            logger.warning('Skipping analyzer %s: Not found in path.', analyzer)
+            logger.warning(
+                'Skipping analyzer %s: Not found in path.', analyzer)
             return
 
         subp.run_with_timer(args, self.timeout, self.progname, **self.options)
@@ -96,7 +100,8 @@ class Analyzer(object):
             # try again?
             self.retry_count += 1
             if self.retry_count < self.max_retries:
-                logger.warning('Empty output file on attempt %d of %d', self.retry_count, self.max_retries)
+                logger.warning(
+                    'Empty output file on attempt %d of %d', self.retry_count, self.max_retries)
                 # get a new name for the stderr output if we can
                 if not self.preserve_stderr:
                     self._set_stderrpath()
@@ -104,7 +109,8 @@ class Analyzer(object):
                 self.timeout *= 2
                 self.go()
             else:
-                logger.warning('Unable to produce output after %d tries', self.retry_count)
+                logger.warning(
+                    'Unable to produce output after %d tries', self.retry_count)
                 raise AnalyzerEmptyOutputError(self.outfile)
         else:
             # delete the stderr file since we didn't need it
