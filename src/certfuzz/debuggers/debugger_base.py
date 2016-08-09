@@ -53,7 +53,8 @@ class Debugger(object):
 
     def _validate_exploitability(self):
         if not self.result['exp'] in allowed_exploitability_values:
-            raise DebuggerError('Unknown exploitability value: %s' % self.result['exp'])
+            raise DebuggerError(
+                'Unknown exploitability value: %s' % self.result['exp'])
 
     def outfile_basename(self, basename):
         return '.'.join((basename, self.type))
