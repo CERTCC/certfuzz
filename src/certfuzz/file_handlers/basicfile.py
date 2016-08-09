@@ -13,10 +13,13 @@ class BasicFile(object):
     '''
     Object to contain basic info about file: path, basename, dirname, len, md5
     '''
+
     def __init__(self, path):
         self.path = path
         (self.dirname, self.basename) = os.path.split(self.path)
-        (self.root, self.ext) = os.path.splitext(self.basename)
+        # Split on first '.' to retain multiple dotted extensions
+        self.root = self.basename.split('.', 1)[0]
+        self.ext = '.' + self.basename.split('.', 1)[1]
 
         self.len = None
         self.md5 = None
@@ -56,4 +59,3 @@ class BasicFile(object):
         doc.sha1 = self.sha1
         doc.size_in_bytes = self.len
         return doc
-

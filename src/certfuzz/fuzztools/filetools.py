@@ -253,7 +253,9 @@ def get_newpath(oldpath, str_to_insert):
     :param oldpath:
     :param str_to_insert:
     '''
-    root, ext = os.path.splitext(oldpath)
+    # Split on first '.' to retain multiple dotted extensions
+    root = oldpath.split('.', 1)[0]
+    ext = '.' + oldpath.split('.', 1)[1]
     newpath = ''.join([root, str_to_insert, ext])
     return newpath
 
