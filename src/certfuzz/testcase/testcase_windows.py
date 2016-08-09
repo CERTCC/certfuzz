@@ -115,7 +115,11 @@ class WindowsTestcase(TestCaseBase):
     def debug_once(self):
         outfile_base = os.path.join(self.tempdir, self.fuzzedfile.basename)
 
-        with self._debugger_cls(program=self.program, cmd_args=self.cmdargs, outfile_base=outfile_base, timeout=self.debugger_timeout, exception_depth=self.exception_depth, workingdir=self.tempdir, watchcpu=self.watchcpu) as debugger:
+        with self._debugger_cls(program=self.program, cmd_args=self.cmdargs,
+                                outfile_base=outfile_base, timeout=self.debugger_timeout,
+                                exception_depth=self.exception_depth,
+                                debug_heap=self.cfg['debugger']['debugheap'],
+                                workingdir=self.tempdir, watchcpu=self.watchcpu) as debugger:
             self.parsed_outputs.append(debugger.go())
 
         self.reached_secondchance = self.parsed_outputs[

@@ -29,7 +29,7 @@ class MsecDebugger(DebuggerBase):
     _key = 'msec'
     _ext = 'msec'
 
-    def __init__(self, program, cmd_args, outfile_base, timeout, watchcpu, exception_depth=0, **options):
+    def __init__(self, program, cmd_args, outfile_base, timeout, watchcpu, exception_depth=0, cdb_command='!exploitable -v', debug_heap=False, ** options):
         DebuggerBase.__init__(
             self, program, cmd_args, outfile_base, timeout, **options)
         self.exception_depth = exception_depth
@@ -38,6 +38,8 @@ class MsecDebugger(DebuggerBase):
             self.wmiInterface = wmi.WMI()
         self.t = None
         self.savedpid = None
+        self.cdb_command = cdb_command
+        self.debugheap = debug_heap
 
     def kill(self, pid, returncode):
         """kill function for Win32"""
@@ -64,7 +66,7 @@ class MsecDebugger(DebuggerBase):
         return [self.debugger_app(), '-version']
 
     def _get_cmdline(self, outfile):
-        cdb_command = '$$Found_with_CERT_BFF_2.8;r;!exploitable -v;q'
+        cdb_command = '$$Found_with_CERT_BFF_2.8;r;%s;q' % self.cdb_command
         args = []
         args.append(self.debugger_app())
         args.append('-amsec.dll')
