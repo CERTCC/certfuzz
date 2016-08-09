@@ -35,7 +35,8 @@ def exponential_backoff(F):
             try:
                 return F(*args, **kwargs)
             except Exception as detail:
-                logmsg = '... [try %d of %d]: %s' % (current_depth + 1, MAXDEPTH, detail)
+                logmsg = '... [try %d of %d]: %s' % (
+                    current_depth + 1, MAXDEPTH, detail)
                 logger.debug(logmsg)
             # increment naptimefor the next time around
             naptime = SLEEPTIMER * pow(BACKOFF_FACTOR, current_depth)
@@ -311,14 +312,17 @@ def delete_contents_of(dirs, print_via_log=True):
             except Exception, e:
                 skipped_items.append((directory, e))
 
-            to_delete = [os.path.join(directory, item) for item in dirlist if not item == '.svn']
-            skipped_items.extend(delete_files_or_dirs(to_delete, print_via_log))
+            to_delete = [os.path.join(directory, item)
+                         for item in dirlist if not item == '.svn']
+            skipped_items.extend(
+                delete_files_or_dirs(to_delete, print_via_log))
 
     return skipped_items
 
 
 def check_zip_fh(file_like_content):
-    # Make sure that it's not an embedded zip (e.g. a DOC file from Office 2007)
+    # Make sure that it's not an embedded zip (e.g. a DOC file from Office
+    # 2007)
     file_like_content.seek(0)
     zipmagic = file_like_content.read(2)
     file_like_content.seek(0)
@@ -338,6 +342,7 @@ def check_zip_file(filepath):
     with open(filepath, 'rb') as filehandle:
         return check_zip_fh(filehandle)
 
+
 def get_zipcontents(filepath):
     # If the file is zip-based, fuzz the contents rather than the container
     logger.debug('Reading zip file: %s', filepath)
@@ -353,7 +358,6 @@ def get_zipcontents(filepath):
         unzippedbytes += data
     tempzip.close()
     return unzippedbytes
-
 
 
 def make_writable(filename):
@@ -383,7 +387,6 @@ def read_bin_file(binfile):
     Read binary file
     '''
     return _read_file(binfile, 'rb')
-
 
 
 # Adapted from Python Cookbook 2nd Ed. p.88
