@@ -10,6 +10,7 @@ from certfuzz.minimizer.win_minimizer import WindowsMinimizer
 from certfuzz.tc_pipeline.tc_pipeline_base import TestCasePipelineBase
 from certfuzz.reporters.copy_files import CopyFilesReporter
 from certfuzz.analyzers.stderr import StdErr
+from certfuzz.analyzers.cdbanalyze import CdbAnalyze
 from certfuzz.analyzers.drillresults import WindowsDrillResults
 
 
@@ -21,6 +22,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
 
     def _setup_analyzers(self):
         # self.analyzer_classes.append(StdErr)
+        self.analyzer_classes.append(CdbAnalyze)
         self.analyzer_classes.append(WindowsDrillResults)
 
     def _pre_verify(self, testcase):

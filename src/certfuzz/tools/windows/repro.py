@@ -101,7 +101,8 @@ def main():
                       os.path.join(iterationdir, iterationfile))
             fuzzed_file.path = iterationpath
 
-    cmd_as_args = get_command_args_list(config['target']['cmdline_template'], fuzzed_file.path)[1]
+    cmd_as_args = get_command_args_list(
+        config['target']['cmdline_template'], fuzzed_file.path)[1]
     targetdir = os.path.dirname(cmd_as_args[0])
 
     args = []
@@ -121,7 +122,7 @@ def main():
     if not options.debugger:
         # Using cdb or windbg
         args.append('-amsec.dll')
-        if options.debugheap:
+        if options.debugheap or config['debugger']['debugheap']:
             # do not use hd, xd options if debugheap is set
             pass
         else:
