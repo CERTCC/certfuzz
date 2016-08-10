@@ -486,6 +486,7 @@ class Minimizer(object):
 
     def _get_pin_signature(self, backtracelevels):
         # total_stack_corruption.  Use pin calltrace to get a backtrace
+        signature = ''
         analyzer_instance = pin_calltrace.Pin_calltrace(
             self.cfg, self.testcase)
         try:
