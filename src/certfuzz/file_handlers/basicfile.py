@@ -17,9 +17,13 @@ class BasicFile(object):
     def __init__(self, path):
         self.path = path
         (self.dirname, self.basename) = os.path.split(self.path)
-        # Split on first '.' to retain multiple dotted extensions
-        self.root = self.basename.split('.', 1)[0]
-        self.ext = '.' + self.basename.split('.', 1)[1]
+        if '.' in self.basename:
+            # Split on first '.' to retain multiple dotted extensions
+            self.root = self.basename.split('.', 1)[0]
+            self.ext = '.' + self.basename.split('.', 1)[1]
+        else:
+            self.root = self.basename
+            self.ext = ''
 
         self.len = None
         self.md5 = None
