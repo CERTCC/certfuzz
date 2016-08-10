@@ -30,7 +30,7 @@ class CdbAnalyze(Analyzer):
         self.outfile = get_file(testcase.fuzzedfile.path)
         # !analyze takes longer to complete than !exploitable. Give it 2x the time
         self.timeout = cfg['runner']['runtimeout'] * 2
-        self.watchcpu = cfg['debugger']['watchcpu']
+        self.watchcpu = cfg['runner']['watchcpu']
 
         Analyzer.__init__(self, cfg, testcase, self.outfile, self.timeout)
 
