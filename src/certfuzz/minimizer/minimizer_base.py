@@ -642,7 +642,7 @@ class Minimizer(object):
             write_file(''.join(self.newfuzzed), self.tempfile)
 
     def _set_bytemap(self):
-        if self.fuzzed_content:
+        if self.fuzzed_content and not self.bytemap:
             self.bytemap = hamming.bytemap(self.seed, self.fuzzed_content)
 
     def go(self):
