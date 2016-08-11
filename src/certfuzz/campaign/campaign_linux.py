@@ -85,7 +85,6 @@ class LinuxCampaign(CampaignBase):
     def _pre_enter(self):
         # give up if prog is a script
         self._check_for_script()
-        self._check_for_redirect()
         self._set_unbuffered_stdout()
         self._setup_environment()
         if not host_info.is_osx():
@@ -176,12 +175,6 @@ class LinuxCampaign(CampaignBase):
         if check_program_file_type('text', self.program):
             logger.warning("Target application is a shell script.")
             raise CampaignScriptError()
-
-    def _check_for_redirect(self):
-        logger.debug('check for redirect')
-        if '>' in self.config['target']['cmdline_template'].template:
-            logger.warning("Redirect (>) present in cmdline_template.")
-            raise CmdlineTemplateError()
 
     def _set_debugger(self):
         '''

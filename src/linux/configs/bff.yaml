@@ -28,7 +28,6 @@ campaign:
 # $SEEDFILE will be replaced at runtime with the appropriate
 # seed file name.
 # Use quotes if the target application has spaces in the path
-# Shell redirection (>) is not allowed
 #
 ##############################################################################
 target:
