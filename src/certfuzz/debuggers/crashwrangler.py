@@ -43,8 +43,9 @@ class CrashWrangler(Debugger):
     _key = 'cw'
     _ext = 'cw'
 
-    def __init__(self, program, cmd_args, outfile, timeout, template=None, exclude_unmapped_frames=True, **options):
+    def __init__(self, program, cmd_args, outfile, timeout, template=None, exclude_unmapped_frames=True, keep_uniq_faddr=False, **options):
         Debugger.__init__(self, program, cmd_args, outfile, timeout)
+        self.keep_uniq_faddr = keep_uniq_faddr
 
     def _get_crashwrangler_cmdline(self):
         if (self.program == cwapp):
@@ -91,4 +92,4 @@ class CrashWrangler(Debugger):
         if not os.path.exists(self.outfile):
             open(self.outfile, 'w').close()
 
-        return CWfile(self.outfile)
+        return CWfile(self.outfile, keep_uniq_faddr=self.keep_uniq_faddr)

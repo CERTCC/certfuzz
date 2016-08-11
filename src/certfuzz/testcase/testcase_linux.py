@@ -63,6 +63,7 @@ class LinuxTestcase(TestCaseBase):
         self.save_failed_asserts = save_failed_asserts
         self.set_debugger_template('bt_only')
         self.signature = None
+        self.keep_uniq_faddr = keep_faddr
 
     def set_debugger_template(self, option='bt_only'):
         if host_info.is_osx():

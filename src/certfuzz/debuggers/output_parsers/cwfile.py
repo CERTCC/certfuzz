@@ -37,6 +37,7 @@ regex = {
     'bt_line_at': re.compile(r'\bat\b'),
     'register': re.compile('\s\s\s?[0-9a-zA-Z]+:\s(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
     'exploitability': re.compile('exception=.+:is_exploitable=( no|yes):'),
+    'faddr': re.compile('exception=.+:access_address=((0x[0-9a-zA-Z][0-9a-zA-Z]+)):'),
 }
 
 # There are a number of functions that are typically found in crash backtraces,
@@ -209,6 +210,9 @@ class CWfile:
             if not self.exp:
                 self._look_for_exploitability(line)
 
+            if not self.faddr:
+                self._look_for_faddr(line)
+
             self._look_for_registers(line)
 
         # if we found that the stack was corrupt,
@@ -252,13 +256,20 @@ class CWfile:
         if m:
             self.exit_code = m.group(1)
 
+    def _look_for_faddr(self, line):
+        if self.faddr:
+            return
+        m = re.match(regex['faddr'], line)
+        if m:
+            self.exit_code = m.group(1)
+
     def _look_for_signal(self, line):
         m = re.match(regex['signal'], line)
         if m:
             self.signal = m.group(1)
 
     def _look_for_exploitability(self, line):
-        if self.faddr:
+        if self.exp:
             return
 
         m = re.match(regex['exploitability'], line)
