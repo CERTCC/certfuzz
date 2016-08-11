@@ -37,7 +37,7 @@ regex = {
     'bt_line_at': re.compile(r'\bat\b'),
     'register': re.compile('\s\s\s?[0-9a-zA-Z]+:\s(0x[0-9a-zA-Z][0-9a-zA-Z]+)'),
     'exploitability': re.compile('exception=.+:is_exploitable=( no|yes):'),
-    'faddr': re.compile('exception=.+:access_address=((0x[0-9a-zA-Z][0-9a-zA-Z]+)):'),
+    'faddr': re.compile('exception=.+:access_address=(0x[0-9a-zA-Z][0-9a-zA-Z]+):'),
 }
 
 # There are a number of functions that are typically found in crash backtraces,
@@ -261,7 +261,7 @@ class CWfile:
             return
         m = re.match(regex['faddr'], line)
         if m:
-            self.exit_code = m.group(1)
+            self.faddr = m.group(1)
 
     def _look_for_signal(self, line):
         m = re.match(regex['signal'], line)
