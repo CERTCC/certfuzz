@@ -55,7 +55,7 @@ blacklist_libs = ('libSystem.B.dylib', 'libsystem_malloc.dylib'
 
 class CWfile:
 
-    def __init__(self, f):
+    def __init__(self, f, keep_uniq_faddr=False):
         '''
         Create a GDB file object from the gdb output file <file>
         @param lines: The lines of the gdb file
@@ -87,7 +87,7 @@ class CWfile:
         self.crashing_thread = False
         self.pc_in_function = True
         self.pc_name = 'eip'
-        self.keep_uniq_faddr = False
+        self.keep_uniq_faddr = keep_uniq_faddr
         self.faddr = None
         self.exp = None
 
@@ -132,6 +132,12 @@ class CWfile:
     def _hashable_backtrace_string(self, level):
         self.hashable_backtrace_string = ' '.join(
             self.hashable_backtrace[:level]).strip()
+        if self.keep_uniq_faddr:
+            try:
+                self.hashable_backtrace_string = self.hashable_backtrace_string + \
+                    ' ' + self.faddr
+            except:
+                logger.debug('Cannot use PC in hash')
         logger.warning(
             '_hashable_backtrace_string: %s', self.hashable_backtrace_string)
         return self.hashable_backtrace_string

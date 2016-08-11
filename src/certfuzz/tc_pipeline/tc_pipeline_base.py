@@ -208,6 +208,7 @@ class TestCasePipelineBase(object):
                   'confidence': 0.999,
                   'tempdir': self.working_dir,
                   'maxtime': self.cfg['runoptions']['minimizer_timeout'],
+                  'keep_uniq_faddr': self.cfg['runoptions']['keep_unique_faddr'],
                   }
 
         try:

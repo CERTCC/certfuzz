@@ -63,7 +63,6 @@ debugger:
 ##############################################################################
 # LOCATIONS FOR FUZZ RUN FILES:
 #
-# Output files are placed in [outputdir]/[seedfile]
 # seedfile_dir: 
 # Location of seed files (relative to bff.py)
 #
@@ -115,7 +114,7 @@ runoptions:
     seed_interval: 5
     minimize: True
     minimizer_timeout: 3600
-#    keep_unique_faddr: False
+    keep_unique_faddr: False
     keep_duplicates: False
     recycle_crashers: False
     watchdogtimeout: 3600
