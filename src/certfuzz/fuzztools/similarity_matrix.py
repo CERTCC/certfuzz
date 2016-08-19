@@ -20,6 +20,7 @@ logger.setLevel(logging.DEBUG)
 
 
 class SimilarityMatrix(object):
+
     def __init__(self, dirs):
         self.dirs = dirs
         self.pattern = '*.annotated'
@@ -35,12 +36,15 @@ class SimilarityMatrix(object):
 
         self.find_files()  # get the list of files to analyze
         if len(self.files) < 2:
-            raise SimilarityMatrixError('Must have at least 2 files to compare')
+            raise SimilarityMatrixError(
+                'Must have at least 2 files to compare')
         self.read_coverage()  # build a dict of coverage keyed by file
-        self.measure_doc_count_by_term()  # calculate document frequency for each coverage string
+        # calculate document frequency for each coverage string
+        self.measure_doc_count_by_term()
         self.calculate_idf()  # calculate the IDF for each term
         self.calculate_tf_idf()  # calculate the TF-IDF vectors keyed by file
-        self.build_matrix()  # Pairwise compare files based on their TF-IDF vectors
+        # Pairwise compare files based on their TF-IDF vectors
+        self.build_matrix()
 
     def find_files(self):
         for d in self.dirs:
@@ -69,7 +73,8 @@ class SimilarityMatrix(object):
             self.idf[term] = math.log(numerator / denominator)
 
     def calculate_tf_idf(self):
-        logger.info('Calculating Term Frequency - Inverse Document Frequency scores')
+        logger.info(
+            'Calculating Term Frequency - Inverse Document Frequency scores')
         for f in self.files:
             tf_idf = {}
             cov = self.coverage[f]
@@ -93,9 +98,11 @@ class SimilarityMatrix(object):
 
     def _crash_id_from_path(self, path):
         parts = path.split('/')
-        # we assume a directory structure of <foo>/crashers/<crash_id>/<bar>
-        idx = parts.index('crashers') + 1
-        return parts[idx]
+        # we assume a directory structure of
+        # <foo>/crashers/<exploitability/<crash_id>/<bar>
+        exp = parts.index('crashers') + 1
+        crashhash = parts.index('crashers') + 2
+        return parts[exp] + '/' + parts[crashhash]
 
     def print_to(self, target=None):
         fmt = '%0.' + self.precision + 'f\t%s\t%s'
@@ -105,7 +112,8 @@ class SimilarityMatrix(object):
         else:
             output = sys.stdout
 
-        sorted_similarity = sorted(self.sim.iteritems(), key=operator.itemgetter(1))
+        sorted_similarity = sorted(
+            self.sim.iteritems(), key=operator.itemgetter(1))
         for (k1, k2), v in sorted_similarity:
             crash_id1 = self._crash_id_from_path(k1)
             crash_id2 = self._crash_id_from_path(k2)
