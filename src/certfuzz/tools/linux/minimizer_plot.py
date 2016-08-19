@@ -26,24 +26,32 @@ logger.addHandler(hdlr)
 
 
 def parse_options():
-    usage = "usage: %prog [options] <crash_id>"
+    usage = "usage: %prog [options] <crash_dir>"
     parser = OptionParser(usage)
-    parser.add_option("-d", "--debug", dest="debug", help="Turn on debugging output (overrides --verbose)", action='store_true', default=False)
-    parser.add_option("-v", "--verbose", dest="verbose", help="Turn on verbose output", action='store_true', default=False)
-    parser.add_option('', '--dir', dest='dir', help='Specify crasher parent dir')
-    parser.add_option("-F", "--config", dest="cfgfile", help="read config data from CFGFILE", metavar='CFGFILE')
-    parser.add_option('', '--ylin', dest='linear_y', help="use linear scale on Y axis (default is logarithmic)", action='store_true', default=False)
-    parser.add_option('', '--xlog', dest='log_x', help="use log scale on X axis (default is linear)", action='store_true', default=False)
-    parser.add_option('', '--no-crash-id', dest='include_crash_id', help='suppress inclusion of crash_id in chart title', action='store_false', default=True)
-    parser.add_option('', '--infile', dest="infile", help="read minimizer log from FILE", metavar='FILE')
+    parser.add_option("-d", "--debug", dest="debug",
+                      help="Turn on debugging output (overrides --verbose)", action='store_true', default=False)
+    parser.add_option("-v", "--verbose", dest="verbose",
+                      help="Turn on verbose output", action='store_true', default=False)
+    parser.add_option(
+        '', '--dir', dest='dir', help='Specify crasher parent dir')
+    parser.add_option("-F", "--config", dest="cfgfile",
+                      help="read config data from CFGFILE", metavar='CFGFILE')
+    parser.add_option('', '--ylin', dest='linear_y',
+                      help="use linear scale on Y axis (default is logarithmic)", action='store_true', default=False)
+    parser.add_option('', '--xlog', dest='log_x',
+                      help="use log scale on X axis (default is linear)", action='store_true', default=False)
+    parser.add_option('', '--no-crash-id', dest='include_crash_dir',
+                      help='suppress inclusion of crash_dir in chart title', action='store_false', default=True)
+    parser.add_option('', '--infile', dest="infile",
+                      help="read minimizer log from FILE", metavar='FILE')
     options, args = parser.parse_args()
     if not len(args):
         parser.print_help()
-        parser.error("Please specify a crash md5 to plot")
+        parser.error("Please specify a crash directory to plot")
     return options, args
 
 
-def plot(options, crash_id, log):
+def plot(options, crash_dir, log):
     logfile = LogFile(log)
 #    results = logfile.results
     starts = []
@@ -67,9 +75,9 @@ def plot(options, crash_id, log):
     plt.xlabel('Iteration')
     plt.ylabel('Hamming Distance')
     title = 'Crash Minimization'
-# prepend the crash_id unless the user told us not to
-    if options.include_crash_id:
-        title = '\n'.join((crash_id, title))
+# prepend the crash_dir unless the user told us not to
+    if options.include_crash_dir:
+        title = '\n'.join((crash_dir, title))
     plt.title(title)
     plt.plot(starts, label='start_hd')
     plt.plot(mins, label='min_found')
@@ -82,17 +90,20 @@ def plot(options, crash_id, log):
 
 
 class Line():
+
     def __init__(self, line):
         self.line = line.strip()
         self.value = False
         self._process()
 
     def _process(self):
-        m = re.match('^start=(\d+)\s+min=(\d+)\s+target_guess=(\d+)\s+curr=(\d+)', self.line)
+        m = re.match(
+            '^start=(\d+)\s+min=(\d+)\s+target_guess=(\d+)\s+curr=(\d+)', self.line)
         if not m:
             return
 
-        (start, minimum, target, current) = (int(x) for x in (m.group(1), m.group(2), m.group(3), m.group(4)))
+        (start, minimum, target, current) = (int(x)
+                                             for x in (m.group(1), m.group(2), m.group(3), m.group(4)))
         logger.debug('start: %d', start)
         logger.debug('min: %d', minimum)
         logger.debug('target: %d', target)
@@ -101,6 +112,7 @@ class Line():
 
 
 class LogFile():
+
     def __init__(self, logfile):
         self.file = logfile
         self.results = []
@@ -151,15 +163,15 @@ def main():
         cfg = load_and_fix_config(cfg_file)
         _campaign_id = cfg['campaign']['id']
         _campaign_id_no_space = re.sub('\s', '_', _campaign_id)
-        result_dir = os.path.join(cfg['directories']['results_dir'], _campaign_id_no_space, 'crashers')
+        result_dir = os.path.join(
+            cfg['directories']['results_dir'], _campaign_id_no_space, 'crashers')
         logger.info('Reading results from %s', result_dir)
 
     log = None
-    crash_id = None
+    crash_dir = None
     if len(args):
-        crash_id = args.pop(0)
-        logger.debug('Crash_id=%s', crash_id)
-        crashdir = os.path.join(result_dir, crash_id)
+        crash_dir = args.pop(0)
+        logger.debug('crash_dir=%s', crash_dir)
         if not os.path.isdir(crashdir):
             logger.debug('%s is not a dir', crashdir)
             raise
@@ -167,14 +179,14 @@ def main():
         logger.debug('Looking for minimizer log in %s', crashdir)
         log = os.path.join(crashdir, 'minimizer_log.txt')
     elif options.infile:
-        crash_id = os.path.basename(options.infile)
+        crash_dir = os.path.basename(options.infile)
         log = options.infile
 
     if not os.path.exists(log):
         logger.warning('No minimizer log found at %s', log)
         raise
     logger.info('Found log at %s', log)
-    plot(options, crash_id, log)
+    plot(options, crash_dir, log)
 
     logger.info('All done. Bye.')
 
