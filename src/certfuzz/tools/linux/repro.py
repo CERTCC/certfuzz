@@ -34,7 +34,9 @@ logger.setLevel(logging.WARNING)
 def parseiterpath(commandline):
     # Return the path to the iteration's fuzzed file
     for part in commandline.split():
-        if 'bff-crash' in part:
+        if 'campaign_' in part and 'iteration_' in part:
+            # This is the part of the commandline that looks like it's
+            # the fuzzed file
             return part
 
 
@@ -95,17 +97,19 @@ def main():
             print '** using gdb: %s' % gdbfile
             iterationpath = getiterpath(gdbfile)
             break
-        iterationdir = os.path.dirname(iterationpath)
-        iterationfile = os.path.basename(iterationpath)
-        if iterationdir:
-            mkdir_p(iterationdir)
-            copy_file(fuzzed_file.path,
-                      os.path.join(iterationdir, iterationfile))
-            fullpath_fuzzed_file = iterationpath
+        if iterationpath:
+            iterationdir = os.path.dirname(iterationpath)
+            iterationfile = os.path.basename(iterationpath)
+            if iterationdir:
+                mkdir_p(iterationdir)
+                copy_file(fuzzed_file.path,
+                          os.path.join(iterationdir, iterationfile))
+                fullpath_fuzzed_file = iterationpath
 
     config = load_and_fix_config(cfg_file)
 
-    cmd_as_args = get_command_args_list(config['target']['cmdline_template'], fullpath_fuzzed_file)[1]
+    cmd_as_args = get_command_args_list(
+        config['target']['cmdline_template'], fullpath_fuzzed_file)[1]
     args = []
 
     if options.use_edb and options.debugger:
