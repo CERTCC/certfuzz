@@ -258,6 +258,7 @@ def get_newpath(oldpath, str_to_insert):
         # Split on first '.' to retain multiple dotted extensions
         root = oldpath.split('.', 1)[0]
         ext = '.' + oldpath.split('.', 1)[1]
+        ext = ext.replace(' ', '')
     else:
         root = oldpath
         ext = ''

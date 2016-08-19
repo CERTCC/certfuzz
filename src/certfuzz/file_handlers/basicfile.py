@@ -20,7 +20,9 @@ class BasicFile(object):
         if '.' in self.basename:
             # Split on first '.' to retain multiple dotted extensions
             self.root = self.basename.split('.', 1)[0]
-            self.ext = '.' + self.basename.split('.', 1)[1]
+            ext = '.' + self.basename.split('.', 1)[1]
+            # Get rid of any spaces in extension
+            self.ext = ext.replace(' ', '')
         else:
             self.root = self.basename
             self.ext = ''
