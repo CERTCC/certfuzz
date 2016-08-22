@@ -261,12 +261,12 @@ VOID Trace(TRACE trace, VOID *v)
                 if( print_args )
                 {
                     INS_InsertCall(tail, IPOINT_BEFORE, AFUNPTR(do_call_args_indirect),
-                                   IARG_BRANCH_TARGET_ADDR, IARG_BRANCH_TAKEN,  IARG_G_ARG0_CALLER, IARG_END);
+                                   IARG_ADDRINT, offset, IARG_BRANCH_TARGET_ADDR, IARG_BRANCH_TAKEN,  IARG_G_ARG0_CALLER, IARG_END);
                 }
                 else
                 {
                     INS_InsertCall(tail, IPOINT_BEFORE, AFUNPTR(do_call_indirect),
-                                   IARG_BRANCH_TARGET_ADDR, IARG_BRANCH_TAKEN, IARG_END);
+                                   IARG_ADDRINT, offset, IARG_BRANCH_TARGET_ADDR, IARG_BRANCH_TAKEN, IARG_END);
 
                 }
             }
