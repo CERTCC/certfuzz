@@ -95,16 +95,16 @@ if ( contains "$platform" "Linux" ); then
         fi
     fi
     
-    cp -au $scriptlocation/pintool ~
-    
     if [ ! -f ~/pintool/calltrace.so ]; then
         echo Building calltrace pintool...
+        cp -au $scriptlocation/pintool ~
         cd ~/pintool
         $mypython make.py
     fi
     
     if [ ~/pintool/calltrace.cpp -ot $scriptlocation/pintool/calltrace.cpp ]; then
         echo Updating calltrace pintool...
+        cp -au $scriptlocation/pintool ~
         cd ~/pintool
         $mypython make.py
     fi        
