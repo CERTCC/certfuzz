@@ -25,4 +25,8 @@ program=`egrep -m1 '^    program:' $currentcfg | sed 's/^    program://' | sed '
 echo "Target commandline: " `egrep -m1 '^    cmdline' $currentcfg | sed 's/^    cmdline_template://' | sed "s|"'$PROGRAM'"|$program|"`
 echo -e "Output directory: " `egrep -m1 '^    results_dir' $currentcfg | sed 's/^    results_dir://' | sed 's/\\r//'` "\n\n"
 
-echo -e "Run ./batch.sh to begin fuzzing.\n"
+if [[ "$platform" =~ "Darwin" ]]; then
+    echo -e "Run ./batch.sh to begin fuzzing.\n"
+else
+    echo -e "BFF should start fuzzing automatically via ~/bff/batch.sh\n"
+fi
