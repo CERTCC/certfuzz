@@ -10,6 +10,7 @@ import tempfile
 from certfuzz.file_handlers.basicfile import BasicFile
 from certfuzz.fuzztools import filetools, hamming
 from certfuzz.fuzztools.filetools import check_zip_file, mkdir_p
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
 from pprint import pformat
 
 
@@ -158,6 +159,11 @@ class TestCaseBase(object):
         pass
 
     def update_crash_details(self):
+        # We might be updating crash details because we have a new fuzzedfile
+        # (with a different path)
+        self.cmdlist = get_command_args_list(
+            self.cmd_template, infile=self.fuzzedfile.path)[1]
+        self.cmdargs = self.cmdlist[1:]
         self.tempdir = tempfile.mkdtemp(
             prefix=self._tmp_pfx, suffix=self._tmp_sfx, dir=self.workdir_base)
         self.copy_files_to_temp()
