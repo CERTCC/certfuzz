@@ -19,6 +19,7 @@ echo si_addr:
 print $_siginfo._sifields._sigfault.si_addr
 echo \n
 bt full 512
+down-silently 512
 echo \n
 info registers
 echo \n
