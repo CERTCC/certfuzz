@@ -7,4 +7,6 @@ bt full 512
 info registers
 echo si_addr:
 print $_siginfo._sifields._sigfault.si_addr
+echo \n
+x/i $pc
 quit
