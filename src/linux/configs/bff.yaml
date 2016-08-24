@@ -36,6 +36,28 @@ target:
 
 
 ##############################################################################
+# LOCATIONS FOR FUZZ RUN FILES:
+#
+# seedfile_dir: 
+# Location of seed files (relative to bff.py)
+#
+# working_dir: 
+# Temporary directory used by BFF. Use a ramdisk to reduce disk activity
+#
+# results_dir: 
+# Location of fuzzing results (relative to bff.py)
+#
+# If results are stored in a shared location, 
+# this directory needs to be unique for each fuzzing machine
+#
+##############################################################################
+
+directories:
+    seedfile_dir: seedfiles/examples
+    working_dir: ~/fuzzing
+    results_dir: results
+
+##############################################################################
 # RUNNER OPTIONS
 #
 # runtimeout:
@@ -60,29 +82,6 @@ debugger:
     backtracelevels: 5
     
     
-##############################################################################
-# LOCATIONS FOR FUZZ RUN FILES:
-#
-# seedfile_dir: 
-# Location of seed files (relative to bff.py)
-#
-# working_dir: 
-# Temporary directory used by BFF. Use a ramdisk to reduce disk activity
-#
-# results_dir: 
-# Location of fuzzing results (relative to bff.py)
-#
-# If results are stored in a shared location, 
-# this directory needs to be unique for each fuzzing machine
-#
-##############################################################################
-
-directories:
-    seedfile_dir: seedfiles/examples
-    working_dir: ~/fuzzing
-    results_dir: results
-
-
 ##############################################################################
 # FUZZ CAMPAIGN OPTIONS
 #

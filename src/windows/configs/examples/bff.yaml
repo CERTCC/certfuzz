@@ -58,6 +58,24 @@ target:
     
 
 ##############################################################################
+# Directories used by BFF (all relative to bff.py)
+#
+# seedfile_dir: 
+# Location of seed files 
+#
+# working_dir:
+# Temporary directory used by BFF. Use a ramdisk to reduce disk activity
+#
+# results_dir: 
+# Location of fuzzing results
+##############################################################################
+directories:
+    seedfile_dir: seedfiles\examples
+    working_dir:  fuzzdir
+    results_dir:  results
+
+
+##############################################################################
 # Runner options
 #
 # hideoutput:
@@ -90,24 +108,6 @@ runner:
 debugger:
     debugheap: False
     max_handled_exceptions: 6
-
-
-##############################################################################
-# Directories used by BFF (all relative to bff.py)
-#
-# seedfile_dir: 
-# Location of seed files 
-#
-# working_dir:
-# Temporary directory used by BFF. Use a ramdisk to reduce disk activity
-#
-# results_dir: 
-# Location of fuzzing results
-##############################################################################
-directories:
-    seedfile_dir: seedfiles\examples
-    working_dir:  fuzzdir
-    results_dir:  results
 
 
 ##############################################################################
