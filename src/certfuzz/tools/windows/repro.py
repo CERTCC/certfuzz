@@ -78,7 +78,7 @@ def main():
     if len(args) and os.path.exists(args[0]):
         fullpath_fuzzed_file = os.path.abspath(args[0])
         fuzzed_file = BasicFile(fullpath_fuzzed_file)
-        logger.info('Fuzzed file is %s', fuzzed_file)
+        logger.info('Fuzzed file is: %s', fuzzed_file.path)
     else:
         parser.error('fuzzedfile must be specified')
 
