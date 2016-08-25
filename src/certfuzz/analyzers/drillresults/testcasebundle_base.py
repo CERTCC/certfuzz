@@ -321,7 +321,12 @@ class TestCaseBundle(object):
                         scores.append(20)
                     else:
                         # Faulting address has high entropy.  Most exploitable.
-                        scores.append(10)
+                        if 0 in self.details['exceptions']:
+                            # This is the first-seen  exception. Give it a better
+                            # score
+                            scores.append(5)
+                        else:
+                            scores.append(10)
                 else:
                     # The faulting address pattern is not in the fuzzed file
                     scores.append(40)
@@ -357,6 +362,7 @@ class TestCaseBundle(object):
             if module == 'unloaded' and not self.ignore_jit:
                 scores.append(20)
             elif module.lower() == 'ntdll.dll' or 'msvcr' in module.lower():
+                # TODO: This is all very 32-bit Windows XP specific.  Be smarter.
                 # likely heap corruption.  Exploitable, but difficult
                 scores.append(45)
             elif '0x00120000' in efa or '0x00130000' in efa or '0x00140000' in efa:
