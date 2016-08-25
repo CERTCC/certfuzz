@@ -44,6 +44,7 @@ class TCB(testcasebundle_base.TestCaseBundle):
 
 
 class Test(unittest.TestCase):
+
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
         self.tcb = self._minimal_tcb()
@@ -52,7 +53,8 @@ class Test(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
 
     def test_tcb_is_metaclass(self):
-        self.assertTrue(hasattr(testcasebundle_base.TestCaseBundle, '__metaclass__'))
+        self.assertTrue(
+            hasattr(testcasebundle_base.TestCaseBundle, '__metaclass__'))
 
         # should raise a type error if you try to instantiate it
         self.assertRaises(TypeError, testcasebundle_base.TestCaseBundle)
@@ -178,7 +180,7 @@ class Test(unittest.TestCase):
         xc['pcmodule'] = 'something'
         xc['EIF'] = True
         scores = self.tcb._score_interesting()
-        self.assertTrue(10 in scores)
+        self.assertTrue(5 in scores)
 
         xc['efa'] = '0x0000'
         scores = self.tcb._score_interesting()
@@ -222,7 +224,6 @@ class Test(unittest.TestCase):
         xc['efa'] = '0xffff'
         scores = self.tcb._score_less_interesting()
         self.assertTrue(60 in scores)
-
 
 
 if __name__ == "__main__":
