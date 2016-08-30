@@ -216,10 +216,6 @@ class Minimizer(object):
             msg = 'Unable to minimize: Already minimized'
             self.logger.info(msg)
             self._raise(msg)
-        if self.testcase.debugger_missed_stack_corruption:
-            msg = 'Unable to minimize: Stack corruption testcase, which the debugger missed.'
-            self.logger.info(msg)
-            self._raise(msg)
         # start the timer
         self.start_time = time.time()
         return self
