@@ -24,7 +24,7 @@ class TestCasePipelineBase(object):
     Implements a pipeline for filtering and processing a testcase
     '''
     __metaclass__ = abc.ABCMeta
-    pipes = ['verify', 'minimize', 'analyze', 'report']
+    pipes = ['verify', 'minimize', 'recycle', 'analyze', 'report']
 
     def __init__(self, testcases=None, uniq_func=None, cfg=None, options=None,
                  outdir=None, workdirbase=None, sf_set=None):
@@ -225,16 +225,23 @@ class TestCasePipelineBase(object):
         testcase.calculate_hamming_distances()
 
     def _post_minimize(self, testcase):
+        pass
+
+    @coroutine
+    def recycle(self, *targets):
         if self.cfg['runoptions']['recycle_crashers']:
-            logger.debug('Recycling crash as seedfile')
-            iterstring = testcase.fuzzedfile.basename.split(
-                '-')[1].split('.')[0]
-            crasherseedname = 'sf_' + testcase.seedfile.md5 + \
-                '-' + iterstring + testcase.seedfile.ext
-            crasherseed_path = os.path.join(
-                self.cfg['directories']['seedfile_dir'], crasherseedname)
-            filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
-            self.sf_set.add_file(crasherseed_path)
+            while True:
+                testcase = (yield)
+
+                logger.debug('Recycling crash as seedfile')
+                iterstring = testcase.fuzzedfile.basename.split(
+                    '-')[1].split('.')[0]
+                crasherseedname = 'sf_' + testcase.seedfile.md5 + \
+                    '-' + iterstring + testcase.seedfile.ext
+                crasherseed_path = os.path.join(
+                    self.cfg['directories']['seedfile_dir'], crasherseedname)
+                filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+                self.sf_set.add_file(crasherseed_path)
 
     def _pre_analyze(self, testcase):
         pass
