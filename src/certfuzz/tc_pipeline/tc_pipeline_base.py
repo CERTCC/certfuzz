@@ -229,10 +229,10 @@ class TestCasePipelineBase(object):
 
     @coroutine
     def recycle(self, *targets):
-        if self.cfg['runoptions']['recycle_crashers']:
-            while True:
-                testcase = (yield)
+        while True:
+            testcase = (yield)
 
+            if self.cfg['runoptions']['recycle_crashers']:
                 logger.debug('Recycling crash as seedfile')
                 iterstring = testcase.fuzzedfile.basename.split(
                     '-')[1].split('.')[0]
@@ -240,11 +240,12 @@ class TestCasePipelineBase(object):
                     '-' + iterstring + testcase.seedfile.ext
                 crasherseed_path = os.path.join(
                     self.cfg['directories']['seedfile_dir'], crasherseedname)
-                filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
+                filetools.copy_file(
+                    testcase.fuzzedfile.path, crasherseed_path)
                 self.sf_set.add_file(crasherseed_path)
 
-                for target in targets:
-                    target.send(testcase)
+            for target in targets:
+                target.send(testcase)
 
     def _pre_analyze(self, testcase):
         pass
