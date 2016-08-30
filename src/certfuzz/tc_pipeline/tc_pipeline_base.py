@@ -243,6 +243,9 @@ class TestCasePipelineBase(object):
                 filetools.copy_file(testcase.fuzzedfile.path, crasherseed_path)
                 self.sf_set.add_file(crasherseed_path)
 
+                for target in targets:
+                    target.send(testcase)
+
     def _pre_analyze(self, testcase):
         pass
 
