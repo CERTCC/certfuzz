@@ -23,6 +23,7 @@ class RangeFinder(MultiArmedBandit):
         3. a probability distribution across all ranges
     as well as a picker method to randomly choose a range based on the probability distribution.
     '''
+
     def __init__(self, low, high):
         MultiArmedBandit.__init__(self)
 
@@ -35,20 +36,6 @@ class RangeFinder(MultiArmedBandit):
             raise RangeFinderError('max cannot be less than min')
 
         self._set_ranges()
-
-#    def __getstate__(self):
-#        # we can't pickle the logger.
-#        # But that's okay. We can get it back in __setstate__
-#        state = ScorableSet2.__getstate__(self)
-#        del state['logger']
-#        return state
-#
-#    def __setstate__(self, d):
-#        self.__dict__.update(d)
-#        for thing in self.things.iteritems():
-#            assert type(thing) == Range, 'Type is %s' % type(thing)
-#        # recover the logger we had to drop in __getstate__
-#        self._set_logger()
 
     def _exp_range(self, low, factor):
         high = low * factor

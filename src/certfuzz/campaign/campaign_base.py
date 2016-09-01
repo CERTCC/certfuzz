@@ -11,7 +11,6 @@ import re
 import shutil
 import tempfile
 import traceback
-import cPickle as pickle
 import signal
 
 from certfuzz.campaign.errors import CampaignError
@@ -25,6 +24,10 @@ from certfuzz.file_handlers.tmp_reaper import TmpReaper
 import gc
 from certfuzz.config.simple_loader import load_and_fix_config
 from certfuzz.helpers.misc import import_module_by_name
+from certfuzz.fuzztools.object_caching import dump_obj_to_file,\
+    load_obj_from_file
+import json
+from certfuzz.fuzztools.filetools import write_file
 
 
 logger = logging.getLogger(__name__)
@@ -120,7 +123,7 @@ class CampaignBase(object):
 
         self.sf_set_out = os.path.join(self.outdir, 'seedfiles')
         if not self.cached_state_file:
-            cachefile = 'campaign_%s.pkl' % _campaign_id_with_underscores
+            cachefile = 'campaign_%s.json' % _campaign_id_with_underscores
             self.cached_state_file = os.path.join(
                 self.work_dir_base, cachefile)
         if not self.seed_interval:
@@ -165,7 +168,6 @@ class CampaignBase(object):
         if _result is not None:
             self = _result
 
-        self._read_state()
         self._check_prog()
         self._setup_workdir()
         self._set_fuzzer()
@@ -173,6 +175,7 @@ class CampaignBase(object):
         self._check_runner()
         self._setup_output()
         self._create_seedfile_set()
+        self._read_state()
 
         _result = self._post_enter()
         if _result is not None:
@@ -327,50 +330,133 @@ class CampaignBase(object):
                          outputpath=self.sf_set_out) as sfset:
             self.seedfile_set = sfset
 
-    @abc.abstractmethod
-    def __getstate__(self):
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def __setstate__(self):
-        raise NotImplementedError
-
-    def _read_state(self, cache_file=None):
-        if not cache_file:
-            cache_file = self.cached_state_file
-
-        if not os.path.exists(cache_file):
-            logger.info('No cached campaign found, using new campaign')
-            return
-
+    def _read_cached_data(self, cachefile):
         try:
-            with open(cache_file, 'rb') as fp:
-                campaign = pickle.load(fp)
-        except Exception, e:
-            logger.warning(
-                'Unable to read %s, will use new campaign instead: %s', cache_file, e)
+            with open(cachefile, 'rb') as fp:
+                cached_data = json.load(fp)
+        except (IOError, ValueError) as e:
+            logger.info(
+                'No cached campaign data found, will proceed as new campaign: %s', e)
             return
+        return cached_data
 
-        if campaign:
+    def _restore_seedfile_scores(self, sf_scores):
+        for sf_md5, sf_score in sf_scores.iteritems():
+            # is this seedfile still around?
             try:
-                if self.config['config_timestamp'] != campaign.__dict__['config_timestamp']:
-                    logger.warning(
-                        'Config file modified. Discarding cached campaign')
-                else:
-                    self.__dict__.update(campaign.__dict__)
-                    logger.info('Reloaded campaign from %s', cache_file)
+                arm_to_update = self.seedfile_set.arms[sf_md5]
+            except KeyError:
+                # if not, just skip it
+                logger.warning(
+                    'Skipping seedfile score recovery for %s: maybe seedfile was removed?', sf_md5)
+                continue
+
+            cached_successes = sf_score['successes']
+            cached_trials = sf_score['trials']
+
+            arm_to_update.update(
+                successes=cached_successes, trials=cached_trials)
+
+    def _restore_rangefinder_scores(self, rf_scores):
+        for sf_md5, rangelist in rf_scores.iteritems():
+            # is this seedfile still around?
+            try:
+                sf_to_update = self.seedfile_set.things[sf_md5]
             except KeyError:
                 logger.warning(
-                    'No config date detected. Discarding cached campaign')
-        else:
+                    'Skipping rangefinder score recovery for %s: maybe seedfile was removed?', sf_md5)
+                continue
+
+            # if you got here, you have a seedfile to update
+            # we're going to need its rangefinder
+            rangefinder = sf_to_update.rangefinder
+
+            # construct a rangefinder key lookup table
+            rf_lookup = {}
+            for key, item in rangefinder.things.iteritems():
+                lookup_key = (item.min, item.max)
+                rf_lookup[lookup_key] = key
+
+            for r in rangelist:
+                # is this range still correct?
+                cached_rmin = r['range_key']['range_min']
+                cached_rmax = r['range_key']['range_max']
+                lkey = (cached_rmin, cached_rmax)
+                try:
+                    rk = rf_lookup[lkey]
+                except KeyError:
+                    logger.warning(
+                        'Skipping rangefinder score recovery for %s range %s: range not found', sf_md5, lkey)
+                    continue
+
+                # if you got here you have a matching range to update
+                # fyi: .arms and .things have the same keys
+                arm_to_update = rangefinder.arms[rk]
+                cached_successes = r['range_score']['successes']
+                cached_trials = r['range_score']['trials']
+
+                arm_to_update.update(
+                    successes=cached_successes, trials=cached_trials)
+
+    def _restore_campaign_from_cache(self, cached_data):
+        self.current_seed = cached_data['current_seed']
+        self._restore_seedfile_scores(cached_data['seedfile_scores'])
+        self._restore_rangefinder_scores(cached_data['rangefinder_scores'])
+        logger.info('Restoring cached campaign data done')
+
+    def _read_state(self, cachefile=None):
+        if not cachefile:
+            cachefile = self.cached_state_file
+
+        cached_data = self._read_cached_data(cachefile)
+        if cached_data is None:
+            return
+
+        # check the timestamp
+        # if the cache is older than the current config file, we should
+        # ignore the cached data and just start fresh
+        cached_cfg_ts = cached_data['config_timestamp']
+        if self.config['config_timestamp'] != cached_cfg_ts:
             logger.warning(
-                'Unable to reload campaign from %s, will use new campaign instead', cache_file)
+                'Config file modified since campaign data cache was created. Discarding cached campaign data. Will proceed as new campaign.')
+            return 2
+
+        # if you got here, the cached file is ok to use
+
+        self._restore_campaign_from_cache(cached_data)
+
+    def _get_state_as_dict(self):
+        state = {'current_seed': self.current_seed,
+                 'config_timestamp': self.config['config_timestamp'],
+                 'seedfile_scores': self.seedfile_set.arms_as_dict(),
+                 'rangefinder_scores': None
+                 }
+
+        # add rangefinder scores from each seedfile
+        d = {}
+        for k, sf in self.seedfile_set.things.iteritems():
+            d[k] = []
+
+            for rk, rf in sf.rangefinder.things.iteritems():
+                arm = sf.rangefinder.arms[rk]
+                rkey = {'range_min': rf.min, 'range_max': rf.max}
+                rdata = {'range_key': rkey,
+                         'range_score': dict(arm.__dict__)}
+                d[k].append(rdata)
+
+        state['rangefinder_scores'] = d
+
+        return state
+
+    def _get_state_as_json(self):
+        state = self._get_state_as_dict()
+        return json.dumps(state, indent=4, sort_keys=True)
 
     def _save_state(self, cachefile=None):
         if not cachefile:
             cachefile = self.cached_state_file
-        # FIXME
-        # dump_obj_to_file(cachefile, self)
+        state_as_json = self._get_state_as_json()
+        write_file(state_as_json, cachefile)
 
     def _testcase_is_unique(self, testcase_id, exploitability='UNKNOWN'):
         '''
@@ -405,10 +491,9 @@ class CampaignBase(object):
         sf = self.seedfile_set.next_item()
         logger.info('Selected seedfile: %s', sf.basename)
 
-# TODO: restore this
-#         if self.current_seed % self.status_interval == 0:
-#             # cache our current state
-#             self._save_state()
+        if (self.current_seed > 0) and (self.current_seed % self.status_interval == 0):
+            # cache our current state
+            self._save_state()
 
         r = sf.rangefinder.next_item()
 

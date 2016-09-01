@@ -12,6 +12,7 @@ from certfuzz.fuzztools.rangefinder import RangeFinder
 
 
 class Test(unittest.TestCase):
+
     def delete_file(self, f):
         os.remove(f)
         self.assertFalse(os.path.exists(f))
@@ -74,28 +75,6 @@ class Test(unittest.TestCase):
         for x in self.r.things.values():
             self.assertAlmostEqual(x.mean, ((x.max + x.min) / 2))
 
-#    def test_getstate_is_pickle_friendly(self):
-#        # getstate should return a pickleable object
-#        import pickle
-#        state = self.r.__getstate__()
-#        try:
-#            pickle.dumps(state)
-#        except Exception, e:
-#            self.fail('Failed to pickle state: %s' % e)
-#
-#    def test_getstate_has_all_expected_items(self):
-#        state = self.r.__getstate__()
-#        for k, v in self.r.__dict__.iteritems():
-#            # make sure we're deleting what we need to
-#            if k in ['logger']:
-#                self.assertFalse(k in state)
-#            else:
-#                self.assertTrue(k in state, '%s not found' % k)
-#                self.assertEqual(type(state[k]), type(v))
-#
-#    def test_getstate(self):
-#        state = self.r.__getstate__()
-#        self.assertEqual(dict, type(state))
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

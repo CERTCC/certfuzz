@@ -21,6 +21,9 @@ class MultiArmedBanditBase(object):
         self.things = {}
         self.arms = {}
 
+    def arms_as_dict(self):
+        return {k: dict(arm.__dict__) for k, arm in self.arms.iteritems()}
+
     def add_item(self, key=None, obj=None):
         if key is None:
             raise MultiArmedBanditError('unspecified key for arm')
@@ -38,7 +41,6 @@ class MultiArmedBanditBase(object):
         # but don't trust those averages too strongly
         new_arm.doubt()
 
-
         # add the new arm to the set
         self.arms[key] = new_arm
 
@@ -54,7 +56,8 @@ class MultiArmedBanditBase(object):
                 pass
 
     def record_result(self, key, successes=0, trials=0):
-        logger.debug('Recording result: key=%s successes=%d trials=%d', key, successes, trials)
+        logger.debug(
+            'Recording result: key=%s successes=%d trials=%d', key, successes, trials)
         arm = self.arms[key]
         arm.update(successes, trials)
 
