@@ -16,6 +16,7 @@ class TempDir(object):
     context. Make sure you copy out what you need to keep before leaving the
     context.
     '''
+
     def __init__(self, suffix=None, prefix=None, dir=None):
         self.suffix = suffix
         self.prefix = prefix
@@ -31,10 +32,11 @@ class TempDir(object):
 
         self.tmpdir = tempfile.mkdtemp(**kwargs)
         logger.debug('Created tempdir %s', self.tmpdir)
-        return self.tmpdir
+        return self
 
     def __exit__(self, etype, value, traceback):
         if etype is not None:
-            logger.debug('%s caught %s: %s', self.__class__.__name__, etype, value)
+            logger.debug(
+                '%s caught %s: %s', self.__class__.__name__, etype, value)
         logger.debug('Removing tempdir %s', self.tmpdir)
         shutil.rmtree(self.tmpdir, ignore_errors=True)
