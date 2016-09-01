@@ -11,7 +11,8 @@ from certfuzz.file_handlers.errors import SeedFileError, SeedfileSetError
 from certfuzz.file_handlers.seedfile import SeedFile
 from certfuzz.fuzztools import filetools
 
-# Using a generic name here so we can easily swap out other MAB implementations if we want to
+# Using a generic name here so we can easily swap out other MAB
+# implementations if we want to
 from certfuzz.scoring.multiarmed_bandit.bayesian_bandit import BayesianMultiArmedBandit as MultiArmedBandit
 
 logger = logging.getLogger(__name__)
@@ -21,6 +22,7 @@ class SeedfileSet(MultiArmedBandit):
     '''
     classdocs
     '''
+
     def __init__(self, campaign_id=None, originpath=None, localpath=None,
                  outputpath='.', logfile=None):
         '''
@@ -43,7 +45,8 @@ class SeedfileSet(MultiArmedBandit):
             hdlr = logging.FileHandler(logfile)
             logger.addHandler(hdlr)
 
-        logger.debug('SeedfileSet output_dir: %s', self.seedfile_output_base_dir)
+        logger.debug(
+            'SeedfileSet output_dir: %s', self.seedfile_output_base_dir)
 
     def __enter__(self):
         self._setup()
@@ -94,7 +97,8 @@ class SeedfileSet(MultiArmedBandit):
 
         # convert the local filenames from <foo>.<ext> to <md5>.<ext>
         basename = 'sf_' + f.md5 + f.ext
-        targets = [os.path.join(d, basename) for d in (self.localpath, self.outputpath)]
+        targets = [os.path.join(d, basename)
+                   for d in (self.localpath, self.outputpath)]
         filetools.copy_file(f.path, *targets)
         for target in targets:
             filetools.make_writable(target)
@@ -121,39 +125,6 @@ class SeedfileSet(MultiArmedBandit):
                 return sf
             else:
                 # it doesn't exist, remove it from the set
-                logger.warning('Seedfile no longer exists, removing from set: %s', sf.path)
+                logger.warning(
+                    'Seedfile no longer exists, removing from set: %s', sf.path)
                 self.del_item(sf.md5)
-
-#    def __setstate__(self, state):
-#        newstate = state.copy()
-#
-#        # copy out old things and replace with an empty dict
-#        oldthings = newstate.pop('things')
-#        newstate['things'] = {}
-#
-#        # refresh the directories
-#        self.__dict__.update(newstate)
-#        self._setup()
-#
-#        # clean up things that no longer exist
-#        self.sfcount = 0
-#        self.sfdel = 0
-#        for k, old_sf in oldthings.iteritems():
-#            # update the seedfiles for ones that are still present
-#            if k in self.things:
-# #                print "%s in things..." % k
-#                self.things[k].__setstate__(old_sf)
-#                self.sfcount += 1
-
-#    def __getstate__(self):
-#        state = ScorableSet3.__getstate__(self)
-#
-#        # remove things we can recreate
-#        try:
-#            for k in ('origindir', 'localdir', 'outputdir'):
-#                del state[k]
-#        except KeyError:
-#            # it's ok if they don't exist
-#            pass
-#
-#        return state

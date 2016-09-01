@@ -36,39 +36,6 @@ class WindowsCampaign(CampaignBase):
         self.debugger_module_name = 'certfuzz.debuggers.gdb'
         TWDF.disable()
 
-    def __getstate__(self):
-        state = self.__dict__.copy()
-
-        state['testcases_seen'] = list(state['testcases_seen'])
-        if state['seedfile_set']:
-            state['seedfile_set'] = state['seedfile_set'].__getstate__()
-
-        # for attributes that are modules,
-        # we can safely delete them as they will be
-        # reconstituted when we __enter__ a context
-        for key in ['fuzzer_module', 'fuzzer_cls',
-                    'runner_module', 'runner_cls',
-                    'debugger_module'
-                    ]:
-            if key in state:
-                del state[key]
-        return state
-
-    def __setstate__(self, state):
-        # turn the list into a set
-        state['testcases_seen'] = set(state['testcases_seen'])
-
-        # reconstitute the seedfile set
-        with SeedfileSet(state['campaign_id'], state['seed_dir_in'], state['seed_dir_local'],
-                         state['sf_set_out']) as sfset:
-            new_sfset = sfset
-
-        new_sfset.__setstate__(state['seedfile_set'])
-        state['seedfile_set'] = new_sfset
-
-        # update yourself
-        self.__dict__.update(state)
-
     def _pre_enter(self):
         # check to see if the platform supports winrun
         # set runner module to none otherwise

@@ -36,7 +36,8 @@ class SeedFile(BasicFile):
         BasicFile.__init__(self, path)
 
         if not self.len > 0:
-            raise SeedFileError('You cannot do bitwise fuzzing on a zero-length file: %s' % self.path)
+            raise SeedFileError(
+                'You cannot do bitwise fuzzing on a zero-length file: %s' % self.path)
 
         # use len for bytewise, bitlen for bitwise
         if self.len > 1:
@@ -50,29 +51,6 @@ class SeedFile(BasicFile):
 
         self.rangefinder = RangeFinder(self.range_min, self.range_max)
 
-    def __getstate__(self):
-        '''
-        Pickle a SeedFile object
-        @return a dict representation of the pickled object
-        '''
-        state = self.__dict__.copy()
-        state['rangefinder'] = self.rangefinder.__getstate__()
-        return state
-
-    def __setstate__(self, state):
-        old_rf = state.pop('rangefinder')
-
-        # rebuild the rangefinder
-        new_rf = self._get_rangefinder()
-        old_ranges = old_rf['things']
-        for k, old_range in old_ranges.iteritems():
-            if k in new_rf.things:
-                # things = ranges
-                new_range = new_rf.things[k]
-                for attr in ['a', 'b', 'probability', 'seen', 'successes', 'tries']:
-                    setattr(new_range, attr, old_range[attr])
-        self.rangefinder = new_rf
-
     def cache_key(self):
         return 'seedfile-%s' % self.md5
 
@@ -81,5 +59,6 @@ class SeedFile(BasicFile):
 
     def to_json(self, sort_keys=True, indent=None):
         state = self.__dict__.copy()
-        state['rangefinder'] = state['rangefinder'].to_json(sort_keys=sort_keys, indent=indent)
+        state['rangefinder'] = state['rangefinder'].to_json(
+            sort_keys=sort_keys, indent=indent)
         return json.dumps(state, sort_keys=sort_keys, indent=indent)

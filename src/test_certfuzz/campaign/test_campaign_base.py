@@ -24,12 +24,6 @@ class UnimplementedCampaign(CampaignBase):
 
 class ImplementedCampaign(CampaignBase):
 
-    def __getstate__(self):
-        pass
-
-    def __setstate__(self):
-        pass
-
     def _do_interval(self):
         pass
 
