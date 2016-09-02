@@ -13,6 +13,7 @@ BFF 2.8 (FIXME)
     - Support for OSX Maverics, Yosemite, El Capitan, and MacOS Sierra
     - Removed X dependency
     - "null" runner mode for zzuf, which only detects crashes
+    - Added updatebff.py tool
     - Bug fixes
 
 BFF 2.7 (September 23, 2013)

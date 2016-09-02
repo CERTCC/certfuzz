@@ -172,9 +172,18 @@ runner: runtimeout:
 BFF periodically saves state of a fuzzing campaign, so it will by default 
 continue a cached campaign if bff.yaml has not been modified.
 To clear the BFF cached state, run:
-tools\clean_BFF.py
+tools\clean_windows.py
 For additional options, run:
-tools\clean_BFF.py --help
+tools\clean_windows.py --help
+
+
+===== Updating BFF =====
+========================
+
+BFF includes a script to update itself using the code present on GitHub
+<https://github.com/CERTCC-Vulnerability-Analysis/certfuzz>
+
+tools\updatebff.py
 
 
 ===== Digging deeper into results =====

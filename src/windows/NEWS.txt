@@ -9,6 +9,7 @@ BFF 2.8 (FIXME)
   * Code changes:
     - Convergence of BFF and FOE code into just BFF
     - Simplified configuration
+    - Added updatebff.py tool
     - Bug fixes
 
 FOE 2.1 (September 23, 2013)

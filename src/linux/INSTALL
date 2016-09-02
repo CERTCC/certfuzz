@@ -77,7 +77,7 @@ changes:
   removed when an application is built.
   
   
-===== Example installation on Fedora 16 32-bit=====
+===== Example installation on Fedora 16 32-bit =====
 
 To install BFF on a Fedora 16 32-bit system, for example, the following steps
 can be performed:
@@ -250,3 +250,21 @@ sudo zypper install fluxbox
   (Cick the following options and ensure they are not selected to disable them:)
     (Focus New Windows)
     (Auto Raise)
+    
+    
+===== Installation on other platforms =====
+
+BFF should run on any UNIX-like operating system. Depending on the features
+supported by the OS, certain BFF capabilities may not be available. For
+example, CERT Triage Tools exploitability determination only functions on
+Linux.
+
+The minimum requirements to be able to run BFF are:
+Python 2.7
+Python Numpy
+Python Scipy
+Python Yaml
+gdb (7.2 or later on Linux is required for exploitability information)
+zzuf (patched by CERT)
+
+Patches may be required to get zzuf compiled on non-Linux systems.
