@@ -7,14 +7,14 @@ Created on September 1, 2016
 import os
 import sys
 try:
-    from certfuzz.tools.linux.updatebff import main
+    from certfuzz.tools.common.updatebff import main
 except ImportError:
     # if we got here, we probably don't have .. in our PYTHONPATH
     mydir = os.path.dirname(os.path.abspath(__file__))
     parentdir = os.path.abspath(os.path.join(mydir, '..'))
     sys.path.append(parentdir)
     try:
-        from certfuzz.tools.linux.updatebff import main
+        from certfuzz.tools.common.updatebff import main
     except ImportError:
         # certfuzz likely downgraded to pre-2.8 version
         raise Exception('%s requires BFF 2.8 or later' % __file__)

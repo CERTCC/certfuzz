@@ -8,7 +8,11 @@ import tempfile
 import os
 import time
 import shutil
+import urllib
+import platform
 from distutils import dir_util
+from distutils.spawn import find_executable
+
 
 from subprocess import call, check_output
 from __builtin__ import False
@@ -36,6 +40,12 @@ def main():
     target_path = '.'
     blacklist = ['configs']
     certfuzz_dir = os.path.join(target_path, 'certfuzz')
+
+    platform_system = platform.system()
+    if platform_system is 'Windows':
+        platform_subdir = 'windows'
+    else:
+        platform_subdir = 'linux'
 
     hdlr = logging.StreamHandler()
     logger.addHandler(hdlr)
@@ -78,8 +88,8 @@ def main():
     copydir(os.path.join(tempdir, 'src', 'certfuzz'),
             os.path.join(target_path, 'certfuzz'))
 
-    logger.info('Moving linux-specific files from git clone...')
-    platform_path = os.path.join(tempdir, 'src', 'linux')
+    logger.info('Moving %s-specific files from git clone...' % platform_subdir)
+    platform_path = os.path.join(tempdir, 'src', platform_subdir)
 
     # copy platform-specific content
     for f in os.listdir(platform_path):
@@ -112,22 +122,49 @@ def git_update(uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz.gi
     tempdir = tempfile.mkdtemp()
 
     if use_pygit:
+        # Use python-git to get certfuzz from github
         repo = Repo.clone_from(uri, tempdir, branch=branch)
         headcommit = repo.head.commit
         headversion = headcommit.hexsha
         gitdate = time.strftime(
             "%a, %d %b %Y %H:%M", time.gmtime(headcommit.committed_date))
-    else:
+        logger.info('Cloned certfuzz version %s' % headversion)
+        logger.info('Last modified %s' % gitdate)
+    elif find_executable('git'):
+        # Shell out to git to get certfuzz from github
         ret = call(['git', 'clone', uri, tempdir, '--branch', branch])
         print('ret: %d' % ret)
         headversion = check_output(['git', 'rev-parse', 'HEAD'], cwd=tempdir)
         gitdate = check_output(
             ['git', 'log', '-1', '--pretty=format:%cd'], cwd=tempdir)
-
-    logger.info('Cloned certfuzz version %s' % headversion)
-    logger.info('Last modified %s' % gitdate)
+        logger.info('Cloned certfuzz version %s' % headversion)
+        logger.info('Last modified %s' % gitdate)
+    else:
+        # Use urllib to get zip
+        zip_update(tempdir, branch=branch)
 
     return tempdir
+
+
+def zip_update(tempdir, uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz/archive/develop.zip', branch='develop'):
+    import zipfile
+
+    if branch is 'master':
+        uri = uri.replace('develop.zip', '%s.zip' % branch)
+
+    targetzip = os.path.basename(uri)
+    targetzippath = os.path.join(tempdir, targetzip)
+    logger.debug('Saving %s to %s' % (uri, targetzippath))
+    urllib.urlretrieve(uri, targetzippath)
+    bffzip = zipfile.ZipFile(targetzippath, 'r')
+    bffzip.extractall(tempdir)
+    bffzip.close()
+    os.remove(targetzippath)
+    subdir = 'certfuzz-%s' % branch
+    bff_dir = os.path.join(tempdir, subdir)
+    for f in os.listdir(bff_dir):
+        fullpath = os.path.join(bff_dir, f)
+        best_effort_move(fullpath, tempdir)
 
 
 if __name__ == '__main__':
