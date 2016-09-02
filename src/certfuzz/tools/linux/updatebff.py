@@ -10,38 +10,22 @@ import time
 import shutil
 from distutils import dir_util
 
-from subprocess import Popen
+from subprocess import call, check_output
+from __builtin__ import False
 
-use_pygit = True
-
-try:
-    from certfuzz.fuzztools.filetools import rm_rf, best_effort_move
-except ImportError:
-    # if we got here, we probably don't have .. in our PYTHONPATH
-    import sys
-    mydir = os.path.dirname(os.path.abspath(__file__))
-    parentdir = os.path.abspath(os.path.join(mydir, '..'))
-    sys.path.append(parentdir)
-    from certfuzz.fuzztools.filetools import rm_rf, best_effort_move
-
-
-try:
-    from git import Repo
-except ImportError:
-    use_pygit = False
-
+from certfuzz.fuzztools.filetools import rm_rf, best_effort_move
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARNING)
 
 
 def copydir(src, dst):
-    logger.info('Copy dir  %s -> %s', src, dst)
+    logger.debug('Copy dir  %s -> %s', src, dst)
     dir_util.copy_tree(src, dst)
 
 
 def copyfile(src, dst):
-    logger.info('Copy file %s -> %s', src, dst)
+    logger.debug('Copy file %s -> %s', src, dst)
     shutil.copy(src, dst)
 
 
@@ -50,6 +34,8 @@ def main():
 
     branch = 'develop'
     target_path = '.'
+    blacklist = ['configs']
+    certfuzz_dir = os.path.join(target_path, 'certfuzz')
 
     hdlr = logging.StreamHandler()
     logger.addHandler(hdlr)
@@ -77,32 +63,29 @@ def main():
     if options.master:
         branch = 'master'
 
-    logger.debug('Using %s branch' % branch)
+    logger.info('Using %s branch' % branch)
 
-    tempdir = tempfile.mkdtemp()
-    if use_pygit:
-        repo = Repo.clone_from(
-            'https://github.com/CERTCC-Vulnerability-Analysis/certfuzz.git', tempdir, branch=branch)
-        headcommit = repo.head.commit
-        logger.info('Cloned certfuzz version %s' % headcommit.hexsha)
-        logger.info('Last modified %s' % time.strftime(
-            "%a, %d %b %Y %H:%M", time.gmtime(headcommit.committed_date)))
+    tempdir = git_update(branch=branch)
 
     if options.save:
-        logger.info('Saving original certfuzz directory as certfuzz.bak')
-        os.rename('certfuzz', 'certfuzz.bak')
+        logger.debug('Saving original certfuzz directory as certfuzz.bak')
+        os.rename(certfuzz_dir, '%s.bak' % certfuzz_dir)
     else:
-        rm_rf('certfuzz')
-        logger.info('Deleting certfuzz directory...')
+        rm_rf(certfuzz_dir)
+        logger.debug('Deleting certfuzz directory...')
 
-    logger.debug('Moving certfuzz directory from git clone...')
-    best_effort_move(os.path.join(tempdir, 'src', 'certfuzz'), target_path)
+    logger.info('Moving certfuzz directory from git clone...')
+    copydir(os.path.join(tempdir, 'src', 'certfuzz'),
+            os.path.join(target_path, 'certfuzz'))
 
-    logger.debug('Moving linux-specific files from git clone...')
+    logger.info('Moving linux-specific files from git clone...')
     platform_path = os.path.join(tempdir, 'src', 'linux')
 
     # copy platform-specific content
     for f in os.listdir(platform_path):
+        if f in blacklist:
+            logger.debug('Skipping %s' % f)
+            continue
         f_src = os.path.join(platform_path, f)
 
         f_dst = os.path.join(target_path, f)
@@ -112,6 +95,39 @@ def main():
             copyfile(f_src, f_dst)
         else:
             logger.warning("Not sure what to do with %s", f_src)
+
+    logger.debug('Removing %s' % tempdir)
+    rm_rf(tempdir)
+
+
+def git_update(uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz.git', branch='develop'):
+
+    use_pygit = True
+
+    try:
+        from git import Repo
+    except ImportError:
+        use_pygit = False
+
+    tempdir = tempfile.mkdtemp()
+
+    if use_pygit:
+        repo = Repo.clone_from(uri, tempdir, branch=branch)
+        headcommit = repo.head.commit
+        headversion = headcommit.hexsha
+        gitdate = time.strftime(
+            "%a, %d %b %Y %H:%M", time.gmtime(headcommit.committed_date))
+    else:
+        ret = call(['git', 'clone', uri, tempdir, '--branch', branch])
+        print('ret: %d' % ret)
+        headversion = check_output(['git', 'rev-parse', 'HEAD'], cwd=tempdir)
+        gitdate = check_output(
+            ['git', 'log', '-1', '--pretty=format:%cd'], cwd=tempdir)
+
+    logger.info('Cloned certfuzz version %s' % headversion)
+    logger.info('Last modified %s' % gitdate)
+
+    return tempdir
 
 
 if __name__ == '__main__':

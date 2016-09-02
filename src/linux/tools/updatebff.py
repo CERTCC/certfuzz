@@ -13,7 +13,11 @@ except ImportError:
     mydir = os.path.dirname(os.path.abspath(__file__))
     parentdir = os.path.abspath(os.path.join(mydir, '..'))
     sys.path.append(parentdir)
-    from certfuzz.tools.linux.updatebff import main
+    try:
+        from certfuzz.tools.linux.updatebff import main
+    except ImportError:
+        # certfuzz likely downgraded to pre-2.8 version
+        raise Exception('%s requires BFF 2.8 or later' % __file__)
 
 if __name__ == '__main__':
     main()
