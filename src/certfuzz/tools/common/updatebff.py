@@ -39,6 +39,10 @@ def main():
     branch = 'develop'
     target_path = '.'
     blacklist = ['configs']
+
+    if not os.path.isdir('certfuzz'):
+        target_path = '..'
+
     certfuzz_dir = os.path.join(target_path, 'certfuzz')
 
     platform_system = platform.system()
@@ -53,7 +57,7 @@ def main():
     usage = "usage: %prog [options] fuzzedfile"
     parser = OptionParser(usage)
     parser.add_option('-d', '--debug', dest='debug', action='store_true',
-                      help='Enable debug messages (overrides --verbose)')
+                      help='Enable debug messages')
     parser.add_option('-m', '--master', dest='master',
                       action='store_true', help='Use master branch instead of develop')
     parser.add_option('-s', '--save', dest='save',
