@@ -56,10 +56,6 @@ def main():
                       help='Enable debug messages (overrides --verbose)')
     parser.add_option('-m', '--master', dest='master',
                       action='store_true', help='Use master branch instead of develop')
-    parser.add_option('-f', '--force', dest='force',
-                      action='store_true', help='Force update')
-    parser.add_option('-y', '--yes', dest='yes',
-                      action='store_true', help='Don\'t ask questions')
     parser.add_option('-s', '--save', dest='save',
                       action='store_true', help='Save original certfuzz directory')
 
@@ -79,7 +75,11 @@ def main():
 
     if options.save:
         logger.debug('Saving original certfuzz directory as certfuzz.bak')
-        os.rename(certfuzz_dir, '%s.bak' % certfuzz_dir)
+        old_certfuzz = '%s.bak' % certfuzz_dir
+        if os.path.isdir(old_certfuzz):
+            logger.debug('Removing old certfuzz directory: %s' % old_certfuzz)
+            rm_rf(old_certfuzz)
+        os.rename(certfuzz_dir, old_certfuzz)
     else:
         rm_rf(certfuzz_dir)
         logger.debug('Deleting certfuzz directory...')
