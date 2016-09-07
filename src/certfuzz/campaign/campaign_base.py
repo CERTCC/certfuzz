@@ -506,6 +506,9 @@ class CampaignBase(object):
         logger.debug(
             'Starting interval %d-%d', self.current_seed, interval_limit)
         for seednum in xrange(self.current_seed, interval_limit):
+            if sf.md5 not in self.seedfile_set.things:
+                # We've exhausted what we can do with this seedfile
+                break
             self._do_iteration(sf, r, seednum)
 
         del sf
