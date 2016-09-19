@@ -128,6 +128,11 @@ class TestCaseBase(object):
         if os.path.exists(corefile):
             filetools.copy_file(corefile, self.tempdir)
 
+        calltracefile = os.path.join(
+            self.fuzzedfile.dirname, '%s.calltrace' % self.fuzzedfile.basename)
+        if os.path.exists(calltracefile):
+            filetools.copy_file(calltracefile, self.tempdir)
+
         new_fuzzedfile = os.path.join(self.tempdir, self.fuzzedfile.basename)
         self.fuzzedfile = BasicFile(new_fuzzedfile)
 
