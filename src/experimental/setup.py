@@ -17,16 +17,16 @@ TOOL_NAMES = {'linux': ['bff_stats',
                         'mtsp_enum',
                         'repro',
                         ],
-             'windows': ['clean_windows',
-                         'copycrashers',
-                         'drillresults',
-                         'minimize',
-                         'mtsp_enum',
-                         'quickstats',
-                         'repro',
-                         'zipdiff',
-                         ],
-             }
+              'windows': ['clean_windows',
+                          'copycrashers',
+                          'drillresults',
+                          'minimize',
+                          'mtsp_enum',
+                          'quickstats',
+                          'repro',
+                          'zipdiff',
+                          ],
+              }
 
 
 def _ep_scripts(target_platform):
@@ -62,15 +62,10 @@ def _entry_points():
     eps['console_scripts'] = console_scripts
     return eps
 
-#def _scripts():
-#    _s = [
-#               ]
-#    return _s
-
 setup(name="CERT_Basic_Fuzzing_Framework",
-      version="3.0a",
-      description="CERT Basic Fuzzing Framework 3.0",
-      author="CERT",
+      version="2.8",
+      description="CERT Basic Fuzzing Framework 2.8",
+      author="CERT/CC Vulnerability Analysis Team",
       author_email="cert@cert.org",
       url="http://www.cert.org",
       maintainer='CERT',
@@ -78,17 +73,14 @@ setup(name="CERT_Basic_Fuzzing_Framework",
       download_url='http://www.cert.org/download/bff/',
       packages=find_packages(where='.'),
       install_requires=[
-                        'pyyaml',
-#                        'couchdb',
-                        'numpy',
-#                        'matplotlib',
-                        ],
-#      scripts=_scripts(),
+          'pyyaml',
+          'numpy',
+      ],
       entry_points=_entry_points(),
       include_package_data=True,
       test_suite='certfuzz.test',
       license='See LICENSE.txt',
       data_files=[
-                    ('', ['LICENSE.txt'])
-                    ]
+          ('', ['LICENSE.MD'])
+      ]
       )
