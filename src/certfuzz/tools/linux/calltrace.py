@@ -13,9 +13,7 @@ from certfuzz.fuzztools.command_line_templating import get_command_args_list
 
 try:
     from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
-    from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.debuggers import gdb, crashwrangler  # @UnusedImport
 except ImportError:
     # if we got here, we probably don't have .. in our PYTHONPATH
     import sys
@@ -23,9 +21,7 @@ except ImportError:
     parentdir = os.path.abspath(os.path.join(mydir, '..'))
     sys.path.append(parentdir)
     from certfuzz.fuzztools.filetools import mkdir_p, all_files, copy_file
-    from certfuzz import debuggers
     from certfuzz.file_handlers.basicfile import BasicFile
-    from certfuzz.debuggers import gdb, crashwrangler  # @UnusedImport
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARNING)
