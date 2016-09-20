@@ -30,6 +30,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
         'DEPViolation',
         'IllegalInstruction',
         'PrivilegedInstruction',
+        'ExceptionHandlerCorrupted',
     ]
 
     def __init__(self, dbg_outfile, testcase_file, crash_hash,
