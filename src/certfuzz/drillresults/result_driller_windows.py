@@ -7,6 +7,7 @@ import re
 
 from certfuzz.analyzers.drillresults.testcasebundle_windows import WindowsTestCaseBundle as TestCaseBundle
 from certfuzz.drillresults.result_driller_base import ResultDriller
+from certfuzz.drillresults.errors import TestCaseBundleError
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,12 @@ class WindowsResultDriller(ResultDriller):
                         crasherfile = os.path.join(root, crasherfile)
                     with TestCaseBundle(dbg_file, crasherfile, crash_dir,
                                         self.ignore_jit) as tcb:
-                        tcb.go()
+                        try:
+                            tcb.go()
+                        except TestCaseBundleError:
+                            # Nothing useful in this msec file
+                            continue
+
                         _updated_existing = False
                         # if not self.testcase_bundles:
                         #    continue
