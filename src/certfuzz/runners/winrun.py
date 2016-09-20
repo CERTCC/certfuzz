@@ -230,8 +230,6 @@ class WinRunner(RunnerBase):
         bounded by self.runtimeout
         '''
         logger.debug('Running: %s %s', self.cmdlist, self.workingdir)
-        targetdir = os.path.dirname(self.cmdlist[0])
-        logger.debug('from directory: %s', targetdir)
         process_info = {}
         id = None
         done = False
@@ -240,10 +238,10 @@ class WinRunner(RunnerBase):
         # set timeout(s)
         # run program
         if self.hideoutput:
-            p = Popen(self.cmdlist, cwd=targetdir, stdout=open(
+            p = Popen(self.cmdlist, stdout=open(
                 os.devnull), stderr=open(os.devnull))
         else:
-            p = Popen(self.cmdlist, cwd=targetdir)
+            p = Popen(self.cmdlist)
 
         if self.watchcpu == True:
             # Initialize things used for CPU monitoring

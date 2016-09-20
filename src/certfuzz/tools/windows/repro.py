@@ -103,7 +103,6 @@ def main():
 
     cmd_as_args = get_command_args_list(
         config['target']['cmdline_template'], fuzzed_file.path)[1]
-    targetdir = os.path.dirname(cmd_as_args[0])
 
     args = []
 
@@ -133,7 +132,7 @@ def main():
     args.extend(cmd_as_args)
     logger.info('args %s' % cmd_as_args)
 
-    p = Popen(args, cwd=targetdir, universal_newlines=True)
+    p = Popen(args, universal_newlines=True)
     p.wait()
 
 if __name__ == '__main__':
