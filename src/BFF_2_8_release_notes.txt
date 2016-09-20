@@ -129,6 +129,9 @@ Release Notes - BFF - Version BFF 2.8
     * [BFF-999] - BFF refuses to string minimize total stack corruption
     * [BFF-1000] - recycle_crashers option doesn't work if minimization is disabled
     * [BFF-1002] - BFF appears to remove each seedfile in verify mode multiple times
+    * [BFF-1004] - .calltrace files are missing from output dirs
+    * [BFF-1005] - BFF crashes on attempting to save a heisenbug
+    * [BFF-1006] - BFF shouldn't change into the target directory on first iteration or winrun or repro
 
 
 ** New Feature
