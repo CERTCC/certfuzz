@@ -6,6 +6,7 @@ Created on September 1, 2016
 import logging
 import tempfile
 import os
+import sys
 import time
 import shutil
 import urllib
@@ -151,6 +152,14 @@ def git_update(uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz.gi
 
 
 def zip_update(tempdir, uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz/archive/develop.zip', branch='develop'):
+
+    if sys.version_info < (2, 7, 9):
+        logger.warning(
+            'Your python version (%s) does not check SSL certificates! This update will not be secure.' % sys.version)
+        logger.warning(
+            'Consider updating your python version to the latest 2.7.x version.')
+        time.sleep(10)
+
     import zipfile
 
     if branch is 'master':
