@@ -17,7 +17,7 @@ RE_64BIT_DEBUGGER = re.compile('^Microsoft.*AMD64$')
 RE_MAPPED_ADDRESS = re.compile(
     '^ModLoad: ([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(.+)')
 RE_MAPPED_ADDRESS64 = re.compile(
-    '^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)'),
+    '^ModLoad: ([0-9a-fA-F]+`[0-9a-fA-F]+)\s+([0-9a-fA-F]+`[0-9a-fA-F]+)\s+(.+)')
 RE_SYSWOW64 = re.compile('ModLoad:.*syswow64.*', re.IGNORECASE)
 
 
