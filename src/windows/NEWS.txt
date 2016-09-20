@@ -4,10 +4,11 @@ BFF for Windows was formerly known as CERT Failure Observation Engine (FOE)
 
 Significant changes
 
-BFF 2.8 (FIXME)
+BFF 2.8 (September 30, 2016)
     
   * Code changes:
-    - Convergence of BFF and FOE code into just BFF
+    - Rebranded FOE as BFF
+    - Improved feature parity across Linux, OS X, and Windows
     - Simplified configuration
     - Added updatebff.py tool
     - Bug fixes
