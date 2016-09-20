@@ -81,14 +81,13 @@ class WindowsCampaign(CampaignBase):
         logger.debug(
             'Caching application %s and determining if we need to watch the CPU...', self.program)
         sf = self.seedfile_set.next_item()
-        targetdir = os.path.dirname(self.program)
         cmdargs = get_command_args_list(
             self.config['target']['cmdline_template'], infile=sf.path)[1]
         logger.info('Invoking %s' % cmdargs)
 
         # Use overriden Popen that uses a job object to make sure that
         # child processes are killed
-        p = Popen(cmdargs, cwd=targetdir)
+        p = Popen(cmdargs)
         runtimeout = self.config['runner']['runtimeout']
         logger.debug('...Timer: %f', runtimeout)
         t = Timer(runtimeout, self.kill, args=[p])
