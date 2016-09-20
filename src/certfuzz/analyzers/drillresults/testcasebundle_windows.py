@@ -106,27 +106,30 @@ class WindowsTestCaseBundle(TestCaseBundle):
         :param instraddr:
         :param line:
         '''
-        pattern = RE_MAPPED_ADDRESS
+        patterns = [RE_MAPPED_ADDRESS]
         if self._64bit_debugger:
-            pattern = RE_MAPPED_ADDRESS64
+            # With a 64-bit debugger, we need to check for both 64-bit and
+            # 32-bit style loaded module regexes
+            patterns.append(RE_MAPPED_ADDRESS64)
 
         # convert to an int as hex
         instraddr = instraddr.replace('`', '')
         instraddr = int(instraddr, 16)
 
-        n = re.match(pattern, line)
-        if n:
-            # Strip out backticks present on 64-bit systems
-            begin_address = int(n.group(1).replace('`', ''), 16)
-            end_address = int(n.group(2).replace('`', ''), 16)
-            module_name = n.group(3)
-            logger.debug(
-                '%x %x %s %x', begin_address, end_address, module_name, instraddr)
-            if begin_address < instraddr < end_address:
-                logger.debug('Matched: %x in %x %x %s', instraddr,
-                             begin_address, end_address, module_name)
-                # as soon as we find this, we're done
-                return module_name
+        for pattern in patterns:
+            n = re.match(pattern, line)
+            if n:
+                # Strip out backticks present on 64-bit systems
+                begin_address = int(n.group(1).replace('`', ''), 16)
+                end_address = int(n.group(2).replace('`', ''), 16)
+                module_name = n.group(3)
+                logger.debug(
+                    '%x %x %s %x', begin_address, end_address, module_name, instraddr)
+                if begin_address < instraddr < end_address:
+                    logger.debug('Matched: %x in %x %x %s', instraddr,
+                                 begin_address, end_address, module_name)
+                    # as soon as we find this, we're done
+                    return module_name
 
     def fix_efa_offset(self, instructionline, faultaddr):
         '''
