@@ -132,6 +132,10 @@ Release Notes - BFF - Version BFF 2.8
     * [BFF-1004] - .calltrace files are missing from output dirs
     * [BFF-1005] - BFF crashes on attempting to save a heisenbug
     * [BFF-1006] - BFF shouldn't change into the target directory on first iteration or winrun or repro
+    * [BFF-1007] - Drillresults fails on 64-bit windows
+    * [BFF-1008] - Dud msec files shouldn't stop drillresults
+    * [BFF-1009] - drillresults on 64-bit windows needs to check for 32-bit and 64-bit loaded module patterns
+    
 
 
 ** New Feature
