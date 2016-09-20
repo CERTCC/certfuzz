@@ -80,6 +80,7 @@ class WindowsTestCasePipeline(TestCasePipelineBase):
         elif self.options['null_runner']:
             return (False, 'not a crash')
         elif self.options['keep_heisenbugs']:
+            target_dir = testcase._get_output_dir(self.outdir)
             return (True, 'heisenbug')
         else:
             return (False, 'skip heisenbugs')
