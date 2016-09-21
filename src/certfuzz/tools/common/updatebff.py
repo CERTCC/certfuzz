@@ -61,8 +61,6 @@ def main():
                       help='Enable debug messages')
     parser.add_option('-m', '--master', dest='master',
                       action='store_true', help='Use master branch instead of develop')
-    parser.add_option('-s', '--save', dest='save',
-                      action='store_true', help='Save original certfuzz directory')
 
     (options, args) = parser.parse_args()
 
@@ -78,16 +76,12 @@ def main():
 
     tempdir = git_update(branch=branch)
 
-    if options.save:
-        logger.debug('Saving original certfuzz directory as certfuzz.bak')
-        old_certfuzz = '%s.bak' % certfuzz_dir
-        if os.path.isdir(old_certfuzz):
-            logger.debug('Removing old certfuzz directory: %s' % old_certfuzz)
-            rm_rf(old_certfuzz)
-        os.rename(certfuzz_dir, old_certfuzz)
-    else:
-        rm_rf(certfuzz_dir)
-        logger.debug('Deleting certfuzz directory...')
+    logger.debug('Saving original certfuzz directory as certfuzz.bak')
+    old_certfuzz = '%s.bak' % certfuzz_dir
+    if os.path.isdir(old_certfuzz):
+        logger.debug('Removing old certfuzz directory: %s' % old_certfuzz)
+        rm_rf(old_certfuzz)
+    os.rename(certfuzz_dir, old_certfuzz)
 
     logger.info('Moving certfuzz directory from git clone...')
     copydir(os.path.join(tempdir, 'src', 'certfuzz'),
