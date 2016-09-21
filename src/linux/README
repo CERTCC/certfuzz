@@ -229,6 +229,15 @@ BFF includes a script to update itself using the code present on GitHub
 
 tools/updatebff.py
 
+This script will first attempt to use GitPython to retrieve updates. If this 
+package is not available, it will fall back to using the system-wide installed
+git binary. Finally, if git is not available, it will fall back to using
+python urllib.
+
+Note that urllib does not support retrieving HTTPS URIs through a proxy. If
+your machines are behind a proxy, you must have either GitPython or git
+installed to use the updatebff.py script.
+
 
 ===== Fuzzing on your own =====
 
