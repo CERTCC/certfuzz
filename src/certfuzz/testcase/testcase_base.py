@@ -48,7 +48,7 @@ class TestCaseBase(object):
         self.debugger_template = None
         self.debugger_timeout = dbg_timeout
         # Exploitability is UNKNOWN unless proven otherwise
-        self.exp = 'UNKNOWN'
+        self.exp = 'UNDETERMINED'
         self.hd_bits = None
         self.hd_bytes = None
         self.faddr = None

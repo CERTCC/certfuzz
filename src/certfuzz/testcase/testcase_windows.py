@@ -27,6 +27,7 @@ short_exp = {
     'PROBABLY_EXPLOITABLE': 'PEX',
     'EXPLOITABLE': 'EXP',
     'HEISENBUG': 'HSB',
+    'UNDETERMINED': 'UND',
 }
 
 exp_rank = {
@@ -35,6 +36,7 @@ exp_rank = {
     'UNKNOWN': 3,
     'PROBABLY_NOT_EXPLOITABLE': 4,
     'HEISENBUG': 5,
+    'UNDETERMINED': 6,
 }
 
 
@@ -100,7 +102,7 @@ class WindowsTestcase(TestCaseBase):
         # Reset properties that need to be regenerated
         self.exception_depth = 0
         self.parsed_outputs = []
-        self.exp = 'UNKNOWN'
+        self.exp = 'UNDETERMINED'
         fname = self._get_file_basename()
         outfile_base = os.path.join(self.tempdir, fname)
         # Regenerate target commandline with new crasher file
@@ -132,6 +134,7 @@ class WindowsTestcase(TestCaseBase):
             return
 
         # Store highest exploitability of every exception in the chain
+        # raw_input('exp')
         current_exception_exp = self.parsed_outputs[self.exception_depth].exp
         if current_exception_exp:
             if not self.exp:
