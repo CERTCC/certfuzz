@@ -18,7 +18,7 @@ class WindowsMinimizer(MinimizerBase):
 
     def __init__(self, cfg=None, testcase=None, crash_dst_dir=None,
                  seedfile_as_target=False, bitwise=False, confidence=0.999,
-                 logfile=None, tempdir=None, maxtime=3600, preferx=False,
+                 logfile=None, tempdir=None, maxtime=3600, preferx=True,
                  keep_uniq_faddr=False, watchcpu=False):
 
         self.saved_arcinfo = None

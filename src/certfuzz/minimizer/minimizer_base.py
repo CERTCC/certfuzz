@@ -39,7 +39,7 @@ class Minimizer(object):
 
     def __init__(self, cfg=None, testcase=None, crash_dst_dir=None,
                  seedfile_as_target=False, bitwise=False, confidence=0.999,
-                 logfile=None, tempdir=None, maxtime=3600, preferx=False, keep_uniq_faddr=False, watchcpu=False):
+                 logfile=None, tempdir=None, maxtime=3600, preferx=True, keep_uniq_faddr=False, watchcpu=False):
 
         if not cfg:
             self._raise('Config must be specified')
@@ -136,6 +136,9 @@ class Minimizer(object):
 
         self.other_crashes = {}
         self.target_size_guess = 1
+        if str(cfg['runoptions']['minimize']).lower() == 'string':
+            # Assume that a string minimization has a larger target (structure)
+            self.target_size_guess = 100
         self.total_tries = 0
         self.total_misses = 0
         self.consecutive_misses = 0

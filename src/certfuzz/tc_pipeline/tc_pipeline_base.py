@@ -196,16 +196,27 @@ class TestCasePipelineBase(object):
         logger.info('Minimizing testcase %s', testcase.signature)
         logger.debug('config = %s', self.cfg)
 
+        # Default to minimizing to the seed file
+        seedfile_as_target = True
+        confidence = 0.999
+
         if not self.options.get('minimizable'):
             # short-circuit if not minimizing
             return
 
+        minimize_option = str(self.cfg['runoptions']['minimize']).lower()
+        if minimize_option == 'string':
+            # We are not minimizing to the seedfile, but rather a string of 'x'
+            # chars
+            seedfile_as_target = False
+            confidence = 0.5
+
         # build arguments for minimizer invocation
         kwargs = {'cfg': self.cfg,
                   'testcase': testcase,
-                  'seedfile_as_target': True,
+                  'seedfile_as_target': seedfile_as_target,
                   'bitwise': False,
-                  'confidence': 0.999,
+                  'confidence': confidence,
                   'tempdir': self.working_dir,
                   'maxtime': self.cfg['runoptions']['minimizer_timeout'],
                   'keep_uniq_faddr': self.cfg['runoptions']['keep_unique_faddr'],
