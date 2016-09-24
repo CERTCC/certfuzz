@@ -152,7 +152,8 @@ class MockCfg(dict):
         self['fuzzer'] = {'fuzzer': 'bytemut'}
         self['campaign'] = {'id': 'xyz'}
         self['runoptions'] = {'first_iteration': 0,
-                              'seed_interval': 10}
+                              'seed_interval': 10,
+                              'minimize': True}
         self['runner'] = {'runner': 'zzufrun',
                           'runtimeout': 5}
         if templated:
