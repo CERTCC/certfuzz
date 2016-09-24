@@ -136,6 +136,7 @@ Release Notes - BFF - Version BFF 2.8
     * [BFF-1008] - Dud msec files shouldn't stop drillresults
     * [BFF-1009] - drillresults on 64-bit windows needs to check for 32-bit and 64-bit loaded module patterns
     * [BFF-1011] - BFF on Windows is putting PROBABLY_NOT_EXPLOITABLE crashers in UNKNOWN directory
+    * [BFF-1013] - Include minimize-to-string option in BFF campaign
     
 
 
