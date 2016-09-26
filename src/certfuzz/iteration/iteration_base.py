@@ -48,8 +48,12 @@ class IterationBase(object):
 
         self.r = None
 
-        self.pipeline_options = {'minimizable': self.fuzzer_cls.is_minimizable and self.cfg[
-            'runoptions'].get('minimize', False), }
+        minimizable = self.fuzzer_cls.is_minimizable and self.cfg[
+            'runoptions'].get('minimize', False)
+        if str(config['fuzzer']['fuzzer']).lower() == 'verify' and str(self.cfg['runoptions']['minimize']).lower() == 'string':
+            # We will perform string minimization in verify mode
+            minimizable = True
+        self.pipeline_options = {'minimizable': minimizable, }
 
         if uniq_func is None:
             self.uniq_func = lambda _tc_id: True
