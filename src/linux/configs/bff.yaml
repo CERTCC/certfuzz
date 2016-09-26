@@ -94,7 +94,7 @@ debugger:
 # minimize:
 # True: Create a file that is minimally-different than the seed file, yet crashes
 # with the same hash
-# String: Create a file that is mostly 'x' (0x78) characters, yet crashes with
+# string: Create a file that is mostly 'x' (0x78) characters, yet crashes with
 # the same hash
 # False: Don't minimize
 #
