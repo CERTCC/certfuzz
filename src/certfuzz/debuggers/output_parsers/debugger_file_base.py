@@ -416,6 +416,10 @@ class DebuggerFile(object):
         if m:
             self.signal = m.group(1)
             logger.debug('Signal: %s', self.signal)
+            if self.signal == 'SIGABRT':
+                # If we have a SIGABRT, the gdb-reported faulting address isn't
+                # accurate.
+                self.faddr = '0'
 
     def _look_for_faddr(self, line):
         if self.faddr:
