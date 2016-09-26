@@ -48,7 +48,7 @@ class WindowsIteration(IterationBase):
                                )
 
         self.debug = debug
-        # TODO: do we use keep_uniq_faddr at all?
+
         self.keep_uniq_faddr = config['runoptions'].get(
             'keep_unique_faddr', False)
 
