@@ -9,6 +9,9 @@ See the NEWS file for changes
 
 The UbuFuzz VM requires VMWare Workstation 7 or later, or compatible
 virtualization software.
+If you are using virtualization software other than VMWare, then you must
+create your own virtual machine that uses the existing vmdk disk file.
+
 The OS X installer requires Snow Leopard or later. Xcode Tools is
 recommended, which provides libgmalloc (Guard Malloc).
 
@@ -19,7 +22,7 @@ UbuFuzz:
 1) Unzip BFF-2.8.zip to c:\fuzz or another folder to be shared as "fuzz"
 2) Unzip UbuFuzz-2.8.zip
 3) Open UbuFuzz.vmx
-4) Create a snapshot in VMWare
+4) Create a VM snapshot
 5) Power on the VM
 
 If you do not wish to use a shared folder, simply remove ~/bff
