@@ -197,6 +197,13 @@ class TestCaseBase(object):
             # one of the files wasn't defined
             logger.warning(
                 'Cannot find either sf_path or minimized file to calculate Hamming Distances')
+        except AssertionError:
+            # Some apps change the size of the file they open.  BFF-1017
+            logger.warning(
+                'File size changed on disk. Cannot calculate Hamming Distances')
+            # We'll use -1 HD as indication of unexpected size change
+            self.hd_bits = -1
+            self.hd_bytes = -1
 
         logger.info("crasher=%s bitwise_hd=%d", self.signature, self.hd_bits)
         logger.info("crasher=%s bytewise_hd=%d", self.signature, self.hd_bytes)
