@@ -139,6 +139,7 @@ Release Notes - BFF - Version BFF 2.8
     * [BFF-1013] - Include minimize-to-string option in BFF campaign
     * [BFF-1014] - faulting addresses reported by gdb on SIGABRTs aren't valid
     * [BFF-1015] - Allow verify mode to perform minimization to string
+    * [BFF-1017] - Some applications change the size of the file being opened
     
 
 
