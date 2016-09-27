@@ -114,6 +114,10 @@ class TestCaseBase(object):
     def copy_files_to_temp(self):
         if self.fuzzedfile and self.copy_fuzzedfile:
             filetools.copy_file(self.fuzzedfile.path, self.tempdir)
+        else:
+            # We're in verify mode. Set the fuzzedfile to be the seedfile,
+            # since we didn't mutate anything
+            self.fuzzedfile = self.seedfile
 
         if self.seedfile:
             filetools.copy_file(self.seedfile.path, self.tempdir)
