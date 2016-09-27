@@ -141,9 +141,9 @@ crash (hash).
 Once you are comfortable with BFF's default ImageMagick fuzz run, you can 
 try fuzzing an application of your choice. The first step is to place seed 
 files into the BFF seedfiles directory. These are the files that will be 
-mangled and opened by the target application. Next modify the bff.yaml file 
-to suit your needs.  The bff.yaml file is documented to describe what each 
-of the features mean. The important parts to modify are: 
+mangled and opened by the target application. Next modify the configs\bff.yaml
+file to suit your needs.  The bff.yaml file is documented to describe what
+each of the features mean. The important parts to modify are: 
 
 campaign: id:
 	This field is used in determining the fuzzing campaign, and subsequently, 

@@ -264,7 +264,7 @@ information is added to the target application.
 Create a new snapshot of the VM after the target software has
 been installed.
 
-The bff.yaml file contains all of the parameters for the fuzzing
+The configs/bff.yaml file contains all of the parameters for the fuzzing
 run.  This file must be edited to suit the software that you will
 be fuzzing. The bff.yaml file is annotated and should be
 relatively self-explanatory.
