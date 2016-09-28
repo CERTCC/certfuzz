@@ -228,6 +228,10 @@ tools/zipdiff.py can be used to compare zip-based files.
 tools/debuggerfile.py will parse GDB output to create a hash that uniquely
 identifies the crash.
 
+tools/copycrashers.py to collect all of the crashing cases
+from a campaign. By default it will copy all of the uniquely-crashing 
+test cases to the "seedfiles" directory, which should be empty.
+
 
 ===== Updating BFF =====
 
