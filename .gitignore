@@ -14,7 +14,6 @@ doc/pdf
 *.pyc
 CERT_Basic_Fuzzing_Framework.egg-info
 dist_builds
-doc
 setup_env/bff.env
 src/linux/COPYING.txt
 src/windows/COPYING.txt
@@ -24,3 +23,5 @@ build/distmods/osx/installer/*.txt
 .teeproject
 .externalToolBuilders
 *.pkl
+doc/epydoc/html
+doc/epydoc/fontconfig
