@@ -110,12 +110,14 @@ def main():
         # subdirectory on windows
         git_bff_yaml = os.path.join(
             platform_path, 'configs', 'examples', 'bff.yaml')
-        bff_yaml_dest = os.path.join('configs', 'examples', 'bff.yaml')
+        bff_yaml_dest = os.path.join(
+            target_path, 'configs', 'examples', 'bff.yaml')
     else:
         # Copy bff.yaml as bff.yaml.example
         git_bff_yaml = os.path.join(
             platform_path, 'configs', 'bff.yaml')
-        bff_yaml_dest = os.path.join('configs', 'bff.yaml.example')
+        bff_yaml_dest = os.path.join(
+            target_path, 'configs', 'bff.yaml.example')
     logger.debug('Copying %s to %s' % (git_bff_yaml, bff_yaml_dest))
     copyfile(git_bff_yaml, bff_yaml_dest)
 
