@@ -24,6 +24,9 @@ Run BFF-2.8-setup.exe in a virtual machine to install BFF 2.8.
 The installer should detect and attempt to download prerequisites and 
 configure your environment appropriately.
 
+It is recommended to perform fuzzing with virtual network disabled to prevent
+the fuzzing target and/or debugger from communicating unnecessarily.
+
   
 ===== Running BFF =====
 =======================

@@ -64,6 +64,10 @@ provide more useful crash reports. ImageMagick was configured
 using the following command:
 CFLAGS="-g -O0" ./configure --without-x
 
+It is recommended to perform fuzzing with virtual network disabled
+to prevent the fuzzing target and/or debugger from communicating
+unnecessarily.
+
 
 ===== Analyzing results =====
 
