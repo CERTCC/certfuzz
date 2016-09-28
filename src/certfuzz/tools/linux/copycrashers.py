@@ -7,7 +7,7 @@ from optparse import OptionParser
 
 def copycrashers(tld, outputdir):
     on_osx = False
-    if sys.platform() == 'Darwin':
+    if sys.platform == 'darwin':
         # OSX
         debugger_ext = '.cw'
     else:
