@@ -55,7 +55,7 @@ def main():
     hdlr = logging.StreamHandler()
     logger.addHandler(hdlr)
 
-    usage = "usage: %prog [options] fuzzedfile"
+    usage = "usage: %prog [options]"
     parser = OptionParser(usage)
     parser.add_option('-d', '--debug', dest='debug', action='store_true',
                       help='Enable debug messages')
