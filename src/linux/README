@@ -94,6 +94,7 @@ results/
 |   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.callgrind
 |   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.callgrind.annotated
 |   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.callgrind.calltree
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.drillresults
 |   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.gdb
 |   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.stderr
 |   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.valgrind
@@ -127,8 +128,8 @@ The "results/<target_id>/crashers" directory will contain the uniquely-crashing
 test cases. The variants that have crashed the target application
 will be stored here with the BFF iteration number appended to the
 seed file name. For each uniquely-crashing case, there will also
-be a .stderr, .gdb, .callgrind and .valgrind file that contains
-the stderr, gdb, callgrind and valgrind output for that case,
+be a .stderr, .gdb, .drillresults, .callgrind and .valgrind file that contains
+the stderr, gdb, drillresults, callgrind and valgrind output for that case,
 respectively.
 
 The CERT BFF minimizes crashers. In other words, each crashing

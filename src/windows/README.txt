@@ -85,6 +85,8 @@ results\<campaignid>\
                 |   |-- sf_<seedfile_hash>-<iteration>-<EFA>.<ext>
                 |   |-- sf_<seedfile_hash>-<iteration>-<EFA>-<SEVERITY>.<ext>.e<n>.msec
                 |   |-- sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>
+                |   |-- sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>.analyze.msec
+                |   |-- sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>.drillresults
                 |-- <hash_2>\
                 |-- ...
                 |-- <hash_n>\
@@ -135,6 +137,13 @@ sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>
 This is the minimized version of the crashing test case. It is the "least
 different" version of the original fuzzed file that caused a specific 
 crash (hash).
+
+sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>.analyze.msec
+This is the cdb text output from the crash, which includes output from the 
+!analyze -v command.
+
+sf_<seedfile_hash>-<iteration>-<EFA>-minimized.<ext>.drillresults
+This contains the output from the BFF drillresults analyzer.
 
 
 
