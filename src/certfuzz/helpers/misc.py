@@ -3,31 +3,54 @@ Created on Oct 24, 2012
 
 @organization: cert.org
 '''
+import logging
 import platform
+from pprint import pformat, pprint
 import random
 import string
-from pprint import pformat, pprint
-import logging
+import os
+import sys
+
+logger=logging.getLogger(__name__)
 
 my_os = platform.system()
+
+def import_module_by_name(name):
+    '''
+    Imports a module at runtime given the pythonic name of the module
+    e.g., certfuzz.fuzzers.bytemut
+    :param name:
+    :param logger:
+    '''
+    if logger:
+        logger.debug('Importing module %s', name)
+    __import__(name)
+    module = sys.modules[name]
+    return module
+
+def fixup_path(path):
+    '''
+    Expands tildes and returns absolute path transformation of path
+    :param path:
+    '''
+    return os.path.abspath(os.path.expanduser(path))
+
 
 def quoted(string_to_wrap):
     return '"%s"' % string_to_wrap
 
+
 def print_dict(d):
     pprint(d)
 
-def check_os_compatibility(expected_os, module_name=__name__):
-    if not my_os == expected_os:
-        template = 'Module %s is incompatible with %s (%s expected)'
-        raise ImportError(template % (module_name, my_os, expected_os))
 
 def random_str(length=1):
     chars = string.ascii_letters + string.digits
     return ''.join([random.choice(chars) for dummy in xrange(length)])
 
+
 def bitswap(input_byte):
-    bits = [1, 2, 4, 8, 16, 32, 64, 128]
+    bits = [2 ** y for y in range(8)]
     backwards = list(bits)
     backwards.reverse()
     # 1   -> 128
@@ -45,6 +68,7 @@ def bitswap(input_byte):
         if input_byte & x:
             output_byte |= y
     return output_byte
+
 
 def log_object(obj, logger, level=logging.DEBUG):
     for l in pformat(obj.__dict__).splitlines():

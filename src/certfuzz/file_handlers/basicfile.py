@@ -5,17 +5,27 @@ Created on Mar 16, 2011
 '''
 import hashlib
 import os
-from ..fuzztools.filetools import check_zip_content
+
+from certfuzz.fuzztools.filetools import check_zip_content, read_bin_file
 
 
 class BasicFile(object):
     '''
     Object to contain basic info about file: path, basename, dirname, len, md5
     '''
+
     def __init__(self, path):
         self.path = path
         (self.dirname, self.basename) = os.path.split(self.path)
-        (self.root, self.ext) = os.path.splitext(self.basename)
+        if '.' in self.basename:
+            # Split on first '.' to retain multiple dotted extensions
+            self.root = self.basename.split('.', 1)[0]
+            ext = '.' + self.basename.split('.', 1)[1]
+            # Get rid of any spaces in extension
+            self.ext = ext.replace(' ', '')
+        else:
+            self.root = self.basename
+            self.ext = ''
 
         self.len = None
         self.md5 = None
@@ -37,8 +47,7 @@ class BasicFile(object):
         '''
         Returns the contents of the file.
         '''
-        with open(self.path, 'rb') as fp:
-            return fp.read()
+        return read_bin_file(self.path)
 
     def exists(self):
         return os.path.exists(self.path)
@@ -56,4 +65,3 @@ class BasicFile(object):
         doc.sha1 = self.sha1
         doc.size_in_bytes = self.len
         return doc
-

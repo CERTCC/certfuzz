@@ -3,26 +3,25 @@ Created on Jul 12, 2012
 
 @organization: cert.org
 '''
-from . import Fuzzer
-from . import FuzzerError
-from . import FuzzerExhaustedError
 import logging
+
+from certfuzz.fuzzers.fuzzer_base import Fuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+
 
 logger = logging.getLogger(__name__)
 
-class TruncateFuzzerError(FuzzerError):
-    pass
 
 class TruncateFuzzer(Fuzzer):
     '''
     This fuzzer module iterates through an input file, dropping an additional
     byte from the file each time. (The file gets shorter.)
 
-    @raise FuzzerExhaustedError: when the fuzzed file reaches zero length
+    @raise FuzzerExhaustedError: when the output file reaches zero length
     '''
     def _fuzz(self):
         '''
-        Drop individual bytes of input and put output in self.fuzzed
+        Drop individual bytes of input and put output in self.output
         '''
 
         # self.tries starts at zero
@@ -36,6 +35,6 @@ class TruncateFuzzer(Fuzzer):
 
         logger.debug('%s - truncated %s bytes', self.sf.basename, byte_pos)
 
-        self.fuzzed = truncated
+        self.output = truncated
 
 _fuzzer_class = TruncateFuzzer

@@ -13,5 +13,5 @@ export PYTHONPATH=./src:$PYTHONPATH
 /usr/local/bin/nosetests-2.7 --with-xunit --with-xcoverage \
 	--cover-inclusive --cover-package=src --cover-erase \
 	--cover-branches -e test_probability \
-    src/certfuzz/test src/linux/test src/windows/test
+    src/test_certfuzz src/linux/test src/windows/test
     

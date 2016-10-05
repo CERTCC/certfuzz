@@ -1,0 +1,11 @@
+The CERT Basic Fuzzing Framework (BFF) contains code by:
+* Allen D. Householder (adh)
+* Will Dormann (wd)
+* David Warren (dwarren)
+
+Contact the authors at their (userid) at cert.org.
+
+Crash minimization was inspired by Dan Rosenberg's FuzzDiff
+http://code.google.com/p/fuzzdiff/ 
+
+BFF Windows is based off of FOE, which was originally created by David Warren. 

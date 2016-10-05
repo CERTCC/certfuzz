@@ -5,7 +5,7 @@
 # local copy of the config file so that you can start
 # fresh. Probably best to reboot afterwards
 
-platform=`uname -a`
+platform=`uname`
 
 if [ $# -lt 1 ]
 then
@@ -35,7 +35,7 @@ rm -rfv ~/fuzzing
 rm -rfv ~/bff.cfg
 
 if [ "$1" = "--remove-results" ]; then
-	if [ "$platform" =~ "Linux" ]; then
+	if [ "$platform" = "Linux" ]; then
 	    # wipe the remote results too
 	    sudo rm -rfv ~/results/*
 	else

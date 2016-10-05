@@ -3,29 +3,28 @@ Created on Oct 11, 2012
 
 @organization: cert.org
 '''
-import logging
-import os
-import tempfile
-import time
-import numpy
-import shutil
-import random
 import hashlib
 import itertools
+import logging
+import numpy
+import os
+import random
+import shutil
+import tempfile
+import time
+import zipfile
+import collections
 
-from .. import debuggers
-from ..fuzztools import hamming, filetools, probability, text
-from ..fuzztools.filetools import delete_files, write_file
-from ..file_handlers.basicfile import BasicFile
-from ..file_handlers.tmp_reaper import TmpReaper
-from .errors import MinimizerError
-
-try:
-    from ..analyzers import pin_calltrace
-    from ..analyzers import AnalyzerEmptyOutputError
-    from ..debuggers.output_parsers.calltracefile import Calltracefile
-except ImportError:
-    pass
+from certfuzz.file_handlers.basicfile import BasicFile
+from certfuzz.fuzztools import hamming, filetools, probability, text
+from certfuzz.fuzztools.filetools import delete_files, write_file, check_zip_file
+from certfuzz.fuzztools.filetools import exponential_backoff
+from certfuzz.minimizer.errors import MinimizerError
+from certfuzz.analyzers import pin_calltrace
+from certfuzz.analyzers.errors import AnalyzerEmptyOutputError
+from certfuzz.debuggers.output_parsers.calltracefile import Calltracefile
+from certfuzz.fuzztools.command_line_templating import get_command_args_list
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -34,22 +33,21 @@ logger = logging.getLogger(__name__)
 MAX_OTHER_CRASHES = 20
 
 
-
-
-class Minimizer:
+class Minimizer(object):
     use_watchdog = False
+    _debugger_cls = None
 
-    def __init__(self, cfg=None, crash=None, crash_dst_dir=None,
+    def __init__(self, cfg=None, testcase=None, crash_dst_dir=None,
                  seedfile_as_target=False, bitwise=False, confidence=0.999,
-                 logfile=None, tempdir=None, maxtime=3600, preferx=False, keep_uniq_faddr=False, watchcpu=False):
+                 logfile=None, tempdir=None, maxtime=3600, preferx=True, keep_uniq_faddr=False, watchcpu=False):
 
         if not cfg:
-            raise MinimizerError('Config must be specified')
-        if not crash:
-            raise MinimizerError('Crasher must be specified')
+            self._raise('Config must be specified')
+        if not testcase:
+            self._raise('Crasher must be specified')
 
         self.cfg = cfg
-        self.crash = crash
+        self.testcase = testcase
         self.seedfile_as_target = seedfile_as_target
         self.bitwise = bitwise
         self.preferx = preferx
@@ -60,14 +58,21 @@ class Minimizer:
         self.start_time = 0.0
         self.keep_uniq_faddr = keep_uniq_faddr
         self.watchcpu = watchcpu
+        self.exhaustivesearch_threshold = 10
+        self.max_target_hashes = 10
 
         self.minchar = 'x'
         self.save_others = True
-        self.ext = self.crash.fuzzedfile.ext
+        self.ext = self.testcase.fuzzedfile.ext
         self.logger = None
         self.log_file_hdlr = None
+        self.backtracelevels = 5
+        self.watchdogfile = '/tmp/bff_watchdog'
 
         logger.setLevel(logging.INFO)
+
+        self.saved_arcinfo = None
+        self.is_zipfile = check_zip_file(testcase.fuzzedfile.path)
 
         if tempdir and os.path.isdir(tempdir):
             self.tempdir = tempfile.mkdtemp(prefix='minimizer_', dir=tempdir)
@@ -85,19 +90,25 @@ class Minimizer:
             self.swap_func = self.bytewise_swap2
 
         if self.seedfile_as_target:
-            minf = '%s-minimized%s' % (self.crash.fuzzedfile.root, self.crash.fuzzedfile.ext)
-            minlog = os.path.join(self.crash.fuzzedfile.dirname, 'minimizer_log.txt')
-            if not os.path.exists(self.crash.seedfile.path):
-                raise MinimizerError('Seedfile not found at %s' %
-                                     self.crash.seedfile.path)
+            minf = '%s-minimized%s' % (self.testcase.fuzzedfile.root,
+                                       self.testcase.fuzzedfile.ext)
+            minlog = os.path.join(
+                self.testcase.fuzzedfile.dirname, 'minimizer_log.txt')
+            if not os.path.exists(self.testcase.seedfile.path):
+                self._raise('Seedfile not found at %s' %
+                            self.testcase.seedfile.path)
         elif self.preferx:
-            minf = '%s-min-%s%s' % (self.crash.fuzzedfile.root, self.minchar, self.crash.fuzzedfile.ext)
-            minlog = os.path.join(self.crash.fuzzedfile.dirname, 'minimizer_%s_log.txt' % self.minchar)
+            minf = '%s-min-%s%s' % (self.testcase.fuzzedfile.root,
+                                    self.minchar, self.testcase.fuzzedfile.ext)
+            minlog = os.path.join(
+                self.testcase.fuzzedfile.dirname, 'minimizer_%s_log.txt' % self.minchar)
         else:
-            minf = '%s-min-mtsp%s' % (self.crash.fuzzedfile.root, self.crash.fuzzedfile.ext)
-            minlog = os.path.join(self.crash.fuzzedfile.dirname, 'minimizer_mtsp_log.txt')
+            minf = '%s-min-mtsp%s' % (self.testcase.fuzzedfile.root,
+                                      self.testcase.fuzzedfile.ext)
+            minlog = os.path.join(
+                self.testcase.fuzzedfile.dirname, 'minimizer_mtsp_log.txt')
 
-        self.outputfile = os.path.join(self.crash.fuzzedfile.dirname, minf)
+        self.outputfile = os.path.join(self.testcase.fuzzedfile.dirname, minf)
 
         if logfile:
             self.minimizer_logfile = logfile
@@ -107,31 +118,34 @@ class Minimizer:
         if crash_dst_dir:
             self.crash_dst = crash_dst_dir
         else:
-            self.crash_dst = self.crash.fuzzedfile.dirname
+            self.crash_dst = self.testcase.fuzzedfile.dirname
 
         if not os.path.exists(self.crash_dst):
-            raise MinimizerError("%s does not exist" % self.crash_dst)
+            self._raise("%s does not exist" % self.crash_dst)
         if not os.path.isdir(self.crash_dst):
-            raise MinimizerError("%s is not a directory" % self.crash_dst)
-
-        self.debugger = debuggers.get()
+            self._raise("%s is not a directory" % self.crash_dst)
 
         self._logger_setup()
-        self.logger.info("Minimizer initializing for %s", self.crash.fuzzedfile.path)
+        self.logger.info(
+            "Minimizer initializing for %s", self.testcase.fuzzedfile.path)
 
-        if not os.path.exists(self.crash.fuzzedfile.path):
-            raise MinimizerError("%s does not exist" % self.crash.fuzzedfile.path)
+        if not os.path.exists(self.testcase.fuzzedfile.path):
+            self._raise("%s does not exist" % self.testcase.fuzzedfile.path)
 
-        self.crash.set_debugger_template('bt_only')
+        self.testcase.set_debugger_template('bt_only')
 
         self.other_crashes = {}
         self.target_size_guess = 1
+        if str(cfg['runoptions']['minimize']).lower() == 'string':
+            # Assume that a string minimization has a larger target (structure)
+            self.target_size_guess = 100
         self.total_tries = 0
         self.total_misses = 0
         self.consecutive_misses = 0
         self.discard_chance = 0
         self.debugger_runs = 0
         self.min_found = False
+        self.try_exhaustive = False
         self.confidence_level = confidence
         self.newfuzzed_hd = 0
         self.newfuzzed_md5 = None
@@ -139,41 +153,42 @@ class Minimizer:
         self.newfuzzed = ''
 
         self.crash_sigs_found = {}
-        self.files_tried = {}
+        self.files_tried = set()
         self.files_tried_at_hd = {}
         self.files_tried_singlebyte_at_hd = {}
         self.bytemap = []
 #         self.saved_arcinfo = {}
 #         self.is_zipfile = False
 
-#         self.is_zipfile = self.check_zipfile(self.crash.fuzzedfile.path)
+#         self.is_zipfile = self.check_zipfile(self.testcase.fuzzedfile.path)
 
-        self.fuzzed = self._read_fuzzed()
+        self.fuzzed_content = self._read_fuzzed()
         self.seed = self._read_seed()
 
         # none of this will work if the files are of different size
-        if len(self.seed) != len(self.fuzzed):
-            raise MinimizerError('Minimizer requires seed and fuzzed to have the same length. %d != %d' % (len(self.seed), len(self.fuzzed)))
+        if len(self.seed) != len(self.fuzzed_content):
+            self._raise('Minimizer requires seed and fuzzed_content to have the same length. %d != %d' % (
+                len(self.seed), len(self.fuzzed_content)))
 
         # initialize the hamming distance
-        self.start_distance = self.hd_func(self.seed, self.fuzzed)
+        self.start_distance = self.hd_func(self.seed, self.fuzzed_content)
         self.min_distance = self.start_distance
 
-        # some programs crash differently depending on where the
+        # some programs testcase differently depending on where the
         # file is loaded from. So we'll reuse this file name for
         # everything
         f = tempfile.NamedTemporaryFile('wb', delete=True,
                                         dir=self.tempdir,
                                         prefix="minimizer_fuzzed_file_",
-                                        suffix=self.crash.fuzzedfile.ext)
+                                        suffix=self.testcase.fuzzedfile.ext)
         # since we set delete=True, f will be deleted on close,
         # which makes it available to us to reuse
         f.close()
         self.tempfile = f.name
-        filetools.copy_file(self.crash.fuzzedfile.path, self.tempfile)
+        filetools.copy_file(self.testcase.fuzzedfile.path, self.tempfile)
 
-        # figure out what crash signatures belong to this fuzzedfile
-        self.debugger_timeout = self.cfg.debugger_timeout
+        # figure out what testcase signatures belong to this fuzzedfile
+        self.debugger_timeout = self.cfg['debugger']['runtimeout']
         self.crash_hashes = []
         self.measured_dbg_time = None
         self._set_crash_hashes()
@@ -181,26 +196,29 @@ class Minimizer:
         # set the debugger_timeout to the lesser of what we've measured
         # in getting the crash_hashes or what it already was
         if self.measured_dbg_time:
-            self.debugger_timeout = min(self.debugger_timeout, self.measured_dbg_time)
+            self.debugger_timeout = min(
+                self.debugger_timeout, self.measured_dbg_time)
 
-        self.logger.info('\tusing debugger timeout: %0.5f', self.debugger_timeout)
+        self.logger.info(
+            '\tusing debugger timeout: %0.5f', self.debugger_timeout)
         self.logger.info('\tconfidence level: %0.5f', self.confidence_level)
-        self.logger.info('\tstarting Hamming Distance is %d', self.start_distance)
+        self.logger.info(
+            '\tstarting Hamming Distance is %d', self.start_distance)
 
     def __enter__(self):
         # make sure we can actually minimize
+        try:
+            self.backtracelevels = self.cfg['debugger']['backtracelevels']
+        except KeyError:
+            pass
         if not self._is_crash_to_minimize():
             msg = 'Unable to minimize: No crash'
             self.logger.info(msg)
-            raise MinimizerError(msg)
+            self._raise(msg)
         if self._is_already_minimized():
             msg = 'Unable to minimize: Already minimized'
             self.logger.info(msg)
-            raise MinimizerError(msg)
-        if self.crash.debugger_missed_stack_corruption:
-            msg = 'Unable to minimize: Stack corruption crash, which the debugger missed.'
-            self.logger.info(msg)
-            raise MinimizerError(msg)
+            self._raise(msg)
         # start the timer
         self.start_time = time.time()
         return self
@@ -218,172 +236,283 @@ class Minimizer:
 #            # it's okay if we can't
 #            pass
 
+    def _raise(self, description):
+        # Minimizer has separate logging. Close up handles before
+        # raising any exception
+        try:
+            self.log_file_hdlr.close()
+            self.logger.removeHandler(self.log_file_hdlr)
+        except:
+            pass
+        raise MinimizerError(description)
+
     def _read_fuzzed(self):
         '''
-        returns the contents of the fuzzed file
+        returns the contents of the fuzzed_content file
         '''
-        return self.crash.fuzzedfile.read()
+
+        # store the files in memory
+        if self.is_zipfile:  # work with zip file contents, not the container
+            logger.debug('Working with a zip file')
+            return self._readzip(self.testcase.fuzzedfile.path)
+
+        return self.testcase.fuzzedfile.read()
 
     def _read_seed(self):
         '''
         returns the contents of the seed file
         '''
-    # we're either going to minimize to the seedfile, the metasploit pattern, or a string of 'x's
+    # we're either going to minimize to the seedfile, the metasploit pattern,
+    # or a string of 'x's
         if self.seedfile_as_target:
-                return self.crash.seedfile.read()
+            if self.is_zipfile and self.seedfile_as_target:
+                return self._readzip(self.testcase.seedfile.path)
+            else:
+                return self.testcase.seedfile.read()
         elif self.preferx:
-            return self.minchar * len(self.fuzzed)
+            return self.minchar * len(self.fuzzed_content)
         else:
-            return text.metasploit_pattern_orig(len(self.fuzzed))
+            return text.metasploit_pattern_orig(len(self.fuzzed_content))
+
+    def _readzip(self, filepath):
+        # If the seed is zip-based, fuzz the contents rather than the container
+        logger.debug('Reading zip file: %s', filepath)
+        tempzip = zipfile.ZipFile(filepath, 'r')
+
+        '''
+        get info on all the archived files and concatentate their contents
+        into self.input
+        '''
+        self.saved_arcinfo = collections.OrderedDict()
+        unzippedbytes = ''
+        logger.debug('Reading files from zip...')
+        for i in tempzip.namelist():
+            data = tempzip.read(i)
+
+            # save split indices and compression type for archival
+            # reconstruction. Keeping the same compression types is
+            # probably unnecessary since it's the content that matters
+
+            self.saved_arcinfo[i] = (len(unzippedbytes), len(data),
+                                     tempzip.getinfo(i).compress_type)
+            unzippedbytes += data
+        tempzip.close()
+        return unzippedbytes
+
+    @exponential_backoff
+    def _safe_createzip(self, filepath):
+        tempzip = zipfile.ZipFile(filepath, 'w')
+        return tempzip
+
+    def _writezip(self):
+        '''rebuild the zip file and put it in self.fuzzed
+        Note: We assume that the fuzzer has not changes the lengths
+        of the archived files, otherwise we won't be able to properly
+        split self.fuzzed
+        '''
+        if self.saved_arcinfo is None:
+            self._raise('_readzip was not called')
+
+        filedata = ''.join(self.newfuzzed)
+        filepath = self.tempfile
+
+        logger.debug('Creating zip with mutated contents.')
+        tempzip = self._safe_createzip(filepath)
+
+        '''
+        reconstruct archived files, using the same compression scheme as
+        the source
+        '''
+        for name, info in self.saved_arcinfo.iteritems():
+            # write out fuzzed file
+            if info[2] == 0 or info[2] == 8:
+                # Python zipfile only supports compression types 0 and 8
+                compressiontype = info[2]
+            else:
+                logger.warning(
+                    'Compression type %s is not supported. Overriding', info[2])
+                compressiontype = 8
+            tempzip.writestr(
+                name, str(filedata[info[0]:info[0] + info[1]]), compress_type=compressiontype)
+        tempzip.close()
 
     def _logger_setup(self):
         dirname = os.path.dirname(self.minimizer_logfile)
 
         if not os.path.exists(dirname):
-            raise MinimizerError('Directory should already exist: %s' % dirname)
+            self._raise('Directory should already exist: %s' % dirname)
         if os.path.exists(self.minimizer_logfile):
-            raise MinimizerError('Log file must not already exist: %s' % self.minimizer_logfile)
+            self._raise('Log file must not already exist: %s' %
+                        self.minimizer_logfile)
         self.logger = logging.getLogger(__name__)
         self.log_file_hdlr = logging.FileHandler(self.minimizer_logfile)
         self.logger.addHandler(self.log_file_hdlr)
 
     def _set_crash_hashes(self):
-        if not self.crash_hashes:
-            miss_count = 0
-            # we want to keep going until we are 0.95 confident that
-            # if there are any other crashers they have a probability
-            # less than 0.5
-            max_misses = probability.misses_until_quit(0.95, 0.5)
-            sigs_seen = {}
-            times = []
-            # loop until we've found ALL the crash signatures
-            while miss_count < max_misses:
-                # (sometimes crash sigs change for the same input file)
-                (fd, f) = tempfile.mkstemp(prefix='minimizer_set_crash_hashes_', text=True, dir=self.tempdir)
-                os.close(fd)
+        if self.crash_hashes:
+            # shortcut if it's already set
+            return self.crash_hashes
+
+        miss_count = 0
+        # we want to keep going until we are 0.95 confident that
+        # if there are any other crashers they have a probability
+        # less than 0.5
+        max_misses = probability.misses_until_quit(0.95, 0.5)
+        sigs_set = set()
+        times = []
+        # loop until we've found ALL the testcase signatures
+        while miss_count < max_misses:
+            target_hash_count = len(sigs_set)
+            if target_hash_count > self.max_target_hashes:
+                self._raise(
+                    'Too many crash hashes seen to minimize. Is memory randomization disabled?')
+            # (sometimes testcase sigs change for the same input file)
+            (fd, f) = tempfile.mkstemp(
+                prefix='minimizer_set_crash_hashes_', text=True, dir=self.tempdir)
+            os.close(fd)
+            delete_files(f)
+
+            # run debugger
+            start = time.time()
+
+            dbg = self.run_debugger(self.tempfile, f)
+
+            # remember the elapsed time for later
+            end = time.time()
+            delta = end - start
+
+            if dbg.is_crash:
+                times.append(delta)
+
+            current_sig = self.get_signature(dbg, self.backtracelevels)
+
+            # ditch the temp file
+            if os.path.exists(f):
                 delete_files(f)
 
-                # run debugger
-                start = time.time()
-
-                dbg = self.run_debugger(self.tempfile, f)
-
-                # remember the elapsed time for later
-                end = time.time()
-                delta = end - start
-                if dbg.is_crash:
-                    times.append(delta)
-
-                current_sig = self.get_signature(dbg, self.cfg.backtracelevels)
-
-                # ditch the temp file
-                if os.path.exists(f):
-                    delete_files(f)
-
-                if current_sig:
-                    if sigs_seen.get(current_sig):
-                        sigs_seen[current_sig] += 1
-                        miss_count += 1
-                    else:
-                        sigs_seen[current_sig] = 1
-                        miss_count = 0
-                else:
-                    # this crash had no signature, so skip it
+            if current_sig:
+                if current_sig in sigs_set:
                     miss_count += 1
-            self.crash_hashes = sigs_seen.keys()
-            # calculate average time
-            # get stdev
-            avg_time = numpy.average(times)
-            stdev_time = numpy.std(times)
-            # set debugger timeout to 0.95 confidence
-            # TODO: What if the VM becomes slower.
-            # We may give up on crashes before they happen.
-            zscore = 1.645
-            self.measured_dbg_time = avg_time + (zscore * stdev_time)
+                else:
+                    sigs_set.add(current_sig)
+                    miss_count = 0
+            else:
+                # this testcase had no signature, so skip it
+                miss_count += 1
+        self.crash_hashes = list(sigs_set)
+        # calculate average time
+        # get stdev
+        avg_time = numpy.average(times)
+        stdev_time = numpy.std(times)
+        # set debugger timeout to 0.99 confidence
+        # TODO: What if the VM becomes slower.
+        # We may give up on crashes before they happen.
+        zscore = 2.58
+        self.measured_dbg_time = avg_time + (zscore * stdev_time)
 
         return self.crash_hashes
 
     def run_debugger(self, infile, outfile):
         self.debugger_runs += 1
-        cmd_args = self.cfg.get_command_args_list(infile)
+        cmd_args = get_command_args_list(
+            self.cfg['target']['cmdline_template'], infile)[1]
+        cmd = cmd_args[0]
+        cmd_args = cmd_args[1:]
 
-        dbg = self.debugger(self.cfg.program,
-                            cmd_args,
-                            outfile,
-                            self.debugger_timeout,
-                            self.cfg.killprocname,
-                            template=self.crash.debugger_template,
-                            exclude_unmapped_frames=self.cfg.exclude_unmapped_frames,
-                            keep_uniq_faddr=self.keep_uniq_faddr,
-                            workingdir=self.tempdir,
-                            watchcpu=self.watchcpu
-                            )
+        exclude_unmapped_frames = self.cfg['analyzer'].get(
+            'exclude_unmapped_frames', True)
+
+        dbg = self._debugger_cls(cmd,
+                                 cmd_args,
+                                 outfile,
+                                 self.debugger_timeout,
+                                 template=self.testcase.debugger_template,
+                                 exclude_unmapped_frames=exclude_unmapped_frames,
+                                 keep_uniq_faddr=self.keep_uniq_faddr,
+                                 workingdir=self.tempdir,
+                                 watchcpu=self.watchcpu
+                                 )
         parsed_debugger_output = dbg.go()
+
         return parsed_debugger_output
 
     def _crash_builder(self):
-        self.logger.debug('Building new crash object.')
-        import copy
+        self.logger.debug('Building new testcase object.')
 
-        # copy our original crash as the basis for the new crash
-        newcrash = copy.copy(self.crash)
+        # copy our original testcase as the basis for the new testcase
+        new_testcase = copy.copy(self.testcase)
 
         # get a new dir for the next crasher
-        newcrash_tmpdir = tempfile.mkdtemp(prefix='minimizer_crash_builder_', dir=self.tempdir)
+        newcrash_tmpdir = tempfile.mkdtemp(
+            prefix='minimizer_crash_builder_', dir=self.tempdir)
 
         # get a new filename for the next crasher
-        sfx = self.crash.fuzzedfile.ext
-        if self.crash.seedfile:
-            pfx = '%s-' % self.crash.seedfile.root
+        sfx = self.testcase.fuzzedfile.ext
+        if self.testcase.seedfile:
+            pfx = '%s-' % self.testcase.seedfile.root
         else:
             pfx = 'string-'
+
         (fd, f) = tempfile.mkstemp(suffix=sfx, prefix=pfx, dir=newcrash_tmpdir)
         os.close(fd)
         delete_files(f)
         outfile = f
 
         if os.path.exists(outfile):
-            raise MinimizerError('Outfile should not already exist: %s' % outfile)
+            self._raise('Outfile should not already exist: %s' % outfile)
         self.logger.debug('\tCopying %s to %s', self.tempfile, outfile)
         filetools.copy_file(self.tempfile, outfile)
 
-        newcrash.fuzzedfile = BasicFile(outfile)
-        self.logger.debug('\tNew fuzzed file: %s %s', newcrash.fuzzedfile.path, newcrash.fuzzedfile.md5)
+        new_testcase.fuzzedfile = BasicFile(outfile)
+        self.logger.debug('\tNew fuzzed_content file: %s %s',
+                          new_testcase.fuzzedfile.path, new_testcase.fuzzedfile.md5)
 
-        # clear out the copied crash signature so that it will be regenerated
-        newcrash.signature = None
+        # clear out the copied testcase signature so that it will be
+        # regenerated
+        new_testcase.signature = None
 
-        # replace old crash details with new info specific to this crash
-        self.logger.debug('\tUpdating crash details')
-        newcrash.update_crash_details()
+        # replace old testcase details with new info specific to this testcase
+        self.logger.debug('\tUpdating testcase details')
+        new_testcase.update_crash_details()
 
-        # the tempdir we created is no longer needed because update_crash_details creates a fresh one
+        # the tempdir we created is no longer needed because
+        # update_crash_details creates a fresh one
         shutil.rmtree(newcrash_tmpdir)
         if os.path.exists(newcrash_tmpdir):
             logger.warning("Failed to remove temp dir %s", newcrash_tmpdir)
 
-        return newcrash
+        return new_testcase
+
+    def _get_pin_signature(self, backtracelevels):
+        # total_stack_corruption.  Use pin calltrace to get a backtrace
+        signature = ''
+        analyzer_instance = pin_calltrace.Pin_calltrace(
+            self.cfg, self.testcase)
+        try:
+            analyzer_instance.go()
+        except AnalyzerEmptyOutputError:
+            logger.warning('Unexpected empty output from analyzer. Continuing')
+        if os.path.exists(analyzer_instance.outfile):
+            calltrace = Calltracefile(analyzer_instance.outfile)
+            pinsignature = calltrace.get_testcase_signature(
+                backtracelevels * 10)
+            if pinsignature:
+                signature = pinsignature
+        return signature
 
     def get_signature(self, dbg, backtracelevels):
-        signature = dbg.get_crash_signature(backtracelevels)
+        signature = dbg.get_testcase_signature(backtracelevels)
+
         if dbg.total_stack_corruption:
-            # total_stack_corruption.  Use pin calltrace to get a backtrace
-            analyzer_instance = pin_calltrace.Pin_calltrace(self.cfg, self.crash)
-            try:
-                analyzer_instance.go()
-            except AnalyzerEmptyOutputError:
-                logger.warning('Unexpected empty output from analyzer. Continuing')
-            if os.path.exists(analyzer_instance.outfile):
-                calltrace = Calltracefile(analyzer_instance.outfile)
-                pinsignature = calltrace.get_crash_signature(backtracelevels * 10)
-                if pinsignature:
-                    signature = pinsignature
+            signature = self._get_pin_signature(backtracelevels)
+
         return signature
 
     def is_same_crash(self):
 
         # get debugger output filename
-        (fd, f) = tempfile.mkstemp(dir=self.tempdir, prefix="minimizer_is_same_crash_")
+        (fd, f) = tempfile.mkstemp(
+            dir=self.tempdir, prefix="minimizer_is_same_crash_")
         os.close(fd)
         if os.path.exists(f):
             delete_files(f)
@@ -394,7 +523,7 @@ class Minimizer:
         dbg = self.run_debugger(self.tempfile, f)
 
         if dbg.is_crash:
-            newfuzzed_hash = self.get_signature(dbg, self.cfg.backtracelevels)
+            newfuzzed_hash = self.get_signature(dbg, self.backtracelevels)
         else:
             newfuzzed_hash = None
         # initialize or increment the counter for this hash
@@ -404,20 +533,22 @@ class Minimizer:
             # don't do anything with non-crashes
             pass
         else:
-            # the crash is new to this minimization run
+            # the testcase is new to this minimization run
             self.crash_sigs_found[newfuzzed_hash] = 1
-            self.logger.info('crash=%s signal=%s', newfuzzed_hash, dbg.signal)
+            self.logger.info(
+                'testcase=%s signal=%s', newfuzzed_hash, dbg.signal)
 
-            if self.save_others and not newfuzzed_hash in self.crash_hashes:
-                # the crash is not one of the crashes we're looking for
+            if self.save_others and newfuzzed_hash not in self.crash_hashes:
+                # the testcase is not one of the crashes we're looking for
                 # so add it to the other_crashes dict in case our
                 # caller wants to do something with it
                 newcrash = self._crash_builder()
                 if newcrash.is_crash:
-                    # note that since we're doing this every time we see a crash
+                    # note that since we're doing this every time we see a testcase
                     # that's not in self.crash_hashes, we're also effectively
                     # keeping only the smallest hamming distance version of
-                    # newfuzzed_hash as we progress through the minimization process
+                    # newfuzzed_hash as we progress through the minimization
+                    # process
                     self.other_crashes[newfuzzed_hash] = newcrash
 
         # ditch the temp file
@@ -435,7 +566,8 @@ class Minimizer:
         if new_dc >= min_dc:
             return False
 
-        # if we're changing the discard chance, reset the consecutive miss count
+        # if we're changing the discard chance, reset the consecutive miss
+        # count
         if not self.discard_chance == new_dc:
             self.consecutive_misses = 0
             self.discard_chance = new_dc
@@ -448,31 +580,24 @@ class Minimizer:
             return False
 
         keep_chance = 1.0 - self.discard_chance
-        p = probability.FuzzRun(self.min_distance, self.target_size_guess, keep_chance)
+        p = probability.FuzzRun(
+            self.min_distance, self.target_size_guess, keep_chance)
 
-        self.n_misses_allowed = p.how_many_misses_until_quit(self.confidence_level)
-        return True
-
-    def have_we_seen_this_file_before(self):
-        # is this a new file?
-        if not self.files_tried.get(self.newfuzzed_md5):
-            # totally new file
-            self.files_tried[self.newfuzzed_md5] = 1
-            return False
-
-        # it's a repeat
-        self.files_tried[self.newfuzzed_md5] += 1
+        self.n_misses_allowed = p.how_many_misses_until_quit(
+            self.confidence_level)
         return True
 
     def print_intermediate_log(self):
         if not self.newfuzzed_hd:
-            self.logger.debug('self.newfuzzed_hd not set. Default to self.min_distance')
+            self.logger.debug(
+                'self.newfuzzed_hd not set. Default to self.min_distance')
             new_hd = self.min_distance
         else:
             new_hd = self.newfuzzed_hd
 
         if not self.n_misses_allowed:
-            self.logger.debug('self.n_misses_allowed not set. Default to self.consecutive_misses')
+            self.logger.debug(
+                'self.n_misses_allowed not set. Default to self.consecutive_misses')
             n_misses_allowed = self.consecutive_misses
         else:
             n_misses_allowed = self.n_misses_allowed
@@ -483,8 +608,10 @@ class Minimizer:
         parts.append('target_guess=%d' % self.target_size_guess)
         parts.append('curr=%d' % new_hd)
         parts.append('chance=%0.5f' % self.discard_chance)
-        parts.append('miss=%d/%d' % (self.consecutive_misses, n_misses_allowed))
-        parts.append('total_misses=%d/%d' % (self.total_misses, self.total_tries))
+        parts.append('miss=%d/%d' %
+                     (self.consecutive_misses, n_misses_allowed))
+        parts.append('total_misses=%d/%d' %
+                     (self.total_misses, self.total_tries))
         parts.append('u_crashes=%d' % len(self.crash_sigs_found.items()))
         logstring = ' '.join(parts)
         self.logger.info(logstring)
@@ -508,23 +635,33 @@ class Minimizer:
         return(self.use_timer and (elapsed_time > self.max_time))
 
     def _write_file(self):
-        write_file(''.join(self.newfuzzed), self.tempfile)
+        if self.is_zipfile:
+            self._writezip()
+        else:
+            write_file(''.join(self.newfuzzed), self.tempfile)
+
+    def _set_bytemap(self):
+        if self.fuzzed_content and not self.bytemap:
+            self.bytemap = hamming.bytemap(self.seed, self.fuzzed_content)
 
     def go(self):
-        # start by copying the fuzzed file since as of now it's our best fit
-        filetools.copy_file(self.crash.fuzzedfile.path, self.outputfile)
+        # start by copying the fuzzed_content file since as of now it's our
+        # best fit
+        filetools.copy_file(self.testcase.fuzzedfile.path, self.outputfile)
 
-        # replace the fuzzedfile object in crash with the minimized copy
-        self.crash.fuzzedfile = BasicFile(self.outputfile)
+        # replace the fuzzedfile object in testcase with the minimized copy
+        self.testcase.fuzzedfile = BasicFile(self.outputfile)
 
-        self.logger.info('Attempting to minimize crash(es) [%s]', self._crash_hashes_string())
+        self.logger.info(
+            'Attempting to minimize testcase(es) [%s]', self._crash_hashes_string())
 
         # keep going until either:
         # a. we find a minimum hd of 1
         # b. we run out of discard_chances
         # c. our discard_chance * minimum hd is less than one (we won't discard anything)
-        # d. we've exhaustively searched all the possible files with hd less than self.min_distance
-        while not self.min_found:
+        # d. we've exhaustively searched all the possible files with hd less
+        # than self.min_distance
+        while not self.min_found and not self.try_exhaustive:
 
             if not self.set_discard_chance():
                 break
@@ -534,16 +671,16 @@ class Minimizer:
 
             got_hit = False
             while self.consecutive_misses <= self.n_misses_allowed:
-                # clean the /tmp directory so we don't fill up the disk across tries
-                TmpReaper().clean_tmp()
 
                 if self.use_watchdog:
-                    # touch the watchdog file so we don't reboot during long minimizations
-                    open(self.cfg.watchdogfile, 'w').close()
+                    # touch the watchdog file so we don't reboot during long
+                    # minimizations
+                    open(self.watchdogfile, 'w').close()
 
                 # Fix for BFF-208
                 if self._time_exceeded():
-                    logger.info('Max time for minimization exceeded, ending minimizer early.')
+                    logger.info(
+                        'Max time for minimization exceeded, ending minimizer early.')
                     self.min_found = True
                     break
 
@@ -557,48 +694,48 @@ class Minimizer:
 
                 self.total_tries += 1
 
-                is_repeat = self.have_we_seen_this_file_before()
-
                 # have we been at this level before?
                 if not self.files_tried_at_hd.get(self.min_distance):
-                    # we've reached a new minimum
-                    self.files_tried_at_hd[self.min_distance] = {}
-                    self.files_tried_singlebyte_at_hd[self.min_distance] = {}
+                    # we've reached a new minimum, so create new sets
+                    self.files_tried_at_hd[self.min_distance] = set()
+                    self.files_tried_singlebyte_at_hd[
+                        self.min_distance] = set()
 
-                # have we seen this file at this level before?
-                if not self.files_tried_at_hd[self.min_distance].get(self.newfuzzed_md5):
-                    # this is a new file so we'll try it
-                    self.files_tried_at_hd[self.min_distance][self.newfuzzed_md5] = 1
-                    if self.newfuzzed_hd == (self.min_distance - 1):
-                        self.files_tried_singlebyte_at_hd[self.min_distance][self.newfuzzed_md5] = 1
-                else:
-                    # this is a repeat at this level
-                    self.files_tried_at_hd[self.min_distance][self.newfuzzed_md5] += 1
-                    if self.newfuzzed_hd == (self.min_distance - 1):
-                        self.files_tried_singlebyte_at_hd[self.min_distance][self.newfuzzed_md5] += 1
+                # have we exhausted all the possible files with smaller hd?
+                possible_files = (2 ** self.min_distance) - 2
+                seen_files = len(self.files_tried_at_hd[self.min_distance])
 
-                    # have we exhausted all the possible files with smaller hd?
-                    possible_files = (2 ** self.min_distance) - 2
-                    seen_files = len(self.files_tried_at_hd[self.min_distance])
-                    # maybe we're done?
-                    if seen_files == possible_files:
-                        # we've exhaustively searched everything with hd < self.min_distance
-                        self.logger.info('Exhaustively searched all files shorter than %d', self.min_distance)
-                        self.min_found = True
-                        break
+                # maybe we're done?
+                if seen_files == possible_files:
+                    # we've exhaustively searched everything with hd <
+                    # self.min_distance
+                    self.logger.info(
+                        'Exhaustively searched all files shorter than %d', self.min_distance)
+                    self.min_found = True
+                    break
 
-                    # have we exhausted all files that are 1 byte smaller hd?
-                    possible_singlebyte_diff_files = self.min_distance
-                    singlebyte_diff_files_seen = len(self.files_tried_singlebyte_at_hd[self.min_distance])
-                    # maybe we're done?
-                    if singlebyte_diff_files_seen == possible_singlebyte_diff_files:
-                        self.logger.info('We have tried all %d files that are one byte closer than the current minimum', self.min_distance)
-                        self.min_found = True
-                        break
+                # have we exhausted all files that are 1 byte smaller hd?
+                possible_singlebyte_diff_files = self.min_distance
+                singlebyte_diff_files_seen = len(
+                    self.files_tried_singlebyte_at_hd[self.min_distance])
+
+                # maybe we're done?
+                if singlebyte_diff_files_seen == possible_singlebyte_diff_files:
+                    self.logger.info(
+                        'We have tried all %d files that are one byte closer than the current minimum', self.min_distance)
+                    self.min_found = True
+                    break
+
+                # remember this file for next time around
+                self.files_tried_at_hd[
+                    self.min_distance].add(self.newfuzzed_md5)
+                if self.newfuzzed_hd == (self.min_distance - 1):
+                    self.files_tried_singlebyte_at_hd[
+                        self.min_distance].add(self.newfuzzed_md5)
 
                 self.print_intermediate_log()
 
-                if is_repeat:
+                if self.newfuzzed_md5 in self.files_tried:
                     # we've already seen this attempt, so skip ahead to the next one
                     # but still count it as a miss since our math assumes we're putting
                     # the marbles back in the jar after each draw
@@ -606,9 +743,14 @@ class Minimizer:
                     self.total_misses += 1
                     continue
 
+                # we didn't skip ahead, so it must have been new. Remember it
+                # now
+                self.files_tried.add(self.newfuzzed_md5)
+
                 # we have a better match, write it to a file
                 if not len(self.newfuzzed):
-                    raise MinimizerError('New fuzzed content is empty.')
+                    raise MinimizerError(
+                        'New fuzzed_content content is empty.')
 
                 self._write_file()
 
@@ -616,10 +758,11 @@ class Minimizer:
                     # record the result
                     # 1. copy the tempfile
                     filetools.best_effort_move(self.tempfile, self.outputfile)
-                    # 2. replace the fuzzed file in the crasher with the current one
-                    self.crash.fuzzedfile = BasicFile(self.outputfile)
-                    # 3. replace the current fuzzed with newfuzzed
-                    self.fuzzed = self.newfuzzed
+                    # 2. replace the fuzzed_content file in the crasher with
+                    # the current one
+                    self.testcase.fuzzedfile = BasicFile(self.outputfile)
+                    # 3. replace the current fuzzed_content with newfuzzed
+                    self.fuzzed_content = self.newfuzzed
                     self.min_distance = self.newfuzzed_hd
 
                     got_hit = True
@@ -627,6 +770,12 @@ class Minimizer:
                     if self.min_distance == 1:
                         # we are done
                         self.min_found = True
+                    elif self.newfuzzed_hd <= self.exhaustivesearch_threshold:
+                        self._set_bytemap()
+                        logger.info(
+                            'Exhaustively checking remaining %s bytes' % self.newfuzzed_hd)
+                        self.try_exhaustive = True
+                        break
                     else:
                         # set up for next iteration
                         self.consecutive_misses = 0
@@ -640,7 +789,7 @@ class Minimizer:
                     self.consecutive_misses += 1
 
                     # Fix for BFF-225
-                    # There may be some situation that causes crash uniqueness
+                    # There may be some situation that causes testcase uniqueness
                     # hashing to break. (e.g. BFF-224 ). Minimizer should bail
                     # if the number of unique crashes encountered exceeds some
                     # threshold. e.g. 20 maybe?
@@ -655,14 +804,30 @@ class Minimizer:
                 # so increment it by 1
                 self.target_size_guess += 1
 
-        self.print_intermediate_log()
+        if self.try_exhaustive:
+            for offset in list(self.bytemap):
+                logger.debug('Verifying byte location: %s' % hex(offset))
+                self.revert_byte(offset)
+                self._write_file()
+                if self.is_same_crash():
+                    logger.debug(
+                        'Fuzzed byte at offset %s is not relevant' % hex(offset))
+                    filetools.best_effort_move(self.tempfile, self.outputfile)
+                    self.testcase.fuzzedfile = BasicFile(self.outputfile)
+                    self.fuzzed_content = self.newfuzzed
+                    self.bytemap.remove(offset)
 
-        self.logger.info('We were looking for [%s] ...', self._crash_hashes_string())
+        # We're done minimizing. Set the bytemap (kept bytes)
+        self._set_bytemap()
+        self.logger.info(
+            'We were looking for [%s] ...', self._crash_hashes_string())
         for (md5, count) in self.crash_sigs_found.items():
             self.logger.info('\t...and found %s\t%d times', md5, count)
-        if self.fuzzed:
-            self.bytemap = hamming.bytemap(self.seed, self.fuzzed)
-            self.logger.info('Bytemap: %s', self.bytemap)
+        if self.bytemap:
+            hex_bytemap = []
+            for offset in self.bytemap:
+                hex_bytemap.append(hex(offset))
+            self.logger.info('Bytemap: %s', hex_bytemap)
 
     def get_mask(self):
         mask = 0
@@ -682,12 +847,17 @@ class Minimizer:
         # or that we didn't drop any bytes at all
         # so keep trying until both are true
         while not (0 < newfuzzed_hd < self.min_distance):
-            newfuzzed, newfuzzed_hd = self.swap_func(self.seed, self.fuzzed)
+            newfuzzed, newfuzzed_hd = self.swap_func(
+                self.seed, self.fuzzed_content)
 
         # we know our hd is > 0 and < what it was when we started
         self.newfuzzed = newfuzzed
         self.newfuzzed_hd = newfuzzed_hd
         self.newfuzzed_md5 = hashlib.md5(''.join(self.newfuzzed)).hexdigest()
+
+    def revert_byte(self, offset):
+        self.newfuzzed[offset] = self.seed[offset]
+        self.newfuzzed_hd -= 1
 
     def bytewise_swap2(self, seed, fuzzed):
         swapped = []
@@ -707,7 +877,8 @@ class Minimizer:
                 append(a)
         return swapped, hd
         # Note that the above implementation is actually faster overall than the list
-        # comprehension below since we're catching the hamming distance at the same time.
+        # comprehension below since we're catching the hamming distance at the
+        # same time.
 
     def _mask(self):
         mask = 0

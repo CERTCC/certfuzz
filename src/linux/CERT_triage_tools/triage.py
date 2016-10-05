@@ -19,24 +19,17 @@
 ###    notice, this list of conditions and the following disclaimer in the
 ###    documentation and/or other materials provided with the distribution.
 ###
-### 3. All advertising materials for third-party software mentioning
-###    features or use of this software must display the following
-###    disclaimer:
-###
-###    "Neither Carnegie Mellon University nor its Software Engineering
-###     Institute have reviewed or endorsed this software"
-###
-### 4. The names "Department of Homeland Security," "Carnegie Mellon
+### 3. The names "Department of Homeland Security," "Carnegie Mellon
 ###    University," "CERT" and/or "Software Engineering Institute" shall
 ###    not be used to endorse or promote products derived from this software
 ###    without prior written permission. For written permission, please
 ###    contact permission@sei.cmu.edu.
 ###
-### 5. Products derived from this software may not be called "CERT" nor
+### 4. Products derived from this software may not be called "CERT" nor
 ###    may "CERT" appear in their names without prior written permission of
 ###    permission@sei.cmu.edu.
 ###
-### 6. Redistributions of any form whatsoever must retain the following
+### 5. Redistributions of any form whatsoever must retain the following
 ###    acknowledgment:
 ###
 ###    "This product includes software developed by CERT with funding
@@ -53,6 +46,10 @@
 ### RESULTS TO BE OBTAINED FROM USE, FREEDOM FROM PATENT, TRADEMARK AND
 ### COPYRIGHT INFRINGEMENT AND/OR FREEDOM FROM THEFT OF TRADE SECRETS.
 ### END LICENSE ###
+
+# Jonathan Foote
+# jmfoote@loyola.edu
+
 '''
 A simple batch wrapper script for the CERT 'exploitable' GDB extension.
 '''
@@ -61,7 +58,7 @@ from optparse import OptionParser
 from string import Template
 import subprocess
 import shlex
-import cPickle as pkl
+import pickle as pkl
 import os
 import warnings
 import sys
@@ -87,8 +84,7 @@ class TriagedStates(list):
         result = ""
         failed = []
         last = None
-        get_class = lambda state: state[1]
-        triaged = sorted(filter(get_class, self), key=get_class)
+        triaged = sorted(self, key=lambda tstate: tstate[1]) # sort by classification
         for sub, classification in triaged:
             if not classification or len(classification.tags) == 0:
                 failed.append(sub)
@@ -103,8 +99,7 @@ class TriagedStates(list):
             result += "\n"
             last = classification
 
-        failed = filter(lambda state: not state[1] or len(state[1].tags) == 0,
-                        self)
+        failed = [state for state in self if not state[1] or len(state[1].tags) == 0]
         if len(failed) > 0:
             result += "\nFailed to triage:\n"+ "\n".join([s[0] for s in failed])
 
@@ -119,6 +114,7 @@ class Triager(object):
                 "-ex run -ex \"exploitable -p %s\" --args"
     tmp_file = "/tmp/triage.pkl"
     verbose = False
+    step_script = None
     def __init__(self):
         pass
 
@@ -143,11 +139,15 @@ class Triager(object):
             pos = pos + 1
             self._cleanup_tmp_file()
             inferior_cmd = inferior_template.safe_substitute(sub=sub)
-            call = self.gdb_cmd % self.tmp_file + " " + inferior_cmd
+            if self.step_script:
+                call = self.step_script + " " + inferior_cmd
+                self.vprint("(%d/%d) calling: %s" % (pos, len(inferior_subs), call))
+                subprocess.call(shlex.split(call))
+            call = self.gdb_cmd.replace("%s", self.tmp_file) + " " + inferior_cmd
             self.vprint("(%d/%d) calling: %s" % (pos, len(inferior_subs), call))
-            subprocess.call(shlex.split(call), stdout=file(os.devnull, 'w'))
+            subprocess.call(shlex.split(call), stdout=open(os.devnull, 'w'))
             try:
-                classification = pkl.load(file(self.tmp_file, "rb"))
+                classification = pkl.load(open(self.tmp_file, "rb"))
             except Exception as e:
                 classification = None
                 warnings.warn("triage failed (%s), call=%s" % (e, call))
@@ -158,9 +158,7 @@ class Triager(object):
 
     def vprint(self, msg):
         if self.verbose:
-            print msg
-
-version = "1.0"
+            print(msg)
 
 if __name__ == "__main__":
     usage = "usage: %prog [options] CMD [arg1, arg2, ..]"
@@ -173,16 +171,24 @@ if __name__ == "__main__":
     op = OptionParser(description=desc, usage=usage)
     op.add_option("-v", "--verbose", action="store_true",
                       dest="verbose", default=False,
-                      help="print verbose messages to stdout and includes "
+                      help="Print verbose messages to stdout and includes "
                       "all matching tags in summary")
     op.add_option("-g", "--gdb-shell-cmd", action="store",
                       dest="gdb_shell_cmd", default=False,
-                      help="overrides gdb shell command. Default is '%s'"
+                      help="Overrides gdb shell command. Default is '%s'"
                       % Triager.gdb_cmd)
     op.add_option("-t", "--tmp-filename", action="store",
                       dest="tmp_filename", default=False,
-                      help="overrides temporary pkl filename. Default is '%s'"
+                      help="Overrides temporary pkl filename. Default is '%s'"
                       % Triager.tmp_file)
+    op.add_option("-s", "--step-script", action="store",
+                      dest="step_script", default=False,
+                      help="run specified bash script between each invocation "
+                      "of GDB. The app invocation string is passed as an "
+                      "argument to the bash script.")
+    op.add_option("-o", "--output", action="store",
+                      dest="output", default=False,
+                      help="output result as JSON to supplied filepath.")
     (opts, args) = op.parse_args()
     if len(args) < 1:
         op.error("wrong number of arguments")
@@ -196,8 +202,16 @@ if __name__ == "__main__":
         Triager.gdb_cmd = opts.gdb_shell_cmd
     if opts.tmp_filename:
         Triager.tmp_file = opts.tmp_filename
+    if opts.step_script:
+        Triager.step_script = opts.step_script
 
     results = Triager().triage(cmd, args, opts.verbose)
 
-    print "\n\n\n\n", results
+    if opts.output:
+        import json 
+        # sort by classification before dumping
+        triaged = sorted(results , key=lambda tstate: tstate[1]) 
+        json.dump(triaged, open(opts.output, "wt"), indent=4)
+
+    print("\n\n\n\n", results)
 

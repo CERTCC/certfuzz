@@ -5,12 +5,13 @@ Provides the ABRTfile class for analyzing ABRT output.
 
 @organization: cert.org
 '''
-import re
 import logging
-from . import regex as regex_base
-from . import DebuggerFile
-
 from optparse import OptionParser
+import re
+
+from certfuzz.debuggers.output_parsers.debugger_file_base import DebuggerFile, \
+    regex as regex_base
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
@@ -26,6 +27,7 @@ regex.update({
         'mapped_frame': re.compile(r'(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+Yes\s.+(/.+)'),
          })
 
+
 class ABRTfile(DebuggerFile):
     def __init__(self, path, exclude_unmapped_frames=True):
         self.has_threads = False
@@ -33,7 +35,7 @@ class ABRTfile(DebuggerFile):
         self.crashing_thread = False
         self.has_proc_map = False
 
-        super(self.__class__, self).__init__(path, exclude_unmapped_frames)
+        DebuggerFile.__init__(self, path, exclude_unmapped_frames)
 
     def backtrace_line(self, idx, l):
         self._look_for_crashing_thread(l)
@@ -189,6 +191,6 @@ if __name__ == '__main__':
 
     for f in args:
         a = ABRTfile(f)
-        print 'Signature=%s' % a.get_crash_signature(5)
+        print 'Signature=%s' % a.get_testcase_signature(5)
         if a.registers_hex.get('eip'):
             print 'EIP=%s' % a.registers_hex['eip']

@@ -5,17 +5,17 @@ Provides basic file system tools for creating directories, copying files, writin
 
 @organization: cert.org
 '''
-import os
+import StringIO
 import errno
-import time
-import shutil
+import fnmatch
 import hashlib
 import logging
-import tempfile
-import fnmatch
+import os
+import shutil
 import stat
+import tempfile
+import time
 import zipfile
-import StringIO
 
 
 MAXDEPTH = 5
@@ -23,6 +23,7 @@ SLEEPTIMER = 0.5
 BACKOFF_FACTOR = 2
 
 logger = logging.getLogger(__name__)
+
 
 def exponential_backoff(F):
     def wrapper(*args, **kwargs):
@@ -34,7 +35,8 @@ def exponential_backoff(F):
             try:
                 return F(*args, **kwargs)
             except Exception as detail:
-                logmsg = '... [try %d of %d]: %s' % (current_depth + 1, MAXDEPTH, detail)
+                logmsg = '... [try %d of %d]: %s' % (
+                    current_depth + 1, MAXDEPTH, detail)
                 logger.debug(logmsg)
             # increment naptimefor the next time around
             naptime = SLEEPTIMER * pow(BACKOFF_FACTOR, current_depth)
@@ -42,14 +44,25 @@ def exponential_backoff(F):
 
     return wrapper
 
+
 def mkdir_p(path):
+    '''
+    If directory exists, just return True
+    Otherwise create it and return False
+    :param path:
+    '''
     try:
         os.makedirs(path)
     except OSError as exc:
         # if the dir already exists, just move along
         if exc.errno == errno.EEXIST:
-            pass
-        else: raise
+            return True
+        else:
+            raise
+    return False
+
+find_or_create_dir = mkdir_p
+
 
 # file system helpers
 def make_directories(*paths):
@@ -61,20 +74,23 @@ def make_directories(*paths):
         if not os.path.exists(d):
             mkdir_p(d)
 
-def find_or_create_dir(dir):
-    if not os.path.exists(dir):
-        make_directories(dir)
-        logger.debug("Created dir %s", dir)
-        dir_found = False
-    else:
-        dir_found = True
-    return dir_found
+
+@exponential_backoff
+def rm_rf(path):
+    '''
+    Wraps shutil.rmtree with an exponential backoff to avoid contention with
+    HGFS on some platforms (usually Windows)
+    :param path:
+    '''
+    shutil.rmtree(path)
+
 
 def delete_files(*files):
     delete_files2(files)
 
+
 @exponential_backoff
-def delete_files2(files=[]):
+def delete_files2(files):
     '''
     Deletes <files> given a list of paths
     @return: none
@@ -89,6 +105,7 @@ def delete_files2(files=[]):
             for x in os.listdir(d):
                 logger.debug('... %s', x)
 
+
 def best_effort_copy(src, dst):
     copied = False
     try:
@@ -98,6 +115,7 @@ def best_effort_copy(src, dst):
         logger.warning('Unable to copy file: %s', e)
     return copied
 
+
 def best_effort_delete(target):
     deleted = False
     try:
@@ -106,6 +124,7 @@ def best_effort_delete(target):
     except OSError, e:
         logger.warning('Unable to remove file: %s', e)
     return deleted
+
 
 def best_effort_move(src, dst):
     '''
@@ -129,16 +148,20 @@ def best_effort_move(src, dst):
             deleted = best_effort_delete(src)
     return copied, deleted
 
+
 def move_files(dst, *files):
     '''
     Move each file in files to dst.
     @param dst: file path or dir
     @param files: one or more source paths
     '''
-    if not os.path.isdir(dst): return
+    if not os.path.isdir(dst):
+        return
+
     for src in files:
         if os.path.exists(src):
             move_file(src, dst)
+
 
 def move_file(src, *targets):
     '''
@@ -149,12 +172,15 @@ def move_file(src, *targets):
     '''
     move_file2(src=src, targets=targets)
 
+
 @exponential_backoff
 def move_file2(src=None, targets=[]):
-    if not os.path.exists(src): return
+    if not os.path.exists(src):
+        return
 
     for dst in targets:
         shutil.move(src, dst)
+
 
 def copy_files(dst, *files):
     '''
@@ -162,14 +188,17 @@ def copy_files(dst, *files):
     '''
 
     # short-circuit unless target dir exists
-    if not os.path.isdir(dst): return
+    if not os.path.isdir(dst):
+        return
 
     for src in files:
         if os.path.exists(src):
             copy_file(src, dst)
 
+
 def copy_file(src, *targets):
     copy_file2(src=src, targets=targets)
+
 
 @exponential_backoff
 def copy_file2(src=None, targets=[]):
@@ -178,14 +207,16 @@ def copy_file2(src=None, targets=[]):
     @return: none
     '''
     # short-circuit unless file exists
-    if not os.path.exists(src): return
+    if not os.path.exists(src):
+        return
 
     for dst in targets:
         shutil.copy(src, dst)
 
+
 def mkdtemp(base_dir=None):
-    path = tempfile.mkdtemp(prefix='BFF-', dir=base_dir)
-    return path
+    return tempfile.mkdtemp(prefix='BFF-', dir=base_dir)
+
 
 def write_oneline_to_file(line, dst, mode):
     '''
@@ -195,6 +226,7 @@ def write_oneline_to_file(line, dst, mode):
     with open(dst, mode) as f:
         f.write("%s\n" % line)
 
+
 def get_file_md5(infile):
     h = hashlib.md5()
 
@@ -203,14 +235,17 @@ def get_file_md5(infile):
 
     return h.hexdigest()
 
+
 @exponential_backoff
 def write_file2(data=None, dst=None):
     logger.debug('Write to %s', dst)
     with open(dst, 'wb') as output_file:
         output_file.write(data)
 
+
 def write_file(data, dst):
     write_file2(data=data, dst=dst)
+
 
 def get_newpath(oldpath, str_to_insert):
     '''
@@ -219,9 +254,17 @@ def get_newpath(oldpath, str_to_insert):
     :param oldpath:
     :param str_to_insert:
     '''
-    root, ext = os.path.splitext(oldpath)
+    if '.' in oldpath:
+        # Split on first '.' to retain multiple dotted extensions
+        root = oldpath.split('.', 1)[0]
+        ext = '.' + oldpath.split('.', 1)[1]
+        ext = ext.replace(' ', '')
+    else:
+        root = oldpath
+        ext = ''
     newpath = ''.join([root, str_to_insert, ext])
     return newpath
+
 
 def all_files_nonzero_length(root, patterns='*', single_level=False, yield_folders=False):
     '''
@@ -234,6 +277,7 @@ def all_files_nonzero_length(root, patterns='*', single_level=False, yield_folde
     for filepath in all_files(root, patterns, single_level, yield_folders):
         if os.path.getsize(filepath):
             yield filepath
+
 
 def delete_files_or_dirs(dirlist, print_via_log=True):
     skipped_items = []
@@ -262,6 +306,7 @@ def delete_files_or_dirs(dirlist, print_via_log=True):
             skipped_items.append((item_path, 'Not a file or dir'))
     return skipped_items
 
+
 def delete_contents_of(dirs, print_via_log=True):
     dirlist = []
     skipped_items = []
@@ -272,13 +317,17 @@ def delete_contents_of(dirs, print_via_log=True):
             except Exception, e:
                 skipped_items.append((directory, e))
 
-            to_delete = [os.path.join(directory, item) for item in dirlist if not item == '.svn']
-            skipped_items.extend(delete_files_or_dirs(to_delete, print_via_log))
+            to_delete = [os.path.join(directory, item)
+                         for item in dirlist if not item == '.svn']
+            skipped_items.extend(
+                delete_files_or_dirs(to_delete, print_via_log))
 
     return skipped_items
 
+
 def check_zip_fh(file_like_content):
-    # Make sure that it's not an embedded zip (e.g. a DOC file from Office 2007)
+    # Make sure that it's not an embedded zip (e.g. a DOC file from Office
+    # 2007)
     file_like_content.seek(0)
     zipmagic = file_like_content.read(2)
     file_like_content.seek(0)
@@ -288,17 +337,62 @@ def check_zip_fh(file_like_content):
     else:
         return zipfile.is_zipfile(file_like_content)
 
+
 def check_zip_content(content):
     file_like_content = StringIO.StringIO(content)
     return check_zip_fh(file_like_content)
+
 
 def check_zip_file(filepath):
     with open(filepath, 'rb') as filehandle:
         return check_zip_fh(filehandle)
 
+
+def get_zipcontents(filepath):
+    # If the file is zip-based, fuzz the contents rather than the container
+    logger.debug('Reading zip file: %s', filepath)
+    tempzip = zipfile.ZipFile(filepath, 'r')
+
+    '''
+    concatentate zip contents
+    '''
+    unzippedbytes = ''
+    logger.debug('Reading files from zip...')
+    for i in tempzip.namelist():
+        data = tempzip.read(i)
+        unzippedbytes += data
+    tempzip.close()
+    return unzippedbytes
+
+
 def make_writable(filename):
     mode = os.stat(filename).st_mode
     os.chmod(filename, mode | stat.S_IWRITE)
+
+
+def _read_file(path, perm):
+    '''
+    Generic file read
+    :param path:
+    :param perm:
+    '''
+    with open(path, perm) as f:
+        return f.read()
+
+
+def read_text_file(textfile):
+    '''
+    Read text file
+    '''
+    return _read_file(textfile, 'r')
+
+
+def read_bin_file(binfile):
+    '''
+    Read binary file
+    '''
+    return _read_file(binfile, 'rb')
+
 
 # Adapted from Python Cookbook 2nd Ed. p.88
 def all_files(root, patterns='*', single_level=False, yield_folders=False):

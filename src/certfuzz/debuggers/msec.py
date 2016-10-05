@@ -1,22 +1,23 @@
 """This module runs cdb on a process and !exploitable on any exceptions.
 """
 import ctypes
-from pprint import pformat
-from threading import Timer
-from subprocess import Popen
-import os
 import logging
-import wmi
+import os
+from pprint import pformat
+from subprocess import Popen
+from threading import Timer
 import time
 
-from . import Debugger as DebuggerBase
-from .registration import register
-from .output_parsers.msec_file import MsecFile
-from ..helpers import check_os_compatibility
+from certfuzz.debuggers.debugger_base import Debugger as DebuggerBase
+from certfuzz.debuggers.output_parsers.msec_file import MsecFile
+
+import sys
+
+if sys.platform.startswith('win'):
+    import wmi
+
 
 logger = logging.getLogger(__name__)
-
-check_os_compatibility('Windows', __name__)
 
 
 def factory(options):
@@ -28,10 +29,17 @@ class MsecDebugger(DebuggerBase):
     _key = 'msec'
     _ext = 'msec'
 
-    def __init__(self, program, cmd_args, outfile_base, timeout, killprocname, watchcpu, exception_depth=0, **options):
-        super(MsecDebugger, self).__init__(program, cmd_args, outfile_base, timeout, killprocname, **options)
+    def __init__(self, program, cmd_args, outfile_base, timeout, watchcpu, exception_depth=0, cdb_command='!exploitable -v', debug_heap=False, ** options):
+        DebuggerBase.__init__(
+            self, program, cmd_args, outfile_base, timeout, **options)
         self.exception_depth = exception_depth
         self.watchcpu = watchcpu
+        if watchcpu:
+            self.wmiInterface = wmi.WMI()
+        self.t = None
+        self.savedpid = None
+        self.cdb_command = cdb_command
+        self.debugheap = debug_heap
 
     def kill(self, pid, returncode):
         """kill function for Win32"""
@@ -58,7 +66,7 @@ class MsecDebugger(DebuggerBase):
         return [self.debugger_app(), '-version']
 
     def _get_cmdline(self, outfile):
-        cdb_command = '$$Found_with_CERT_FOE_2.1;r;!exploitable -v;q'
+        cdb_command = '$$Found_with_CERT_BFF_2.8;r;%s;q' % self.cdb_command
         args = []
         args.append(self.debugger_app())
         args.append('-amsec.dll')
@@ -73,65 +81,78 @@ class MsecDebugger(DebuggerBase):
             cdb_command = 'g;' + cdb_command
         args.append(cdb_command)
         args.append(self.program)
-        args.extend(self.cmd_args[1:])
+        args.extend(self.cmd_args)
         for l in pformat(args).splitlines():
             logger.debug('dbg_args: %s', l)
         return args
 
-    def run_with_timer(self):
-        # TODO: replace this with subp.run_with_timer()
-        targetdir = os.path.dirname(self.program)
-        exename = os.path.basename(self.program)
-        process_info = {}
-        id = None
-        done = False
-        started = False
-        wmiInterface = None
-        retrycount = 0
+    def _find_debug_target(self, exename, trycount=5):
+        pid = None
+        attempts = 0
         foundpid = False
 
-        args = self._get_cmdline(self.outfile)
-        p = Popen(args, stdout=open(os.devnull), stderr=open(os.devnull),
-                  cwd=targetdir, universal_newlines=True)
+        if self.watchcpu:
 
-        if self.watchcpu == True:
-            wmiInterface = wmi.WMI()
-            while retrycount < 5 and not foundpid:
-                for process in wmiInterface.Win32_Process(name=exename):
+            while attempts < trycount and not foundpid:
+                for process in self.wmiInterface.Win32_Process(name=exename):
                     # TODO: What if there's more than one?
-                    id = process.ProcessID
-                    logger.debug('Found %s PID: %s', exename, id)
+                    pid = process.ProcessID
+                    logger.debug('Found %s PID: %s', exename, pid)
                     foundpid = True
-                if not foundpid:
+
+                attempts += 1
+                if not foundpid and attempts < trycount:
                     logger.debug('%s not seen yet. Retrying...', exename)
-                    retrycount += 1
                     time.sleep(0.1)
-            if not id:
-                logger.debug('Cannot find %s child process! Bailing.', exename)
-                self.kill(p.pid, 99)
-                return
+
+            if not pid:
+                logger.debug('Cannot find %s child process!', exename)
+        return pid
+
+    def run_with_timer(self):
+        # TODO: replace this with subp.run_with_timer()
+        exename = os.path.basename(self.program)
+        process_info = {}
+        child_pid = None
+        done = False
+        started = False
+
+        args = self._get_cmdline(self.outfile)
+        p = Popen(args, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'),
+                  universal_newlines=True)
+        self.savedpid = p.pid
+
+        child_pid = self._find_debug_target(exename, trycount=5)
+        if child_pid is None and self.watchcpu:
+            logger.debug('Bailing on debugger iteration')
+            self.kill(self.savedpid, 99)
+            return
 
         # create a timer that calls kill() when it expires
-        t = Timer(self.timeout, self.kill, args=[p.pid, 99])
-        t.start()
-        if self.watchcpu == True:
+        self.t = Timer(self.timeout, self.kill, args=[self.savedpid, 99])
+        self.t.start()
+        if self.watchcpu:
             # This is a race.  In some cases, a GUI app could be done before we can even measure it
             # TODO: Do something about it
-            while p.poll() is None and not done and id:
-                for proc in wmiInterface.Win32_PerfRawData_PerfProc_Process (IDProcess=id):
-                    n1, d1 = long (proc.PercentProcessorTime), long (proc.Timestamp_Sys100NS)
-                    n0, d0 = process_info.get (id, (0, 0))
+            while p.poll() is None and not done and child_pid:
+                for proc in self.wmiInterface.Win32_PerfRawData_PerfProc_Process(IDProcess=child_pid):
+                    n1, d1 = long(proc.PercentProcessorTime), long(
+                        proc.Timestamp_Sys100NS)
+                    n0, d0 = process_info.get(child_pid, (0, 0))
                     try:
-                        percent_processor_time = (float (n1 - n0) / float (d1 - d0)) * 100.0
+                        percent_processor_time = (
+                            float(n1 - n0) / float(d1 - d0)) * 100.0
                     except ZeroDivisionError:
                         percent_processor_time = 0.0
-                    process_info[id] = (n1, d1)
-                    logger.debug('Process %s CPU usage: %s', id, percent_processor_time)
-                    if percent_processor_time < 0.01:
+                    process_info[child_pid] = (n1, d1)
+                    logger.debug(
+                        'Process %s CPU usage: %s', child_pid, percent_processor_time)
+                    if percent_processor_time < 0.0000000001:
                         if started:
-                            logger.debug('killing %s due to CPU inactivity', p.pid)
+                            logger.debug(
+                                'killing cdb session for %s due to CPU inactivity', child_pid)
                             done = True
-                            self.kill(p.pid, 99)
+                            self.kill(self.savedpid, 99)
                     else:
                         # Detected CPU usage. Now look for it to drop near zero
                         started = True
@@ -140,13 +161,15 @@ class MsecDebugger(DebuggerBase):
                     time.sleep(0.2)
         else:
             p.wait()
-        t.cancel()
+        self.t.cancel()
 
     def go(self):
         """run cdb and process output"""
-        # For exceptions beyond the first one, put the handled exception number in the name
+        # For exceptions beyond the first one, put the handled exception number
+        # in the name
         if self.exception_depth > 0:
-            self.outfile = os.path.splitext(self.outfile)[0] + '.e' + str(self.exception_depth) + os.path.splitext(self.outfile)[1]
+            self.outfile = os.path.splitext(self.outfile)[
+                0] + '.e' + str(self.exception_depth) + os.path.splitext(self.outfile)[1]
         self.run_with_timer()
         if not os.path.exists(self.outfile):
             # touch it if it doesn't exist
@@ -157,7 +180,10 @@ class MsecDebugger(DebuggerBase):
         for l in pformat(parsed.__dict__).splitlines():
             logger.debug('parsed: %s', l)
         return parsed
-# END MsecDebugger
 
-# register this class as a debugger
-register(MsecDebugger)
+    def __exit__(self, etype, value, traceback):
+        if self.t:
+            logger.debug('Canceling timer...')
+            self.t.cancel()
+
+# END MsecDebugger

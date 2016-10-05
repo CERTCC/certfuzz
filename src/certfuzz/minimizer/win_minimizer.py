@@ -1,27 +1,33 @@
-import logging
-from . import Minimizer as MinimizerBase
-from ..fuzztools.filetools import write_file
-from ..fuzztools.filetools import check_zip_file
-import zipfile
 import collections
-from .errors import WindowsMinimizerError
+import logging
+import zipfile
+
+from certfuzz.fuzztools.filetools import check_zip_file, write_file
+from certfuzz.fuzztools.filetools import exponential_backoff
+from certfuzz.minimizer.minimizer_base import Minimizer as MinimizerBase
+from certfuzz.minimizer.errors import WindowsMinimizerError
+from certfuzz.debuggers.msec import MsecDebugger
+
 
 logger = logging.getLogger(__name__)
 
 
 class WindowsMinimizer(MinimizerBase):
     use_watchdog = False
+    _debugger_cls = MsecDebugger
 
-    def __init__(self, cfg=None, crash=None, crash_dst_dir=None,
+    def __init__(self, cfg=None, testcase=None, crash_dst_dir=None,
                  seedfile_as_target=False, bitwise=False, confidence=0.999,
-                 logfile=None, tempdir=None, maxtime=3600, preferx=False, keep_uniq_faddr=False, watchcpu=False):
+                 logfile=None, tempdir=None, maxtime=3600, preferx=True,
+                 keep_uniq_faddr=False, watchcpu=False):
 
         self.saved_arcinfo = None
-        self.is_zipfile = check_zip_file(crash.fuzzedfile.path)
+        self.is_zipfile = check_zip_file(testcase.fuzzedfile.path)
 
-        MinimizerBase.__init__(self, cfg, crash, crash_dst_dir, seedfile_as_target,
-                               bitwise, confidence, logfile, tempdir, maxtime,
-                               preferx, keep_uniq_faddr, watchcpu)
+        MinimizerBase.__init__(self, cfg, testcase, crash_dst_dir,
+                               seedfile_as_target, bitwise, confidence,
+                               logfile, tempdir, maxtime, preferx,
+                               keep_uniq_faddr, watchcpu)
 
     def get_signature(self, dbg, backtracelevels):
         # get the basic signature
@@ -30,7 +36,7 @@ class WindowsMinimizer(MinimizerBase):
             self.signature = None
         else:
             crash_id_parts = [crash_hash]
-            if self.crash.keep_uniq_faddr and hasattr(dbg, 'faddr'):
+            if self.testcase.keep_uniq_faddr and hasattr(dbg, 'faddr'):
                 crash_id_parts.append(dbg.faddr)
             self.signature = '.'.join(crash_id_parts)
         return self.signature
@@ -42,7 +48,7 @@ class WindowsMinimizer(MinimizerBase):
         # store the files in memory
         if self.is_zipfile:  # work with zip file contents, not the container
             logger.debug('Working with a zip file')
-            return self._readzip(self.crash.fuzzedfile.path)
+            return self._readzip(self.testcase.fuzzedfile.path)
         # otherwise just call the parent class method
         return MinimizerBase._read_fuzzed(self)
 
@@ -53,7 +59,7 @@ class WindowsMinimizer(MinimizerBase):
         # we're either going to minimize to the seedfile, the metasploit
         # pattern, or a string of 'x's
         if self.is_zipfile and self.seedfile_as_target:
-            return self._readzip(self.crash.seedfile.path)
+            return self._readzip(self.testcase.seedfile.path)
         # otherwise just call the parent class method
         return MinimizerBase._read_seed(self)
 
@@ -77,10 +83,15 @@ class WindowsMinimizer(MinimizerBase):
             # probably unnecessary since it's the content that matters
 
             self.saved_arcinfo[i] = (len(unzippedbytes), len(data),
-                                        tempzip.getinfo(i).compress_type)
+                                     tempzip.getinfo(i).compress_type)
             unzippedbytes += data
         tempzip.close()
         return unzippedbytes
+
+    @exponential_backoff
+    def _safe_createzip(self, filepath):
+        tempzip = zipfile.ZipFile(filepath, 'w')
+        return tempzip
 
     def _writezip(self):
         '''rebuild the zip file and put it in self.fuzzed
@@ -95,7 +106,7 @@ class WindowsMinimizer(MinimizerBase):
         filepath = self.tempfile
 
         logger.debug('Creating zip with mutated contents.')
-        tempzip = zipfile.ZipFile(filepath, 'w')
+        tempzip = self._safe_createzip(filepath)
 
         '''
         reconstruct archived files, using the same compression scheme as
@@ -107,9 +118,11 @@ class WindowsMinimizer(MinimizerBase):
                 # Python zipfile only supports compression types 0 and 8
                 compressiontype = info[2]
             else:
-                logger.warning('Compression type %s is not supported. Overriding', info[2])
+                logger.warning(
+                    'Compression type %s is not supported. Overriding', info[2])
                 compressiontype = 8
-            tempzip.writestr(name, str(filedata[info[0]:info[0] + info[1]]), compress_type=compressiontype)
+            tempzip.writestr(
+                name, str(filedata[info[0]:info[0] + info[1]]), compress_type=compressiontype)
         tempzip.close()
 
     def _write_file(self):

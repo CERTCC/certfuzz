@@ -1,3 +1,0 @@
-WARNING: Fuzzing can cause unexpected behavior with any operating system.
-
-FOE should only be installed within a virtual machine.

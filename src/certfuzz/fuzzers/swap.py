@@ -2,12 +2,13 @@
 bytes.
 """
 import logging
-from . import MinimizableFuzzer, FuzzerError, FuzzerExhaustedError
+
+from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+
 
 logger = logging.getLogger(__name__)
 
-class SwapFuzzerError(FuzzerError):
-    pass
 
 class SwapFuzzer(MinimizableFuzzer):
     '''
@@ -27,6 +28,6 @@ class SwapFuzzer(MinimizableFuzzer):
 
         logger.debug('%s - swap bytes %d <-> %d', self.sf.basename, a, b)
         self.input[b], self.input[a] = self.input[a], self.input[b]
-        self.fuzzed = self.input
+        self.output = self.input
 
 _fuzzer_class = SwapFuzzer

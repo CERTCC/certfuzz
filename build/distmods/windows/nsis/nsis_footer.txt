@@ -1,0 +1,42 @@
+Delete "$INSTDIR\configs\bff.yaml"
+Delete "$INSTDIR\uninstall.exe"
+!ifdef WEB_SITE
+Delete "$INSTDIR\CERT website.url"
+!endif
+
+RmDir "$INSTDIR\fuzzdir"
+RmDir "$INSTDIR\symbols"
+RmDir "$INSTDIR\configs"
+RmDir "$INSTDIR\results\convert_v5.5.7"
+RmDir "$INSTDIR\results"
+RmDir "$INSTDIR"
+
+#Push "${DEBUGDIR}"
+#Call un.RemoveFromPath
+${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$DEBUGDIR"
+
+!ifdef REG_START_MENU
+!insertmacro MUI_STARTMENU_GETFOLDER "Application" $SM_Folder
+Delete "$SMPROGRAMS\$SM_Folder\${APP_NAME}.lnk"
+Delete "$SMPROGRAMS\$SM_Folder\README.lnk"
+!ifdef WEB_SITE
+Delete "$SMPROGRAMS\$SM_Folder\CERT Website.lnk"
+!endif
+RmDir "$SMPROGRAMS\$SM_Folder"
+!endif
+
+!ifndef REG_START_MENU
+Delete "$SMPROGRAMS\BFF\${APP_NAME}.lnk"
+Delete "$SMPROGRAMS\BFF\README.lnk"
+!ifdef WEB_SITE
+Delete "$SMPROGRAMS\BFF\CERT Website.lnk"
+!endif
+RmDir "$SMPROGRAMS\BFF"
+!endif
+
+#DeleteRegKey ${REG_ROOT} "${REG_APP_PATH}"
+DeleteRegKey ${REG_ROOT} "${UNINSTALL_PATH}"
+DeleteRegKey HKLM "SOFTWARE\ImageMagick\5.5.7\Q:16"
+SectionEnd
+
+######################################################################

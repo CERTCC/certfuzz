@@ -1,0 +1,25 @@
+set disassembly-flavor intel
+set logging file $OUTFILE
+set logging on
+file $PROGRAM
+run $CMD_ARGS
+echo \n
+echo Found_with_CERT_BFF_2.8\n
+echo  Running: $PROGRAM $CMD_ARGS
+echo \n
+info proc map
+echo \n
+echo siginfo:
+print $_siginfo
+echo si_addr:
+print $_siginfo._sifields._sigfault.si_addr
+echo \n
+bt full 512
+down-silently 512
+echo \n
+info registers
+echo \n
+x/i $pc
+echo \n
+disass
+quit

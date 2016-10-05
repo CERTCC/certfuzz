@@ -10,10 +10,10 @@ import os.path
 import platform
 import re
 
-from . import register
-from .output_parsers.cwfile import CWfile
-from . import Debugger
-from ..fuzztools import subprocess_helper as subp
+from certfuzz.debuggers.debugger_base import Debugger
+from certfuzz.debuggers.output_parsers.cwfile import CWfile
+from certfuzz.fuzztools import subprocess_helper as subp
+
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +28,12 @@ elif re.match('Darwin-12', myplatform):
     cwapp = 'exc_handler_mountain_lion'
 elif re.match('Darwin-13', myplatform):
     cwapp = 'exc_handler_mavericks'
+elif re.match('Darwin-14', myplatform):
+    cwapp = 'exc_handler_yosemite'
+elif re.match('Darwin-15', myplatform):
+    cwapp = 'exc_handler_elcapitan'
+elif re.match('Darwin-16', myplatform):
+    cwapp = 'exc_handler_sierra'
 else:
     cwapp = 'exc_handler'
 
@@ -37,8 +43,9 @@ class CrashWrangler(Debugger):
     _key = 'cw'
     _ext = 'cw'
 
-    def __init__(self, program, cmd_args, outfile, timeout, killprocname, template=None, exclude_unmapped_frames=True, **options):
-        super(CrashWrangler, self).__init__(program, cmd_args, outfile, timeout, killprocname)
+    def __init__(self, program, cmd_args, outfile, timeout, template=None, exclude_unmapped_frames=True, keep_uniq_faddr=False, **options):
+        Debugger.__init__(self, program, cmd_args, outfile, timeout)
+        self.keep_uniq_faddr = keep_uniq_faddr
 
     def _get_crashwrangler_cmdline(self):
         if (self.program == cwapp):
@@ -65,7 +72,7 @@ class CrashWrangler(Debugger):
         '''
         Generates CrashWrangler output for <cmd> into <logfile>.
         If crashwrangler fails to complete before <timeout>,
-        attempt to _kill crashwrangler and <killprocname>.
+        attempt to _kill crashwrangler and program.
         '''
         # build the command line in a separate function so we can unit test
         # it without actually running the command
@@ -74,16 +81,15 @@ class CrashWrangler(Debugger):
         # set up the environment for crashwrangler
         my_env = dict(os.environ)
         my_env['CW_LOG_PATH'] = self.outfile
+        my_env['CW_LOG_INFO'] = 'Found_with_CERT_BFF_2.8'
         my_env['CW_NO_CRASH_REPORTER'] = '1'
         if re.search('gmalloc', self.outfile):
             my_env['CW_USE_GMAL'] = '1'
 
-        subp.run_with_timer(args, self.timeout, self.killprocname, env=my_env)
+        subp.run_with_timer(args, self.timeout, self.program, env=my_env)
 
         # We're not guaranteed that CrashWrangler will create an output file:
         if not os.path.exists(self.outfile):
             open(self.outfile, 'w').close()
 
-        return CWfile(self.outfile)
-
-register(CrashWrangler)
+        return CWfile(self.outfile, keep_uniq_faddr=self.keep_uniq_faddr)

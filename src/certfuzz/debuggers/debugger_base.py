@@ -4,11 +4,16 @@ Created on Oct 23, 2012
 @organization: cert.org
 '''
 import logging
-from .registration import get_debug_file
-from .registration import result_fields, allowed_exploitability_values
-from .errors import DebuggerError
+
+from certfuzz.debuggers.errors import DebuggerError
+
 
 logger = logging.getLogger(__name__)
+
+result_fields = 'debug_crash crash_hash exp faddr output dbg_type'.split()
+allowed_exploitability_values = ['UNKNOWN', 'PROBABLY_NOT_EXPLOITABLE',
+                                 'PROBABLY_EXPLOITABLE', 'EXPLOITABLE']
+
 
 class Debugger(object):
     '''
@@ -18,16 +23,15 @@ class Debugger(object):
     _key = 'debugger'
     _ext = 'debug'
 
-    def __init__(self, program=None, cmd_args=None, outfile_base=None, timeout=None, killprocname=None, **options):
+    def __init__(self, program=None, cmd_args=None, outfile_base=None, timeout=None, **options):
         '''
         Default initializer for the base Debugger class.
         '''
         logger.debug('Initialize Debugger')
         self.program = program
         self.cmd_args = cmd_args
-        self.outfile = get_debug_file(outfile_base, self._ext)
+        self.outfile = '.'.join((outfile_base, self._ext))
         self.timeout = timeout
-        self.killprocname = killprocname
         self.input_file = ''
         self.debugger_output = None
         self.result = {}
@@ -49,7 +53,8 @@ class Debugger(object):
 
     def _validate_exploitability(self):
         if not self.result['exp'] in allowed_exploitability_values:
-            raise DebuggerError('Unknown exploitability value: %s' % self.result['exp'])
+            raise DebuggerError(
+                'Unknown exploitability value: %s' % self.result['exp'])
 
     def outfile_basename(self, basename):
         return '.'.join((basename, self.type))
@@ -85,3 +90,13 @@ class Debugger(object):
         to confirm whether the debugger is on the path.
         '''
         raise NotImplementedError
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        pass
+
+    @property
+    def extension(self):
+        return self._ext

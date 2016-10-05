@@ -1,9 +1,14 @@
 set disassembly-flavor intel
+set logging file $OUTFILE
+set logging on
 file $PROGRAM
 run $CMD_ARGS
 info proc map
 bt full 512
+down-silently 512
 info registers
 echo si_addr:
 print $_siginfo._sifields._sigfault.si_addr
+echo \n
+x/i $pc
 quit

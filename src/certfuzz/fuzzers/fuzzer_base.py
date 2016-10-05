@@ -3,17 +3,14 @@ Created on Feb 3, 2012
 
 @organization: cert.org
 '''
-import os
-import logging
 import StringIO
-import zipfile
 import collections
+import logging
+import os
+import zipfile
 
-from ..fuzztools.hamming import bytewise_hd, bitwise_hd
-from ..fuzztools.filetools import write_file
-from ..fuzztools.filetools import find_or_create_dir
-from ..helpers import log_object
-from .errors import FuzzerInputMatchesOutputError
+from certfuzz.fuzztools.filetools import find_or_create_dir, write_file
+from certfuzz.helpers.misc import log_object
 
 
 MAXDEPTH = 3
@@ -25,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 def logerror(func, path, excinfo):
     logger.warning('%s failed to remove %s: %s', func, path, excinfo)
+
 
 def is_fuzzable(x, exclude_list):
     '''
@@ -40,6 +38,7 @@ def is_fuzzable(x, exclude_list):
             return False
     return True
 
+
 class Fuzzer(object):
     '''
     The Fuzzer class is intended to be used as the parent class for actual
@@ -53,12 +52,11 @@ class Fuzzer(object):
     # child classes that are can set it themselves
     is_minimizable = False
 
-    def __init__(self, seedfile_obj, outdir_base, rng_seed, iteration, options):
+    def __init__(self, seedfile_obj, outdir_base, iteration, options):
         '''
         Parameters get converted to attributes.
         @param local_seed_path:
         @param fuzz_output_path:
-        @param rng_seed:
         @param iteration:
         @param options:
         '''
@@ -66,7 +64,7 @@ class Fuzzer(object):
         self.sf = seedfile_obj
         # TODO: rename tmpdir -> working_dir
         self.tmpdir = outdir_base
-        self.rng_seed = rng_seed
+        self.rng_seed = int(self.sf.md5, 16)
         self.iteration = iteration
         self.options = options
 
@@ -75,7 +73,7 @@ class Fuzzer(object):
         self.output_file_path = os.path.join(self.tmpdir, self.basename_fuzzed)
 
         self.input = None
-        self.fuzzed = None
+        self.output = None
         self.fuzzed_changes_input = True
         # Not all fuzzers use rangefinder. Default to None and
         # set it in child classes for those that do
@@ -101,13 +99,13 @@ class Fuzzer(object):
         else:
             outfile = self.output_file_path
 
-        if self.fuzzed:
-            write_file(self.fuzzed, outfile)
+        if self.output:
+            write_file(self.output, outfile)
         self.output_file_path = outfile
         return os.path.exists(outfile)
 
     def fuzz(self):
-        if not self.fuzzed:
+        if not self.output:
             self._prefuzz()
             self._fuzz()
             self._postfuzz()
@@ -124,7 +122,7 @@ class Fuzzer(object):
 #
 #        # throw an exception if for some reason we didn't fuzz the input
 #        # some fuzzers don't materially alter the file every time, e.g., swap
-#        if self.input == self.fuzzed:
+#        if self.input == self.output:
 #            raise FuzzerInputMatchesOutputError('Fuzz failed: input matches output')
 
     def _prefuzz(self):
@@ -144,11 +142,11 @@ class Fuzzer(object):
     def _fuzz(self):
         '''
         Override this method to implement your fuzzer. The seed file contents
-        are in self.input. Put the output into self.fuzzed.
+        are in self.input. Put the output into self.output.
         '''
         # disable fuzzed_changes_input since we're copying in -> out
         self.fuzzed_changes_input = False
-        self.fuzzed = self.input
+        self.output = self.input
 
     def _validate(self):
         '''
@@ -180,7 +178,7 @@ class MinimizableFuzzer(Fuzzer):
         try:
             tempzip = zipfile.ZipFile(inmemseed, 'r')
         except:
-            logger.warning('Bad zip file. Aborting.')
+            logger.warning('Bad zip file. Falling back to mutating container.')
             self.sf.is_zip = False
             inmemseed.close()
             return
@@ -189,14 +187,14 @@ class MinimizableFuzzer(Fuzzer):
         get info on all the archived files and concatentate their contents
         into self.input
         '''
-        self.input = bytearray()
+        self.zipinput = bytearray()
         logger.debug('Reading files from zip...')
         for i in tempzip.namelist():
             try:
                 data = tempzip.read(i)
             except:
                 # BadZipfile or encrypted
-                logger.warning('Bad zip file. Aborting.')
+                logger.warning('Bad zip file. Falling back to mutating container.')
                 self.sf.is_zip = False
                 tempzip.close()
                 inmemseed.close()
@@ -206,20 +204,22 @@ class MinimizableFuzzer(Fuzzer):
             # reconstruction
 
             # save compress type
-            self.saved_arcinfo[i] = (len(self.input), len(data),
+            self.saved_arcinfo[i] = (len(self.zipinput), len(data),
                                     tempzip.getinfo(i).compress_type)
-            self.input += data
+            self.zipinput += data
         tempzip.close()
         inmemseed.close()
+        # Zip processing went fine, so use the zip contents as self.input to fuzzer
+        self.input = self.zipinput
 
     def _postfuzz(self):
         if self.options.get('fuzz_zip_container') or not self.sf.is_zip:
             return
 
-        '''rebuild the zip file and put it in self.fuzzed
+        '''rebuild the zip file and put it in self.output
         Note: We assume that the fuzzer has not changes the lengths
         of the archived files, otherwise we won't be able to properly
-        split self.fuzzed
+        split self.output
         '''
 
         logger.debug('Creating in-memory zip with mutated contents.')
@@ -231,39 +231,17 @@ class MinimizableFuzzer(Fuzzer):
         source
         '''
         for name, info in self.saved_arcinfo.iteritems():
-            # write out fuzzed file
+            # write out output file
             if info[2] == 0 or info[2] == 8:
                 # Python zipfile only supports compression types 0 and 8
                 compressiontype = info[2]
             else:
                 logger.warning('Compression type %s is not supported. Overriding', info[2])
                 compressiontype = 8
-            tempzip.writestr(name, str(self.fuzzed[info[0]:info[0] + info[1]]),
+            tempzip.writestr(name, str(self.output[info[0]:info[0] + info[1]]),
                              compress_type=compressiontype)
         tempzip.close()
 
-        # get the byte string version of the archive and put in self.fuzzed
-        self.fuzzed = inmemzip.getvalue()
+        # get the byte string version of the archive and put in self.output
+        self.output = inmemzip.getvalue()
         inmemzip.close()
-
-#     def bitwise_hd(self):
-#         '''
-#         Convenience function that returns the bitwise hamming distance
-#         between input and fuzzed
-#         '''
-#         fuzzed = [chr(x) for x in self.fuzzed]
-#         return bitwise_hd(self.input, fuzzed)
-#
-#     def bytewise_hd(self):
-#         '''
-#         Convenience function that returns the bytewise hamming distance
-#         between input and fuzzed
-#         '''
-#         fuzzed = [chr(x) for x in self.fuzzed]
-#         return bytewise_hd(self.input, fuzzed)
-#
-#     def fuzzed_bit_ratio(self):
-#         return  self.bitwise_hd() / float(len(self.input) * 8)
-#
-#     def fuzzed_byte_ratio(self):
-#         return  self.bytewise_hd() / float(len(self.input))

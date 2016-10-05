@@ -1,8 +1,9 @@
-from . import MinimizableFuzzer
+from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
 from random import jumpahead, sample, uniform, seed
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class BitMutFuzzer(MinimizableFuzzer):
     '''
@@ -73,6 +74,6 @@ class BitMutFuzzer(MinimizableFuzzer):
         for idx, val in enumerate(self.input):
             self.input[idx] = mask[idx] ^ val
 
-        self.fuzzed = self.input
+        self.output = self.input
 
 _fuzzer_class = BitMutFuzzer

@@ -1,5 +1,18 @@
-CERT Failure Observation Engine (FOE)
+CERT Basic Fuzzing Framework for Windows (BFF)
+
+BFF for Windows was formerly known as CERT Failure Observation Engine (FOE)
+
 Significant changes
+
+BFF 2.8 (September 30, 2016)
+    
+  * Code changes:
+    - Rebranded FOE as BFF
+    - Improved feature parity across Linux, OS X, and Windows
+    - Simplified configuration
+    - Drillresults is automatically executed at fuzz-time
+    - Added updatebff.py tool
+    - Bug fixes
 
 FOE 2.1 (September 23, 2013)
 

@@ -1,8 +1,10 @@
 import logging
 
+from certfuzz.fuzzers.bytemut import ByteMutFuzzer
+
+
 logger = logging.getLogger(__name__)
 
-from .bytemut import ByteMutFuzzer
 
 class CRLFMutFuzzer(ByteMutFuzzer):
     '''

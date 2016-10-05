@@ -1,4 +1,4 @@
-The easiest way to get BFF up and running is to use the DebianFuzz
+The easiest way to get BFF up and running is to use the UbuFuzz
 virtual machine.  However, if this is not an option for you, it should
 possible to run BFF on any UNIX-like operating system, as long as the
 dependencies are met.
@@ -6,10 +6,11 @@ dependencies are met.
 ===== Dependencies =====
 
 For basic fuzzing functionality, the following packages are required:
-Python (2.6 or 2.7)
+Python 2.7
 Python Numpy
 Python Scipy
-gdb 7.1 or later
+Python Yaml
+gdb (7.2 or later on Linux is required for exploitability information)
 zzuf (patched by CERT)
 
 In order to build zzuf and the other BFF dependencies, the following
@@ -35,7 +36,7 @@ For the location of the scripts (including bff.py):
 ~/bff
 
 For the results:
-~/results
+~/bff/results
 
 The default fuzzing target of ImageMagick:
 ~/convert
@@ -50,7 +51,7 @@ Simply run ~/bff/batch.sh to start fuzzing.
 
 ===== Tuning the operating system =====
 
-DebianFuzz has several optimizations that improve fuzzing performance.
+UbuFuzz has several optimizations that improve fuzzing performance.
 If using your own operating system, you may wish to make the following
 changes:
 
@@ -76,23 +77,15 @@ changes:
   removed when an application is built.
   
   
-===== Example installation on Fedora 16 32-bit=====
+===== Example installation on Fedora 16 32-bit =====
 
 To install BFF on a Fedora 16 32-bit system, for example, the following steps
 can be performed:
 
 1) Install dependencies present in the package system:
-yum install numpy scipy valgrind svn automake libtool gcc-c++ ncurses-devel
+yum install numpy scipy python-yaml valgrind svn automake libtool gcc-c++ ncurses-devel
 
-2) Install libcaca, which is a dependency for building zzuf: 
-svn co svn://svn.zoy.org/caca/libcaca/trunk libcaca
-cd libcaca
-./bootstrap
-./configure
-make
-sudo make install
-
-3) Install the zzuf version patched by CERT:
+2) Install the zzuf version patched by CERT:
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 unzip zzuf-patched.zip
 cd zzuf-patched
@@ -101,26 +94,24 @@ cd zzuf-patched
 make
 sudo make install
 
-4) Install old ImageMagick version as default fuzz target:
+3) Install old ImageMagick version as default fuzz target:
 sudo yum groupinstall "X Software Development"
 sudo ln -sf /usr/include/asm/byteorder.h /usr/include/sys/byteorder.h
-wget http://downloads.sourceforge.net/project/imagemagick/old-sources/5.x/5.2/ImageMagick-5.2.0.tar.gz
-tar xzvf ImageMagick-5.2.0.tar.gz
-cd ImageMagick-5.2.0
+wget http://downloads.sourceforge.net/project/imagemagick/old-sources/5.x/5.3/ImageMagick-5.3.0.tar.gz
+tar xzvf ImageMagick-5.3.0.tar.gz
+cd ImageMagick-5.3.0
 ./configure
 make
 sudo make install
 
-5) Unzip BFF scripts:
+4) Unzip BFF scripts:
 mkdir ~/bff
-unzip scripts.zip -d ~/bff
+unzip BFF-2.8.zip -d ~/bff
 
-6) Configure symlinks
+5) Configure symlink
 ln -s /usr/local/bin/convert ~/convert
-ln -s ~/bff/scripts ~/bff
-ln -s ~/bff/results ~/results
 
-7) Start fuzzing
+6) Start fuzzing
 ~/bff/batch.sh
 
 -- System Performance Configurations for Fedora --
@@ -151,17 +142,9 @@ To install BFF on an Ubuntu 11.10 32-bit system, for example, the following step
 can be performed:
 
 1) Install dependencies present in the package system:
-sudo apt-get install python-numpy python-scipy valgrind subversion automake libtool build-essential libncurses5-dev
+sudo apt-get install python-numpy python-scipy python-yaml valgrind subversion automake libtool build-essential libncurses5-dev
 
-2) Install libcaca, which is a dependency for building zzuf: 
-svn co svn://svn.zoy.org/caca/libcaca/trunk libcaca
-cd libcaca
-./bootstrap
-./configure
-make
-sudo make install
-
-3) Install the zzuf version patched by CERT:
+2) Install the zzuf version patched by CERT:
 unzip zzuf-patched.zip
 cd zzuf-patched
 ./bootstrap
@@ -169,26 +152,24 @@ cd zzuf-patched
 make
 sudo make install
 
-4) Install old ImageMagick version as default fuzz target:
+3) Install old ImageMagick version as default fuzz target:
 sudo apt-get install libx11-dev libxt-dev
 sudo ln -sf /usr/include/i386-linux-gnu/asm/byteorder.h /usr/include/sys/byteorder.h
-wget http://downloads.sourceforge.net/project/imagemagick/old-sources/5.x/5.2/ImageMagick-5.2.0.tar.gz
-tar zxf ImageMagick-5.2.0.tar.gz
-cd ImageMagick-5.2.0
+wget http://downloads.sourceforge.net/project/imagemagick/old-sources/5.x/5.3/ImageMagick-5.3.0.tar.gz
+tar zxf ImageMagick-5.3.0.tar.gz
+cd ImageMagick-5.3.0
 ./configure
 make
 sudo make install
 
-5) Unzip BFF scripts:
+4) Unzip BFF scripts:
 mkdir ~/bff
-unzip scripts.zip -d ~/bff
+unzip BFF-2.8.zip -d ~/bff
 
-6) Configure symlinks
+5) Configure symlink
 ln -s /usr/local/bin/convert ~/convert
-ln -s ~/bff/scripts ~/bff
-ln -s ~/bff/results ~/results
 
-7) Start fuzzing
+6) Start fuzzing
 ~/bff/batch.sh
 
 -- System Performance Configurations for Ubuntu --
@@ -221,15 +202,7 @@ can be performed:
 sudo zypper ar -f 'http://download.opensuse.org/repositories/devel:/languages:/python/openSUSE_12.1/' python
 sudo zypper install python-numpy python-scipy valgrind subversion automake libtool gcc-c++ ncurses-devel make
 
-2) Install libcaca, which is a dependency for building zzuf: 
-svn co svn://svn.zoy.org/caca/libcaca/trunk libcaca
-cd libcaca
-./bootstrap
-./configure
-make
-sudo make install
-
-3) Install the zzuf version patched by CERT:
+2) Install the zzuf version patched by CERT:
 unzip zzuf-patched.zip
 cd zzuf-patched
 ./bootstrap
@@ -237,26 +210,24 @@ cd zzuf-patched
 make
 sudo make install
 
-4) Install old ImageMagick version as default fuzz target:
+3) Install old ImageMagick version as default fuzz target:
 sudo zypper install xorg-x11-devel
 sudo ln -sf /usr/include/asm/byteorder.h /usr/include/sys/byteorder.h
-wget http://downloads.sourceforge.net/project/imagemagick/old-sources/5.x/5.2/ImageMagick-5.2.0.tar.gz
-tar xzvf ImageMagick-5.2.0.tar.gz
-cd ImageMagick-5.2.0
+wget http://downloads.sourceforge.net/project/imagemagick/old-sources/5.x/5.3/ImageMagick-5.3.0.tar.gz
+tar xzvf ImageMagick-5.3.0.tar.gz
+cd ImageMagick-5.3.0
 ./configure
 make
 sudo make install
 
-5) Unzip BFF scripts:
+4) Unzip BFF scripts:
 mkdir ~/bff
-unzip scripts.zip -d ~/bff
+unzip BFF-2.8.zip -d ~/bff
 
-6) Configure symlinks
+5) Configure symlink
 ln -s /usr/local/bin/convert ~/convert
-ln -s ~/bff/scripts ~/bff
-ln -s ~/bff/results ~/results
 
-7) Start fuzzing
+6) Start fuzzing
 ~/bff/batch.sh
 
 -- System Performance Configurations for Fedora --
@@ -279,3 +250,21 @@ sudo zypper install fluxbox
   (Cick the following options and ensure they are not selected to disable them:)
     (Focus New Windows)
     (Auto Raise)
+    
+    
+===== Installation on other platforms =====
+
+BFF should run on any UNIX-like operating system. Depending on the features
+supported by the OS, certain BFF capabilities may not be available. For
+example, CERT Triage Tools exploitability determination only functions on
+Linux.
+
+The minimum requirements to be able to run BFF are:
+Python 2.7
+Python Numpy
+Python Scipy
+Python Yaml
+gdb (7.2 or later on Linux is required for exploitability information)
+zzuf (patched by CERT)
+
+Patches may be required to get zzuf compiled on non-Linux systems.

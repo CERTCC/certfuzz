@@ -14,7 +14,7 @@ mydir = os.path.dirname(os.path.abspath(__file__))
 parentdir = os.path.abspath(os.path.join(mydir, '..'))
 sys.path.append(parentdir)
 
-import bff
+import certfuzz.bff.linux as bff
 
 class Mock(object):
     def __init__(self):
@@ -35,23 +35,23 @@ class Test(unittest.TestCase):
         pass
     def tearDown(self):
         pass
-    def test_get_rate(self):
-        bff.SEED_TS = Mock()
-        bff.SEED_TS.since_start = lambda: 1.0
-        for i in range(100):
-            self.assertEqual(float(i / 1.0), bff.get_rate(i))
-
-    def test_get_uniq_logger(self):
-        logfile = tempfile.mktemp()
-        ulog = bff.get_uniq_logger(logfile)
-        self.assertEqual('Logger', ulog.__class__.__name__)
-        self.assertEqual(0, os.path.getsize(logfile))
-        msg = 'foo'
-        ulog.warning(msg)
-        # length is msg + a carriage return
-        self.assertEqual(len(msg) + 1, os.path.getsize(logfile))
-        os.remove(logfile)
-        self.assertFalse(os.path.exists(logfile))
+#    def test_get_rate(self):
+#        bff.SEED_TS = Mock()
+#        bff.SEED_TS.since_start = lambda: 1.0
+#        for i in range(100):
+#            self.assertEqual(float(i / 1.0), bff.get_rate(i))
+#
+#    def test_get_uniq_logger(self):
+#        logfile = tempfile.mktemp()
+#        ulog = bff.get_uniq_logger(logfile)
+#        self.assertEqual('Logger', ulog.__class__.__name__)
+#        self.assertEqual(0, os.path.getsize(logfile))
+#        msg = 'foo'
+#        ulog.warning(msg)
+#        # length is msg + a carriage return
+#        self.assertEqual(len(msg) + 1, os.path.getsize(logfile))
+#        os.remove(logfile)
+#        self.assertFalse(os.path.exists(logfile))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_load_obj_from_file']

@@ -1,0 +1,184 @@
+!define VMWARN_TXT "vmwarning.txt"
+!define MAIN_APP_EXE "cmd.exe"
+!define INSTALL_TYPE "SetShellVarContext all"
+!define REG_ROOT "HKLM"
+!define UNINSTALL_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
+
+!define REG_START_MENU "Start Menu Folder"
+
+var SM_Folder
+var PYTHON27_DIR
+var FUZZ_IMAGEMAGICK
+var INSTALLERDIR
+var DEBUGGER
+var WIN64
+var DEBUGDIR
+var DEFAULT_PYTHON
+var VCR
+var VC2010_INSTALLED
+var NEED_PYTHON
+var NEED_NUMPY
+var NEED_SCIPY
+var NEED_PYYAML
+var NEED_PYWIN32
+var NEED_WMI
+var NEED_DEBUGGER
+var NEED_VC2010
+var DEPS
+var DOWNLOAD_OK
+var DEPS_OK
+var DEP_MISSING
+
+
+######################################################################
+
+VIProductVersion  "${VERSION}"
+VIAddVersionKey "ProductName"  "${APP_NAME}"
+VIAddVersionKey "CompanyName"  "${COMP_NAME}"
+VIAddVersionKey "LegalCopyright"  "${COPYRIGHT}"
+VIAddVersionKey "FileDescription"  "${DESCRIPTION}"
+VIAddVersionKey "FileVersion"  "${VERSION}"
+
+######################################################################
+
+SetCompressor LZMA
+Name "${APP_NAME}"
+Caption "${APP_NAME}"
+OutFile "${INSTALLER_NAME}"
+BrandingText "${APP_NAME}"
+XPStyle on
+InstallDirRegKey "${REG_ROOT}" "${REG_APP_PATH}" ""
+InstallDir "C:\BFF"
+!define MUI_ICON "cert.ico"
+
+######################################################################
+
+!include "MUI.nsh"
+!include "EnvVarUpdate.nsh"
+!include WinVer.nsh
+
+!define MUI_ABORTWARNING
+!define MUI_UNABORTWARNING
+
+!insertmacro MUI_PAGE_WELCOME
+
+!ifdef LICENSE_TXT
+!insertmacro MUI_PAGE_LICENSE "${LICENSE_TXT}"
+!endif
+
+!ifdef VMWARN_TXT
+!insertmacro MUI_PAGE_LICENSE "${VMWARN_TXT}"
+!endif
+
+!ifdef REG_START_MENU
+!define MUI_STARTMENUPAGE_NODISABLE
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "BFF"
+!define MUI_STARTMENUPAGE_REGISTRY_ROOT "${REG_ROOT}"
+!define MUI_STARTMENUPAGE_REGISTRY_KEY "${UNINSTALL_PATH}"
+!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${REG_START_MENU}"
+!insertmacro MUI_PAGE_STARTMENU Application $SM_Folder
+!endif
+
+!insertmacro MUI_PAGE_INSTFILES
+
+!define MUI_FINISHPAGE_RUN
+!define MUI_FINISHPAGE_RUN_FUNCTION "LaunchBFF"
+!define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
+!insertmacro MUI_PAGE_FINISH
+
+Function .onInit
+    # Check if running on 64-bit OS.  
+    # $0=1 : x64
+    # $0=0 : x86
+    System::Call "kernel32::GetCurrentProcess() i .s"
+    System::Call "kernel32::IsWow64Process(i s, *i .r0)"
+    StrCpy $WIN64 $0
+    
+    ${IfNot} ${AtLeastWinXP}
+        MessageBox MB_OK "Windows XP or above is required."
+        Quit
+    ${EndIf}
+    ${If} ${IsWinXP}
+       ${If} $WIN64 == 1
+           ${IfNot} ${AtLeastServicePack} 1
+                MessageBox MB_OK "Windows XP x64 SP1 is required."
+                Quit
+           ${EndIf}
+       ${Else}
+           ${IfNot} ${AtLeastServicePack} 3
+                MessageBox MB_OK "Windows XP SP3 is required."
+                Quit
+           ${EndIf}       
+       ${EndIf}
+    ${ElseIf} ${IsWin2003}
+       ${IfNot} ${AtLeastServicePack} 1
+            MessageBox MB_OK "Windows 2003 SP1 is required."
+            Quit
+       ${EndIf}    
+    ${EndIf}
+FunctionEnd
+
+Function LaunchBFF
+    ${If} $FUZZ_IMAGEMAGICK == "Y"
+      #CopyFiles "$INSTDIR\seedfiles\examples\*.*" "$INSTDIR\seedfiles"
+      ExecShell "open" "results\convert_v5.5.7\"
+      sleep 2000
+      BringToFront
+        Exec '"cmd.exe" /k @echo off & set PATH=%PATH%;$DEBUGDIR& @echo on & cd $INSTDIR & bff.py'
+    ${Else}
+        Exec '"cmd.exe" /k @echo off & set PATH=%PATH%;$DEBUGDIR& @echo on & cd $INSTDIR & echo Edit configs\bff.yaml and run bff.py to start fuzzing & echo See readme.txt for documentation & bff.py -h'
+    ${EndIf}
+FunctionEnd
+
+!insertmacro MUI_UNPAGE_CONFIRM
+
+!insertmacro MUI_UNPAGE_INSTFILES
+
+!insertmacro MUI_UNPAGE_FINISH
+
+!insertmacro MUI_LANGUAGE "English"
+
+#!macro IfKeyExists ROOT MAIN_KEY KEY
+#push $R0
+#push $R1
+# 
+#!define Index 'Line${__LINE__}'
+# 
+#StrCpy $R1 "0"
+# 
+#"${Index}-Loop:"
+#; Check for Key
+#EnumRegKey $R0 ${ROOT} "${MAIN_KEY}" "$R1"
+#StrCmp $R0 "" "${Index}-False"
+#  IntOp $R1 $R1 + 1
+#  StrCmp $R0 "${KEY}" "${Index}-True" "${Index}-Loop"
+# 
+#"${Index}-True:"
+#;Return 1 if found
+#push "1"
+#goto "${Index}-End"
+# 
+#"${Index}-False:"
+#;Return 0 if not found
+#push "0"
+#goto "${Index}-End"
+# 
+#"${Index}-End:"
+#!undef Index
+#exch 2
+#pop $R0
+#pop $R1
+#!macroend
+
+
+
+
+######################################################################
+
+Section -MainProgram
+
+System::Call "kernel32::GetCurrentDirectory(i ${NSIS_MAX_STRLEN}, t .r0)"
+StrCpy $INSTALLERDIR $0
+
+${INSTALL_TYPE}
+SetOverwrite on

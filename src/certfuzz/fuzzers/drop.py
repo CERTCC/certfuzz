@@ -1,14 +1,13 @@
 """
 """
-from . import Fuzzer
-from . import FuzzerError
-from . import FuzzerExhaustedError
 import logging
+
+from certfuzz.fuzzers.fuzzer_base import Fuzzer
+from certfuzz.fuzzers.errors import FuzzerExhaustedError
+
 
 logger = logging.getLogger(__name__)
 
-class DropFuzzerError(FuzzerError):
-    pass
 
 class DropFuzzer(Fuzzer):
     '''
@@ -17,7 +16,7 @@ class DropFuzzer(Fuzzer):
     '''
     def _fuzz(self):
         '''
-        Drop individual bytes of input and put output in self.fuzzed
+        Drop individual bytes of input and put output in self.output
         '''
 
         # TODO: add range list support to drop fuzzer
@@ -35,11 +34,11 @@ class DropFuzzer(Fuzzer):
         if byte_pos < len(bytes_to_fuzz):
             del self.input[byte_pos]
         else:
-            #indicate we didn't fuzz the file for this iteration
+            # indicate we didn't fuzz the file for this iteration
             raise FuzzerExhaustedError('Iteration exceeds available values')
 
         logger.debug('%s - dropped byte 0x%02x', self.sf.basename, byte_pos)
 
-        self.fuzzed = self.input
+        self.output = self.input
 
 _fuzzer_class = DropFuzzer

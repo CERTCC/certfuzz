@@ -5,22 +5,22 @@ Created on Aug 5, 2011
 '''
 import platform
 import os.path
+from certfuzz.analyzers.analyzer_base import Analyzer
 
 _platforms = ['Darwin']
 _platform_is_supported = platform.system() in _platforms
 
-from . import Analyzer
-
 
 OUTFILE_EXT = "gmalloc"
 get_file = lambda x: '%s.%s' % (x, OUTFILE_EXT)
+
 
 class CrashWranglerGmalloc(Analyzer):
     '''
     classdocs
     '''
 
-    def __init__(self, cfg, crash):
+    def __init__(self, cfg, testcase):
         '''
         Constructor
         '''
@@ -29,10 +29,10 @@ class CrashWranglerGmalloc(Analyzer):
         elif not os.path.isfile('/usr/lib/libgmalloc.dylib'):
             return None
 
-        outfile = get_file(crash.fuzzedfile.path)
-        timeout = cfg.debugger_timeout
+        outfile = get_file(testcase.fuzzedfile.path)
+        timeout = cfg['runner']['runtimeout']
 
-        super(CrashWranglerGmalloc, self).__init__(cfg, crash, outfile, timeout)
+        Analyzer.__init__(self, cfg, testcase, outfile, timeout)
 
     def go(self):
         if not _platform_is_supported:
@@ -44,4 +44,4 @@ class CrashWranglerGmalloc(Analyzer):
         args = self.cmdargs[1:]
 
         from ..debuggers.crashwrangler import CrashWrangler
-        CrashWrangler(prg, args, self.outfile, self.timeout, self.killprocname).go()
+        CrashWrangler(prg, args, self.outfile, self.timeout, self.progname).go()

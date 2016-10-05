@@ -1,4 +1,4 @@
-CERT Basic Fuzzing Framework (BFF) 2.7
+CERT Basic Fuzzing Framework (BFF) 2.8
 
 ===== Change Log =====
 
@@ -7,8 +7,11 @@ See the NEWS file for changes
 
 ===== Requirements =====
 
-UbuFuzz requires VMWare Workstation 7 or later, or compatible
+The UbuFuzz VM requires VMWare Workstation 7 or later, or compatible
 virtualization software.
+If you are using virtualization software other than VMWare, then you must
+create your own virtual machine that uses the existing vmdk disk file.
+
 The OS X installer requires Snow Leopard or later. Xcode Tools is
 recommended, which provides libgmalloc (Guard Malloc).
 
@@ -16,14 +19,14 @@ recommended, which provides libgmalloc (Guard Malloc).
 ===== Demo Quick Start =====
 
 UbuFuzz:
-1) Unzip BFF-2.7.zip to c:\fuzz or another folder to be shared as "fuzz"
-2) Unzip UbuFuzz-2.7.zip
+1) Unzip BFF-2.8.zip to c:\fuzz or another folder to be shared as "fuzz"
+2) Unzip UbuFuzz-2.8.zip
 3) Open UbuFuzz.vmx
-4) Create a snapshot in VMWare
+4) Create a VM snapshot
 5) Power on the VM
 
 If you do not wish to use a shared folder, simply remove ~/bff
-and unzip BFF-2.7.zip to the ~/bff directory.
+and unzip BFF-2.8.zip to the ~/bff directory.
 
 OS X:
 1) Install BFF
@@ -50,7 +53,7 @@ VMX. If you chose to unzip scripts.zip to a folder other than
 c:\fuzz, then you will need to modify the properties of the
 shared folder in VMWare to point to the new location of the
 files. Alternatively, if you may unzip the BFF scripts into 
-~/bff if you do not wish to use a dhared folder.
+~/bff in the guest OS if you do not wish to use a dhared folder.
 
 The fuzzing virtual machine is preconfigured to automatically
 begin a fuzzing run on several image format decoders provided 
@@ -60,6 +63,10 @@ with debug symbols as well as non-optimized. This makes gdb
 provide more useful crash reports. ImageMagick was configured 
 using the following command:
 CFLAGS="-g -O0" ./configure --without-x
+
+It is recommended to perform fuzzing with virtual network disabled
+to prevent the fuzzing target and/or debugger from communicating
+unnecessarily.
 
 
 ===== Analyzing results =====
@@ -77,64 +84,52 @@ unique crashes. Each unique crash will be placed in the
 configured output directory.
 
 results/
-|-- bff.cfg
-|-- bff.log
-|-- crashers
-|   |-- <crash_id>
-|   |   |-- <crash_id>.log
-|   |   |-- <analysis_tools>.stderr
-|   |   |-- minimizer_log.txt
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>-minimized.<seedfile_ext>
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>-minimized.<seedfile_ext>.callgrind
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>-minimized.<seedfile_ext>.callgrind.annotated
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>-minimized.<seedfile_ext>.callgrind.calltree
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>-minimized.<seedfile_ext>.gdb
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>-minimized.<seedfile_ext>.stderr
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>-minimized.<seedfile_ext>.valgrind
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>.<seedfile_ext>
-|   |   |-- sf_<seedfile_md5>-<zzuf_seed_number>.<seedfile_ext>.gdb
-|   |   `-- sf_<seedfile_md5>.<seedfile_ext>
-|-- seeds
-|   |-- <seedfile1_md5>
-|   |   `-- zzuf_log.txt
-|   |-- <seedfile2_md5>
-|   |   `-- zzuf_log.txt
-|   |-- seedfile_set.log
+|-- <target_id>
+|   |-- crashers
+|   |   |-- <exploitability>
+|   |   |   |-- <crash_id>
+|   |   |   |   |-- <analysis_tools>.stderr
+|   |   |   |   |-- minimizer_log.txt
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.callgrind
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.callgrind.annotated
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.callgrind.calltree
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.drillresults
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.gdb
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.stderr
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>-minimized.<seedfile_ext>.valgrind
+|   |   |   |   |-- sf_<seedfile_md5>-<bff_iteration_number>.<seedfile_ext>
+|   |   |   |   `-- sf_<seedfile_md5>.<seedfile_ext>
+|   |-- seedfiles
 |   |-- sf_<seedfile1_md5>.<seedfile1_ext>
 |   |-- sf_<seedfile2_md5>.<seedfile2_ext>
 `-- uniquelog.txt
 
-The UbuFuzz startup script, batch.sh, looks for the BFF code 
-in /home/fuzz/bff, which by default is a soft link to the VMWare
-shared folder /mnt/hgfs/fuzz. The default results location is
-/home/fuzz/results, which in the UbuFuzz vm is a soft link to
-/home/fuzz/bff/results (thus /mnt/hgfs/fuzz/results). Either
-of these soft links can be changed if desired, or you can edit
-conf.d/bff.cfg to point BFF at a different destination.
+The UbuFuzz startup script, batch.sh, looks for the bff.py script
+in the same directory, which by default is a soft link to the VMWare
+shared folder /mnt/hgfs/fuzz. 
 
-BFF will copy its configuration to results/bff.cfg, and will
-log messages of level INFO or higher into results/bff.log. The
-config file copied here is just for recording purposes, another
-copy is made in /home/fuzz and it is this copy of the file that 
-actually gets used by BFF.
+BFF will copy its configuration to results/<target_id>/bff.yaml, and will
+log messages of level INFO or higher into log/bff.log. The
+config file copied here is just for recording purposes.
 
 Additionally the following subdirectories are created in the
-results dir:
+results dir, in the <target_id> subdirectory:
 * crashers: Contains a subdir for each uniquely-crashing test 
 case and its analyzed results
 * seeds: Contains the original seedfiles as well as logs specific
 to that seedfile
 
 Other files of note:
-results/uniquelog.txt
+results/<target_id>/uniquelog.txt
    a log file that tracks the unique crashers found during the run
 
-The "results/crashers" directory will contain the uniquely-crashing 
+The "results/<target_id>/crashers" directory will contain the uniquely-crashing 
 test cases. The variants that have crashed the target application
-will be stored here with the zzuf seed number appended to the
+will be stored here with the BFF iteration number appended to the
 seed file name. For each uniquely-crashing case, there will also
-be a .stderr, .gdb, .callgrind and .valgrind file that contains
-the stderr, gdb, callgrind and valgrind output for that case,
+be a .stderr, .gdb, .drillresults, .callgrind and .valgrind file that contains
+the stderr, gdb, drillresults, callgrind and valgrind output for that case,
 respectively.
 
 The CERT BFF minimizes crashers. In other words, each crashing
@@ -163,10 +158,10 @@ rest were all masked out with a fixed value, say "x" (0x78)? Then you'd know
 that if you saw EIP=0x78787878, you may already be a winner. The 
 minimize-to-string option does just that.
 To get command-line usage of the minimizer, run:
-tools\minimize.py --help
+tools/minimize.py --help
 
 To minimize a crashing testcase to the Metasploit string pattern, run:
-tools\minimize.py --stringmode <crashing_testcase>
+tools/minimize.py --stringmode <crashing_testcase>
 
 When minimizing to the Metasploit pattern, FOE will use the resulting byte map
 to create an additional minimized file that uses a string of 'x' characters. 
@@ -177,9 +172,9 @@ Metasploit pattern enumeration:
 Especially with larger files, you may notice that the Metasploit pattern
 repeats several times over the length of a Metasploit-minimized crasher.
 Given any particular dword, it may not be obvious which instance is the one
-that you are dealing with. This is where the tools\mtsp_enum.py script comes
+that you are dealing with. This is where the tools/mtsp_enum.py script comes
 in handy. For example, let's say that you have a crasher.doc were EIP = "Aa0A"
-If you run: tools\mtsp_enum.py Aa0A crasher.doc
+If you run: tools/mtsp_enum.py Aa0A crasher.doc
 You will end up with a file called crasher-enum.doc.  With this file, every 
 instance of the byte pattern "Aa0A" will be replaced with a unique, 
 incrementing replacement. For example, "0a0A", "1a0A", "2a0A", etc. Now when
@@ -229,21 +224,40 @@ same command-line parameters as configure for the fuzzing
 campaign. This can be used to test crashing testcases 
 interactively.
 
+tools/zipdiff.py can be used to compare zip-based files.
+
+tools/debuggerfile.py will parse GDB output to create a hash that uniquely
+identifies the crash.
+
+tools/copycrashers.py to collect all of the crashing cases
+from a campaign. By default it will copy all of the uniquely-crashing 
+test cases to the "seedfiles" directory, which should be empty.
+
+
+===== Updating BFF =====
+
+BFF includes a script to update itself using the code present on GitHub
+<https://github.com/CERTCC-Vulnerability-Analysis/certfuzz>
+
+tools/updatebff.py
+
+This script will first attempt to use GitPython to retrieve updates. If this 
+package is not available, it will fall back to using the system-wide installed
+git binary. Finally, if git is not available, it will fall back to using
+python urllib.
+
+Note that urllib does not support retrieving HTTPS URIs through a proxy. If
+your machines are behind a proxy, you must have either GitPython or git
+installed to use the updatebff.py script.
+
+
 ===== Fuzzing on your own =====
 
 When the UbuFuzz VM is powered on, it will automatically
 execute the batch.sh script in the VMWare shared folder. In order
 to power on the virtual machine without it beginning a fuzzing
 campaign, you should rename batch.sh.  This will allow you to
-power on the virtual machine to install the target software. Once
-BFF has started a fuzzing run, it will copy bff.cfg to the
-/home/fuzz directory in the virtual machine. This configuration 
-file will be used for subsequent fuzzing runs, rather than the 
-copy in the shared folder.  This is why it is important to make 
-a snapshot of the VM in its clean state.  If you wish to reset 
-a fuzzing machine to a clean state, e.g. to start a new fuzzing 
-campaign or if you've change fuzzing parameters or seed files,
-you should run the ~/bff/reset_bff.sh script.
+power on the virtual machine to install the target software. 
 
 The first step to beginning a fuzzing run is to obtain and
 install the target software. Usually this process will involve
@@ -252,18 +266,20 @@ version of it. Rather than using Ubuntu's package repository,
 this will ensure that you will be fuzzing the latest version of
 the target application. It will also give you the ability to have
 debug symbols, as well as the ability to use a non-optimized
-build if you like.
+build if you like. When compiling the target application, be sure
+that the "-g" flag is used with your compiler. This ensures that debug
+information is added to the target application.
 
 Create a new snapshot of the VM after the target software has
 been installed.
 
-The bff.cfg file contains all of the parameters for the fuzzing
+The configs/bff.yaml file contains all of the parameters for the fuzzing
 run.  This file must be edited to suit the software that you will
-be fuzzing. The bff.cfg file is annotated and should be
+be fuzzing. The bff.yaml file is annotated and should be
 relatively self-explanatory.
 
-The default bff.cfg file will start a fuzzing run that invokes:
-convert $SEEDFILE /dev/null
+The default bff.yaml file will start a fuzzing run that invokes:
+~/convert $SEEDFILE /dev/null
 
 This will use ImageMagick's "convert" program to process the seed
 file, outputting to /dev/null. Because BFF will mangle the seed
@@ -287,45 +303,27 @@ hash for the crash. We have found this value to be effective for
 most applications, however you can adjust the value to fit your
 needs.
 
-Another important bff.cfg option is the "copymode" setting. By
-default, zzuf will use LD_PRELOAD to hook into an application to
-perform input mangling and intercept signals. In some cases, the
-target application will not behave properly in this mode. The
-file may fail to be mangled, or the target application may fail
-to run properly at all. If this is the case, set "copymode" to 1
-and zzuf will create a temporary file and then open that file
-with the target application.  Most OS X applications require copy
-mode, so the default bff.cfg provided on OS X will default to this
-mode.
-
-There are several options within bff.cfg related to application
-timeouts.  "progtimeout" is the maximum time that BFF will allow
+There are several options within bff.yaml related to application
+timeouts.  "runtimeout" is the maximum time that BFF will allow
 a single invocation of the target application to run before
 terminating it. In the case of the "convert" component of
 ImageMagick, it is reasonable to expect the program to finish
-within a few seconds.  Depending on the application you are
+within a few seconds. Depending on the application you are
 fuzzing, this value will need to be adjusted. Especially with GUI
 applications, the goal is to allow the application to run long
 enough to process the input file, but not so long that the
 application is sitting idle for an amount of time for each
-invocation. The "killprocname" and "killproctimeout" options are
-used for the external process killer. When running some analyzers, 
-the application that you are fuzzing may be left running after 
-the analyzer is terminated. The external process killer 
-(killproc.sh) is a script that polls running processes and makes 
-sure that no single instance of the specified application is 
-allowed to run for longer than the specified time.
+invocation. 
 
-Once you have configured the options in bff.cfg, power on the
+Once you have configured the options in bff.yaml, power on the
 UbuFuzz VM. It should begin fuzzing automatically. If the
 target is a GUI application, you should see the application
 launch repeatedly as it is being fuzzed. If it is a command-line
-application, you should notice increased CPU usage in the top
-window. The first seed_interval that BFF executes will also
-display stderr to the terminal window to let you see if something
+application, you should notice increased CPU usage in the htop
+window. The first iteration that BFF executes will also display
+stdout and stderr to the terminal window to let you see if something
 is obviously wrong. If you need to tweak your settings, such as
 by using a smaller progtimeout value to improve throughput, you
-can edit the bff.cfg file and restore the VM to its previous
+can edit the bff.yaml file and restore the VM to its previous
 snapshot. Alternatively, you can run ~/bff/reset_bff.sh and
-restart X to cause the VM to re-read the shared bff.cfg file and
-start fuzzing again.
+restart ~/bff/batch.sh to start fuzzing again.

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-xterm=`which xterm`
 cd ~/bff
 platform=`uname -a`
 if [[ "$platform" =~ "Darwin" ]]; then
@@ -12,26 +11,22 @@ clear
 echo -e "***** Welcome to the CERT BFF! *****\n\n"
 echo "Working directory: $PWD"
 
+# TODO: This logic needs to change / be fixed
 if [[ -f ~/fuzzing/bff.log ]]; then
-  currentcfg=~/bff.cfg
+  currentcfg=~/bff.yaml
   echo -e "\n--- Resuming fuzzing campaign ...  ---"
   echo -e "--- Run ./reset_bff.sh to start a new fuzzing campaign ---\n"
 else
-  currentcfg=conf.d/bff.cfg
+  currentcfg=configs/bff.yaml
   echo "Using configuration file: $currentcfg"
 fi
 
-echo "Target commandline: " `egrep -m1 '^cmdline' $currentcfg | sed 's/^cmdline=//'`
-echo "Output directory: " `egrep -m1 '^output_dir' $currentcfg | sed 's/output_dir=//'`
-echo "Please see the README file for details on use.
+program=`egrep -m1 '^    program:' $currentcfg | sed 's/^    program://' | sed 's/\\r//'`
+echo "Target commandline: " `egrep -m1 '^    cmdline' $currentcfg | sed 's/^    cmdline_template://' | sed "s|"'$PROGRAM'"|$program|"`
+echo -e "Output directory: " `egrep -m1 '^    results_dir' $currentcfg | sed 's/^    results_dir://' | sed 's/\\r//'` "\n\n"
 
-"
-
-if [[ -n "$xterm" ]]; then
-    echo "Run ./batch.sh to begin fuzzing.
-"
-elif [[ "$platform" =~ "Darwin" ]]; then
-    echo "X is not detected. Please install X before running BFF
-See: https://support.apple.com/kb/HT5293
-"
+if [[ "$platform" =~ "Darwin" ]]; then
+    echo -e "Run ./batch.sh to begin fuzzing.\n"
+else
+    echo -e "BFF should start fuzzing automatically via ~/bff/batch.sh\n"
 fi

@@ -3,10 +3,10 @@ when called with an ACCESS_VIOLATION return code as a signal to the main
 fuzzer that an exception occurred.
 
 """
-import sys
 from ctypes import windll, byref
 from ctypes.wintypes import HANDLE, BOOL, LPCWSTR
-import time
+import sys
+
 
 def main(pid=None):
     PROCESS_TERMINATE = 0x0001

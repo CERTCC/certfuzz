@@ -1,0 +1,212 @@
+##############################################################################
+#
+# This file specifies the options that BFF will use to fuzz
+#   Comments are specified by the "#" character
+#
+##############################################################################
+# FUZZ CAMPAIGN SETTINGS
+#
+# id:
+# used for identifying campaign, placement of results
+#
+##############################################################################
+campaign:
+    id: convert v5.2.0
+
+
+##############################################################################
+# TARGET APPLICATION INVOCATION OPTIONS:
+#
+# program: 
+# Full path to fuzzing target executable
+#
+# cmdline_template: 
+# Used to specify the command-line invocation of the target
+#
+# Command-line arguments will be split using python shlex.split() so
+# be sure to add quotes where needed
+# $SEEDFILE will be replaced at runtime with the appropriate
+# seed file name.
+# Use quotes if the target application has spaces in the path
+#
+##############################################################################
+target:
+    program: ~/convert
+    cmdline_template: $PROGRAM $SEEDFILE /dev/null
+
+
+##############################################################################
+# LOCATIONS FOR FUZZ RUN FILES:
+#
+# seedfile_dir: 
+# Location of seed files (relative to bff.py)
+#
+# working_dir: 
+# Temporary directory used by BFF. Use a ramdisk to reduce disk activity
+#
+# results_dir: 
+# Location of fuzzing results (relative to bff.py)
+#
+# If results are stored in a shared location, 
+# this directory needs to be unique for each fuzzing machine
+#
+##############################################################################
+
+directories:
+    seedfile_dir: seedfiles/examples
+    working_dir: ~/fuzzing
+    results_dir: results
+
+##############################################################################
+# RUNNER OPTIONS
+#
+# runtimeout:
+# maximum program execution time (seconds) that BFF will the target to execute
+#
+##############################################################################
+runner:
+    runtimeout: 5
+    
+
+##############################################################################
+# DEBUGGER OPTIONS
+#
+# backtracelevels:
+# Number of backtrace frames to hash for uniqueness
+# Increase this number for more crash uniqueness granularity.
+# Decrease this number if you think that you are getting too many duplicate
+# crashes.
+#
+##############################################################################
+debugger:
+    backtracelevels: 5
+    
+    
+##############################################################################
+# FUZZ CAMPAIGN OPTIONS
+#
+# first_iteration:
+# Iteration number to begin campaign on
+#
+# seed_interval:
+# Number of times to mutate a seed file before moving to the next
+#
+# minimize:
+# True: Create a file that is minimally-different than the seed file, yet crashes
+# with the same hash
+# string: Create a file that is mostly 'x' (0x78) characters, yet crashes with
+# the same hash
+# False: Don't minimize
+#
+# minimizer_timeout:
+# The maximum amount of time that BFF will spend on a minimization run before
+# giving up
+#
+# recycle_crashers:
+# Recycle uniquely-crashing testcases into the pool of available seed files
+# to fuzz
+#
+# watchdogtimeout:
+# Number of seconds that if exceeded, the watchdog will restart the fuzzing
+# machine. Set to 0 to disable watchdog functionality.
+#
+##############################################################################
+runoptions:
+    first_iteration: 0
+    seed_interval: 5
+    minimize: True
+    minimizer_timeout: 3600
+    keep_unique_faddr: False
+    keep_duplicates: False
+    recycle_crashers: False
+    watchdogtimeout: 3600
+    
+    
+###################################################################################
+# FUZZER OPTIONS
+#
+# ** Note that only one fuzzer can be selected per campaign **
+#
+# bytemut: 
+# replace bytes with random values
+#
+# swap: 
+# swap adjacent bytes
+#
+# wave: 
+# cycle through every possible single-byte value, sequentially
+#
+# drop: 
+# removes one byte from the file for each position in the file
+#
+# insert: 
+# inserts a random byte for each position in the file
+#
+# truncate:
+# truncates bytes from the end of the file
+#
+# crmut: 
+# replace carriage return bytes with random values
+#
+# crlfmut:
+# replace carriage return and linefeed bytes with random values
+#
+# nullmut:
+# replace null bytes with random values
+#
+# verify:
+# do not mutate file. Used for verifying crashing testcases
+#
+# OPTIONS APPLIED TO THE ABOVE MUTATORS:
+#
+# fuzz_zip_container: 
+# rather than fuzzing zip file contents, fuzz the zip container itself
+# 
+###################################################################################
+fuzzer:
+    fuzzer: bytemut
+    # fuzzer: swap
+    # fuzzer: wave
+    # fuzzer: drop
+    # fuzzer: insert
+    # fuzzer: truncate
+    # fuzzer: crmut
+    # fuzzer: crlfmut
+    # fuzzer: nullmut
+    # fuzzer: verify
+    fuzz_zip_container: False
+    
+    
+##############################################################################
+# VERIFIER PARAMETERS
+#
+# exclude_unmapped_frames: 
+# Include backtrace frames that aren't part of a loaded library?
+# Set this value to False if you wish to consider unmapped stack
+# frames in the crash hashes. This can be useful for target application
+# that perform JIT compilation
+#
+# savefailedasserts: 
+# Save cases that cause failed ASSERTs?  If set to 1, then __assert_fail termination, 
+# e.g. via assert(), it will be considered a crash.
+#
+# use_valgrind:
+# Use valgrind (and callgrind)
+# Note that valgrind can be slow. Disabling this option can improve throughput
+#
+# use_pin_calltrace:
+# Use PIN to get call traces for every crash, as opposed to just those
+# that result in total stack corruption.
+# PIN is even slower than valgrind
+#
+# valgrind_timeout:
+# Number of seconds to allow valgrind to run before giving up on it
+#
+##############################################################################
+analyzer:
+    exclude_unmapped_frames: True
+    savefailedasserts: False
+    use_valgrind: True
+    use_pin_calltrace: False
+    valgrind_timeout: 120
+

@@ -9,6 +9,8 @@ between objects. P
 import itertools
 import os
 
+from certfuzz.fuzztools.filetools import get_zipcontents
+
 def vector_compare(v1, v2):
     '''
     Given two sparse vectors (lists of indices whose value is 1), return the distance between them
@@ -29,6 +31,7 @@ def vector_compare(v1, v2):
 
     return distance
 
+
 def bytemap(s1, s2):
     '''
     Given two strings of equal length, return the indices of bytes that differ.
@@ -40,6 +43,7 @@ def bytemap(s1, s2):
             delta.append(idx)
     return delta
 
+
 def bytewise_hd(s1, s2):
     '''
     Compute the byte-wise Hamming Distance between two strings. Returns
@@ -48,23 +52,36 @@ def bytewise_hd(s1, s2):
     assert len(s1) == len(s2)
     return sum(ch1 != ch2 for ch1, ch2 in itertools.izip(s1, s2))
 
+
 def bytewise_hamming_distance(file1, file2):
     '''
     Given the names of two files, compute the byte-wise Hamming Distance
     between them. Returns the distance as an int. Throws an AssertionError
     unless file1 and file2 are the same size.
     '''
-    return _file_compare(bytewise_hd, file1, file2)
+    return _file_compare(bytewise_hd, False, file1, file2)
 
-def _file_compare(distance_function, file1, file2):
-    assert os.path.getsize(file1) == os.path.getsize(file2)
+def bytewise_zip_hamming_distance(file1, file2):
+    '''
+    Given the names of two files, compute the byte-wise Hamming Distance
+    between them. Returns the distance as an int. Throws an AssertionError
+    unless file1 and file2 are the same size.
+    '''
+    return _file_compare(bytewise_hd, True, file1, file2)
 
-    distance = 0
-    with open(file1, 'rb') as f1:
-        with open(file2, 'rb') as f2:
-            # find the hamming distance for each byte
-            distance = distance_function(f1.read(), f2.read())
+def _file_compare(distance_function, comparezipcontents, file1, file2):
+    if not comparezipcontents:
+        assert os.path.getsize(file1) == os.path.getsize(file2)
+
+        with open(file1, 'rb') as f1:
+            with open(file2, 'rb') as f2:
+                # find the hamming distance for each byte
+                distance = distance_function(f1.read(), f2.read())
+    else:
+        # Work with zip contents
+        distance = distance_function(get_zipcontents(file1), get_zipcontents(file2))
     return distance
+
 
 def bitwise_hd(x, y):
     '''
@@ -85,10 +102,19 @@ def bitwise_hd(x, y):
             hd += 1
     return hd
 
+
 def bitwise_hamming_distance(file1, file2):
     '''
     Given the names of two files, compute the bit-wise Hamming Distance
     between them. Returns the distance as an int. Throws an AssertionError
     unless file1 and file2 are the same size.
     '''
-    return _file_compare(bitwise_hd, file1, file2)
+    return _file_compare(bitwise_hd, False, file1, file2)
+
+def bitwise_zip_hamming_distance(file1, file2):
+    '''
+    Given the names of two files, compute the bit-wise Hamming Distance
+    between them. Returns the distance as an int. Throws an AssertionError
+    unless file1 and file2 are the same size.
+    '''
+    return _file_compare(bitwise_hd, True, file1, file2)

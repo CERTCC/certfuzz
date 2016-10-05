@@ -5,27 +5,28 @@ Provides a wrapper around gdb.
 
 @organization: cert.org
 '''
+import logging
+import os
 from string import Template
 import tempfile
-import os
-import logging
 
-from .registration import register
-from . import DebuggerError
+from certfuzz.debuggers.debugger_base import Debugger
+from certfuzz.debuggers.errors import DebuggerError
+from certfuzz.debuggers.output_parsers.gdbfile import GDBfile
+from certfuzz.fuzztools import subprocess_helper as subp
 
-from .debugger_base import Debugger
-from .output_parsers.gdbfile import GDBfile
-from ..fuzztools import subprocess_helper as subp
 
 logger = logging.getLogger(__name__)
+
 
 class GDB(Debugger):
     _platform = 'Linux'
     _key = 'gdb'
     _ext = 'gdb'
 
-    def __init__(self, program, cmd_args, outfile_base, timeout, killprocname, template=None, exclude_unmapped_frames=True, keep_uniq_faddr=False, **options):
-        super(self.__class__, self).__init__(program, cmd_args, outfile_base, timeout, killprocname, **options)
+    def __init__(self, program, cmd_args, outfile_base, timeout, template=None, exclude_unmapped_frames=True, keep_uniq_faddr=False, **options):
+        Debugger.__init__(
+            self, program, cmd_args, outfile_base, timeout, **options)
         self.template = template
         self.exclude_unmapped_frames = exclude_unmapped_frames
         self.keep_uniq_faddr = keep_uniq_faddr
@@ -33,16 +34,21 @@ class GDB(Debugger):
     def _get_cmdline(self):
         self._create_input_file()
         if not os.path.exists(self.input_file):
-            raise DebuggerError('Input file does not exist: %s', self.input_file)
+            raise DebuggerError(
+                'Input file does not exist: %s', self.input_file)
 
-        args = [self.debugger_app(), '-batch', '-command', self.input_file]
+        # BFF-977 add -ex options instead of reading self.input_file
+
+        args = [
+            self.debugger_app(), '-n', '-batch', '-command', self.input_file]
         logger.log(5, "GDB command: [%s]", ' '.join(args))
         return args
 
     def _create_input_file(self):
         # short-circuit if input_file already exists
         if os.path.exists(self.input_file):
-            logger.log(5, "GDB input file already exists at %s", self.input_file)
+            logger.log(
+                5, "GDB input file already exists at %s", self.input_file)
             return
 
         if not self.template:
@@ -56,7 +62,13 @@ class GDB(Debugger):
         s = Template(template)
 
         cmdargs = ' '.join(self.cmd_args)
-        new_script = s.safe_substitute(PROGRAM=self.program, CMD_ARGS=cmdargs)
+        # Extract the bff directory out of the template location
+        bffdebuggersdir = os.path.dirname(os.path.realpath(__file__))
+        bffdir = bffdebuggersdir.replace('/certfuzz/debuggers', '')
+        new_script = s.safe_substitute(PROGRAM=self.program, CMD_ARGS=cmdargs,
+                                       OUTFILE=self.outfile, BFFDIR=bffdir)
+
+        # BFF-977 split new_script by newlines into a list...
 
         (fd, f) = tempfile.mkstemp(text=True)
         try:
@@ -68,10 +80,16 @@ class GDB(Debugger):
         if os.path.exists(self.input_file):
             logger.log(5, "GDB input file is %s", self.input_file)
         else:
-            logger.warning("Failed to create GDB input file %s", self.input_file)
+            logger.warning(
+                "Failed to create GDB input file %s", self.input_file)
 
     def _remove_temp_file(self):
-        os.remove(self.input_file)
+        try:
+            os.remove(self.input_file)
+        except OSError as e:
+            logger.warning(
+                "Caught OSError attempting to remove %s: %s", self.input_file, e)
+
         if os.path.exists(self.input_file):
             logger.warning("Failed to delete %s", self.input_file)
 
@@ -93,16 +111,18 @@ class GDB(Debugger):
         '''
         Generates gdb output for <program> <cmd_args> into <outfile>.
         If gdb fails to complete before <timeout>,
-        attempt to _kill gdb and <killprocname>.
+        attempt to _kill gdb and program.
 
         @return: a GDBfile object with the parsed results
         '''
         # build the command line in a separate function so we can unit test
         # it without actually running the command
         cmdline = self._get_cmdline()
-        subp.run_with_timer(cmdline, self.timeout, self.killprocname, stdout=self.outfile)
+        subp.run_with_timer(
+            cmdline, self.timeout, self.program, stdout=os.devnull)
 
         self._remove_temp_file()
+        if not os.path.exists(self.outfile):
+            # touch it if it doesn't exist
+            open(self.outfile, 'w').close()
         return GDBfile(self.outfile, self.exclude_unmapped_frames, self.keep_uniq_faddr)
-
-register(GDB)

@@ -1,8 +1,9 @@
-import random
 import logging
+import random
 
-from . import MinimizableFuzzer
-from .fuzzer_base import is_fuzzable as _fuzzable
+from certfuzz.fuzzers.fuzzer_base import MinimizableFuzzer
+from certfuzz.fuzzers.fuzzer_base import is_fuzzable as _fuzzable
+
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +64,7 @@ class ByteMutFuzzer(MinimizableFuzzer):
         self.range = self.sf.rangefinder.next_item()
         range_list = self.options.get('range_list')
 
-        self.fuzzed = fuzz(fuzz_input=self.input,
+        self.output = fuzz(fuzz_input=self.input,
                            seed_val=self.rng_seed,
                            jump_idx=self.iteration,
                            ratio_min=self.range.min,

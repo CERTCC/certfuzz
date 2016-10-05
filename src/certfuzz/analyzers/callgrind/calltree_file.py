@@ -6,10 +6,11 @@ Created on Aug 15, 2011
 import re
 import logging
 
-from . import CallgrindAnnotateNoOutputFileError
+from certfuzz.analyzers.callgrind.errors import CallgrindAnnotateNoOutputFileError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
 
 class CalltreeFile(object):
     '''

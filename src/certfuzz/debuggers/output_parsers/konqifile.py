@@ -5,8 +5,8 @@ Created on Jan 18, 2012
 '''
 import re
 import logging
-from . import DebuggerFile
-from . import regex as regex_base
+from certfuzz.debuggers.output_parsers import DebuggerFile
+from certfuzz.debuggers.output_parsers import regex as regex_base
 
 from optparse import OptionParser
 
@@ -33,7 +33,7 @@ class Konqifile(DebuggerFile):
         self.has_proc_map = False
         self.dataformat = 'gdb'
 
-        super(self.__class__, self).__init__(path, exclude_unmapped_frames)
+        DebuggerFile.__init__(self, path, exclude_unmapped_frames)
 
     def backtrace_line(self, idx, l):
         self._look_for_crashing_thread(l)
@@ -208,6 +208,6 @@ if __name__ == '__main__':
 
     for f in args:
         k = Konqifile(f)
-        print 'Signature=%s' % k.get_crash_signature(5)
+        print 'Signature=%s' % k.get_testcase_signature(5)
         if k.registers_hex.get('eip'):
             print 'EIP=%s' % k.registers_hex['eip']

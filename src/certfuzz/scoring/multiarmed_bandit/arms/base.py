@@ -3,7 +3,12 @@ Created on Feb 22, 2013
 
 @organization: cert.org
 '''
-from .errors import BanditArmError
+import logging
+
+from certfuzz.scoring.multiarmed_bandit.arms.errors import BanditArmError
+
+logger = logging.getLogger(__name__)
+
 
 class BanditArmBase(object):
     '''
@@ -35,9 +40,11 @@ class BanditArmBase(object):
         self.trials += trials
         self._update_p(successes, trials)
         if self.probability is None:
+            logger.debug("MAB arm: %s", self)
             raise BanditArmError('probability not set')
         elif not (0.0 <= self.probability <= 1.0):
-            raise BanditArmError('probability must be between 0.0 and 1.0')
+            logger.debug("MAB arm: %s", self)
+            raise BanditArmError('probability must be between 0.0 <= {:f} <= 1.0'.format(self.probability))
 
     def _update_p(self, *_unused_args):
         '''

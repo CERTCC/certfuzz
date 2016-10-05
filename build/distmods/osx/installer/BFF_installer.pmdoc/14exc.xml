@@ -1,0 +1,18 @@
+<pkgref spec="1.12" uuid="CAE999D0-2CB0-476F-9FF7-3629916B2D3E">
+<config>
+<identifier>com.cert.cc.certBff.exc_handler_snowleopard.pkg</identifier>
+<version>1.0</version>
+<description></description>
+<post-install type="none" />
+<requireAuthorization />
+<installFrom relative="true">crashwrangler/binaries/exc_handler_snowleopard</installFrom>
+<installTo mod="true">/usr/local/bin</installTo>
+<flags>
+<followSymbolicLinks />
+</flags>
+<packageStore type="internal"></packageStore>
+<mod>parent</mod>
+<mod>installFrom.isRelativeType</mod>
+<mod>installTo</mod>
+</config>
+</pkgref>

@@ -1,0 +1,275 @@
+
+Release Notes - BFF - Version BFF 2.8
+
+** Bug
+    * [BFF-178] - Updated config file should trump cached config
+    * [BFF-262] - FOE null runner heisenbug / unable to get md5 issues
+    * [BFF-294] - BFF on Windows should cancel any remaining timers on finishing campaign
+    * [BFF-311] - Standalone Windows minimizer is creating zero-length msec files
+    * [BFF-312] - Minimizer giving up before it should
+    * [BFF-464] - Issues with OSX installer results directories
+    * [BFF-485] - tools/repro.py doesn't support OS X
+    * [BFF-512] - BFF should handle KeyboardInterrupts more gracefully
+    * [BFF-515] - Permission denied when doing a zip-based minimization to string
+    * [BFF-521] - Probability out of range in certfuzz.scoring.multiarmed_bandit.arms.base
+    * [BFF-533] - Pin_calltrace doesn't play nice with minimizer
+    * [BFF-534] - certfuzz.test.fuzztools.test_rangefinder.Test.test_get_ranges fails sometimes
+    * [BFF-742] - reboot recovery currently broken in develop branch
+    * [BFF-743] - git-based make_dist.py zip missing "results" directory
+    * [BFF-745] - BFF creating bff.log in ~/pintool on Linux
+    * [BFF-748] - Remove Android code from main development branch
+    * [BFF-751] - use subprocess.check_call instead of subprocess.call
+    * [BFF-754] - BFF OSX installer isn't including crashwrangler source zip
+    * [BFF-756] - Allow batch.sh to take arguments
+    * [BFF-764] - Calltracefile is not defined in minimizer_base.py
+    * [BFF-766] - Don't install Python on Yosemite
+    * [BFF-778] - BFF should check for zzuf at startup
+    * [BFF-792] - tmp_reaper isn't cleaning up symlinks
+    * [BFF-793] - gdb output mostly empty on Ubuntu 15.04
+    * [BFF-794] - drillresults broken
+    * [BFF-796] - zzuf won't compile on Ubuntu 15.04
+    * [BFF-798] - drillresults can truncate addresses with 64-bit apps
+    * [BFF-799] - quickstats.sh is broken
+    * [BFF-800] - repro.py doesn't work
+    * [BFF-801] - _cache_app probably shouldn't set use_shell=True
+    * [BFF-802] - repro.py can't find config
+    * [BFF-803] - restarting the watchdog only makes sense for UbuFuzz
+    * [BFF-804] - zzuf seeing signal 9 on every gnash iteration
+    * [BFF-818] - Windows hook isn't detecting crashes
+    * [BFF-819] - BFF should verify filesystem when checking for already-existing crashes.
+    * [BFF-821] - drillresults is broken on Windows
+    * [BFF-824] - UbuFuzz should have python hcluster
+    * [BFF-825] - UbuFuzz needs X to be able to be zapped
+    * [BFF-826] - BFF removes bad zip files before it can run them
+    * [BFF-827] - zzuf copy mode file I/O is redundant in the new BFF architecture
+    * [BFF-828] - Minimizer should be zip-aware
+    * [BFF-829] - BFF isn't touching the watchdog file
+    * [BFF-831] - quickstats.py is broken
+    * [BFF-834] - Raised errors in minimizer kill the campaign
+    * [BFF-835] - drillresults shouldn't complain when the debugger file it's looking for doesn't have what it needs
+    * [BFF-836] - minimizer_plot.py doesn't work
+    * [BFF-837] - drillresults can use way too much memory
+    * [BFF-839] - Drop fuzzer doesn't work
+    * [BFF-840] - BFF attempts to minimize non-minimizeable fuzzers
+    * [BFF-841] - Linux BFF increments stats twice
+    * [BFF-843] - When valgrind is disabled, callgrind annotation still runs
+    * [BFF-844] - BFF raises an exception when the first seedfile is exhausted
+    * [BFF-845] - BFF doesn't have the capability of removing seedfiles from the set
+    * [BFF-846] - Debug mode hangs with winpdb stuff installed
+    * [BFF-847] - Stopping BFF campaign doesn't stop killproc.sh
+    * [BFF-849] - Total stack corruption: 'AnalyzerEmptyOutputError' is not defined
+    * [BFF-850] - UbuFuzz needs x86 compatibility libs
+    * [BFF-851] - EFA is incorrect for LInux ReturnAv
+    * [BFF-856] - BFF Windows minimizes regardless of what bff.yaml says
+    * [BFF-860] - Crash recycling isn't working
+    * [BFF-862] - BFF verify mode never finishs
+    * [BFF-879] - Many tools don't work anymore, looking for config_linux
+    * [BFF-880] - BFF incorrectly includes the program name in the run line of the gdb template
+    * [BFF-885] - BFF stops fuzzing - No such file or directory in output_parsers
+    * [BFF-886] - BFF doesn't use correct gdb cmdline when minimizing
+    * [BFF-887] - BFF doesn't work on Windows versions newer than XP
+    * [BFF-888] - BFF doesn't work on Windows - DummyCfg
+    * [BFF-889] - BFF minimizer tries to delete files from underneath itself
+    * [BFF-890] - BFF OSX isn't using the latest code
+    * [BFF-891] - BFF doesn't support El Capitan
+    * [BFF-892] - Crashwrangler doesn't support El Capitan
+    * [BFF-894] - BFF stops fuzzing - in-use file
+    * [BFF-896] - pyyaml installation triggers cmdline tools installation (asynchronously) on El Capitan
+    * [BFF-897] - BFF unnecessarily tries to install python packages on El Capitan
+    * [BFF-898] - BFF needs to look for exc_handler_elcapitan
+    * [BFF-903] - OSX installer isn't including crashwrangler source zip
+    * [BFF-904] - After fuzzing for a while, the campaign stops seeing the KeyboardInterrupt
+    * [BFF-905] - BFF isn't getting register values out of CrashWrangler output
+    * [BFF-907] - BFF hard-codes the directory of CTT based on ~/bff
+    * [BFF-908] - UbuFuzz 14.04 doesn't allow watchdog to be started
+    * [BFF-910] - BFF can leave behind the bff_watchdog file when a campaign quits
+    * [BFF-912] - BFF keyerror on verify run
+    * [BFF-913] - drillresults doesn't work for verify mode BFF results
+    * [BFF-914] - Drillresults on windows only scores the first exception
+    * [BFF-915] - BFF doesn't exit cleanly when seedfiles are exhausted
+    * [BFF-918] - BFF isn't keeping track of seedfile try counts
+    * [BFF-921] - BFF minimizer fails on windows - exclude_unmapped_frames
+    * [BFF-927] - Windows BFF fails due to NotImplementedError
+    * [BFF-930] - drillresults thinks that the PC isn't in a loaded module, when it actually is
+    * [BFF-931] - BFF keep_duplicates option doesn't do anything
+    * [BFF-932] - Heisenbugs are skipped, regardless of config option
+    * [BFF-933] - BFF cuts off cdb before it gets the details.
+    * [BFF-935] - Swap mutator skips zip files
+    * [BFF-938] - drillresults output is in unix format even on Windows
+    * [BFF-939] - minimizer on Linux should have option to keep other crashers.
+    * [BFF-940] - _safe_createzip() takes exactly 2 arguments (3 given)
+    * [BFF-941] - Watchdog file not touched during standalone minimization
+    * [BFF-943] - drillresults on Linux is missing some interesting cases
+    * [BFF-946] - No such thing as a heisenbug if the winrun hook isn't used.
+    * [BFF-949] - BFF leaves OpenOffice processes behind
+    * [BFF-952] - BFF on linux no longer hides stdout
+    * [BFF-954] - drillresults analyzer only lists last exception
+    * [BFF-955] - drillresults on Windows is missing some interesting cases
+    * [BFF-957] - BFF is broken on Windows - incorrect number of arguments
+    * [BFF-961] - TWDF disables itself after enabling itself.
+    * [BFF-965] - drillresults as an analyzer indicates wrong Fuzzed file: path
+    * [BFF-967] - BFF shouldn't try to use exploitable on platforms that don't support it
+    * [BFF-973] - Calltrace parsing can fail
+    * [BFF-975] - minimizer_log.txt missing from output dirs
+    * [BFF-978] - Minimizing on system with ASLR and no symbols never stops
+    * [BFF-984] - valgrind core files being left in BFF directory
+    * [BFF-985] - debugheap option is ignored on Windows
+    * [BFF-986] - Minimizer fails to parse total stack corruption
+    * [BFF-987] - watchcpu key error 
+    * [BFF-988] - Minimizer not including bytemap
+    * [BFF-989] - Reindroduce keep_unique_faddr support in BFF
+    * [BFF-990] - tools/repro.py on linux "-f" option doesn't work
+    * [BFF-991] - tools/minimizer plot doesn't factor in exploitability
+    * [BFF-992] - tools/callsim.py doesn't factor in exploitability
+    * [BFF-993] - edb doesn't work in UbuFuzz 16.04
+    * [BFF-994] - git edb Goto Address isn't working
+    * [BFF-995] - BFF pintool has too many invalid_rtn function names
+    * [BFF-996] - BFF minimizer keep other crashers is saving something other than the new crashes
+    * [BFF-998] - gdb doesn't always reset frame to 0 after doing a "bt full"
+    * [BFF-999] - BFF refuses to string minimize total stack corruption
+    * [BFF-1000] - recycle_crashers option doesn't work if minimization is disabled
+    * [BFF-1002] - BFF appears to remove each seedfile in verify mode multiple times
+    * [BFF-1004] - .calltrace files are missing from output dirs
+    * [BFF-1005] - BFF crashes on attempting to save a heisenbug
+    * [BFF-1006] - BFF shouldn't change into the target directory on first iteration or winrun or repro
+    * [BFF-1007] - Drillresults fails on 64-bit windows
+    * [BFF-1008] - Dud msec files shouldn't stop drillresults
+    * [BFF-1009] - drillresults on 64-bit windows needs to check for 32-bit and 64-bit loaded module patterns
+    * [BFF-1011] - BFF on Windows is putting PROBABLY_NOT_EXPLOITABLE crashers in UNKNOWN directory
+    * [BFF-1013] - Include minimize-to-string option in BFF campaign
+    * [BFF-1014] - faulting addresses reported by gdb on SIGABRTs aren't valid
+    * [BFF-1015] - Allow verify mode to perform minimization to string
+    * [BFF-1017] - Some applications change the size of the file being opened
+    
+
+
+** New Feature
+    * [BFF-177] - BFF should support pluggable file mutators
+    * [BFF-261] - BFF / FOE minimizer should punt on minimizing inconsistent crashes
+    * [BFF-328] - Valgrind (and subsequently callgrind) should be optional
+    * [BFF-436] - Debugger output on OSX should embed a "Found using BFF" message
+    * [BFF-472] - Integrate FOE's campaign/iteration architecture into BFF on linux/osx
+    * [BFF-473] - drillresults should become an analyzer
+    * [BFF-475] - BFF should be able to use virtualenv on all platforms
+    * [BFF-476] - Integrate FOE's runner into BFF
+    * [BFF-477] - Create a zzuf-based Runner class
+    * [BFF-478] - Add Analyzers to BFF on Windows
+    * [BFF-482] - Add verify mode for BFF
+    * [BFF-484] - Install ncurses-hexedit in UbuFuzz
+    * [BFF-503] - minimize.py on Linux and OS X is missing the "-k" (keep other crashes) option
+    * [BFF-505] - Testcases should support multiple persistence options
+    * [BFF-772] - Update Crashwrangler to version supporting Yosemite
+    * [BFF-773] - BFF (FOE) doesn't support Python 2.7.6 or later (Popen)
+    * [BFF-782] - BFF should use YAML config
+    * [BFF-789] - Use lldb in tools/repro if available.
+    * [BFF-809] - Include edb 9.20 in Ubufuzz
+    * [BFF-810] - Include jed in UbuFUzz
+    * [BFF-811] - include ncurses-hexedit in UbuFuzz
+    * [BFF-812] - include hexedit in UbuFuzz
+    * [BFF-813] - Disable ASLR in UbuFuzz
+    * [BFF-814] - Don't use UUIDs in /etc/fstab
+    * [BFF-815] - Include cifs-utils in UbuFuzz
+    * [BFF-816] - UbuFuzz needs the cert-patched zzuf
+    * [BFF-817] - Set password for "fuzz" user to "test"
+    * [BFF-838] - Minimizer on Linux doesn't support the feature to keep other crashes
+    * [BFF-848] - inetc doesn't check ssl certificates
+    * [BFF-852] - improper results symlink in UbuFuzz
+    * [BFF-853] - Include bff-dashboard in UbuFuzz
+    * [BFF-854] - BFF should not use gdbinit
+    * [BFF-857] - Disable Dr. Konqui before fuzzing
+    * [BFF-867] - create certfuzz.reporters package for pipeline reporters
+    * [BFF-1003] - BFF should include pin tool runner
+
+** Task
+    * [BFF-746] - Unify BFF and FOE licenses
+    * [BFF-808] - Use CERT logo as UbuFuzz background
+    * [BFF-871] - Update Jenkins for new network environment
+
+** Improvement
+    * [BFF-207] - refactor/simplify bff_config.py
+    * [BFF-210] - BFF should use FOE's campaign / iteration objects 
+    * [BFF-269] - FOE should rename msec files for exceptions beyond the first
+    * [BFF-361] - Refactor certfuzz.scoring.scorable_set 
+    * [BFF-453] - Unique Campaign folders in BFF
+    * [BFF-468] - Replace fluxbox background in ubufuzz with a CERT/SEI/CMU logo background
+    * [BFF-469] - bff.cfg has ctrl-Ms
+    * [BFF-483] - Update BFF installer to include Mavericks version of CrashWrangler
+    * [BFF-487] - _look_for_crash shows up way too frequently in debug log files
+    * [BFF-498] - Remove clause 3 (advertising) from FOE license
+    * [BFF-500] - Include edb 0.9.20 in UbuFuzz
+    * [BFF-502] - DRY up linux and windows drillresults
+    * [BFF-506] - BFF's make_dist.py is overly SVN-centric
+    * [BFF-513] - Eliminate need for debuggers.verify_supported_platform()
+    * [BFF-514] - replace optparse with argparse in certfuzz.bff.common
+    * [BFF-528] - BFF should get FOE's rpdb2 / heapy debugger 
+    * [BFF-529] - BFF main module parity across Linux/Windows
+    * [BFF-530] - Rebrand FOE as BFF
+    * [BFF-744] - Deduplicate license files
+    * [BFF-755] - get rid of stop seed in bff config
+    * [BFF-759] - DRY up iteration_windows and iteration_linux
+    * [BFF-760] - linux drillresults should cache parsed results
+    * [BFF-771] - use !exploitable 1.6
+    * [BFF-774] - Gracefully handle unavailable network
+    * [BFF-785] - BFF debuggers should be instantiable without requiring an actual debugger present
+    * [BFF-786] - Get rid of configurable debuggers
+    * [BFF-788] - BFF on windows should pick the appropriate runner automatically
+    * [BFF-797] - Update welcome.sh script
+    * [BFF-858] - BFF should use something other than stdout to collect gdb output
+    * [BFF-863] - Unify config file options on windows and linux
+    * [BFF-864] - Linux and Windows are inconsistent in their use of self.cfg vs self.cfg.config
+    * [BFF-866] - Move certfuzz tests to a peer package of certfuzz
+    * [BFF-875] - Create testcase logger reporter module
+    * [BFF-884] - Allow or warn for the presence of IO redirects in command line
+    * [BFF-893] - BFF runner shouldn't need to be configurable on Windows
+    * [BFF-899] - remove minimize to string from campaign (keep in standalone)
+    * [BFF-900] - drillresults should support crashwrangler
+    * [BFF-902] - BFF should retain double file extensions.  e.g. .tar.gz
+    * [BFF-916] - subprocess_helper should cancel any remaining timers on KeyboardInterrupt
+    * [BFF-922] - Use a fuzzdir on the local disk.
+    * [BFF-923] - Drillresults analyzer should use the BFF debugger file parsers
+    * [BFF-925] - DRY up LinuxTestcase and WindowsTestcase classes
+    * [BFF-934] - BFF should exhaustively iterate through the end of minimization
+    * [BFF-947] - BFF can die between tmp_reaper and watchdog file being recreated.
+    * [BFF-948] - String minimization isn't using the bytemap for the freebie
+    * [BFF-953] - Replace or remove bff_stats.py
+    * [BFF-956] - Eliminate per-crash logging
+    * [BFF-959] - drillresults force mode should ignore existing .drillresults files
+    * [BFF-963] - Update dependencies installed by BFF installer on Windows
+    * [BFF-966] - Give debugger-invoked iterations extra time to prevent heisenbugs
+    * [BFF-968] - BFF should save core dumps for crashes
+    * [BFF-970] - drillresults should support analyzing a string minimization directory
+    * [BFF-971] - BFF should clean up empty crash hash directories
+    * [BFF-972] - BFF should use exploitability in output directory again
+    * [BFF-979] - Remove testcase-specific logging
+    * [BFF-980] - remove minimizer_plot.py
+    * [BFF-982] - Remove killproc.sh
+    * [BFF-997] - drillresults should fall back to getting the current instruciton w/o "=>"
+
+** Sub-task
+    * [BFF-417] - ScorableSet should not rely on its objects to inherit from ScorableThing
+    * [BFF-418] - ScorableSet should support use as a generator
+    * [BFF-419] - ScorableSet should support multiple selection algorithms
+    * [BFF-420] - Eliminate ScorableThing code
+    * [BFF-421] - ScorableSet should initialize new additions to have the average of the set as the initial probability
+    * [BFF-479] - bff.py should become an entry point in setup.py
+    * [BFF-480] - foe2.py should become an entry point in setup.py
+    * [BFF-494] - Remove or modify xcat reference in nsis_mid.txt
+    * [BFF-495] - Refactor build/dist/__init__.py to parameterize svn repo location
+    * [BFF-507] - fix make_dist for linux
+    * [BFF-508] - fix make_dist for windows
+    * [BFF-509] - fix make_dist for osx
+    * [BFF-531] - Remove mentions of "foe" from files
+    * [BFF-532] - Remove mentions of "foe" from file names
+    * [BFF-739] - Create script to generate epydocs for certfuzz
+    * [BFF-749] - LinuxCampaign should inherit from CampaignMeta
+    * [BFF-750] - LinuxCampaign should inherit from CampaignBase
+    * [BFF-752] - replace subprocess.call with subprocess.check_call in build scripts
+    * [BFF-753] - replace subprocess.call with subprocess.check_call in certfuzz.fuzztools.subprocess_helper
+    * [BFF-758] - Integrate iteration_base and iteration_base3
+    * [BFF-762] - Refactor drillresults into OO code
+    * [BFF-763] - Create certfuzz.drillresults package 
+    * [BFF-775] - create zzuf-based Fuzzer object
+    * [BFF-872] - Confirm that ByteMut works on linux
+    * [BFF-873] - Make fuzzer selection on linux configurable
+    * [BFF-876] - eradicate "fancy" config objects in favor of simple yaml -> dicts
+    * [BFF-877] - unify config sections

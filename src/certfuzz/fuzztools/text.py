@@ -5,10 +5,12 @@ Created on Dec 9, 2011
 '''
 # pylint complains about importing string and
 # pylint: disable=w0142,w0402
-import string
 import itertools
 import re
+import string
+
 from certfuzz.fuzztools.filetools import get_newpath
+
 
 def _pattern(iterables, length):
     pattern_parts = []
@@ -24,6 +26,7 @@ def _pattern(iterables, length):
             # slicing to fit as needed
             pattern = ''.join(pattern_parts)
             return pattern[:length]
+
 
 def metasploit_pattern_orig(length):
     '''
@@ -41,6 +44,7 @@ def metasploit_pattern_orig(length):
                 string.digits]
 
     return _pattern(iterables, length)
+
 
 def metasploit_pattern_extended(length):
     '''
@@ -63,6 +67,7 @@ def metasploit_pattern_extended(length):
 def metasploit_pattern(length):
     return metasploit_pattern_extended(length)
 
+
 def _enumerate_string(content, occurences):
     '''
     Replace each position in content given in occurences with
@@ -84,6 +89,7 @@ def _enumerate_string(content, occurences):
             p = pos + offset
             byte_buffer[p] = substr[offset]
     return byte_buffer
+
 
 def enumerate_string(path=None, str_to_enum=None):
     '''
