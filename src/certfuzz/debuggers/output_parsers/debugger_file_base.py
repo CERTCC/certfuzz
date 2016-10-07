@@ -29,7 +29,7 @@ regex = {
     'bt_addr': re.compile(r'(0x[0-9a-fA-F]+)\s+.+$'),
     'signal': re.compile(r'Program\sreceived\ssignal\s+([^,]+)'),
     'exit_code': re.compile(r'Program exited with code (\d+)'),
-    'faddr': re.compile(r'^si_addr.+(0x[0-9a-zA-Z]+)$'),
+    'faddr': re.compile(r'^si_addr.+(0x[0-9a-zA-Z]+)'),
     'bt_line_from': re.compile(r'\bfrom\b'),
     'bt_line_at': re.compile(r'\bat\b'),
     'register': re.compile(r'(0x[0-9a-zA-Z]+)\s+(.+)$'),
