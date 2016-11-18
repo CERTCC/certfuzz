@@ -11,7 +11,7 @@ For basic fuzzing functionality, the following packages are required:
 * Python Scipy
 * Python Yaml
 * gdb (7.2 or later on Linux is required for exploitability information)
-* zzuf (must be the bundled version patched by CERT)
+* zzuf (bundled version patched by CERT preferred)
 
 In order to build zzuf and the other BFF dependencies, the following
 packages may be required:
@@ -88,8 +88,8 @@ sudo zypper ar -f 'http://download.opensuse.org/repositories/devel:/languages:/p
 sudo zypper install python-numpy python-scipy python-PyYAML valgrind subversion automake libtool gcc-c++ ncurses-devel make
 
 2) Install the zzuf version patched by CERT:
-unzip zzuf-patched.zip
-cd zzuf-patched
+unzip zzuf-master.zip
+cd zzuf-master
 ./bootstrap
 ./configure
 make
@@ -126,8 +126,8 @@ yum install numpy scipy python-yaml valgrind svn automake libtool gcc-c++ ncurse
 
 2) Install the zzuf version patched by CERT:
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-unzip zzuf-patched.zip
-cd zzuf-patched
+unzip zzuf-master.zip
+cd zzuf-master
 ./bootstrap
 ./configure
 make
@@ -184,8 +184,8 @@ can be performed:
 sudo apt-get install python-numpy python-scipy python-yaml valgrind subversion automake libtool build-essential libncurses5-dev
 
 2) Install the zzuf version patched by CERT:
-unzip zzuf-patched.zip
-cd zzuf-patched
+unzip zzuf-master.zip
+cd zzuf-master
 ./bootstrap
 ./configure
 make
@@ -242,8 +242,8 @@ sudo zypper ar -f 'http://download.opensuse.org/repositories/devel:/languages:/p
 sudo zypper install python-numpy python-scipy valgrind subversion automake libtool gcc-c++ ncurses-devel make
 
 2) Install the zzuf version patched by CERT:
-unzip zzuf-patched.zip
-cd zzuf-patched
+unzip zzuf-master.zip
+cd zzuf-master
 ./bootstrap
 ./configure
 make
