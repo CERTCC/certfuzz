@@ -6,27 +6,28 @@ dependencies are met.
 ===== Dependencies =====
 
 For basic fuzzing functionality, the following packages are required:
-Python 2.7
-Python Numpy
-Python Scipy
-Python Yaml
-gdb (7.2 or later on Linux is required for exploitability information)
-zzuf (patched by CERT)
+* Python 2.7 (Python 3.x not currently supported, in progress)
+* Python Numpy
+* Python Scipy
+* Python Yaml
+* gdb (7.2 or later on Linux is required for exploitability information)
+* zzuf (bundled version patched by CERT preferred)
 
 In order to build zzuf and the other BFF dependencies, the following
 packages may be required:
-svn
-gcc
-make
-automake
-libtool
-gcc-c++
-ncurses-devel
+* svn
+* gcc
+* make
+* automake
+* libtool
+* gcc-c++
+* ncurses-devel
 
 For additional analysis tools that can be used during or after a
 fuzzing campaign, the following packages are required:
-Python hcluster
-Python matplotlib
+* valgrind
+* Python hcluster
+* Python matplotlib
 
 
 ===== Filesystem layout =====
@@ -75,8 +76,46 @@ changes:
 
 - strip is symlinked to /bin/true, which prevents symbols from being
   removed when an application is built.
-  
-  
+
+
+===== Example installation on openSUSE Leap 42.2 64-bit =====
+
+To install BFF on an openSUSE Leap 42.2 64-bit system, for example, the following steps
+can be performed:
+
+1) Install dependencies present in the package system:
+sudo zypper ar -f 'http://download.opensuse.org/repositories/devel:/languages:/python/openSUSE_Leap_42.2/' python
+sudo zypper install python-numpy python-scipy python-PyYAML valgrind subversion automake libtool gcc-c++ ncurses-devel make
+
+2) Install the zzuf version patched by CERT:
+unzip zzuf-master.zip
+cd zzuf-master
+./bootstrap
+./configure
+make
+sudo make install
+
+3) Install old ImageMagick version as default fuzz target:
+sudo zypper install xorg-x11-devel
+sudo ln -sf /usr/include/asm/byteorder.h /usr/include/sys/byteorder.h
+wget http://downloads.sourceforge.net/project/imagemagick/old-sources/5.x/5.3/ImageMagick-5.3.0.tar.gz
+tar xzvf ImageMagick-5.3.0.tar.gz
+cd ImageMagick-5.3.0
+./configure
+make
+sudo make install
+
+4) Unzip BFF scripts:
+mkdir ~/bff
+unzip BFF-2.8.zip -d ~/bff
+
+5) Configure symlink
+ln -s /usr/local/bin/convert ~/convert
+
+6) Start fuzzing
+~/bff/batch.sh
+
+
 ===== Example installation on Fedora 16 32-bit =====
 
 To install BFF on a Fedora 16 32-bit system, for example, the following steps
@@ -87,8 +126,8 @@ yum install numpy scipy python-yaml valgrind svn automake libtool gcc-c++ ncurse
 
 2) Install the zzuf version patched by CERT:
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-unzip zzuf-patched.zip
-cd zzuf-patched
+unzip zzuf-master.zip
+cd zzuf-master
 ./bootstrap
 ./configure
 make
@@ -133,8 +172,8 @@ sudo yum install fluxbox
   (Cick the following options and ensure they are not selected to disable them:)
     (Auto Raise)
     (Focus New Windows)
-    
-    
+
+
 
 ===== Example installation on Ubuntu 11.10 32-bit =====
 
@@ -145,8 +184,8 @@ can be performed:
 sudo apt-get install python-numpy python-scipy python-yaml valgrind subversion automake libtool build-essential libncurses5-dev
 
 2) Install the zzuf version patched by CERT:
-unzip zzuf-patched.zip
-cd zzuf-patched
+unzip zzuf-master.zip
+cd zzuf-master
 ./bootstrap
 ./configure
 make
@@ -189,10 +228,10 @@ sudo apt-get install fluxbox
   (Cick the following options and ensure they are not selected to disable them:)
     (Focus New Windows)
     (Auto Raise)
-    
-    
-    
-    
+
+
+
+
 ===== Example installation on openSUSE 12 32-bit =====
 
 To install BFF on an openSUSE 12 32-bit system, for example, the following steps
@@ -203,8 +242,8 @@ sudo zypper ar -f 'http://download.opensuse.org/repositories/devel:/languages:/p
 sudo zypper install python-numpy python-scipy valgrind subversion automake libtool gcc-c++ ncurses-devel make
 
 2) Install the zzuf version patched by CERT:
-unzip zzuf-patched.zip
-cd zzuf-patched
+unzip zzuf-master.zip
+cd zzuf-master
 ./bootstrap
 ./configure
 make
@@ -230,7 +269,7 @@ ln -s /usr/local/bin/convert ~/convert
 6) Start fuzzing
 ~/bff/batch.sh
 
--- System Performance Configurations for Fedora --
+-- System Performance Configurations for openSUSE --
 a) Disable Memory Randomization:
 add "kernel.randomize_va_space=0" to /etc/sysctl.conf
 (reboot after this change)
@@ -250,8 +289,8 @@ sudo zypper install fluxbox
   (Cick the following options and ensure they are not selected to disable them:)
     (Focus New Windows)
     (Auto Raise)
-    
-    
+
+
 ===== Installation on other platforms =====
 
 BFF should run on any UNIX-like operating system. Depending on the features
