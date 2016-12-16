@@ -489,7 +489,7 @@ class CampaignBase(object):
 
         # choose seedfile
         sf = self.seedfile_set.next_item()
-        logger.info('Selected seedfile: %s', sf.basename)
+        logger.debug('Selected seedfile: %s', sf.basename)
 
         if (self.current_seed > 0) and (self.current_seed % self.status_interval == 0):
             # cache our current state
