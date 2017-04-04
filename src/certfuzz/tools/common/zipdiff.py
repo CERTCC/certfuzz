@@ -53,7 +53,7 @@ def main():
     zip1len = len(zip1bytes)
 
     if zip1len != len(zip2bytes):
-        print 'Zip contents are not the same size. Aborting.'
+        print('Zip contents are not the same size. Aborting.')
 
     for i in range(0, zip1len):
         if zip1bytes[i] != zip2bytes[i]:
@@ -61,11 +61,11 @@ def main():
             changedbytes.append(i)
 
     for changedbyte in changedbytes:
-        for name, info in saved_arcinfo.iteritems():
+        for name, info in saved_arcinfo.items():
             startaddr = info[0]
             endaddr = info[0] + info[1]
             if startaddr <= changedbyte <= endaddr and name not in changedfiles:
-                print '%s modified' % name
+                print('%s modified' % name)
                 changedfiles.append(name)
             #print '%s: %s-%s' %(name, info[0], info[0]+info[1])
 

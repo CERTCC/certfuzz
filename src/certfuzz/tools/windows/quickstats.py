@@ -20,8 +20,8 @@ def countcrashers(tld):
             if curdir == explevel:
                 explevelcount = len([hash for hash in os.listdir(root) if '0x' in hash])
                 totalcrashers = totalcrashers + explevelcount
-                print '%s: %s' % (explevel, explevelcount)
-    print 'Total: %s' % totalcrashers
+                print('%s: %s' % (explevel, explevelcount))
+    print('Total: %s' % totalcrashers)
 
 
 def main():
@@ -40,7 +40,7 @@ def main():
             # Probably using FOE 1.0, which defaults to "crashers" for output
             tld = 'crashers'
         else:
-            print 'Cannot find resuls directory %s' % tld
+            print('Cannot find resuls directory %s' % tld)
             sys.exit(0)
 
     countcrashers(tld)

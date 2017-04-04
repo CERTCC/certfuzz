@@ -42,10 +42,10 @@ class BitMutFuzzer(MinimizableFuzzer):
                     logger.debug('Reset range end from to %s to %s (file length exceeded)', end, last)
 
                 # seems legit...proceed
-                chooselist.extend(xrange(start, last + 1))
+                chooselist.extend(range(start, last + 1))
         else:
             # they're all available to fuzz
-            chooselist.extend(xrange(len(self.input)))
+            chooselist.extend(range(len(self.input)))
 
         # build the list of bits we're allowed to flip
         # since chooselist is the list of bytes we can fuzz
@@ -54,7 +54,7 @@ class BitMutFuzzer(MinimizableFuzzer):
         protobitlist = [x * 8 for x in chooselist]
         bitlist = []
         for b in protobitlist:
-            for i in xrange(0, 8):
+            for i in range(0, 8):
                 # here we fill in the actual bits we are
                 # allowed to fuzz
                 # this will add b, b+1, b+2...b+7

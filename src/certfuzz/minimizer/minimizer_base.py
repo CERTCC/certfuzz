@@ -323,7 +323,7 @@ class Minimizer(object):
         reconstruct archived files, using the same compression scheme as
         the source
         '''
-        for name, info in self.saved_arcinfo.iteritems():
+        for name, info in self.saved_arcinfo.items():
             # write out fuzzed file
             if info[2] == 0 or info[2] == 8:
                 # Python zipfile only supports compression types 0 and 8
@@ -612,7 +612,7 @@ class Minimizer(object):
                      (self.consecutive_misses, n_misses_allowed))
         parts.append('total_misses=%d/%d' %
                      (self.total_misses, self.total_tries))
-        parts.append('u_crashes=%d' % len(self.crash_sigs_found.items()))
+        parts.append('u_crashes=%d' % len(list(self.crash_sigs_found.items())))
         logstring = ' '.join(parts)
         self.logger.info(logstring)
 
@@ -821,7 +821,7 @@ class Minimizer(object):
         self._set_bytemap()
         self.logger.info(
             'We were looking for [%s] ...', self._crash_hashes_string())
-        for (md5, count) in self.crash_sigs_found.items():
+        for (md5, count) in list(self.crash_sigs_found.items()):
             self.logger.info('\t...and found %s\t%d times', md5, count)
         if self.bytemap:
             hex_bytemap = []
@@ -869,7 +869,7 @@ class Minimizer(object):
         rand = random.random
         dc = self.discard_chance
 
-        for (a, b) in itertools.izip(seed, fuzzed):
+        for (a, b) in zip(seed, fuzzed):
             if a != b and rand() > dc:
                 append(b)
                 hd += 1
@@ -892,7 +892,7 @@ class Minimizer(object):
     def bitwise_swap2(self, seed, fuzzed):
         swapped = []
         hd = 0
-        for (a, b) in itertools.izip(seed, fuzzed):
+        for (a, b) in zip(seed, fuzzed):
             if a != b:
                 mask = self._mask()
                 newbyte = chr((ord(a) & mask) ^ (ord(b) & ~mask))

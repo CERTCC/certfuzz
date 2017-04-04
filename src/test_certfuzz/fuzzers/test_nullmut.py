@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
         self.sf = seedfile_obj = MockSeedfile()
         self.sf.value = bytearray(self.sf.value)
         self.nulls_inserted = 0
-        for i in xrange(0, len(self.sf.value), 10):
+        for i in range(0, len(self.sf.value), 10):
             self.sf.value[i] = 0x00
             self.nulls_inserted += 1
 

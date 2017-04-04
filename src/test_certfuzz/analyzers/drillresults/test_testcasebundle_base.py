@@ -111,7 +111,7 @@ class Test(unittest.TestCase):
     def test_format_addr(self):
         # not 64 bit
         self.tcb._64bit_target_app = False
-        for x in xrange(15):
+        for x in range(15):
             faddr = 'a' * (x + 1)
             faddr_hex = '0x' + faddr
             result = self.tcb.format_addr(faddr_hex)
@@ -124,7 +124,7 @@ class Test(unittest.TestCase):
 
         # 64 bit padding
         self.tcb._64bit_target_app = True
-        for x in xrange(15):
+        for x in range(15):
             faddr = 'a' * (x + 1)
             faddr_hex = '0x' + faddr
             result = self.tcb.format_addr(faddr_hex)

@@ -33,11 +33,11 @@ class AnnotationFile(object):
 
     def print_lines(self):
         for l in self.lines:
-            print l
+            print(l)
 
     def print_coverage(self):
-        for (k, v) in self.coverage.iteritems():
-            print k, v
+        for (k, v) in self.coverage.items():
+            print(k, v)
 
     def process_coverage_line(self, line):
         m = re.match('([\d,]+)\s+([^:]+):(.+)\s+\[([^]]*)\]', line)
@@ -71,4 +71,4 @@ if __name__ == '__main__':
 
     for arg in args:
         a = AnnotationFile(arg)
-        print a.__dict__
+        print(a.__dict__)

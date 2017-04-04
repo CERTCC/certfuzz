@@ -3,7 +3,7 @@ Created on Apr 20, 2011
 
 @organization: cert.org
 '''
-import cPickle as pickle
+import pickle as pickle
 import logging
 
 logger = logging.getLogger(__name__)
@@ -26,6 +26,6 @@ def load_obj_from_file(cachefile):
         with open(cachefile, 'rb') as fd:
             obj = pickle.load(fd)
             logger.debug("Read saved state from %s", cachefile)
-    except StandardError, e:
+    except Exception as e:
         logger.debug("Unable to read from %s: %s", cachefile, e)
     return obj

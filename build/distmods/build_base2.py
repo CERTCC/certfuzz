@@ -8,7 +8,7 @@ import shutil
 import tempfile
 import logging
 import zipfile
-from git import git_rev, git_hash
+from .git import git_rev, git_hash
 
 from devmods.misc import copydir, copyfile, onerror, mdtotextfile
 
@@ -140,7 +140,7 @@ class Build(object):
             os.remove(self.target)
         logger.debug('moving {} to {}'.format(tmpzip, self.target))
         shutil.move(tmpzip, self.target)
-        _perm = 0644
+        _perm = 0o644
         logger.debug(
             'setting {:04o} permissions on {}'.format(_perm, self.target))
         os.chmod(self.target, _perm)

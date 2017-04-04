@@ -46,7 +46,7 @@ def print_dict(d):
 
 def random_str(length=1):
     chars = string.ascii_letters + string.digits
-    return ''.join([random.choice(chars) for dummy in xrange(length)])
+    return ''.join([random.choice(chars) for dummy in range(length)])
 
 
 def bitswap(input_byte):

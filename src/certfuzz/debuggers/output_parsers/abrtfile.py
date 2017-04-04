@@ -191,6 +191,6 @@ if __name__ == '__main__':
 
     for f in args:
         a = ABRTfile(f)
-        print 'Signature=%s' % a.get_testcase_signature(5)
+        print('Signature=%s' % a.get_testcase_signature(5))
         if a.registers_hex.get('eip'):
-            print 'EIP=%s' % a.registers_hex['eip']
+            print('EIP=%s' % a.registers_hex['eip'])

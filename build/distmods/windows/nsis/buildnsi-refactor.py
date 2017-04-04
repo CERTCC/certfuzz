@@ -21,7 +21,7 @@ def get_svn_revision():
 
 def print_file(f):
     with open(f, 'r') as fp:
-        print fp.read()
+        print(fp.read())
 
 class NsiFile(object):
     def __init__(self):
@@ -109,7 +109,7 @@ def main():
 
     with NsiFile() as nsi:
         for l in nsi.lines:
-            print l
+            print(l)
 
 if __name__ == '__main__':
     main()

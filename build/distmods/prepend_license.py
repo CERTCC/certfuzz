@@ -36,7 +36,7 @@ def parse_cmdline_args():
         options.add = True
 
     if not any([options.replace, options.add, options.remove]):
-        print "One of --add, --remove, or --replace must be specified."
+        print("One of --add, --remove, or --replace must be specified.")
         parser.print_help()
         sys.exit(1)
 
@@ -66,10 +66,10 @@ def all_files(root, patterns='*', single_level=False, yield_folders=False):
 
 
 def write_to_screen(f, lines):
-    print '*** WOULD BE WRITTEN TO %s ***' % f
+    print('*** WOULD BE WRITTEN TO %s ***' % f)
     for l in lines:
-        print l.rstrip()
-    print '*** END OF FILE %s ***' % f
+        print(l.rstrip())
+    print('*** END OF FILE %s ***' % f)
 
 
 def write_to_file(f, lines, keep_old=True):
@@ -100,7 +100,7 @@ def build_license_lines(license_file):
 
 def find_extra_blank_lines(lines):
     f = lambda (x, y): not str(y).strip()
-    blank_lines = filter(f, enumerate(lines))
+    blank_lines = list(filter(f, enumerate(lines)))
     blank_line_indices = [x[0] for x in blank_lines]
 
     lines_safe_to_remove = []
@@ -169,7 +169,7 @@ def prepend_license_to_file(license_file, remove, add, debug, f, overwrite):
         logger.debug('Output to screen only')
         write_to_screen(f, lines)
     else:
-        orig_permissions = os.stat(f).st_mode & 0777
+        orig_permissions = os.stat(f).st_mode & 0o777
         keep_old = not overwrite
         write_to_file(f, lines, keep_old)
         os.chmod(f, orig_permissions)

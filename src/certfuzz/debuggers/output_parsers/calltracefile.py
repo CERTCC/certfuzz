@@ -112,4 +112,4 @@ if __name__ == '__main__':
 
     for path in args:
         g = Calltracefile(path)
-        print g.get_testcase_signature(50)
+        print(g.get_testcase_signature(50))

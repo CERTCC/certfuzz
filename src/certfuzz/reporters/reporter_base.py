@@ -5,11 +5,10 @@ Created on Jan 12, 2016
 '''
 import abc
 
-class ReporterBase(object):
+class ReporterBase(object, metaclass=abc.ABCMeta):
     '''
     A BFF Reporter class
     '''
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, testcase):
         '''

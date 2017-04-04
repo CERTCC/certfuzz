@@ -33,7 +33,7 @@ def main():
         opts = {'threshold': 100}
         cga = CallgrindAnnotate(arg, opts)
         a = AnnotationFile(cga.outfile)
-        print a.__dict__
+        print(a.__dict__)
 
 
 def annotate_callgrind(testcase, file_ext='annotated', options=None):
@@ -85,7 +85,7 @@ class CallgrindAnnotate(object):
         @raise CallgrindAnnotateEmptyOutputFileError: on empty output file
         '''
         args = ['callgrind_annotate']
-        for (k, v) in self.options.iteritems():
+        for (k, v) in self.options.items():
             args.append('--%s=%s' % (k, v))
         args.append(self.callgrind_file)
         logger.debug('annotate_args: %s', args)

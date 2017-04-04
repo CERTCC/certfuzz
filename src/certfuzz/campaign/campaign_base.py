@@ -33,11 +33,10 @@ from certfuzz.fuzztools.filetools import write_file
 logger = logging.getLogger(__name__)
 
 
-class CampaignBase(object):
+class CampaignBase(object, metaclass=abc.ABCMeta):
     '''
     Provides a fuzzing campaign object.
     '''
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, config_file, result_dir=None, debug=False):
         '''
@@ -341,7 +340,7 @@ class CampaignBase(object):
         return cached_data
 
     def _restore_seedfile_scores(self, sf_scores):
-        for sf_md5, sf_score in sf_scores.iteritems():
+        for sf_md5, sf_score in sf_scores.items():
             # is this seedfile still around?
             try:
                 arm_to_update = self.seedfile_set.arms[sf_md5]
@@ -358,7 +357,7 @@ class CampaignBase(object):
                 successes=cached_successes, trials=cached_trials)
 
     def _restore_rangefinder_scores(self, rf_scores):
-        for sf_md5, rangelist in rf_scores.iteritems():
+        for sf_md5, rangelist in rf_scores.items():
             # is this seedfile still around?
             try:
                 sf_to_update = self.seedfile_set.things[sf_md5]
@@ -373,7 +372,7 @@ class CampaignBase(object):
 
             # construct a rangefinder key lookup table
             rf_lookup = {}
-            for key, item in rangefinder.things.iteritems():
+            for key, item in rangefinder.things.items():
                 lookup_key = (item.min, item.max)
                 rf_lookup[lookup_key] = key
 
@@ -434,10 +433,10 @@ class CampaignBase(object):
 
         # add rangefinder scores from each seedfile
         d = {}
-        for k, sf in self.seedfile_set.things.iteritems():
+        for k, sf in self.seedfile_set.things.items():
             d[k] = []
 
-            for rk, rf in sf.rangefinder.things.iteritems():
+            for rk, rf in sf.rangefinder.things.items():
                 arm = sf.rangefinder.arms[rk]
                 rkey = {'range_min': rf.min, 'range_max': rf.max}
                 rdata = {'range_key': rkey,
@@ -505,7 +504,7 @@ class CampaignBase(object):
         # note that range does not include interval_limit
         logger.debug(
             'Starting interval %d-%d', self.current_seed, interval_limit)
-        for seednum in xrange(self.current_seed, interval_limit):
+        for seednum in range(self.current_seed, interval_limit):
             if sf.md5 not in self.seedfile_set.things:
                 # We've exhausted what we can do with this seedfile
                 break

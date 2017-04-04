@@ -28,7 +28,7 @@ class InsertFuzzer(Fuzzer):
 #                    bytes_to_fuzz.extend(xrange(start, end + 1))
 #        else:
 #            bytes_to_fuzz = xrange(len(byte_buffer))
-        bytes_to_fuzz = xrange(len(self.input))
+        bytes_to_fuzz = range(len(self.input))
 
         # we can calculate the byte to insert on based on the number of tries
         # on this seed file

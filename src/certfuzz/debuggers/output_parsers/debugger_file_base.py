@@ -293,9 +293,9 @@ class DebuggerFile(object):
                 self.debugger_output = f.read()
                 self.lines = [l.strip()
                               for l in self.debugger_output.splitlines()]
-        except IOError, e:
+        except IOError as e:
             raise DebuggerFileError(e)
-        except MemoryError, e:
+        except MemoryError as e:
             raise DebuggerFileError(e)
 
     def _process_backtrace(self):
@@ -461,7 +461,7 @@ class DebuggerFile(object):
                 break
 
     def _remove_unmapped_frames(self):
-        for i in xrange(len(self.backtrace) - 1, -1, -1):
+        for i in range(len(self.backtrace) - 1, -1, -1):
             bt = self.backtrace[i]
             mapped_frame = False
             frame_address = self._get_frame_address(bt)
@@ -590,9 +590,9 @@ class DebuggerFile(object):
 
 
 def _detect_and_generate(debugger_file):
-    import konqifile
-    import abrtfile
-    import gdbfile
+    from . import konqifile
+    from . import abrtfile
+    from . import gdbfile
 
     BacktraceClass = {
         'gdb': gdbfile.GDBfile,
@@ -617,10 +617,10 @@ def _detect_and_generate(debugger_file):
 
 def _print_line(sig, filepath, bthash, include_bt=False):
     format_string = '%-32s\t%s'
-    print format_string % (sig, filepath)
+    print(format_string % (sig, filepath))
     if include_bt:
-        print format_string % ('', bthash)
-        print
+        print(format_string % ('', bthash))
+        print()
 
 
 def _analyze_file(filepath, include_bt=False):

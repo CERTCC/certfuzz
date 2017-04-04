@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         self.assertTrue(self.sf.len > 0)
         fuzzed_output_seen = set()
         try:
-            for i in xrange(200):
+            for i in range(200):
                 with ZzufFuzzer(*self.args) as f:
                     f.iteration = i
                     f._fuzz()

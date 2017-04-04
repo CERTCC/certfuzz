@@ -9,14 +9,14 @@ import os
 import sys
 import time
 import shutil
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import platform
 from distutils import dir_util
 from distutils.spawn import find_executable
 
 
 from subprocess import call, check_output
-from __builtin__ import False
+from builtins import False
 
 from certfuzz.fuzztools.filetools import rm_rf, best_effort_move
 
@@ -148,7 +148,7 @@ def git_update(uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz.gi
     elif find_executable('git'):
         # Shell out to git to get certfuzz from github
         ret = call(['git', 'clone', uri, tempdir, '--branch', branch])
-        print('ret: %d' % ret)
+        print(('ret: %d' % ret))
         headversion = check_output(['git', 'rev-parse', 'HEAD'], cwd=tempdir)
         gitdate = check_output(
             ['git', 'log', '-1', '--pretty=format:%cd'], cwd=tempdir)
@@ -178,7 +178,7 @@ def zip_update(tempdir, uri='https://github.com/CERTCC-Vulnerability-Analysis/ce
     targetzip = os.path.basename(uri)
     targetzippath = os.path.join(tempdir, targetzip)
     logger.debug('Saving %s to %s' % (uri, targetzippath))
-    urllib.urlretrieve(uri, targetzippath)
+    urllib.request.urlretrieve(uri, targetzippath)
     bffzip = zipfile.ZipFile(targetzippath, 'r')
     bffzip.extractall(tempdir)
     bffzip.close()

@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
 
     def test_fuzz(self):
         self.assertTrue(self.sf.len > 0)
-        for i in xrange(100):
+        for i in range(100):
             with BitMutFuzzer(*self.args) as f:
                 f.iteration = i
                 f._fuzz()

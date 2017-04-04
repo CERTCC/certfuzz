@@ -3,7 +3,7 @@ Created on Feb 3, 2012
 
 @organization: cert.org
 '''
-import StringIO
+import io
 import collections
 import logging
 import os
@@ -174,7 +174,7 @@ class MinimizableFuzzer(Fuzzer):
             return
 
         # If the seed is zip-based, fuzz the contents rather than the container
-        inmemseed = StringIO.StringIO(self.input)
+        inmemseed = io.StringIO(self.input)
         try:
             tempzip = zipfile.ZipFile(inmemseed, 'r')
         except:
@@ -223,14 +223,14 @@ class MinimizableFuzzer(Fuzzer):
         '''
 
         logger.debug('Creating in-memory zip with mutated contents.')
-        inmemzip = StringIO.StringIO()
+        inmemzip = io.StringIO()
         tempzip = zipfile.ZipFile(inmemzip, 'w')
 
         '''
         reconstruct archived files, using the same compression scheme as the
         source
         '''
-        for name, info in self.saved_arcinfo.iteritems():
+        for name, info in self.saved_arcinfo.items():
             # write out output file
             if info[2] == 0 or info[2] == 8:
                 # Python zipfile only supports compression types 0 and 8

@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
         c = func(results)
 
         # confirm that results has the right size and values
-        for i in xrange(100):
+        for i in range(100):
             self.assertEqual(i, len(results))
             c.send(i)
             self.assertEqual(i + 1, len(results))

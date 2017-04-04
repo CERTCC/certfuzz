@@ -8,10 +8,10 @@ if not platform.version().startswith('5.'):
     raise RunnerPlatformVersionError(
         'Incompatible OS: winrun only works on Windows XP and 2003')
 
-from killableprocess import Popen
+from .killableprocess import Popen
 from threading import Timer
 # @UnresolvedImport
-from _winreg import OpenKey, SetValueEx, HKEY_LOCAL_MACHINE, REG_SZ, KEY_ALL_ACCESS, QueryValueEx
+from winreg import OpenKey, SetValueEx, HKEY_LOCAL_MACHINE, REG_SZ, KEY_ALL_ACCESS, QueryValueEx
 import ctypes
 import os
 import logging
@@ -144,7 +144,7 @@ class WinRunner(RunnerBase):
 
         try:
             _set_reg_value(hive, branch, rname, rval)
-        except OSError, e:
+        except OSError as e:
             logger.error(
                 'Unable to set registry: %s\%s\%s=%s', hive, branch, rname, rval)
             raise RunnerRegistryError(e)
@@ -259,7 +259,7 @@ class WinRunner(RunnerBase):
             # TODO: Do something about it
             while p.poll() is None and not done and id:
                 for proc in wmiInterface.Win32_PerfRawData_PerfProc_Process(IDProcess=id):
-                    n1, d1 = long(proc.PercentProcessorTime), long(
+                    n1, d1 = int(proc.PercentProcessorTime), int(
                         proc.Timestamp_Sys100NS)
                     n0, d0 = process_info.get(id, (0, 0))
                     try:

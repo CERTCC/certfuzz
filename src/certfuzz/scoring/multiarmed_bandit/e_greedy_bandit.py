@@ -30,7 +30,7 @@ class EpsilonGreedyMultiArmedBandit(MultiArmedBanditBase):
     def _max_keys(self):
         max_p = 0.0
         _maybe_max_k = []
-        for key, arm in self.arms.iteritems():
+        for key, arm in self.arms.items():
             if arm.probability >= max_p:
                 max_p = arm.probability
                 _maybe_max_k.append((key, max_p))
@@ -43,7 +43,7 @@ class EpsilonGreedyMultiArmedBandit(MultiArmedBanditBase):
         return max_keys
 
     def _all_except(self, klist):
-        return [k for k in self.things.iterkeys() if not k in klist]
+        return [k for k in self.things.keys() if not k in klist]
 
     def _next_key(self):
         _max = self._max_keys()
@@ -52,7 +52,7 @@ class EpsilonGreedyMultiArmedBandit(MultiArmedBanditBase):
         else:
             return random.choice(self._all_except(_max))
 
-    def next(self):
+    def __next__(self):
         '''
         With probability 1-self.e, choose the best performer. Otherwise choose one of the others with equal probability
         '''

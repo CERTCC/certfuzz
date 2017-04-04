@@ -104,7 +104,7 @@ class SeedfileSet(MultiArmedBandit):
             filetools.make_writable(target)
 
     def paths(self):
-        for x in self.things.values():
+        for x in list(self.things.values()):
             yield x.path
 
     def next_item(self):

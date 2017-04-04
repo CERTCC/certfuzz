@@ -8,7 +8,7 @@ import logging
 import os
 import re
 
-import cPickle as pickle
+import pickle as pickle
 from certfuzz.drillresults.errors import DrillResultsError
 from certfuzz.drillresults.errors import TestCaseBundleError
 
@@ -20,9 +20,7 @@ regex = {
 }
 
 
-class ResultDriller(object):
-    __metaclass__ = abc.ABCMeta
-
+class ResultDriller(object, metaclass=abc.ABCMeta):
     def __init__(self,
                  ignore_jit=False,
                  base_dir='../results',
@@ -53,7 +51,7 @@ class ResultDriller(object):
         handled = False
 
         if etype is DrillResultsError:
-            print "{}: {}".format(etype.__name__, value)
+            print("{}: {}".format(etype.__name__, value))
             handled = True
 
         return handled
@@ -130,31 +128,31 @@ class ResultDriller(object):
 
     def print_crash_report(self, crash_key, score, details):
         #        details = self.results[crash_key]
-        print '\n%s - Exploitability rank: %s' % (crash_key, score)
-        print 'Fuzzed file: %s' % details['fuzzedfile']
+        print('\n%s - Exploitability rank: %s' % (crash_key, score))
+        print('Fuzzed file: %s' % details['fuzzedfile'])
         for exception in details['exceptions']:
             shortdesc = details['exceptions'][exception]['shortdesc']
             eiftext = ''
             efa = '0x' + details['exceptions'][exception]['efa']
             if details['exceptions'][exception]['EIF']:
                 eiftext = " *** Byte pattern is in fuzzed file! ***"
-            print 'exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext)
+            print('exception %s: %s accessing %s  %s' % (exception, shortdesc, efa, eiftext))
             if details['exceptions'][exception]['instructionline']:
-                print details['exceptions'][exception]['instructionline']
+                print(details['exceptions'][exception]['instructionline'])
             module = details['exceptions'][exception]['pcmodule']
             if module == 'unloaded':
                 if not self.ignore_jit:
-                    print 'Instruction pointer is not in a loaded module!'
+                    print('Instruction pointer is not in a loaded module!')
             else:
-                print 'Code executing in: %s' % module
+                print('Code executing in: %s' % module)
 
     @property
     def sorted_crashes(self):
-        return sorted(self.crash_scores.iteritems(), key=lambda(k, v): (v, k))
+        return sorted(iter(self.crash_scores.items()), key=lambda k_v: (k_v[1], k_v[0]))
 
     @property
     def sorted_drillresults_output(self):
-        return sorted(self.dr_scores.iteritems(), key=lambda(k, v): (v, k))
+        return sorted(iter(self.dr_scores.items()), key=lambda k_v1: (k_v1[1], k_v1[0]))
 
     def print_drillresults_file(self, crash_key):
         ff_line_indicator = 'Fuzzed file: '
@@ -164,15 +162,15 @@ class ResultDriller(object):
                 fuzzedfile = os.path.basename(pathname)
                 realdir = self.dr_paths[crash_key]
                 fixed_ff_path = os.path.join(realdir, fuzzedfile)
-                print ('%s%s' % (ff_line_indicator, fixed_ff_path))
+                print(('%s%s' % (ff_line_indicator, fixed_ff_path)))
             else:
-                print line
-        print ''
+                print(line)
+        print('')
 
     def print_reports(self):
         results = dict([(tcb.crash_hash, tcb.details)
                         for tcb in self.testcase_bundles])
-        print "--- Interesting crashes ---\n"
+        print("--- Interesting crashes ---\n")
 
         if len(self.dr_scores) > 0:
             # We're using existing .drillresults files

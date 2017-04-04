@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
             self.assertTrue(c in chars)
 
     def test_bitswap(self):
-        for x, y in itertools.izip([0, 1, 2, 3, 4], [0, 128, 64, 192, 32]):
+        for x, y in zip([0, 1, 2, 3, 4], [0, 128, 64, 192, 32]):
             self.assertEqual(y, misc.bitswap(x))
 
 if __name__ == "__main__":

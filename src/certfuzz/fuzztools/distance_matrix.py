@@ -32,7 +32,7 @@ class DistanceMatrix(object):
 
     def get_keys(self):
         # make sure we have matched sets
-        pairs = self.sim.keys()
+        pairs = list(self.sim.keys())
         p1 = set()
         p2 = set()
         for (x, y) in pairs:
@@ -100,7 +100,7 @@ class DistanceMatrix(object):
             label = '|- ' + crash_id
         else:
             label = '%d, %f' % (node.id, node.dist)
-        print '%s%s' % (prefix, label)
+        print('%s%s' % (prefix, label))
         if node.left:
             self.print_node(node.left, labels, depth + 1)
         if node.right:
@@ -132,7 +132,7 @@ class DistanceMatrix(object):
 
         # Draw the first node
         self.drawnode(draw, self.node, 10, (h / 2), scaling)
-        print "Saving image to %s" % self.image_file
+        print("Saving image to %s" % self.image_file)
         img.save(self.image_file)
 
     def getheight(self, clust):

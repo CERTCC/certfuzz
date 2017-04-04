@@ -1,4 +1,4 @@
-import cPickle
+import pickle
 import tempfile
 import os
 '''
@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
             foo = Mock()
             foo.bar = 1
             foo.baz = 2
-            cPickle.dump(foo, f)
+            pickle.dump(foo, f)
 
         qux = object_caching.load_obj_from_file(filename)
         self.assertEqual(1, qux.bar)

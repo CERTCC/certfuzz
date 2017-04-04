@@ -27,7 +27,7 @@ def weighted_choice(probabilities):
     '''
     x = random.uniform(0, 1)
     cumulative_probability = 0.0
-    for (k, p) in probabilities.iteritems():
+    for (k, p) in probabilities.items():
         cumulative_probability += p
         if x < cumulative_probability:
             return k

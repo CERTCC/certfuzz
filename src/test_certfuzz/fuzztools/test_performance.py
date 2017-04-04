@@ -29,11 +29,11 @@ class Test(unittest.TestCase):
         self.assertAlmostEqual(timestamps[-1] - timestamps[0], 3.14, 2)
 
     def test_relative_to_start(self):
-        [self.assertAlmostEqual(x, y) for (x, y) in itertools.izip(self.ts.relative_to_start(), (1.0, 4.14))]
+        [self.assertAlmostEqual(x, y) for (x, y) in zip(self.ts.relative_to_start(), (1.0, 4.14))]
 
     def test_deltas(self):
         self.ts.timestamps.append((106.0, 'c'))
-        [self.assertAlmostEqual(x, y) for (x, y) in itertools.izip(self.ts.deltas(), (3.14, 1.86))]
+        [self.assertAlmostEqual(x, y) for (x, y) in zip(self.ts.deltas(), (3.14, 1.86))]
 
     def test_delta_stats(self):
         self.ts.timestamps = [(4, 'a'), (5, 'b'), (7, 'c'), (8, 'd'), (9, 'e'), (12, 'f')]

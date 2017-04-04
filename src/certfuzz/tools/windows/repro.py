@@ -89,7 +89,7 @@ def main():
         # Recreate same file path as fuzz iteration
         resultdir = os.path.dirname(fuzzed_file.path)
         for msecfile in all_files(resultdir, '*.msec'):
-            print '** using msecfile: %s' % msecfile
+            print('** using msecfile: %s' % msecfile)
             iterationpath = getiterpath(msecfile)
             break
 

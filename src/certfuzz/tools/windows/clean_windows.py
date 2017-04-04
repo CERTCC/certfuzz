@@ -95,23 +95,23 @@ def main():
                     # to do so before the next iteration
                     nap_length = SLEEPTIMER * pow(BACKOFF_FACTOR, tries)
                     tries += 1
-                    print '%d files skipped, waiting %0.1fs to retry (%d of %d)' % (len(skipped), nap_length, tries, options.retries)
+                    print('%d files skipped, waiting %0.1fs to retry (%d of %d)' % (len(skipped), nap_length, tries, options.retries))
                     time.sleep(nap_length)
                 else:
-                    print 'Maximum retries (%d) exceeded.' % options.retries
+                    print('Maximum retries (%d) exceeded.' % options.retries)
                     done = True
             else:
                 done = True
 
         for (skipped_item, reason) in skipped:
-            print "Skipped file %s: %s" % (skipped_item, reason)
+            print("Skipped file %s: %s" % (skipped_item, reason))
 
     else:
         parser.print_help()
-        print
-        print 'Would have deleted the contents of:'
+        print()
+        print('Would have deleted the contents of:')
         for d in dirs:
-            print '... %s' % d
+            print('... %s' % d)
 
 if __name__ == '__main__':
     main()

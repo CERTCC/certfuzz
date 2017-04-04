@@ -42,7 +42,7 @@ class TimeStamper(object):
 
     def deltas(self):
         ts = self.get_timestamps()
-        return [t2 - t1 for (t1, t2) in itertools.izip(ts[:-1], ts[1:])]
+        return [t2 - t1 for (t1, t2) in zip(ts[:-1], ts[1:])]
 
     def delta_stats(self):
         '''

@@ -353,4 +353,4 @@ if __name__ == '__main__':
 
     for path in args:
         g = CWfile(path)
-        print g.get_testcase_signature(5)
+        print(g.get_testcase_signature(5))

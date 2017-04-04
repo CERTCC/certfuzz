@@ -23,15 +23,15 @@ class Test(unittest.TestCase):
         self.assertEqual(1.0, self.arm.probability)
 
     def test_failures(self):
-        for x in xrange(0, 10):
-            for y in xrange(x, 10):
+        for x in range(0, 10):
+            for y in range(x, 10):
                 self.arm.successes = x
                 self.arm.trials = y
                 self.assertEqual(y - x, self.arm.failures)
 
     def test_doubt(self):
-        for x in xrange(1, 100, 5):
-            for y in xrange(1, 100, 5):
+        for x in range(1, 100, 5):
+            for y in range(1, 100, 5):
                 self.arm.successes = x
                 self.arm.trials = x * y
                 self.assertEqual(x, self.arm.successes)

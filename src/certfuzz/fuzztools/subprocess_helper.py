@@ -79,7 +79,7 @@ def run_with_timer(args, timeout, progname, cwd=None, use_shell=False, **options
             p = subprocess.Popen(
                 args, cwd=cwd, stdout=output, stderr=errors, env=env, shell=use_shell, preexec_fn=os.setsid)
     except:
-        print "Failed to run [%s]" % ' '.join(args)
+        print("Failed to run [%s]" % ' '.join(args))
         sys.exit(-1)
 
     # Set up timeout timer

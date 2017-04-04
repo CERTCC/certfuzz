@@ -76,7 +76,7 @@ class Test(unittest.TestCase):
             # bail out if touch doesn't exist
             return
 
-        for _ in xrange(100):
+        for _ in range(100):
             zr = ZzufRunner(options, self.cmd_template, self.ff, self.tmpdir)
             fd, fname = tempfile.mkstemp(prefix='zzufrun_test_', dir=self.tmpdir)
             os.close(fd)

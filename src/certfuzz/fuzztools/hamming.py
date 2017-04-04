@@ -25,7 +25,7 @@ def vector_compare(v1, v2):
                 vdict[idx] = 1
 
     distance = 0
-    for val in vdict.values():
+    for val in list(vdict.values()):
         if val == 1:
             distance += 1
 
@@ -38,7 +38,7 @@ def bytemap(s1, s2):
     '''
     assert len(s1) == len(s2)
     delta = []
-    for idx, (c1, c2) in enumerate(itertools.izip(s1, s2)):
+    for idx, (c1, c2) in enumerate(zip(s1, s2)):
         if c1 != c2:
             delta.append(idx)
     return delta
@@ -50,7 +50,7 @@ def bytewise_hd(s1, s2):
     the distance as an int.
     '''
     assert len(s1) == len(s2)
-    return sum(ch1 != ch2 for ch1, ch2 in itertools.izip(s1, s2))
+    return sum(ch1 != ch2 for ch1, ch2 in zip(s1, s2))
 
 
 def bytewise_hamming_distance(file1, file2):
@@ -92,7 +92,7 @@ def bitwise_hd(x, y):
     assert len(x) == len(y)
 
     hd = 0
-    for (a, b) in itertools.izip(x, y):
+    for (a, b) in zip(x, y):
         a = ord(a)
         b = ord(b)
 

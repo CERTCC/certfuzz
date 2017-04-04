@@ -213,5 +213,5 @@ if __name__ == "__main__":
         triaged = sorted(results , key=lambda tstate: tstate[1]) 
         json.dump(triaged, open(opts.output, "wt"), indent=4)
 
-    print("\n\n\n\n", results)
+    print(("\n\n\n\n", results))
 

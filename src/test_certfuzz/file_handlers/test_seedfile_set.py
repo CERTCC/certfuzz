@@ -95,7 +95,7 @@ class Test(unittest.TestCase):
         self.assertEqual(0, len(self.sfs.things))
         self.sfs.add_file(*self.files)
         self.assertEqual(5, len(self.sfs.things))
-        for thing in self.sfs.things.itervalues():
+        for thing in self.sfs.things.values():
             self.assertEqual(SeedFile, thing.__class__)
 
     def test_init(self):
@@ -103,7 +103,7 @@ class Test(unittest.TestCase):
         self.assertEqual(0, len(self.sfs.things))
 
     def _same_dict(self, d1, d2):
-        for k, v in d1.iteritems():
+        for k, v in d1.items():
             #            print k
             self.assertTrue(k in d2)
             self.assertEqual(v, d2[k])

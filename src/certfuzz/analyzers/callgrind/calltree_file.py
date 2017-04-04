@@ -36,23 +36,23 @@ class CalltreeFile(object):
 
     def print_lines(self):
         for l in self.lines:
-            print l
+            print(l)
 
     def print_digraph(self):
 
         node_id = {}
 
-        print 'Digraph G'
-        print '{'
+        print('Digraph G')
+        print('{')
         for n_id, node in enumerate(self.nodes_seen):
             short_node = node.split('|')[-1]
-            print '\t%d [label="%s"]' % (n_id, short_node)
+            print('\t%d [label="%s"]' % (n_id, short_node))
             node_id[node] = n_id
-        for (src, dst) in self.links.iteritems():
+        for (src, dst) in self.links.items():
             srcnode = node_id[src]
             dstnode = node_id[dst]
-            print "\t%s -> %s" % (srcnode, dstnode)
-        print '}'
+            print("\t%s -> %s" % (srcnode, dstnode))
+        print('}')
 
     def process_lines(self):
         caller = None

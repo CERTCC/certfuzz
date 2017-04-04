@@ -8,7 +8,7 @@ Provides support for analyzing zzuf log files.
 import logging
 import re
 
-import filetools
+from . import filetools
 
 
 logger = logging.getLogger(__name__)

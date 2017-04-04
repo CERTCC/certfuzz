@@ -51,7 +51,7 @@ class Test(unittest.TestCase):
         self.m.min_distance = hamming.bytewise_hd(self.m.seed, self.m.fuzzed_content)
         self.assertEqual(self.m.min_distance, 26)
 
-        for tsg in xrange(1, 20):
+        for tsg in range(1, 20):
             self.m.target_size_guess = tsg
             self.m.set_discard_chance()
             self.assertAlmostEqual(self.m.discard_chance, 1.0 / (1.0 + tsg))

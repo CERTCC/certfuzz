@@ -17,14 +17,14 @@ class StateTimer(object):
         self._delim = ', '
 
     def __str__(self):
-        return 'State Timer - ' + self._delim.join('{}: {}'.format(k, v) for k, v in self.timers.iteritems())
+        return 'State Timer - ' + self._delim.join('{}: {}'.format(k, v) for k, v in self.timers.items())
 
     def _reset(self):
         self.current_state = None
         self._in = None
 
     def states(self):
-        return self.timers.keys()
+        return list(self.timers.keys())
 
     def enter_state(self, new_state=None):
         if new_state == self.current_state:
@@ -47,7 +47,7 @@ class StateTimer(object):
                 self.timers[self.current_state] = 0.0
 
     def total_time(self):
-        return sum(self.timers.itervalues())
+        return sum(self.timers.values())
 
     def time_in(self, state):
         if state in self.timers:

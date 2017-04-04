@@ -68,7 +68,7 @@ class DarwinBuild(Build):
             try:
                 os.remove(self.sparse_image)
             except:
-                print "Failed to remove %s" % self.sparse_image
+                print("Failed to remove %s" % self.sparse_image)
 
     def refine(self):
         Build.refine(self)

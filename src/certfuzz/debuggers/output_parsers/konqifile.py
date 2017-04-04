@@ -208,6 +208,6 @@ if __name__ == '__main__':
 
     for f in args:
         k = Konqifile(f)
-        print 'Signature=%s' % k.get_testcase_signature(5)
+        print('Signature=%s' % k.get_testcase_signature(5))
         if k.registers_hex.get('eip'):
-            print 'EIP=%s' % k.registers_hex['eip']
+            print('EIP=%s' % k.registers_hex['eip'])

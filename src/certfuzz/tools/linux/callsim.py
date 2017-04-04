@@ -33,7 +33,7 @@ def main():
         logger.setLevel(logging.DEBUG)
 
     if not len(args):
-        print "You must specify at least one dir to crawl.\n"
+        print("You must specify at least one dir to crawl.\n")
         parser.print_help()
         exit(-1)
     else:
@@ -41,8 +41,8 @@ def main():
 
     try:
         sim = SimilarityMatrix(args)
-    except SimilarityMatrixError, e:
-        print 'Error:', e
+    except SimilarityMatrixError as e:
+        print('Error:', e)
         exit(-1)
 
     if options.precision:
@@ -69,11 +69,11 @@ def main():
         dm = DistanceMatrix(sim.sim)
         try:
             dm.to_image(target)
-        except DistanceMatrixError, e:
-            print "PIL not installed, skipping image creation."
+        except DistanceMatrixError as e:
+            print("PIL not installed, skipping image creation.")
     else:
         # it's something other than None, list, or tree
-        print "The only allowed values for --style are 'list' and 'tree': %s" % options.style
+        print("The only allowed values for --style are 'list' and 'tree': %s" % options.style)
         parser.print_help()
         exit(-1)
 

@@ -3,7 +3,7 @@ Created on Jun 30, 2014
 
 @organization: cert.org
 '''
-import StringIO
+import io
 import argparse
 import logging
 import zipfile
@@ -131,7 +131,7 @@ def _read_zip(raw_file_byte_string):
     zbytes = str()
 
     # For zip files, return the uncompressed bytes
-    file_like_content = StringIO.StringIO(raw_file_byte_string)
+    file_like_content = io.StringIO(raw_file_byte_string)
     if zipfile.is_zipfile(file_like_content):
         # Make sure that it's not an embedded zip
         # (e.g. a DOC file from Office 2007)

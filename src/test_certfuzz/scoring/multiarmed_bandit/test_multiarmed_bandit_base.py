@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         self.mab = MultiArmedBanditBase()
-        self.keys = u'abcdefghijklmnopqrstuvwxyz'
+        self.keys = 'abcdefghijklmnopqrstuvwxyz'
         for arm in self.keys:
             self.mab.add_item(arm, arm)
 
@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
         self.assertEqual(1.0, self.mab.arms['foo'].probability)
 
         # check if we have some successes already
-        for arm in self.mab.arms.itervalues():
+        for arm in self.mab.arms.values():
             arm.update(successes=1, trials=5)
 
         self.mab.add_item(key='newarm', obj='this_string')
@@ -69,7 +69,7 @@ class Test(unittest.TestCase):
     def test_trials(self):
         self.assertEqual(0, self.mab.trials)
         count = 0
-        for arm in self.mab.arms.values():
+        for arm in list(self.mab.arms.values()):
             count += 1
             arm.update(trials=1)
             self.assertEqual(count, self.mab.trials)
@@ -77,29 +77,29 @@ class Test(unittest.TestCase):
     def test_successes(self):
         self.assertEqual(0, self.mab.successes)
         count = 0
-        for arm in self.mab.arms.values():
+        for arm in list(self.mab.arms.values()):
             count += 1
             arm.update(successes=1)
             self.assertEqual(count, self.mab.successes)
 
     def test_total_p(self):
-        total = sum(a.probability for a in self.mab.arms.values())
+        total = sum(a.probability for a in list(self.mab.arms.values()))
         self.assertEqual(total, self.mab._total_p)
 
-        for a in self.mab.arms.itervalues():
+        for a in self.mab.arms.values():
             a.probability = a.probability * 0.5
         self.assertEqual(total * 0.5, self.mab._total_p)
 
     def test_next(self):
         # empty set raises StopIteration
-        self.assertRaises(StopIteration, self.mab.next)
+        self.assertRaises(StopIteration, self.mab.__next__)
 
     def test_arms_as_dict(self):
         d = self.mab.arms_as_dict()
 
         self.assertTrue(isinstance(d, dict))
 
-        for k, arm in self.mab.arms.iteritems():
+        for k, arm in self.mab.arms.items():
             self.assertTrue(isinstance(d[k], dict))
             for attrname in ['successes', 'probability', 'trials']:
                 self.assertTrue(attrname in d[k])

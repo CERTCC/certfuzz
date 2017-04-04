@@ -77,7 +77,7 @@ class MsecDebugger(DebuggerBase):
             args.extend(('-hd', '-xd', 'gp'))
         args.extend(('-logo', outfile))
         args.extend(('-xd', 'bpe', '-xd', 'wob', '-o', '-G', '-c'))
-        for self.exception_depth in xrange(0, self.exception_depth):
+        for self.exception_depth in range(0, self.exception_depth):
             cdb_command = 'g;' + cdb_command
         args.append(cdb_command)
         args.append(self.program)
@@ -136,7 +136,7 @@ class MsecDebugger(DebuggerBase):
             # TODO: Do something about it
             while p.poll() is None and not done and child_pid:
                 for proc in self.wmiInterface.Win32_PerfRawData_PerfProc_Process(IDProcess=child_pid):
-                    n1, d1 = long(proc.PercentProcessorTime), long(
+                    n1, d1 = int(proc.PercentProcessorTime), int(
                         proc.Timestamp_Sys100NS)
                     n0, d0 = process_info.get(child_pid, (0, 0))
                     try:

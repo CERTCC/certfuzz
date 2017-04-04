@@ -5,9 +5,9 @@ Created on Feb 6, 2014
 '''
 import argparse
 import logging
-from distmods.build2 import builder_for
-from distmods.build2 import SUPPORTED_PLATFORMS as builders
-from distmods.errors import BuildError
+from .distmods.build2 import builder_for
+from .distmods.build2 import SUPPORTED_PLATFORMS as builders
+from .distmods.errors import BuildError
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', help='enable debug messages', action="store_true")
     parser.add_argument('-v', '--verbose', help='enable debug messages', action="store_true")
-    parser.add_argument('platform', type=str, help='One of {}'.format(builders.keys()))
+    parser.add_argument('platform', type=str, help='One of {}'.format(list(builders.keys())))
     parser.add_argument('srcpath', type=str, help='path/to/bff/src')
     parser.add_argument('distpath', type=str, help='Directory to build into')
     args = parser.parse_args()
@@ -29,7 +29,7 @@ def main():
         logger.setLevel(logging.WARNING)
 
     if not args.platform in builders:
-        print 'platform must be one of {}'.format(builders.keys())
+        print('platform must be one of {}'.format(list(builders.keys())))
         exit(1)
 
     # assume that we're running in a git checkout?

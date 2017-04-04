@@ -46,21 +46,21 @@ class Test(unittest.TestCase):
         # so we should only see two ranges
         r = RangeFinder(0.375, 0.999)
         self.assertEqual(len(r.things), 2)
-        mins = sorted([thing.min for thing in r.things.itervalues()])
-        maxs = sorted([thing.max for thing in r.things.itervalues()])
+        mins = sorted([thing.min for thing in r.things.values()])
+        maxs = sorted([thing.max for thing in r.things.values()])
         self.assertEqual(0.375, mins[0])
         self.assertAlmostEqual(0.61, mins[1], places=2)
         self.assertAlmostEqual(0.61, maxs[0], places=2)
         self.assertEqual(0.999, maxs[1])
 
     def _ranges(self):
-        minkeys = sorted([(v.min, k) for (k, v) in self.r.things.iteritems()])
+        minkeys = sorted([(v.min, k) for (k, v) in self.r.things.items()])
         keys = [k[1] for k in minkeys]
         return [self.r.things[k] for k in keys]
 
     def test_range_orderings(self):
         # first term should be smaller than second term
-        ranges = self.r.things.values()
+        ranges = list(self.r.things.values())
         for x in ranges:
             self.assertTrue(x.min <= x.max)
 
@@ -72,7 +72,7 @@ class Test(unittest.TestCase):
 
     def test_range_mean(self):
         # mean should be halfway between min and max
-        for x in self.r.things.values():
+        for x in list(self.r.things.values()):
             self.assertAlmostEqual(x.mean, ((x.max + x.min) / 2))
 
 

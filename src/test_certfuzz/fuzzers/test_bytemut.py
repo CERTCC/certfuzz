@@ -40,7 +40,7 @@ class Test(unittest.TestCase):
 
 
     def _test_fuzz(self, inputlen=1000, iterations=100, rangelist=None):
-        for i in xrange(iterations):
+        for i in range(iterations):
             fuzzed = fuzz(fuzz_input=_input(inputlen),
                                 seed_val=0,
                                 jump_idx=i,
@@ -72,7 +72,7 @@ class Test(unittest.TestCase):
 
     def test_fuzzable(self):
         r = [(0, 100), (600, 1000), (3000, 10000)]
-        for x in xrange(10000):
+        for x in range(10000):
             if 0 <= x <= 100:
                 self.assertFalse(_fuzzable(x, r), 'x=%d' % x)
             elif 600 <= x <= 1000:
@@ -86,7 +86,7 @@ class Test(unittest.TestCase):
         inputlen = 10000
         iterations = 100
         r = [(0, 100), (600, 1000), (3000, 10000)]
-        for i in xrange(iterations):
+        for i in range(iterations):
             fuzzed = fuzz(fuzz_input=_input(inputlen),
                                 seed_val=0,
                                 jump_idx=i,
@@ -113,7 +113,7 @@ class Test(unittest.TestCase):
 
     def test_bytemutfuzzer_fuzz(self):
         self.assertTrue(self.sf.len > 0)
-        for i in xrange(100):
+        for i in range(100):
             with ByteMutFuzzer(*self.args) as f:
                 f.iteration = i
                 f._fuzz()

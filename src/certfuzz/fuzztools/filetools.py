@@ -5,7 +5,7 @@ Provides basic file system tools for creating directories, copying files, writin
 
 @organization: cert.org
 '''
-import StringIO
+import io
 import errno
 import fnmatch
 import hashlib
@@ -111,7 +111,7 @@ def best_effort_copy(src, dst):
     try:
         copy_file(src, dst)
         copied = True
-    except OSError, e:
+    except OSError as e:
         logger.warning('Unable to copy file: %s', e)
     return copied
 
@@ -121,7 +121,7 @@ def best_effort_delete(target):
     try:
         delete_files(target)
         deleted = True
-    except OSError, e:
+    except OSError as e:
         logger.warning('Unable to remove file: %s', e)
     return deleted
 
@@ -287,10 +287,10 @@ def delete_files_or_dirs(dirlist, print_via_log=True):
             if print_via_log:
                 logger.debug(msg)
             else:
-                print msg
+                print(msg)
             try:
                 os.unlink(item_path)
-            except Exception, e:
+            except Exception as e:
                 skipped_items.append((item_path, e))
         elif os.path.isdir(item_path):
             try:
@@ -298,9 +298,9 @@ def delete_files_or_dirs(dirlist, print_via_log=True):
                 if print_via_log:
                     logger.debug(msg)
                 else:
-                    print msg
+                    print(msg)
                 shutil.rmtree(item_path)
-            except Exception, e:
+            except Exception as e:
                 skipped_items.append((item_path, e))
         else:
             skipped_items.append((item_path, 'Not a file or dir'))
@@ -314,7 +314,7 @@ def delete_contents_of(dirs, print_via_log=True):
         if os.path.exists(directory):
             try:
                 dirlist = os.listdir(directory)
-            except Exception, e:
+            except Exception as e:
                 skipped_items.append((directory, e))
 
             to_delete = [os.path.join(directory, item)
@@ -339,7 +339,7 @@ def check_zip_fh(file_like_content):
 
 
 def check_zip_content(content):
-    file_like_content = StringIO.StringIO(content)
+    file_like_content = io.StringIO(content)
     return check_zip_fh(file_like_content)
 
 

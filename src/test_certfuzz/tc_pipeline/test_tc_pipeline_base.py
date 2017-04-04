@@ -112,7 +112,7 @@ class Test(unittest.TestCase):
         certfuzz.tc_pipeline.tc_pipeline_base.touch_watchdog_file = inc_cc
 
         tc = MockTestCase()
-        tcpl.analyzer_classes = [MockAnalyzer for _ in xrange(5)]
+        tcpl.analyzer_classes = [MockAnalyzer for _ in range(5)]
         tcpl._analyze(tc)
         self.assertEqual(5, sum(analyzer_count))
         self.assertEqual(5, sum(touch_watchdog_call_count))

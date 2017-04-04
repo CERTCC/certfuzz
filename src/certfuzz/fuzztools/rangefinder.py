@@ -70,4 +70,4 @@ class RangeFinder(MultiArmedBandit):
             self.add_item(r.id, r)
 
     def next_item(self):
-        return self.next()
+        return next(self)

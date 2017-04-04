@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
         self._bump_p('b')
         # now both a and be should be max
         seen = set()
-        for _i in xrange(20):
+        for _i in range(20):
             ks = mab._max_keys()
             for k in ks:
                 seen.add(k)
@@ -78,7 +78,7 @@ class Test(unittest.TestCase):
             counters[_k] = 0
 
         N = 10000
-        for _i in xrange(N):
+        for _i in range(N):
             k = mab._next_key()
             counters[k] += 1
 

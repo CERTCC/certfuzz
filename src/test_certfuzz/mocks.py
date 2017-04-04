@@ -83,7 +83,7 @@ class MockSeedfile(Mock):
 
 
 class MockFuzzedFile(Mock):
-    path = u'foo'
+    path = 'foo'
 
     def __init__(self, path=None):
         if path is not None:
@@ -111,7 +111,7 @@ class MockTestcase(Mock):
     seednum = 123456789
     range = MockRange()
     fuzzedfile = MockFuzzedFile()
-    pc = u'dummyPCstring'
+    pc = 'dummyPCstring'
     debugger_extension = 'abcdefg'
     dbg_outfile = 'xyz'
     target_dir = tempfile.mkdtemp()

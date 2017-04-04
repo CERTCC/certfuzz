@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
 
     def test_fuzzable(self):
         r = [(0, 100), (600, 1000), (3000, 10000)]
-        for x in xrange(10000):
+        for x in range(10000):
             if 0 <= x <= 100:
                 self.assertFalse(_fuzzable(x, r), 'x=%d' % x)
             elif 600 <= x <= 1000:

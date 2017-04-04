@@ -22,7 +22,7 @@ class MultiArmedBanditBase(object):
         self.arms = {}
 
     def arms_as_dict(self):
-        return {k: dict(arm.__dict__) for k, arm in self.arms.iteritems()}
+        return {k: dict(arm.__dict__) for k, arm in self.arms.items()}
 
     def add_item(self, key=None, obj=None):
         if key is None:
@@ -66,7 +66,7 @@ class MultiArmedBanditBase(object):
 
     def _log_arm_p(self):
         logger.debug('Updated probabilities')
-        for k, v in self.arms.iteritems():
+        for k, v in self.arms.items():
             logger.debug('key=%s probability=%f', k, v.probability)
 
     def record_success(self, key=None, successes=1):
@@ -75,15 +75,15 @@ class MultiArmedBanditBase(object):
 
     @property
     def successes(self):
-        return sum([a.successes for a in self.arms.values()])
+        return sum([a.successes for a in list(self.arms.values())])
 
     @property
     def trials(self):
-        return sum([a.trials for a in self.arms.values()])
+        return sum([a.trials for a in list(self.arms.values())])
 
     @property
     def _total_p(self):
-        return sum([a.probability for a in self.arms.itervalues()])
+        return sum([a.probability for a in self.arms.values()])
 
     @property
     def mean_p(self):
@@ -94,7 +94,7 @@ class MultiArmedBanditBase(object):
         total = 0.0
         count = 0
 
-        for a in self.arms.itervalues():
+        for a in self.arms.values():
             if not a.trials:
                 continue
             total += a.probability
@@ -104,5 +104,5 @@ class MultiArmedBanditBase(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         raise StopIteration()

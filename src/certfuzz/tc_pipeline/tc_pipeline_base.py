@@ -3,7 +3,7 @@ Created on Jul 16, 2014
 
 @organization: cert.org
 '''
-import Queue
+import queue
 import abc
 import logging
 import os
@@ -19,11 +19,10 @@ from certfuzz.minimizer.errors import MinimizerError
 logger = logging.getLogger(__name__)
 
 
-class TestCasePipelineBase(object):
+class TestCasePipelineBase(object, metaclass=abc.ABCMeta):
     '''
     Implements a pipeline for filtering and processing a testcase
     '''
-    __metaclass__ = abc.ABCMeta
     pipes = ['verify', 'minimize', 'recycle', 'analyze', 'report']
 
     def __init__(self, testcases=None, uniq_func=None, cfg=None, options=None,
@@ -40,7 +39,7 @@ class TestCasePipelineBase(object):
         self.working_dir = workdirbase
         self.sf_set = sf_set
 
-        self.tc_candidate_q = Queue.Queue()
+        self.tc_candidate_q = queue.Queue()
 
         self.analyzer_classes = []
         self._setup_analyzers()
@@ -225,7 +224,7 @@ class TestCasePipelineBase(object):
         try:
             with self._minimizer_cls(**kwargs) as m:
                 m.go()
-                for new_tc in m.other_crashes.values():
+                for new_tc in list(m.other_crashes.values()):
                     self.tc_candidate_q.put(new_tc)
         except MinimizerError as e:
             logger.warning(

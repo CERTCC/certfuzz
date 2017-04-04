@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
     def test__enumerate_string(self):
         s = 'x____' * 1000
 
-        occurrences = sorted(random.sample(population=range(0, len(s), 5), k=102))
+        occurrences = sorted(random.sample(population=list(range(0, len(s), 5)), k=102))
         result = text._enumerate_string(s, occurrences)
         # length should be unchanged
         self.assertEqual(len(s), len(result))

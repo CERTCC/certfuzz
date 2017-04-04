@@ -16,7 +16,7 @@ import copy
 
 def _insert_crlf(buf):
     chars_inserted = 0
-    for i in xrange(0, len(buf), 10):
+    for i in range(0, len(buf), 10):
         buf[i] = 0x0D
         chars_inserted += 1
         try:
@@ -58,7 +58,7 @@ class Test(unittest.TestCase):
     def _test_fuzz(self, inputlen=1000, iterations=100, rangelist=None):
         _input, chars_inserted = _insert_crlf(bytearray('A' * inputlen))
 
-        for i in xrange(iterations):
+        for i in range(iterations):
             fuzzed = fuzz(fuzz_input=copy.copy(_input),
                                 seed_val=0,
                                 jump_idx=i,
@@ -93,7 +93,7 @@ class Test(unittest.TestCase):
         r = [(0, 100), (600, 1000), (3000, 10000)]
         _input, chars_inserted = _insert_crlf(bytearray('A' * inputlen))
 
-        for i in xrange(iterations):
+        for i in range(iterations):
             fuzzed = fuzz(fuzz_input=copy.copy(_input),
                                 seed_val=0,
                                 jump_idx=i,
@@ -121,7 +121,7 @@ class Test(unittest.TestCase):
 
     def test_nullmutfuzzer_fuzz(self):
         self.assertTrue(self.sf.len > 0)
-        for i in xrange(100):
+        for i in range(100):
             with CRLFMutFuzzer(*self.args) as f:
                 f.iteration = i
                 f._fuzz()

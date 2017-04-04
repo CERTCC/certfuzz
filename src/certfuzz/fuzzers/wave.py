@@ -21,9 +21,9 @@ class WaveFuzzer(MinimizableFuzzer):
         if self.options.get('use_range_list'):
             bytes_to_fuzz = []
             for (start, end) in self.options['range_list']:
-                bytes_to_fuzz.extend(xrange(start, end + 1))
+                bytes_to_fuzz.extend(range(start, end + 1))
         else:
-            bytes_to_fuzz = xrange(len(self.input))
+            bytes_to_fuzz = range(len(self.input))
 
         # we can calculate the byte and value based on the number of tries
         # on this seed file

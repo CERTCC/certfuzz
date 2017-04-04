@@ -154,11 +154,11 @@ class Test(unittest.TestCase):
             len(x['seedfile_scores']), len(self.campaign.seedfile_set.arms))
 
         # verify the data structures
-        for score in x['seedfile_scores'].values():
+        for score in list(x['seedfile_scores'].values()):
             for k in ['successes', 'trials', 'probability']:
                 self.assertTrue(k in score)
 
-        for items in x['rangefinder_scores'].values():
+        for items in list(x['rangefinder_scores'].values()):
             for item in items:
                 for k in ['range_key', 'range_score']:
                     self.assertTrue(k in item)
@@ -170,7 +170,7 @@ class Test(unittest.TestCase):
         self.campaign.seedfile_set = SeedfileSet()
 
         files = []
-        for x in xrange(10):
+        for x in range(10):
             _fd, _fname = tempfile.mkstemp(prefix='seedfile_', dir=self.tmpdir)
             os.write(_fd, str(x))
             os.close(_fd)
@@ -206,7 +206,7 @@ class Test(unittest.TestCase):
 
         self._check_data_structure(x)
 
-        for k, v in self.campaign._get_state_as_dict().iteritems():
+        for k, v in self.campaign._get_state_as_dict().items():
             self.assertTrue(k in x)
             self.assertEqual(x[k], v)
 
@@ -218,11 +218,11 @@ class Test(unittest.TestCase):
         d = self.campaign._get_state_as_dict()
 
         d['current_seed'] = 1000
-        for score in d['seedfile_scores'].itervalues():
+        for score in d['seedfile_scores'].values():
             score['successes'] = 10
             score['trials'] = 100
 
-        for sf in d['rangefinder_scores'].values():
+        for sf in list(d['rangefinder_scores'].values()):
             for r in sf:
                 r['range_score']['successes'] = 5
                 r['range_score']['trials'] = 50
@@ -232,16 +232,16 @@ class Test(unittest.TestCase):
 
         self.assertNotEqual(self.campaign.current_seed, d['current_seed'])
         successes = [x['successes']
-                     for x in self.campaign.seedfile_set.arms_as_dict().values()]
+                     for x in list(self.campaign.seedfile_set.arms_as_dict().values())]
         for _score in successes:
             self.assertEqual(0, _score)
         trials = [x['trials']
-                  for x in self.campaign.seedfile_set.arms_as_dict().values()]
+                  for x in list(self.campaign.seedfile_set.arms_as_dict().values())]
         for _score in trials:
             self.assertEqual(0, _score)
 
-        for sf in self.campaign.seedfile_set.things.values():
-            for r in sf.rangefinder.arms.values():
+        for sf in list(self.campaign.seedfile_set.things.values()):
+            for r in list(sf.rangefinder.arms.values()):
                 self.assertEqual(0, r.successes)
                 self.assertEqual(0, r.trials)
 
@@ -249,16 +249,16 @@ class Test(unittest.TestCase):
 
         self.assertEqual(self.campaign.current_seed, d['current_seed'])
         successes = [x['successes']
-                     for x in self.campaign.seedfile_set.arms_as_dict().values()]
+                     for x in list(self.campaign.seedfile_set.arms_as_dict().values())]
         for _score in successes:
             self.assertEqual(10, _score)
         trials = [x['trials']
-                  for x in self.campaign.seedfile_set.arms_as_dict().values()]
+                  for x in list(self.campaign.seedfile_set.arms_as_dict().values())]
         for _score in trials:
             self.assertEqual(100, _score)
 
-        for sf in self.campaign.seedfile_set.things.values():
-            for r in sf.rangefinder.arms.values():
+        for sf in list(self.campaign.seedfile_set.things.values()):
+            for r in list(sf.rangefinder.arms.values()):
                 self.assertEqual(5, r.successes)
                 self.assertEqual(50, r.trials)
 

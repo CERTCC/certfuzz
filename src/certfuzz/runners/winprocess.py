@@ -36,7 +36,7 @@
 
 from ctypes import c_void_p, POINTER, sizeof, Structure, Union, windll, WinError, WINFUNCTYPE, c_ulong
 from ctypes.wintypes import BOOL, BYTE, DWORD, HANDLE, LPCWSTR, LPWSTR, UINT, WORD, ULONG
-from qijo import QueryInformationJobObject
+from .qijo import QueryInformationJobObject
 
 LPVOID = c_void_p
 LPBYTE = POINTER(BYTE)
@@ -140,7 +140,7 @@ class EnvironmentBlock:
             self._as_parameter_ = None
         else:
             values = ["%s=%s" % (key, value)
-                      for (key, value) in dict.iteritems()]
+                      for (key, value) in dict.items()]
             values.append("")
             self._as_parameter_ = LPCWSTR("\0".join(values))
 
@@ -426,32 +426,32 @@ def CanCreateJobObject():
 # ## testing functions
 
 def parent():
-    print 'Starting parent'
+    print('Starting parent')
     currentProc = GetCurrentProcess()
     if IsProcessInJob(currentProc):
-        print >> sys.stderr, "You should not be in a job object to test"
+        print("You should not be in a job object to test", file=sys.stderr)
         sys.exit(1)
     assert CanCreateJobObject()
-    print 'File: %s' % __file__
+    print('File: %s' % __file__)
     command = [sys.executable, __file__, '-child']
-    print 'Running command: %s' % command
+    print('Running command: %s' % command)
     process = Popen(command)
     process.kill()
     code = process.returncode
-    print 'Child code: %s' % code
+    print('Child code: %s' % code)
     assert code == 127
 
 def child():
-    print 'Starting child'
+    print('Starting child')
     currentProc = GetCurrentProcess()
     injob = IsProcessInJob(currentProc)
-    print "Is in a job?: %s" % injob
+    print("Is in a job?: %s" % injob)
     can_create = CanCreateJobObject()
-    print 'Can create job?: %s' % can_create
+    print('Can create job?: %s' % can_create)
     process = Popen('c:\\windows\\notepad.exe')
     assert process._job
     jobinfo = QueryInformationJobObject(process._job, 'JobObjectExtendedLimitInformation')
-    print 'Job info: %s' % jobinfo
+    print('Job info: %s' % jobinfo)
     limitflags = jobinfo['BasicLimitInformation']['LimitFlags']
-    print 'LimitFlags: %s' % limitflags
+    print('LimitFlags: %s' % limitflags)
     process.kill()

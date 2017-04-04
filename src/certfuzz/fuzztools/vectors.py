@@ -55,7 +55,7 @@ def dot(v1, v2):
     '''
     assert len(v1) == len(v2), 'Vectors are different lengths'
 
-    terms = zip(v1, v2)
+    terms = list(zip(v1, v2))
     products = [float(x) * float(y) for (x, y) in terms]
     total = sum(products)
     return total

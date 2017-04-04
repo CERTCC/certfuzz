@@ -26,7 +26,7 @@ def copycrashers(tld, outputdir):
                 crasher_file = os.path.join(
                     root, current_file.replace(debugger_ext, ''))
                 if os.path.exists(crasher_file):
-                    print 'Copying %s to %s ...' % (crasher_file, outputdir)
+                    print('Copying %s to %s ...' % (crasher_file, outputdir))
                     shutil.copy(crasher_file, outputdir)
 
 
@@ -49,14 +49,14 @@ def main():
             # Probably using FOE 1.0, which defaults to "crashers" for output
             tld = 'crashers'
         else:
-            print 'Cannot find resuls directory %s' % tld
+            print('Cannot find resuls directory %s' % tld)
             sys.exit(0)
 
     if not os.path.isdir(outputdir):
         if os.path.isdir('../seedfiles'):
             outputdir = '../seedfiles'
         else:
-            print 'cannot find output directory %s' % outputdir
+            print('cannot find output directory %s' % outputdir)
             sys.exit(0)
 
     copycrashers(tld, outputdir)

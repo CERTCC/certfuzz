@@ -22,9 +22,7 @@ from certfuzz.drillresults.common import carve2
 logger = logging.getLogger(__name__)
 
 
-class TestCaseBundle(object):
-    __metaclass__ = abc.ABCMeta
-
+class TestCaseBundle(object, metaclass=abc.ABCMeta):
     def __init__(self, dbg_outfile, testcase_file, crash_hash, ignore_jit=False):
         self.dbg_outfile = dbg_outfile
         self.testcase_file = testcase_file
@@ -300,7 +298,7 @@ class TestCaseBundle(object):
         scores = []
         exceptions = self.details['exceptions']
 
-        for exception in exceptions.itervalues():
+        for exception in exceptions.values():
             module, efa, eif = self._get_efa_mod_eif(exception)
 
             if module == 'unloaded' and not self.ignore_jit:
@@ -356,7 +354,7 @@ class TestCaseBundle(object):
         scores = []
         exceptions = self.details['exceptions']
 
-        for exception in exceptions.itervalues():
+        for exception in exceptions.values():
             module, efa, eif = self._get_efa_mod_eif(exception)
 
             if module == 'unloaded' and not self.ignore_jit:

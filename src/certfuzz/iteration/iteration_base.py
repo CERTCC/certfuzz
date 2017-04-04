@@ -19,8 +19,7 @@ IOERROR_COUNT = 0
 MAX_IOERRORS = 5
 
 
-class IterationBase(object):
-    __metaclass__ = abc.ABCMeta
+class IterationBase(object, metaclass=abc.ABCMeta):
     _tmpdir_pfx = 'iteration_'
     _iteration_counter = 0
 

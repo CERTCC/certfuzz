@@ -77,7 +77,7 @@ class JobObjectInfo(object):
                    9: JOBOBJECT_EXTENDED_LIMIT_INFORMATION
                    }
     def __init__(self, _class):
-        if isinstance(_class, basestring):
+        if isinstance(_class, str):
             assert _class in self.mapping, 'Class should be one of %s; you gave %s' % (self.mapping, _class)
             _class = self.mapping[_class]
         assert _class in self.structures, 'Class should be one of %s; you gave %s' % (self.structures, _class)

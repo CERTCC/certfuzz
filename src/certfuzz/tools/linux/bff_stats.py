@@ -71,7 +71,7 @@ def prepare_output(options, counters, bit_hds, byte_hds, first_seeds, last_seeds
     header_line = format_header(('crash_id', 'count', 'first_seed', 'last_seed', 'bitwise_hd', 'bytewise_hd'))
     output_lines.append(header_line)
     sort_by, reverse = get_sort_key(options, counters, bit_hds, byte_hds, first_seeds, last_seeds)
-    for dummy, k in sorted([(value, key) for (key, value) in sort_by.items()], reverse=reverse):
+    for dummy, k in sorted([(value, key) for (key, value) in list(sort_by.items())], reverse=reverse):
         parts = [k, counters[k], first_seeds[k], last_seeds[k], bit_hds[k], byte_hds[k]]
         output_lines.append(format_line(parts))
     return output_lines

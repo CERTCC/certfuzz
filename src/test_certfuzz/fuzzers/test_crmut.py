@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
         self.sf = seedfile_obj = MockSeedfile()
         self.sf.value = bytearray(self.sf.value)
         self.chars_inserted = 0
-        for i in xrange(0, len(self.sf.value), 10):
+        for i in range(0, len(self.sf.value), 10):
             self.sf.value[i] = 0x0D
             self.chars_inserted += 1
 
@@ -48,11 +48,11 @@ class Test(unittest.TestCase):
         _input = bytearray('A' * inputlen)
         # sub in null chars
         chars_inserted = 0
-        for i in xrange(0, inputlen, 10):
+        for i in range(0, inputlen, 10):
             _input[i] = 0x0D
             chars_inserted += 1
 
-        for i in xrange(iterations):
+        for i in range(iterations):
             fuzzed = fuzz(fuzz_input=copy.copy(_input),
                                 seed_val=0,
                                 jump_idx=i,
@@ -88,11 +88,11 @@ class Test(unittest.TestCase):
         _input = bytearray('A' * inputlen)
         # sub in null chars
         chars_inserted = 0
-        for i in xrange(0, inputlen, 10):
+        for i in range(0, inputlen, 10):
             _input[i] = 0x0D
             chars_inserted += 1
 
-        for i in xrange(iterations):
+        for i in range(iterations):
             fuzzed = fuzz(fuzz_input=copy.copy(_input),
                                 seed_val=0,
                                 jump_idx=i,
@@ -120,7 +120,7 @@ class Test(unittest.TestCase):
 
     def test_nullmutfuzzer_fuzz(self):
         self.assertTrue(self.sf.len > 0)
-        for i in xrange(100):
+        for i in range(100):
             with CRMutFuzzer(*self.args) as f:
                 f.iteration = i
                 f._fuzz()

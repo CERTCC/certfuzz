@@ -6,7 +6,7 @@ Created on Jan 13, 2016
 import logging
 import yaml
 import os
-from errors import ConfigError
+from .errors import ConfigError
 from certfuzz.helpers.misc import fixup_path, quoted
 from string import Template
 from copy import deepcopy
@@ -24,7 +24,7 @@ def load_config(yaml_file):
 
     # yaml.load returns None if the file is empty. We need to raise an error
     if cfg is None:
-        raise(ConfigError, 'Config file was empty')
+        raise ConfigError
 
     # add the file timestamp so we can tell if it changes later
     cfg['config_timestamp'] = os.path.getmtime(yaml_file)
@@ -47,7 +47,7 @@ def fixup_config(cfg):
     intermediate_t = t.safe_substitute(PROGRAM=quoted_prg, SEEDFILE=quoted_sf)
     cfgdict['target']['cmdline_template'] = Template(intermediate_t)
 
-    for k, v in cfgdict['directories'].iteritems():
+    for k, v in cfgdict['directories'].items():
         cfgdict['directories'][k] = fixup_path(v)
 
     if 'analyzer' not in cfgdict: cfgdict['analyzer'] = {}

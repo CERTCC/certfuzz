@@ -14,13 +14,13 @@ from certfuzz.fuzztools.rangefinder import RangeFinder
 
 # TODO: replace with a common function in some helper module
 def print_dict(d, indent=0):
-    for (k, v) in d.iteritems():
+    for (k, v) in d.items():
         indent_str = '  ' * indent
         if isinstance(v, dict):
-            print indent_str + k
+            print(indent_str + k)
             print_dict(v, indent + 1)
         else:
-            print indent_str + "%s (%s): %s" % (k, type(v).__name__, v)
+            print(indent_str + "%s (%s): %s" % (k, type(v).__name__, v))
 
 
 class SeedFile(BasicFile):

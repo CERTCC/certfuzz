@@ -60,14 +60,14 @@ class SimilarityMatrix(object):
 
     def measure_doc_count_by_term(self):
         logger.info('Measuring document count by term')
-        for cov in self.coverage.values():
+        for cov in list(self.coverage.values()):
             # each cov is a vector keyed by lib/file/function
-            for term in cov.keys():
+            for term in list(cov.keys()):
                 self.docfreq[term] += 1
 
     def calculate_idf(self):
         logger.info('Calculating Inverse Document Frequency')
-        for term in self.docfreq.keys():
+        for term in list(self.docfreq.keys()):
             numerator = float(len(self.files))
             denominator = 1.0 + float(self.docfreq[term])
             self.idf[term] = math.log(numerator / denominator)
@@ -78,7 +78,7 @@ class SimilarityMatrix(object):
         for f in self.files:
             tf_idf = {}
             cov = self.coverage[f]
-            for term, termfreq in cov.iteritems():
+            for term, termfreq in cov.items():
                 tf_idf[term] = termfreq * self.idf[term]
             # store the vector for this file
             self.tf_idf[f] = tf_idf
@@ -113,11 +113,11 @@ class SimilarityMatrix(object):
             output = sys.stdout
 
         sorted_similarity = sorted(
-            self.sim.iteritems(), key=operator.itemgetter(1))
+            iter(self.sim.items()), key=operator.itemgetter(1))
         for (k1, k2), v in sorted_similarity:
             crash_id1 = self._crash_id_from_path(k1)
             crash_id2 = self._crash_id_from_path(k2)
-            print >> output, fmt % (v, crash_id1, crash_id2)
+            print(fmt % (v, crash_id1, crash_id2), file=output)
 
         if target:
             output.close()

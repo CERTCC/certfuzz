@@ -112,7 +112,7 @@ class WindowsMinimizer(MinimizerBase):
         reconstruct archived files, using the same compression scheme as
         the source
         '''
-        for name, info in self.saved_arcinfo.iteritems():
+        for name, info in self.saved_arcinfo.items():
             # write out fuzzed file
             if info[2] == 0 or info[2] == 8:
                 # Python zipfile only supports compression types 0 and 8

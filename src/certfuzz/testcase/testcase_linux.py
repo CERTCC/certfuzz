@@ -155,7 +155,7 @@ class LinuxTestcase(TestCaseBase):
             return self.dbg.is_crash and not self.dbg.is_assert_fail
 
     def __repr__(self):
-        as_list = ['%s:%s' % (k, v) for (k, v) in self.__dict__.items()]
+        as_list = ['%s:%s' % (k, v) for (k, v) in list(self.__dict__.items())]
         return str('\n'.join(as_list))
 
     def get_signature(self):

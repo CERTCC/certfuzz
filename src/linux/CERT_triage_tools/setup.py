@@ -26,7 +26,7 @@ from optparse import OptionParser
 
 def run(cmd):
     import subprocess, shlex
-    print cmd
+    print(cmd)
     subprocess.check_call(shlex.split(cmd))
 
 if __name__ == "__main__":
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     elif len(args) == 2:
         path = args[1]
     path = os.path.join(path, 'python', 'gdb', 'command')
-    print "Target path is %s" % path
+    print("Target path is %s" % path)
     if args[0] == "install":
         from shutil import copy, move
         run("cp -R exploitable/ %s/exploitable_lib" % path)
@@ -64,8 +64,8 @@ if __name__ == "__main__":
     elif args[0] == "test":
         if len(args) == 2:
             op.error("y u specify path with test?")
-        print "testing for x86, for ARM and more args, see scripts in test/ dir"
+        print("testing for x86, for ARM and more args, see scripts in test/ dir")
         run("test/x86.sh build run_test clean")
-        print "done"
+        print("done")
     else:
         op.error("first arg is incorrect")

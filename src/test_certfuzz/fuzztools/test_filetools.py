@@ -173,7 +173,7 @@ class Test(unittest.TestCase):
 
     def test_make_writable(self):
         (fd, f) = tempfile.mkstemp(dir=self.tempdir)
-        os.chmod(f, 0444)
+        os.chmod(f, 0o444)
         self.assertFalse(os.access(f, os.W_OK))
         filetools.make_writable(f)
         self.assertTrue(os.access(f, os.W_OK))

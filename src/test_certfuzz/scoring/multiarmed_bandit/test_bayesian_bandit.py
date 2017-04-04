@@ -66,7 +66,7 @@ class Test(unittest.TestCase):
 
     def test_add_items(self):
         # check if we have some successes already
-        for arm in self.mab.arms.itervalues():
+        for arm in self.mab.arms.values():
             arm.update(successes=1, trials=5)
 
         self.mab.add_item(key='newarm', obj='this_string')

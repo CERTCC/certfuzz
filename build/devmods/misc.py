@@ -43,7 +43,7 @@ def copyfile(src, dst):
 
 def stripmarkdown(markdown):
     replacements = {'&copy;': '(C)', '&reg;': '(R)'}
-    for k, v in replacements.iteritems():
+    for k, v in replacements.items():
         markdown = markdown.replace(k, v)
     return markdown
 

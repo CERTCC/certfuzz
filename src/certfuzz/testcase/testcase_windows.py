@@ -210,7 +210,7 @@ class WindowsTestcase(TestCaseBase):
         self.exp = 'HEISENBUG'
         try:
             fuzzed_content = self.fuzzedfile.read()
-        except Exception, e:
+        except Exception as e:
             # for whatever reason we couldn't get the real content,
             # and since we're just generating a string here
             # any string will do

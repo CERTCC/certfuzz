@@ -16,17 +16,17 @@ dstdir = "."
 dst = os.path.join(dstdir, bin)
 
 cmd = "make PIN_ROOT=../pin"
-print cmd
+print(cmd)
 subprocess.call(shlex.split(cmd))
 
 cmd = "mkdir -p %s" % dstdir
-print cmd
+print(cmd)
 subprocess.call(shlex.split(cmd))
 
 cmd = "mv %s %s" % (src, dst)
-print cmd
+print(cmd)
 subprocess.call(shlex.split(cmd))
 
 cmd = "rm -rf %s" % srcdir
-print cmd
+print(cmd)
 subprocess.call(shlex.split(cmd))

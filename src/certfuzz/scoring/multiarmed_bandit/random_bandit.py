@@ -11,5 +11,5 @@ class RandomMultiArmedBandit(MultiArmedBanditBase):
     '''
     Returns a random thing from its collection.
     '''
-    def next(self):
-        return random.choice(self.things.values())
+    def __next__(self):
+        return random.choice(list(self.things.values()))

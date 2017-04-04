@@ -80,12 +80,12 @@ def _enumerate_string(content, occurences):
     '''
     counter = itertools.count()
     byte_buffer = bytearray(content)
-    for pos, count in itertools.izip(occurences, counter):
+    for pos, count in zip(occurences, counter):
         # turn the counter into a string
         substr = str(count)
         nbytes = len(substr)
         # replace the original bytes with the bytes of the counter string
-        for offset in xrange(nbytes):
+        for offset in range(nbytes):
             p = pos + offset
             byte_buffer[p] = substr[offset]
     return byte_buffer
@@ -117,5 +117,5 @@ def enumerate_string(path=None, str_to_enum=None):
 
 if __name__ == '__main__':
     for i in range(100):
-        print 'orig', i, metasploit_pattern_orig(i)
-        print 'extd', i, metasploit_pattern_extended(i)
+        print('orig', i, metasploit_pattern_orig(i))
+        print('extd', i, metasploit_pattern_extended(i))

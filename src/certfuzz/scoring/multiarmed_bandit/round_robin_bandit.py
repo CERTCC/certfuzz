@@ -12,4 +12,4 @@ class RoundRobinMultiArmedBandit(MultiArmedBanditBase):
         '''
         Implements a simple round robin iterator
         '''
-        return itertools.cycle(self.things.values())
+        return itertools.cycle(list(self.things.values()))
