@@ -440,7 +440,7 @@ class Minimizer(object):
         self.logger.debug('Building new testcase object.')
 
         # copy our original testcase as the basis for the new testcase
-        new_testcase = copy.copy(self.testcase)
+        new_testcase = copy.deepcopy(self.testcase)
 
         # get a new dir for the next crasher
         newcrash_tmpdir = tempfile.mkdtemp(
