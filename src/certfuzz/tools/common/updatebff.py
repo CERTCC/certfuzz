@@ -125,7 +125,7 @@ def main():
     rm_rf(tempdir)
 
 
-def git_update(uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz.git', branch='develop'):
+def git_update(uri='https://github.com/CERTCC/certfuzz.git', branch='develop'):
 
     use_pygit = True
 
@@ -161,7 +161,7 @@ def git_update(uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz.gi
     return tempdir
 
 
-def zip_update(tempdir, uri='https://github.com/CERTCC-Vulnerability-Analysis/certfuzz/archive/develop.zip', branch='develop'):
+def zip_update(tempdir, uri='https://github.com/CERTCC/certfuzz/archive/develop.zip', branch='develop'):
 
     if sys.version_info < (2, 7, 9):
         logger.warning(
