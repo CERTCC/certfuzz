@@ -187,6 +187,17 @@ class Minimizer(object):
         self.tempfile = f.name
         filetools.copy_file(self.testcase.fuzzedfile.path, self.tempfile)
 
+        if 'copyseedto' in self.cfg['target']:
+            copyseedto = str(self.cfg['target'].get('copyseedto', ''))
+            logger.debug("Copying seed to " + copyseedto)
+            filetools.copy_file(self.testcase.fuzzedfile.path, copyseedto)
+
+        if 'postprocessseed' in self.cfg['target']:
+            import os
+            postprocessseed = str(self.cfg['target']['postprocessseed'])
+            logger.debug("Executing postprocess " + postprocessseed)
+            os.system(postprocessseed)
+
         # figure out what testcase signatures belong to this fuzzedfile
         self.debugger_timeout = self.cfg['debugger']['runtimeout']
         self.crash_hashes = []
@@ -462,6 +473,17 @@ class Minimizer(object):
             self._raise('Outfile should not already exist: %s' % outfile)
         self.logger.debug('\tCopying %s to %s', self.tempfile, outfile)
         filetools.copy_file(self.tempfile, outfile)
+
+        if 'copyseedto' in self.cfg['target']:
+            copyseedto = str(self.cfg['target'].get('copyseedto', ''))
+            logger.debug("Copying seed to " + copyseedto)
+            filetools.copy_file(self.tempfile, copyseedto)
+
+        if 'postprocessseed' in self.cfg['target']:
+            import os
+            postprocessseed = str(self.cfg['target']['postprocessseed'])
+            logger.debug("Executing postprocess " + postprocessseed)
+            os.system(postprocessseed)
 
         new_testcase.fuzzedfile = BasicFile(outfile)
         self.logger.debug('\tNew fuzzed_content file: %s %s',
