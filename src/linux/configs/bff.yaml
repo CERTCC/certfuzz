@@ -34,7 +34,7 @@ target:
     program: ~/convert
     cmdline_template: $PROGRAM $SEEDFILE /dev/null
     #copyfuzzedto: /tmp/fuzzedfile
-    #postprocessfuzzed: /home/fuzz/bff/postprocess C:\BFF\fuzzedfile
+    #postprocessfuzzed: /home/fuzz/bff/postprocess /tmp/fuzzedfile
 
 ##############################################################################
 # LOCATIONS FOR FUZZ RUN FILES:
