@@ -83,6 +83,18 @@ class WindowsCampaign(CampaignBase):
         sf = self.seedfile_set.next_item()
         cmdargs = get_command_args_list(
             self.config['target']['cmdline_template'], infile=sf.path)[1]
+
+        if 'copyfuzzedto' in self.config['target']:
+            from shutil import copyfile
+            copyfuzzedto = str(self.config['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying seed file to " + copyfuzzedto)
+            copyfile(sf.path, copyfuzzedto)
+
+        if 'postprocessfuzzed' in self.config['target']:
+            postprocessfuzzed = str(self.config['target']['postprocessfuzzed'])
+            logger.debug("Executing postprocess " + postprocessfuzzed)
+            os.system(postprocessfuzzed)
+
         logger.info('Invoking %s' % cmdargs)
 
         # Use overriden Popen that uses a job object to make sure that

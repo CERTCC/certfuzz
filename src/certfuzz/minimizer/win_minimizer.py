@@ -1,6 +1,7 @@
 import collections
 import logging
 import zipfile
+import os
 
 from certfuzz.fuzztools.filetools import check_zip_file, write_file
 from certfuzz.fuzztools.filetools import exponential_backoff
@@ -130,3 +131,13 @@ class WindowsMinimizer(MinimizerBase):
             self._writezip()
         else:
             write_file(''.join(self.newfuzzed), self.tempfile)
+
+            if 'copyfuzzedto' in self.cfg['target']:
+                copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+                logger.debug("Copying fuzzed file to " + copyfuzzedto)
+                write_file(''.join(self.newfuzzed), copyfuzzedto)
+
+            if 'postprocessfuzzed' in self.cfg['target']:
+                postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
+                logger.debug("Executing postprocess " + postprocessfuzzed)
+                os.system(postprocessfuzzed)
