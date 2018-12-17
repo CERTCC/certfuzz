@@ -173,11 +173,11 @@ class IterationBase(object):
         workingdir_base = self.working_dir
         self.cmd_template = self.cfg['target']['cmdline_template']
 
-        if 'copyseedto' in self.cfg['target']:
+        if 'copyfuzzedto' in self.cfg['target']:
             from shutil import copyfile
-            copyseedto = str(self.cfg['target'].get('copyseedto', ''))
-            logger.debug("Copying seed to " + copyseedto)
-            copyfile(fuzzed_file, copyseedto)
+            copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying fuzzed file to " + copyfuzzedto)
+            copyfile(fuzzed_file, copyfuzzedto)
 
         if 'postprocessseed' in self.cfg['target']:
             import os

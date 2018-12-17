@@ -131,10 +131,10 @@ class WindowsMinimizer(MinimizerBase):
         else:
             write_file(''.join(self.newfuzzed), self.tempfile)
 
-            if 'copyseedto' in self.cfg['target']:
-                copyseedto = str(self.cfg['target'].get('copyseedto', ''))
-                logger.debug("Copying seed to " + copyseedto)
-                write_file(''.join(self.newfuzzed), copyseedto)
+            if 'copyfuzzedto' in self.cfg['target']:
+                copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+                logger.debug("Copying fuzzed file to " + copyfuzzedto)
+                write_file(''.join(self.newfuzzed), copyfuzzedto)
 
             if 'postprocessseed' in self.cfg['target']:
                 import os

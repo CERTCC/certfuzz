@@ -34,8 +34,8 @@ campaign:
 target:
     program: C:\BFF\imagemagick\convert.exe
     cmdline_template: $PROGRAM $SEEDFILE NUL
-    #copyseedto: C:\BFF\current.seed
-    #postprocessseed: C:\BFF\postprocess.exe C:\BFF\current.seed
+    #copyfuzzedto: C:\BFF\fuzzedfile
+    #postprocessseed: C:\BFF\postprocess.exe C:\BFF\fuzzedfile
 
     # With the default ImageMagick fuzz run, the above target options
     # will result in the following invocation of ImageMagick:

@@ -187,10 +187,10 @@ class Minimizer(object):
         self.tempfile = f.name
         filetools.copy_file(self.testcase.fuzzedfile.path, self.tempfile)
 
-        if 'copyseedto' in self.cfg['target']:
-            copyseedto = str(self.cfg['target'].get('copyseedto', ''))
-            logger.debug("Copying seed to " + copyseedto)
-            filetools.copy_file(self.testcase.fuzzedfile.path, copyseedto)
+        if 'copyfuzzedto' in self.cfg['target']:
+            copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying fuzzed file to " + copyfuzzedto)
+            filetools.copy_file(self.testcase.fuzzedfile.path, copyfuzzedto)
 
         if 'postprocessseed' in self.cfg['target']:
             import os
@@ -474,10 +474,10 @@ class Minimizer(object):
         self.logger.debug('\tCopying %s to %s', self.tempfile, outfile)
         filetools.copy_file(self.tempfile, outfile)
 
-        if 'copyseedto' in self.cfg['target']:
-            copyseedto = str(self.cfg['target'].get('copyseedto', ''))
-            logger.debug("Copying seed to " + copyseedto)
-            filetools.copy_file(self.tempfile, copyseedto)
+        if 'copyfuzzedto' in self.cfg['target']:
+            copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying fuzzed file to " + copyfuzzedto)
+            filetools.copy_file(self.tempfile, copyfuzzedto)
 
         if 'postprocessseed' in self.cfg['target']:
             import os
