@@ -136,8 +136,8 @@ class WindowsMinimizer(MinimizerBase):
                 logger.debug("Copying fuzzed file to " + copyfuzzedto)
                 write_file(''.join(self.newfuzzed), copyfuzzedto)
 
-            if 'postprocessseed' in self.cfg['target']:
+            if 'postprocessfuzzed' in self.cfg['target']:
                 import os
-                postprocessseed = str(self.cfg['target']['postprocessseed'])
-                logger.debug("Executing postprocess " + postprocessseed)
-                os.system(postprocessseed)
+                postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
+                logger.debug("Executing postprocess " + postprocessfuzzed)
+                os.system(postprocessfuzzed)

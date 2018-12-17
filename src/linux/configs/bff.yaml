@@ -17,10 +17,10 @@ campaign:
 ##############################################################################
 # TARGET APPLICATION INVOCATION OPTIONS:
 #
-# program: 
+# program:
 # Full path to fuzzing target executable
 #
-# cmdline_template: 
+# cmdline_template:
 # Used to specify the command-line invocation of the target
 #
 # Command-line arguments will be split using python shlex.split() so
@@ -33,21 +33,22 @@ campaign:
 target:
     program: ~/convert
     cmdline_template: $PROGRAM $SEEDFILE /dev/null
-
+    #copyfuzzedto: /tmp/fuzzedfile
+    #postprocessfuzzed: /home/fuzz/bff/postprocess C:\BFF\fuzzedfile
 
 ##############################################################################
 # LOCATIONS FOR FUZZ RUN FILES:
 #
-# seedfile_dir: 
+# seedfile_dir:
 # Location of seed files (relative to bff.py)
 #
-# working_dir: 
+# working_dir:
 # Temporary directory used by BFF. Use a ramdisk to reduce disk activity
 #
-# results_dir: 
+# results_dir:
 # Location of fuzzing results (relative to bff.py)
 #
-# If results are stored in a shared location, 
+# If results are stored in a shared location,
 # this directory needs to be unique for each fuzzing machine
 #
 ##############################################################################
@@ -66,7 +67,7 @@ directories:
 ##############################################################################
 runner:
     runtimeout: 5
-    
+
 
 ##############################################################################
 # DEBUGGER OPTIONS
@@ -80,8 +81,8 @@ runner:
 ##############################################################################
 debugger:
     backtracelevels: 5
-    
-    
+
+
 ##############################################################################
 # FUZZ CAMPAIGN OPTIONS
 #
@@ -120,32 +121,32 @@ runoptions:
     keep_duplicates: False
     recycle_crashers: False
     watchdogtimeout: 3600
-    
-    
+
+
 ###################################################################################
 # FUZZER OPTIONS
 #
 # ** Note that only one fuzzer can be selected per campaign **
 #
-# bytemut: 
+# bytemut:
 # replace bytes with random values
 #
-# swap: 
+# swap:
 # swap adjacent bytes
 #
-# wave: 
+# wave:
 # cycle through every possible single-byte value, sequentially
 #
-# drop: 
+# drop:
 # removes one byte from the file for each position in the file
 #
-# insert: 
+# insert:
 # inserts a random byte for each position in the file
 #
 # truncate:
 # truncates bytes from the end of the file
 #
-# crmut: 
+# crmut:
 # replace carriage return bytes with random values
 #
 # crlfmut:
@@ -159,9 +160,9 @@ runoptions:
 #
 # OPTIONS APPLIED TO THE ABOVE MUTATORS:
 #
-# fuzz_zip_container: 
+# fuzz_zip_container:
 # rather than fuzzing zip file contents, fuzz the zip container itself
-# 
+#
 ###################################################################################
 fuzzer:
     fuzzer: bytemut
@@ -175,19 +176,19 @@ fuzzer:
     # fuzzer: nullmut
     # fuzzer: verify
     fuzz_zip_container: False
-    
-    
+
+
 ##############################################################################
 # VERIFIER PARAMETERS
 #
-# exclude_unmapped_frames: 
+# exclude_unmapped_frames:
 # Include backtrace frames that aren't part of a loaded library?
 # Set this value to False if you wish to consider unmapped stack
 # frames in the crash hashes. This can be useful for target application
 # that perform JIT compilation
 #
-# savefailedasserts: 
-# Save cases that cause failed ASSERTs?  If set to 1, then __assert_fail termination, 
+# savefailedasserts:
+# Save cases that cause failed ASSERTs?  If set to 1, then __assert_fail termination,
 # e.g. via assert(), it will be considered a crash.
 #
 # use_valgrind:
@@ -209,4 +210,3 @@ analyzer:
     use_valgrind: True
     use_pin_calltrace: False
     valgrind_timeout: 120
-

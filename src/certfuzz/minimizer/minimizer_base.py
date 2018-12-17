@@ -192,11 +192,11 @@ class Minimizer(object):
             logger.debug("Copying fuzzed file to " + copyfuzzedto)
             filetools.copy_file(self.testcase.fuzzedfile.path, copyfuzzedto)
 
-        if 'postprocessseed' in self.cfg['target']:
+        if 'postprocessfuzzed' in self.cfg['target']:
             import os
-            postprocessseed = str(self.cfg['target']['postprocessseed'])
-            logger.debug("Executing postprocess " + postprocessseed)
-            os.system(postprocessseed)
+            postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
+            logger.debug("Executing postprocess " + postprocessfuzzed)
+            os.system(postprocessfuzzed)
 
         # figure out what testcase signatures belong to this fuzzedfile
         self.debugger_timeout = self.cfg['debugger']['runtimeout']
@@ -479,11 +479,11 @@ class Minimizer(object):
             logger.debug("Copying fuzzed file to " + copyfuzzedto)
             filetools.copy_file(self.tempfile, copyfuzzedto)
 
-        if 'postprocessseed' in self.cfg['target']:
+        if 'postprocessfuzzed' in self.cfg['target']:
             import os
-            postprocessseed = str(self.cfg['target']['postprocessseed'])
-            logger.debug("Executing postprocess " + postprocessseed)
-            os.system(postprocessseed)
+            postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
+            logger.debug("Executing postprocess " + postprocessfuzzed)
+            os.system(postprocessfuzzed)
 
         new_testcase.fuzzedfile = BasicFile(outfile)
         self.logger.debug('\tNew fuzzed_content file: %s %s',
