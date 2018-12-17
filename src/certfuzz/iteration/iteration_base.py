@@ -172,6 +172,19 @@ class IterationBase(object):
         fuzzed_file = self.fuzzer.output_file_path
         workingdir_base = self.working_dir
         self.cmd_template = self.cfg['target']['cmdline_template']
+
+        if 'copyseedto' in self.cfg['target']:
+            from shutil import copyfile
+            copyseedto = str(self.cfg['target'].get('copyseedto', ''))
+            logger.debug("Copying seed to " + copyseedto)
+            copyfile(fuzzed_file, copyseedto)
+
+        if 'postprocessseed' in self.cfg['target']:
+            import os
+            postprocessseed = str(self.cfg['target']['postprocessseed'])
+            logger.debug("Executing postprocess " + postprocessseed)
+            os.system(postprocessseed)
+
         self.runner = self.runner_cls(
             self._runner_options, self.cmd_template, fuzzed_file, workingdir_base)
 
