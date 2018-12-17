@@ -660,6 +660,16 @@ class Minimizer(object):
         else:
             write_file(''.join(self.newfuzzed), self.tempfile)
 
+        if 'copyfuzzedto' in self.cfg['target']:
+            copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying fuzzed file to " + copyfuzzedto)
+            filetools.copy_file(self.testcase.fuzzedfile.path, copyfuzzedto)
+
+        if 'postprocessfuzzed' in self.cfg['target']:
+            postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
+            logger.debug("Executing postprocess " + postprocessfuzzed)
+            os.system(postprocessfuzzed)
+
     def _set_bytemap(self):
         if self.fuzzed_content and not self.bytemap:
             self.bytemap = hamming.bytemap(self.seed, self.fuzzed_content)
