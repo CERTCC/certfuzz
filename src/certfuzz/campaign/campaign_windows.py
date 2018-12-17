@@ -91,7 +91,6 @@ class WindowsCampaign(CampaignBase):
             copyfile(sf.path, copyfuzzedto)
 
         if 'postprocessfuzzed' in self.config['target']:
-            import os
             postprocessfuzzed = str(self.config['target']['postprocessfuzzed'])
             logger.debug("Executing postprocess " + postprocessfuzzed)
             os.system(postprocessfuzzed)

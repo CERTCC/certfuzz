@@ -193,7 +193,6 @@ class Minimizer(object):
             filetools.copy_file(self.testcase.fuzzedfile.path, copyfuzzedto)
 
         if 'postprocessfuzzed' in self.cfg['target']:
-            import os
             postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
             logger.debug("Executing postprocess " + postprocessfuzzed)
             os.system(postprocessfuzzed)
@@ -480,7 +479,6 @@ class Minimizer(object):
             filetools.copy_file(self.tempfile, copyfuzzedto)
 
         if 'postprocessfuzzed' in self.cfg['target']:
-            import os
             postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
             logger.debug("Executing postprocess " + postprocessfuzzed)
             os.system(postprocessfuzzed)
