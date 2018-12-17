@@ -118,6 +118,19 @@ class LinuxCampaign(CampaignBase):
         fullpathorig = self._full_path_original(sf.path)
         cmdargs = get_command_args_list(
             self.config['target']['cmdline_template'], infile=fullpathorig)[1]
+
+        if 'copyfuzzedto' in self.config['target']:
+            from shutil import copyfile
+            copyfuzzedto = str(self.config['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying fuzzed file to " + copyfuzzedto)
+            copyfile(fuzzed_file, copyfuzzedto)
+
+        if 'postprocessseed' in self.config['target']:
+            import os
+            postprocessseed = str(self.config['target']['postprocessseed'])
+            logger.debug("Executing postprocess " + postprocessseed)
+            os.system(postprocessseed)
+
         logger.info('Invoking %s' % cmdargs)
         subp.run_with_timer(cmdargs,
                             self.config['runner']['runtimeout'] * 8,
