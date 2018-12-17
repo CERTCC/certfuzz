@@ -30,6 +30,17 @@ campaign:
 #
 # cmdline_template:
 # Used to specify the command-line invocation of the target
+#
+# copyfuzzedto:
+# Certain target applications will read input files from a fixed
+# location. Set this option to copy a fuzzed file to a static location
+# before invoking the target application.
+#
+# postprocessfuzzed:
+# Set this option if you wish to run a program to post-process a file
+# after it has been fuzzed. This option must be used in conjunction
+# with the "copyfuzzedto" option, so that a static location is used
+# for the fuzzed file.
 ##############################################################################
 target:
     program: C:\BFF\imagemagick\convert.exe
