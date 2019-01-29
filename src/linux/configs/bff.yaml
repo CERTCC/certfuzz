@@ -188,6 +188,8 @@ fuzzer:
     # fuzzer: verify
     fuzz_zip_container: False
 
+    # specify bytemut fuzzer aggressiveness
+    # bytemutmaxratio: 0.5
 
 ##############################################################################
 # VERIFIER PARAMETERS

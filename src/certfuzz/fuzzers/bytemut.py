@@ -63,6 +63,12 @@ class ByteMutFuzzer(MinimizableFuzzer):
     def _fuzz(self):
         self.range = self.sf.rangefinder.next_item()
         range_list = self.options.get('range_list')
+        bytemutmaxratio = self.options.get('bytemutmaxratio')
+
+        if bytemutmaxratio:
+            self.range.max = bytemutmaxratio
+            if self.range.min >= bytemutmaxratio:
+                self.range.min = bytemutmaxratio
 
         self.output = fuzz(fuzz_input=self.input,
                            seed_val=self.rng_seed,
