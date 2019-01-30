@@ -67,7 +67,7 @@ class ByteMutFuzzer(MinimizableFuzzer):
 
         if bytemutmaxratio:
             self.range.max = bytemutmaxratio
-            if self.range.min >= bytemutmaxratio:
+            if self.range.min > bytemutmaxratio:
                 self.range.min = bytemutmaxratio
 
         self.output = fuzz(fuzz_input=self.input,
