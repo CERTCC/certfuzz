@@ -184,7 +184,7 @@ class TestCaseBundle(object):
                 efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
             except:
                 logger.error('Cannot parse faultaddr. Fallback to 0x0')
-                efaptr = 0
+                efaptr = (0,)
             efapattern = hex(efaptr[0]).replace('0x', '')
             efapattern = efapattern.replace('L', '')
             efapattern = efapattern.zfill(16)
@@ -195,7 +195,7 @@ class TestCaseBundle(object):
                 efaptr = struct.unpack('<L', binascii.a2b_hex(faultaddr))
             except:
                 logger.error('Cannot parse faultaddr. Fallback to 0x0')
-                efaptr = 0
+                efaptr = (0,)
             efapattern = hex(efaptr[0]).replace('0x', '')
             efapattern = efapattern.replace('L', '')
             efapattern = efapattern.zfill(8)
