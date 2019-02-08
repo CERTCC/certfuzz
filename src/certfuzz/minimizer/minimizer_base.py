@@ -901,10 +901,20 @@ class Minimizer(object):
 
         for (a, b) in itertools.izip(seed, fuzzed):
             if a != b and rand() > dc:
-                append(b)
+                try:
+                    append(b)
+                except:
+                    logger.error('Cannot append array element, finishing minimizer')
+                    self.min_found = True
+                    break
                 hd += 1
             else:
-                append(a)
+                try:
+                    append(b)
+                except:
+                    logger.error('Cannot append array element, finishing minimizer')
+                    self.min_found = True
+                    break
         return swapped, hd
         # Note that the above implementation is actually faster overall than the list
         # comprehension below since we're catching the hamming distance at the
