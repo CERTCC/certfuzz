@@ -910,7 +910,7 @@ class Minimizer(object):
                 hd += 1
             else:
                 try:
-                    append(b)
+                    append(a)
                 except:
                     logger.error('Cannot append array element, finishing minimizer')
                     self.min_found = True
