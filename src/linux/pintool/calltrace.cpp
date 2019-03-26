@@ -224,7 +224,7 @@ VOID Trace(TRACE trace, VOID *v)
                 if( print_args )
                 {
                     INS_InsertPredicatedCall(tail, IPOINT_BEFORE, AFUNPTR(do_call_args),
-                                             IARG_ADDRINT, offset, IARG_PTR, getLib(target), IARG_PTR, Target2String(target), IARG_G_ARG0_CALLER, IARG_END);
+                                             IARG_ADDRINT, offset, IARG_PTR, getLib(target), IARG_PTR, Target2String(target), IARG_FUNCARG_ENTRYPOINT_VALUE, 0, IARG_END);
                 }
                 else
                 {
@@ -240,7 +240,7 @@ VOID Trace(TRACE trace, VOID *v)
                 if( print_args)
                 {
                     INS_InsertCall(tail, IPOINT_BEFORE, AFUNPTR(do_call_args_indirect),
-                                   IARG_ADDRINT, offset, IARG_BRANCH_TARGET_ADDR, IARG_BRANCH_TAKEN,  IARG_G_ARG0_CALLER, IARG_END);
+                                   IARG_ADDRINT, offset, IARG_BRANCH_TARGET_ADDR, IARG_BRANCH_TAKEN,  IARG_FUNCARG_ENTRYPOINT_VALUE, 0, IARG_END);
                 }
                 else
                 {
@@ -261,7 +261,7 @@ VOID Trace(TRACE trace, VOID *v)
                 if( print_args )
                 {
                     INS_InsertCall(tail, IPOINT_BEFORE, AFUNPTR(do_call_args_indirect),
-                                   IARG_ADDRINT, offset, IARG_BRANCH_TARGET_ADDR, IARG_BRANCH_TAKEN,  IARG_G_ARG0_CALLER, IARG_END);
+                                   IARG_ADDRINT, offset, IARG_BRANCH_TARGET_ADDR, IARG_BRANCH_TAKEN,  IARG_FUNCARG_ENTRYPOINT_VALUE, 0, IARG_END);
                 }
                 else
                 {

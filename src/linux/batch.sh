@@ -66,7 +66,7 @@ contains() {
 scriptlocation=`echo "$(cd "$(dirname "$0")"; pwd)/"`
 echo Script location: $scriptlocation/bff.py
 platform=`uname -a`
-PINURL=https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.2-81205-gcc-linux.tar.gz
+PINURL=https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.7-97619-g0d0c92f4f-gcc-linux.tar.gz
 if ( contains "$platform" "Darwin Kernel Version 11" ); then
     mypython="/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
 else
