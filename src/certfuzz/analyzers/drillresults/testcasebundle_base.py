@@ -180,14 +180,22 @@ class TestCaseBundle(object):
         if self._64bit_target_app:
             # 64-bit target app
             faultaddr = faultaddr.zfill(16)
-            efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
+            try:
+                efaptr = struct.unpack('<Q', binascii.a2b_hex(faultaddr))
+            except:
+                logger.error('Cannot parse faultaddr. Fallback to 0x0')
+                efaptr = (0,)
             efapattern = hex(efaptr[0]).replace('0x', '')
             efapattern = efapattern.replace('L', '')
             efapattern = efapattern.zfill(16)
         else:
             # 32-bit target app
             faultaddr = faultaddr.zfill(8)
-            efaptr = struct.unpack('<L', binascii.a2b_hex(faultaddr))
+            try:
+                efaptr = struct.unpack('<L', binascii.a2b_hex(faultaddr))
+            except:
+                logger.error('Cannot parse faultaddr. Fallback to 0x0')
+                efaptr = (0,)
             efapattern = hex(efaptr[0]).replace('0x', '')
             efapattern = efapattern.replace('L', '')
             efapattern = efapattern.zfill(8)
