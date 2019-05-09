@@ -31,6 +31,7 @@ class WindowsTestCaseBundle(TestCaseBundle):
         'IllegalInstruction',
         'PrivilegedInstruction',
         'ExceptionHandlerCorrupted',
+        'StackCodeExecution'
     ]
 
     def __init__(self, dbg_outfile, testcase_file, crash_hash,
