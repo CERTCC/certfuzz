@@ -125,6 +125,9 @@ class WindowsCampaign(CampaignBase):
             logger.debug(
                 'Disabling debugger CPU monitoring for dynamic timeout')
             self.config['debugger']['watchcpu'] = False
+        elif debugger_watchcpu == 'true':
+            logger.debug('Manually enabling CPU watching for debugger')
+            self.config['debugger']['watchcpu'] = True
 
         logger.info(
             'Please ensure that the target program has just executed successfully')
