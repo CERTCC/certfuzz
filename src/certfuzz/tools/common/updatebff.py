@@ -39,7 +39,7 @@ def main():
 
     branch = 'develop'
     target_path = '.'
-    blacklist = ['configs']
+    blocklist = ['configs']
 
     if not os.path.isdir('certfuzz'):
         target_path = '..'
@@ -92,7 +92,7 @@ def main():
 
     # copy platform-specific content
     for f in os.listdir(platform_path):
-        if f in blacklist:
+        if f in blocklist:
             logger.debug('Skipping %s' % f)
             continue
         f_src = os.path.join(platform_path, f)

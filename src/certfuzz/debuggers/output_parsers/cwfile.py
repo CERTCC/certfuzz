@@ -42,15 +42,15 @@ regex = {
 
 # There are a number of functions that are typically found in crash backtraces,
 # yet are side effects of a crash and are not directly relevant to identifying
-# the uniqueness of the crash. So we explicitly blacklist them so they won't be
+# the uniqueness of the crash. So we explicitly blocklist them so they won't be
 # used in determining the crash backtrace hash.
-blacklist = ('__kernel_vsyscall', 'abort', 'raise', 'malloc', 'free',
+blocklist = ('__kernel_vsyscall', 'abort', 'raise', 'malloc', 'free',
              '*__GI_abort', '*__GI_raise', 'malloc_printerr', '__libc_message',
              '__kill', '_sigtramp'
              )
 
 # These libraries should be used in the uniqueness determination of a crash
-blacklist_libs = ('libSystem.B.dylib', 'libsystem_malloc.dylib'
+blocklist_libs = ('libSystem.B.dylib', 'libsystem_malloc.dylib'
                   )
 
 
@@ -105,8 +105,8 @@ class CWfile:
             for bt in self.backtrace:
 
                 logger.debug("checking backtrace line")
-                # skip blacklisted functions
-                if bt in blacklist:
+                # skip blocklisted functions
+                if bt in blocklist:
                     continue
                 else:
                     hashable.append(bt)
@@ -167,7 +167,7 @@ class CWfile:
                     item = ' '.join((item, nextline))
                 next_idx += 1
 
-            if library not in blacklist_libs:
+            if library not in blocklist_libs:
                 self.backtrace.append(item)
                 logger.debug('Appending to backtrace: %s', item)
 
