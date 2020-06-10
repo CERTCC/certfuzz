@@ -4,7 +4,7 @@ BFF for Windows was formerly known as the CERT Failure Observation Engine (FOE).
 
 # If you are looking for runnable code, you should download the latest releases at: #
 
-* BFF (linux, OSX) [http://www.cert.org/vulnerability-analysis/tools/bff.cfm](http://www.cert.org/vulnerability-analysis/tools/bff.cfm "BFF")
+* BFF (linux, OSX) [https://vuls.cert.org/confluence/display/tools/CERT+BFF+-+Basic+Fuzzing+Framework](https://vuls.cert.org/confluence/display/tools/CERT+BFF+-+Basic+Fuzzing+Framework "BFF")
 
 # Using this code #
 
