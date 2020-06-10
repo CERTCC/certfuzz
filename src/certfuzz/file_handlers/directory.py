@@ -14,7 +14,7 @@ from certfuzz.fuzztools import filetools
 logger = logging.getLogger(__name__)
 
 
-blacklist = ['.DS_Store', ]
+blocklist = ['.DS_Store', ]
 
 
 class Directory(object):
@@ -45,7 +45,7 @@ class Directory(object):
         '''
         self._verify_dir()
 
-        dir_listing = [os.path.join(self.dir, f) for f in os.listdir(self.dir) if not f in blacklist]
+        dir_listing = [os.path.join(self.dir, f) for f in os.listdir(self.dir) if not f in blocklist]
         self.files = [BasicFile(path) for path in dir_listing if os.path.isfile(path)]
 
     def paths(self):

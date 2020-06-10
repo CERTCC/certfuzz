@@ -46,9 +46,9 @@ regex = {
 
 # There are a number of functions that are typically found in crash backtraces,
 # yet are side effects of a crash and are not directly relevant to identifying
-# the uniqueness of the crash. So we explicitly blacklist them so they won't be
+# the uniqueness of the crash. So we explicitly blocklist them so they won't be
 # used in determining the crash backtrace hash.
-blacklist = ('__kernel_vsyscall', 'abort', 'raise', 'malloc', 'free',
+blocklist = ('__kernel_vsyscall', 'abort', 'raise', 'malloc', 'free',
              '*__GI_abort', '*__GI_raise', 'malloc_printerr', '__libc_message',
              'malloc_consolidate', '_int_malloc', '__libc_calloc',
              '_dl_new_object', '_dl_map_object_from_fd', '_dl_catch_error',
@@ -195,9 +195,9 @@ class DebuggerFile(object):
                     # Don't include any backtrace frames that are in libgcc
                     continue
 
-                # skip blacklisted functions
+                # skip blocklisted functions
                 x = re.match(regex['bt_function'], bt)
-                if x and x.group(1) in blacklist:
+                if x and x.group(1) in blocklist:
                     continue
 
                 # If debug symbols are available, the backtrace will include
@@ -511,7 +511,7 @@ class DebuggerFile(object):
 
     def _look_for_libc_location(self, line):
         '''
-        Get start and end address of libc library, for blacklisting purposes
+        Get start and end address of libc library, for blocklisting purposes
         '''
         if self.libc_start_addr:
             return
@@ -523,7 +523,7 @@ class DebuggerFile(object):
 
     def _look_for_libgcc_location(self, line):
         '''
-        Get start and end address of libc library, for blacklisting purposes
+        Get start and end address of libc library, for blocklisting purposes
         '''
         if self.libgcc_start_addr:
             return
