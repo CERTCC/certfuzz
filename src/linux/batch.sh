@@ -3,12 +3,12 @@
 ##############################################################################
 # Use of the CERT Basic Fuzzing Framework and related source code is subject
 # to the terms of the following licenses:
-# 
+#
 # GNU Public License (GPL) Rights pursuant to Version 2, June 1991
 # Government Purpose License Rights (GPLR) pursuant to DFARS 252.227.7013
-# 
+#
 # NO WARRANTY
-# 
+#
 # ANY INFORMATION, MATERIALS, SERVICES, INTELLECTUAL PROPERTY OR OTHER
 # PROPERTY OR RIGHTS GRANTED OR PROVIDED BY CARNEGIE MELLON UNIVERSITY
 # PURSUANT TO THIS LICENSE (HEREINAFTER THE "DELIVERABLES") ARE ON AN
@@ -24,7 +24,7 @@
 # CARNEGIE MELLON UNIVERSITY, EXPRESS OR IMPLIED, TO ANY PERSON
 # CONCERNING THE APPLICATION OF OR THE RESULTS TO BE OBTAINED WITH THE
 # DELIVERABLES UNDER THIS LICENSE.
-# 
+#
 # Licensee hereby agrees to defend, indemnify, and hold harmless Carnegie
 # Mellon University, its trustees, officers, employees, and agents from
 # all claims or demands made against them (and any related losses,
@@ -35,7 +35,7 @@
 # University under this License, including, but not limited to, any
 # claims of product liability, personal injury, death, damage to
 # property, or violation of any laws or regulations.
-# 
+#
 # Carnegie Mellon University Software Engineering Institute authored
 # documents are sponsored by the U.S. Department of Defense under
 # Contract F19628-00-C-0003. Carnegie Mellon University retains
@@ -66,7 +66,7 @@ contains() {
 scriptlocation=`echo "$(cd "$(dirname "$0")"; pwd)/"`
 echo Script location: $scriptlocation/bff.py
 platform=`uname -a`
-PINURL=https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.0-76991-gcc-linux.tar.gz
+PINURL=https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.2-81205-gcc-linux.tar.gz
 if ( contains "$platform" "Darwin Kernel Version 11" ); then
     mypython="/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
 else
@@ -87,27 +87,27 @@ if ( contains "$platform" "Linux" ); then
         tarball=~/fuzzing/`basename $PINURL`
         pindir=`basename $tarball .tar.gz`
         wget --tries=1 $PINURL -O $tarball
-        if [ -f $tarball ]; then      
+        if [ -f $tarball ]; then
             tar xzvf $tarball -C ~
             mv ~/$pindir ~/pin
         else
             echo Error retrieving PIN
         fi
     fi
-    
+
     if [ ! -f ~/pintool/calltrace.so ]; then
         echo Building calltrace pintool...
         cp -au $scriptlocation/pintool ~
         cd ~/pintool
         $mypython make.py
     fi
-    
+
     if [ ~/pintool/calltrace.cpp -ot $scriptlocation/pintool/calltrace.cpp ]; then
         echo Updating calltrace pintool...
         cp -au $scriptlocation/pintool ~
         cd ~/pintool
         $mypython make.py
-    fi        
+    fi
 fi
 
 cd $scriptlocation
@@ -118,4 +118,3 @@ if [ -f "$scriptlocation/bff.py" ]; then
 else
     read -p "Cannot find $scriptlocation/bff.py Please verify script locations."
 fi
-

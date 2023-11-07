@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class Build(object):
     _common_dirs = ['certfuzz', 'seedfiles', 'tools']
-    _blacklist = ['.svn']
+    _blocklist = ['.svn']
     _name = None
     _platform = None
 
@@ -69,7 +69,7 @@ class Build(object):
         self._create_results_dir()
 
         logger.info('Clean up build dir')
-        self._clean_up(self.target_path, remove_blacklist=False)
+        self._clean_up(self.target_path, remove_blocklist=False)
 
     def _convert_md_files(self):
         mdtotextfile(self.license_md_path, self.license_txt_path)
@@ -92,10 +92,10 @@ class Build(object):
         for f in os.listdir(self.platform_path):
             f_src = os.path.join(self.platform_path, f)
 
-            # blacklist files and dirs by name
+            # blocklist files and dirs by name
             # these files will not be copied
-            if f in self._blacklist:
-                logger.info('Skipping path (blacklisted) %s', f_src)
+            if f in self._blocklist:
+                logger.info('Skipping path (blocklisted) %s', f_src)
                 continue
 
             f_dst = os.path.join(self.target_path, f)
@@ -123,13 +123,13 @@ class Build(object):
             logger.info(
                 'Result path %s already exists, proceeding', result_path)
 
-    def _clean_up(self, path, remove_blacklist=True):
+    def _clean_up(self, path, remove_blocklist=True):
         logger.debug("Cleaning up %s", path)
         for f in os.listdir(path):
             fpath = os.path.join(path, f)
             if os.path.isdir(fpath):
-                if f in self._blacklist:
+                if f in self._blocklist:
                     logger.info('Removing %s dir from %s', f, path)
                     shutil.rmtree(fpath, ignore_errors=False, onerror=onerror)
                 else:
-                    self._clean_up(fpath, remove_blacklist=True)
+                    self._clean_up(fpath, remove_blocklist=True)

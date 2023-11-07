@@ -187,6 +187,16 @@ class Minimizer(object):
         self.tempfile = f.name
         filetools.copy_file(self.testcase.fuzzedfile.path, self.tempfile)
 
+        if 'copyfuzzedto' in self.cfg['target']:
+            copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying fuzzed file to " + copyfuzzedto)
+            filetools.copy_file(self.testcase.fuzzedfile.path, copyfuzzedto)
+
+        if 'postprocessfuzzed' in self.cfg['target']:
+            postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
+            logger.debug("Executing postprocess " + postprocessfuzzed)
+            os.system(postprocessfuzzed)
+
         # figure out what testcase signatures belong to this fuzzedfile
         self.debugger_timeout = self.cfg['debugger']['runtimeout']
         self.crash_hashes = []
@@ -440,7 +450,7 @@ class Minimizer(object):
         self.logger.debug('Building new testcase object.')
 
         # copy our original testcase as the basis for the new testcase
-        new_testcase = copy.copy(self.testcase)
+        new_testcase = copy.deepcopy(self.testcase)
 
         # get a new dir for the next crasher
         newcrash_tmpdir = tempfile.mkdtemp(
@@ -462,6 +472,16 @@ class Minimizer(object):
             self._raise('Outfile should not already exist: %s' % outfile)
         self.logger.debug('\tCopying %s to %s', self.tempfile, outfile)
         filetools.copy_file(self.tempfile, outfile)
+
+        if 'copyfuzzedto' in self.cfg['target']:
+            copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying fuzzed file to " + copyfuzzedto)
+            filetools.copy_file(self.tempfile, copyfuzzedto)
+
+        if 'postprocessfuzzed' in self.cfg['target']:
+            postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
+            logger.debug("Executing postprocess " + postprocessfuzzed)
+            os.system(postprocessfuzzed)
 
         new_testcase.fuzzedfile = BasicFile(outfile)
         self.logger.debug('\tNew fuzzed_content file: %s %s',
@@ -639,6 +659,16 @@ class Minimizer(object):
             self._writezip()
         else:
             write_file(''.join(self.newfuzzed), self.tempfile)
+
+        if 'copyfuzzedto' in self.cfg['target']:
+            copyfuzzedto = str(self.cfg['target'].get('copyfuzzedto', ''))
+            logger.debug("Copying fuzzed file to " + copyfuzzedto)
+            filetools.copy_file(self.testcase.fuzzedfile.path, copyfuzzedto)
+
+        if 'postprocessfuzzed' in self.cfg['target']:
+            postprocessfuzzed = str(self.cfg['target']['postprocessfuzzed'])
+            logger.debug("Executing postprocess " + postprocessfuzzed)
+            os.system(postprocessfuzzed)
 
     def _set_bytemap(self):
         if self.fuzzed_content and not self.bytemap:
@@ -871,10 +901,20 @@ class Minimizer(object):
 
         for (a, b) in itertools.izip(seed, fuzzed):
             if a != b and rand() > dc:
-                append(b)
+                try:
+                    append(b)
+                except:
+                    logger.error('Cannot append array element, finishing minimizer')
+                    self.min_found = True
+                    break
                 hd += 1
             else:
-                append(a)
+                try:
+                    append(a)
+                except:
+                    logger.error('Cannot append array element, finishing minimizer')
+                    self.min_found = True
+                    break
         return swapped, hd
         # Note that the above implementation is actually faster overall than the list
         # comprehension below since we're catching the hamming distance at the

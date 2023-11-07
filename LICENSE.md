@@ -3,7 +3,7 @@ subject to the following terms:
  
 # LICENSE #
 
-Copyright &copy; 2010-2016 Carnegie Mellon University. All Rights Reserved.
+Copyright &copy; 2010-2020 Carnegie Mellon University. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met: 
@@ -13,7 +13,7 @@ modification, are permitted provided that the following conditions are met:
 3. Products derived from this software may not include "Carnegie Mellon University," "SEI" and/or "Software Engineering Institute" in the name of such derived product, nor shall "Carnegie Mellon University," "SEI" and/or "Software Engineering Institute" be used to endorse or promote products derived from this software without prior written permission. For written permission, please contact permission@sei.cmu.edu. 
 
 # ACKNOWLEDGMENTS AND DISCLAIMERS: #
-Copyright &copy; 2010-2016 Carnegie Mellon University
+Copyright &copy; 2010-2019 Carnegie Mellon University
 
 This material is based upon work funded and supported by the Department of
 Homeland Security under Contract No. FA8721-05-C-0003 with Carnegie Mellon

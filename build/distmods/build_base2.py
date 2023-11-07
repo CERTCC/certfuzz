@@ -31,7 +31,7 @@ def _zipdir(path, zip_):
 
 
 class Build(object):
-    _blacklist = []
+    _blocklist = []
     _common_dirs = ['certfuzz', 'seedfiles', 'tools']
     _license_file = 'COPYING.txt'
 
@@ -116,7 +116,7 @@ class Build(object):
         logger.info('Set up results dir')
         self._create_results_dir()
         logger.info('Clean up build tmp_dir')
-        self._clean_up(self.build_dir, remove_blacklist=False)
+        self._clean_up(self.build_dir, remove_blocklist=False)
 
     def prepend_license(self):
         '''
@@ -174,10 +174,10 @@ class Build(object):
         for f in os.listdir(platform_path):
             f_src = os.path.join(platform_path, f)
 
-            # blacklist files and dirs by name
+            # blocklist files and dirs by name
             # these files will not be copied
-            if f in self._blacklist:
-                logger.info('Skipping path (blacklisted) %s', f_src)
+            if f in self._blocklist:
+                logger.info('Skipping path (blocklisted) %s', f_src)
                 continue
 
             f_dst = os.path.join(self.build_dir, f)
@@ -205,12 +205,12 @@ class Build(object):
             logger.info(
                 'Result path %s already exists, proceeding', result_path)
 
-    def _clean_up(self, path, remove_blacklist=True):
+    def _clean_up(self, path, remove_blocklist=True):
         for f in os.listdir(path):
             fpath = os.path.join(path, f)
             if os.path.isdir(fpath):
-                if f in self._blacklist:
+                if f in self._blocklist:
                     logger.info('Removing %s dir from %s', f, path)
                     shutil.rmtree(fpath, ignore_errors=False, onerror=onerror)
                 else:
-                    self._clean_up(fpath, remove_blacklist=True)
+                    self._clean_up(fpath, remove_blocklist=True)

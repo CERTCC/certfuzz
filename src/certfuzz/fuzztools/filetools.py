@@ -254,16 +254,18 @@ def get_newpath(oldpath, str_to_insert):
     :param oldpath:
     :param str_to_insert:
     '''
-    if '.' in oldpath:
+    origdir = os.path.dirname(oldpath)
+    origfile = os.path.basename(oldpath)
+    if '.' in origfile:
         # Split on first '.' to retain multiple dotted extensions
-        root = oldpath.split('.', 1)[0]
-        ext = '.' + oldpath.split('.', 1)[1]
+        root = origfile.split('.', 1)[0]
+        ext = '.' + origfile.split('.', 1)[1]
         ext = ext.replace(' ', '')
     else:
-        root = oldpath
+        root = oldfile
         ext = ''
-    newpath = ''.join([root, str_to_insert, ext])
-    return newpath
+    newfile = ''.join([root, str_to_insert, ext])
+    return os.path.join(origdir, newfile)
 
 
 def all_files_nonzero_length(root, patterns='*', single_level=False, yield_folders=False):
