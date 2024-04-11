@@ -26,20 +26,37 @@ Furthermore, the build scripts modify some files and move things around to put t
 
 If all that seems more like a challenge than a warning, go for it.
 
-## Experimental ##
+## Experimental 
 
 See `src/experimental/README.md` for some dead ends that might be marginally useful.
 
-# About BFF #
+## About BFF 
 
 The CERT Basic Fuzzing Framework (BFF) is a software testing tool that finds defects in applications that run on Linux, Mac OS X and Windows.
 
 BFF performs mutational fuzzing on software that consumes file input.  They automatically collect test cases that cause software to crash in unique ways, as well as debugging information associated with the crashes. The goal of BFF is to minimize the effort required for software vendors and security researchers to efficiently discover and analyze security vulnerabilities found via fuzzing.
 
-## A brief history of BFF and FOE ##
+Mutational fuzzing is the act of taking well-formed input data and corrupting it in various ways, looking for cases that cause crashes. BFF automatically collects test cases that cause software to crash in unique ways, as well as debugging information associated with the crashes. The goal of BFF is to minimize the effort required for software vendors and security researchers to efficiently discover and analyze security vulnerabilities found via fuzzing.
+
+Traditionally, fuzzing has been very effective at finding security vulnerabilities, but because of its inherently stochastic nature, results can be highly dependent on the initial configuration of the fuzzing system. BFF applies machine learning and evolutionary computing techniques to minimize the amount of manual configuration required to initiate and complete an effective fuzzing campaign. BFF adjusts its configuration parameters based on what it finds (or does not find) over the course of a fuzzing campaign. By doing so it can dramatically increase both the efficacy and efficiency of the campaign. As a result, expert knowledge is not required to configure an effective fuzz campaign, and novices and experts alike can start finding and analyzing vulnerabilities very quickly.
+
+The following are some of the specific features that are available in BFF:
+
+- Minimal initial configuration is required to start a fuzzing campaign.
+- Minimal supervision of the fuzzing campaign is required, as BFF can automatically recover from many common problems that can interrupt fuzzing campaigns.
+- Uniqueness determination is handled through intelligent backtrace analysis.
+- Automated test-case minimization reduces the effort required to analyze results. This is achieved by distilling the test case to the minimal changes to the input data required to induce a specific crash.
+- Online machine learning is applied to fuzzing parameter and input file selection to improve the efficacy of the campaign.
+- Crash severity/exploitability triage is provided.
+
+At the CERT/CC, we have used the BFF infrastructure to find a number of critical vulnerabilities in products such as Adobe Reader and Flash Player; Foxit Reader; Apple QuickTime, Preview, and Mac OS X; Xpdf; Poppler; FFmpeg; JasPer; Wireshark; VMware VMnc video codec; the Indeo video codec; and many others. See [Public Vulnerabilities Discovered Using BFF](https://github.com/CERTCC/certfuzz/wiki/Public-Vulnerabilities-Discovered-Using-BFF).
+
+### A brief history of BFF and FOE ##
 
 BFF and FOE started out as two separate but related projects within the CERT/CC
 Vulnerability Analysis team. Over time, they converged in their architecture to the point where BFF 2.7 and FOE 2.1 shared much of their code. As of BFF 2.8, this integration is complete and we have retired the name FOE in favor of BFF.
+
+
 
 ## For more information
 
