@@ -59,4 +59,4 @@ Vulnerability Analysis team. Over time, they converged in their architecture to 
 
 ## For more information
 
-Blog posts about BFF and FOE can be found in the [Vulnerability Discovery](https://insights.sei.cmu.edu/cert/vulnerability-discovery/) category on the [CERT/CC Blog](https://insights.sei.cmu.edu/cert/)
+Blog posts about BFF and FOE can be found in the [CERT/CC Vulnerabilities](https://insights.sei.cmu.edu/blog/topics/certcc/) category on the [SEI Blog](https://insights.sei.cmu.edu/blog/)
