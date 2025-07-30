@@ -4,7 +4,7 @@ BFF for Windows was formerly known as the CERT Failure Observation Engine (FOE).
 
 ## If you are looking for runnable code, you should download the latest releases at: 
 
-[BFF](https://resources.sei.cmu.edu/forms/bff-download.cfm)
+[BFF](https://www.sei.cmu.edu/forms/bff-download/)
 
 ## Using this code 
 
